@@ -14,7 +14,7 @@
 //! - 🔗 **Entity Relationships** - Reference entities inline or by ID using [`Link<T>`]
 //! - 📝 **CRUD Operations** - Full create, read, update, delete for all entity types
 //! - 🔄 **Serialization** - Complete serde support for JSON, YAML, and more
-//! - 📚 **OpenAPI Schemas** - Automatic schema generation with `utoipa`
+//! - 📚 **`OpenAPI` Schemas** - Automatic schema generation with `utoipa`
 //! - 🆔 **Time-Sortable IDs** - UUID v7 for naturally ordered entity identifiers
 //! - 🚀 **Web APIs** - Optional Axum integration with generated REST handlers
 //! - 🔍 **Search & Query** - Built-in entity search across collections
@@ -98,7 +98,7 @@
 //!
 //! ## Web API Generation
 //!
-//! Generate complete REST APIs with OpenAPI documentation using the `axum` feature:
+//! Generate complete REST APIs with `OpenAPI` documentation using the `axum` feature:
 //!
 //! ```rust,ignore
 //! #[stately::state(api = ["axum"])]
@@ -128,7 +128,7 @@
 //!
 //! ## Feature Flags
 //!
-//! - `openapi` (default) - Enable OpenAPI schema generation via `utoipa`
+//! - `openapi` (default) - Enable `OpenAPI` schema generation via `utoipa`
 //! - `axum` - Enable Axum web framework integration (implies `openapi`)
 //!
 //! ## Examples

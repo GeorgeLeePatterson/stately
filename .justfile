@@ -13,31 +13,31 @@ default:
 # --- TESTS ---
 
 test-unit:
-    cargo test --lib -F axum_api -- --nocapture --show-output
+    cargo test --lib -F axum -- --nocapture --show-output
 
 # Runs unit tests first then integration
 test:
-    cargo test -F axum_api -- --nocapture --show-output
+    cargo test -F axum -- --nocapture --show-output
 
 test-one test_name:
-    cargo test -F axum_api "{{ test_name }}" -- --nocapture --show-output
+    cargo test -F axum "{{ test_name }}" -- --nocapture --show-output
 
 # --- COVERAGE ---
 
 coverage:
     cargo llvm-cov clean --workspace
-    cargo llvm-cov --no-report --ignore-filename-regex "(examples).*" -F axum_api
+    cargo llvm-cov --no-report --ignore-filename-regex "(examples).*" -F axum
     cargo llvm-cov report -vv --html --output-dir coverage --open
 
 coverage-lcov:
     cargo llvm-cov clean --workspace
-    cargo llvm-cov --no-report --ignore-filename-regex "(examples).*" -F axum_api
+    cargo llvm-cov --no-report --ignore-filename-regex "(examples).*" -F axum
     cargo llvm-cov report --lcov --output-path lcov.info
 
 # --- EXAMPLES ---
 
 example example:
-    cargo run -F axum_api --example "{{ example }}"
+    cargo run -F axum --example "{{ example }}"
 
 # --- DOCS ---
 
