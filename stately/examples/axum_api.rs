@@ -53,10 +53,7 @@ async fn main() {
         let api_doc = axum_api::ApiDoc::openapi();
         println!("\n✓ OpenAPI documentation generated!");
         println!("  Paths: {}", api_doc.paths.paths.len());
-        println!(
-            "  Components: {}",
-            api_doc.components.as_ref().map(|c| c.schemas.len()).unwrap_or(0)
-        );
+        println!("  Components: {}", api_doc.components.as_ref().map_or(0, |c| c.schemas.len()));
     }
 
     println!("\n✓ Example completed successfully!");

@@ -33,6 +33,7 @@ pub fn generate(
             syn::Ident::new(&format!("{}_api", api_type), proc_macro2::Span::call_site());
 
         api_modules.push(quote! {
+            #[allow(clippy::needless_for_each)]
             #vis mod #module_name {
                 use super::*;
                 #module_code
