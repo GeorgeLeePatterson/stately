@@ -1,3 +1,7 @@
+#![cfg_attr(
+    feature = "axum",
+    allow(unused_crate_dependencies, reason = "axum and tokio used only in generated code")
+)]
 //! # Stately
 //!
 //! Type-safe state management with entity relationships and CRUD operations.

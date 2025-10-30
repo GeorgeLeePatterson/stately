@@ -168,6 +168,7 @@ pub fn generate(state_name: &syn::Ident, vis: &syn::Visibility) -> TokenStream {
         }
 
         /// OpenAPI documentation for the generated API
+        #[allow(clippy::needless_for_each)]
         #[cfg(feature = "openapi")]
         #[derive(::utoipa::OpenApi)]
         #[openapi(

@@ -1,3 +1,4 @@
+#![expect(unused_crate_dependencies)]
 //! Example demonstrating the axum API generation feature
 
 #[stately::entity]
@@ -22,7 +23,6 @@ pub struct AppState {
     sources:   Source,
 }
 
-
 #[tokio::main]
 async fn main() {
     use std::sync::Arc;
@@ -33,10 +33,10 @@ async fn main() {
     let state = Arc::new(RwLock::new(AppState::new()));
 
     // Create the axum state wrapper from the generated module
-    let axum_state = axum_api::StatelyState::new(state.clone());
+    let axum_state = axum_api::StatelyState::new(Arc::clone(&state));
 
     // Get the router from the generated module
-    let app: axum::Router =
+    let _app: axum::Router =
         axum::Router::new().nest("/api/v1/entity", axum_api::router()).with_state(axum_state);
 
     println!("✓ Axum router created successfully!");

@@ -90,16 +90,16 @@ pub trait StateCollection {
 /// generated for each application, allowing type-safe CRUD operations.
 #[cfg(feature = "axum")]
 pub trait StatelyState: Send + Sync + 'static {
-    /// The generated StateEntry enum type for this state
+    /// The generated `StateEntry` enum type for this state
     type StateEntry: Clone
-        + std::cmp::Eq
+        + Eq
         + std::hash::Hash
-        + serde::Serialize
-        + for<'de> serde::Deserialize<'de>
+        + Serialize
+        + for<'de> Deserialize<'de>
         + std::str::FromStr;
 
-    /// The generated Entity enum type for this state
-    type Entity: Clone + serde::Serialize + for<'de> serde::Deserialize<'de>;
+    /// The generated `Entity` enum type for this state
+    type Entity: Clone + Serialize + for<'de> Deserialize<'de>;
 
     /// Gets an entity by ID or name and type
     ///
