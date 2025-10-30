@@ -1,11 +1,15 @@
 [package]
 name = "stately"
-version = "0.1.0"
-edition = "2021"
-authors = ["Lumirate, Inc"]
 description = "Type-safe state management with entity relationships and CRUD operations"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/Lumirate-Inc/stately"
+keywords.workspace = true
+categories.workspace = true
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
 
 [features]
 default = ["openapi"]

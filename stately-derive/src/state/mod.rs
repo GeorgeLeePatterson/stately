@@ -20,26 +20,26 @@ impl StateConfig {
         let attr_str = attr.to_string();
 
         // Parse api = ["axum", "actix"] or api = ["axum"]
-        if let Some(start) = attr_str.find("api") {
-            if let Some(eq_pos) = attr_str[start..].find('=') {
-                let after_eq = &attr_str[start + eq_pos + 1..].trim();
+        if let Some(start) = attr_str.find("api")
+            && let Some(eq_pos) = attr_str[start..].find('=')
+        {
+            let after_eq = &attr_str[start + eq_pos + 1..].trim();
 
-                // Handle array syntax: ["axum", "actix"]
-                if let Some(arr_start) = after_eq.find('[') {
-                    if let Some(arr_end) = after_eq.find(']') {
-                        let array_content = &after_eq[arr_start + 1..arr_end];
-                        for item in array_content.split(',') {
-                            let trimmed = item.trim().trim_matches('"').trim();
-                            if !trimmed.is_empty() {
-                                config.apis.push(trimmed.to_string());
-                            }
+            // Handle array syntax: ["axum", "actix"]
+            if let Some(arr_start) = after_eq.find('[') {
+                if let Some(arr_end) = after_eq.find(']') {
+                    let array_content = &after_eq[arr_start + 1..arr_end];
+                    for item in array_content.split(',') {
+                        let trimmed = item.trim().trim_matches('"').trim();
+                        if !trimmed.is_empty() {
+                            config.apis.push(trimmed.to_string());
                         }
                     }
                 }
-                // Handle single value: "axum"
-                else if let Some(value) = extract_string_literal(after_eq) {
-                    config.apis.push(value);
-                }
+            }
+            // Handle single value: "axum"
+            else if let Some(value) = extract_string_literal(after_eq) {
+                config.apis.push(value);
             }
         }
 

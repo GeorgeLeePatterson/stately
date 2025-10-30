@@ -1,11 +1,15 @@
 [package]
 name = "stately-derive"
-version = "0.1.0"
-edition = "2021"
-authors = ["Lumirate, Inc"]
 description = "Procedural macros for stately state management"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/Lumirate-Inc/stately"
+keywords = ["configuration", "state", "api", "axum"]
+categories.workspace = true
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
 
 [lib]
 proc-macro = true

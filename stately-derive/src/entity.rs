@@ -32,32 +32,31 @@ pub fn entity(attr: TokenStream, item: TokenStream) -> TokenStream {
     }
 
     // Simple parsing for name_field and description
-    if let Some(start) = attr_str.find("name_field") {
-        if let Some(eq_pos) = attr_str[start..].find('=') {
-            let after_eq = &attr_str[start + eq_pos + 1..];
-            if let Some(value) = extract_string_literal(after_eq) {
-                name_field = syn::Ident::new(&value, proc_macro2::Span::call_site());
-            }
+    if let Some(start) = attr_str.find("name_field")
+        && let Some(eq_pos) = attr_str[start..].find('=')
+    {
+        let after_eq = &attr_str[start + eq_pos + 1..];
+        if let Some(value) = extract_string_literal(after_eq) {
+            name_field = syn::Ident::new(&value, proc_macro2::Span::call_site());
         }
     }
 
-    if let Some(start) = attr_str.find("description_field") {
-        if let Some(eq_pos) = attr_str[start..].find('=') {
-            let after_eq = &attr_str[start + eq_pos + 1..];
-            if let Some(value) = extract_string_literal(after_eq) {
-                description_field = Some(syn::Ident::new(&value, proc_macro2::Span::call_site()));
-            }
+    if let Some(start) = attr_str.find("description_field")
+        && let Some(eq_pos) = attr_str[start..].find('=')
+    {
+        let after_eq = &attr_str[start + eq_pos + 1..];
+        if let Some(value) = extract_string_literal(after_eq) {
+            description_field = Some(syn::Ident::new(&value, proc_macro2::Span::call_site()));
         }
     }
 
-    if let Some(start) = attr_str.find("description") {
-        if !attr_str[start..].starts_with("description_field") {
-            if let Some(eq_pos) = attr_str[start..].find('=') {
-                let after_eq = &attr_str[start + eq_pos + 1..];
-                if let Some(value) = extract_string_literal(after_eq) {
-                    static_description = Some(value);
-                }
-            }
+    if let Some(start) = attr_str.find("description")
+        && !attr_str[start..].starts_with("description_field")
+        && let Some(eq_pos) = attr_str[start..].find('=')
+    {
+        let after_eq = &attr_str[start + eq_pos + 1..];
+        if let Some(value) = extract_string_literal(after_eq) {
+            static_description = Some(value);
         }
     }
 

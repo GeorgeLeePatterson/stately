@@ -91,11 +91,11 @@ impl<T: StateEntity> StateCollection for Collection<T> {
 
     fn update(&mut self, id: &str, entity: Self::Entity) -> Result<EntityIdentifier, String> {
         // Try UUID first
-        if let Ok(uuid) = id.parse::<EntityIdentifier>() {
-            if let Entry::Occupied(mut e) = self.inner.entry(uuid) {
-                drop(e.insert(entity));
-                return Ok(uuid);
-            }
+        if let Ok(uuid) = id.parse::<EntityIdentifier>()
+            && let Entry::Occupied(mut e) = self.inner.entry(uuid)
+        {
+            drop(e.insert(entity));
+            return Ok(uuid);
         }
 
         // Fall back to name lookup
@@ -110,10 +110,10 @@ impl<T: StateEntity> StateCollection for Collection<T> {
 
     fn remove(&mut self, id: &str) -> Result<Self::Entity, String> {
         // Try UUID first
-        if let Ok(uuid) = id.parse::<EntityIdentifier>() {
-            if let Some(entity) = self.inner.remove(&uuid) {
-                return Ok(entity);
-            }
+        if let Ok(uuid) = id.parse::<EntityIdentifier>()
+            && let Some(entity) = self.inner.remove(&uuid)
+        {
+            return Ok(entity);
         }
 
         // Fall back to name lookup
