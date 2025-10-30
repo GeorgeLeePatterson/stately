@@ -1,0 +1,67 @@
+[package]
+name = "stately"
+version = "0.1.0"
+edition = "2021"
+authors = ["Lumirate, Inc"]
+description = "Type-safe state management with entity relationships and CRUD operations"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Lumirate-Inc/stately"
+
+[features]
+default = ["openapi"]
+openapi = ["dep:utoipa"]
+axum = ["openapi", "dep:axum", "dep:tokio"]
+
+[dependencies]
+hashbrown = { version = "0.16", features = [
+    "allocator-api2",
+    "default",
+    "inline-more",
+    "serde",
+] }
+serde = { version = "1", features = ["derive", "std", "rc"] }
+serde_json = "1"
+thiserror = "2"
+uuid = { version = "1", features = ["v7", "serde"] }
+utoipa = { version = "5", features = ["macros", "uuid"], optional = true }
+axum = { version = "0.8", optional = true }
+tokio = { version = "1", features = ["sync", "rt-multi-thread", "macros"], optional = true }
+
+stately-derive = { path = "../stately-derive", version = "0.1.0" }
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+# Detects large stack-allocated futures that may cause stack overflow crashes (see threshold in clippy.toml)
+large_futures = "warn"
+clone_on_ref_ptr = "warn"
+must_use_candidate = "allow"
+
+[lints.rust]
+unused_imports = "deny"
+elided_lifetimes_in_paths = "deny"
+explicit_outlives_requirements = "warn"
+let_underscore_drop = "warn"
+missing_copy_implementations = "warn"
+redundant_lifetimes = "warn"
+rust_2024_incompatible_pat = "warn"
+single_use_lifetimes = "warn"
+trivial_numeric_casts = "warn"
+unit_bindings = "warn"
+unnameable_types = "warn"
+unreachable_pub = "warn"
+unsafe_op_in_unsafe_fn = "warn"
+unused_crate_dependencies = "warn"
+unused_import_braces = "warn"
+unused_lifetimes = "warn"
+unused_macro_rules = "warn"
+unused_results = "warn"
+unused_qualifications = "warn"
+variant_size_differences = "warn"
+
+[[example]]
+name = "basic"
+required-features = ["openapi"]
+
+[[example]]
+name = "axum_api"
+required-features = ["axum"]
