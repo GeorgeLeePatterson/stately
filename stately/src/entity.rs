@@ -30,10 +30,10 @@ mod tests {
     fn test_generate_id() {
         let id1 = generate_id();
         let id2 = generate_id();
-        
+
         // IDs should be unique
         assert_ne!(id1, id2);
-        
+
         // Should be valid UUIDs
         assert_eq!(id1.get_version(), Some(uuid::Version::SortRand));
         assert_eq!(id2.get_version(), Some(uuid::Version::SortRand));
@@ -56,11 +56,7 @@ mod tests {
     #[test]
     fn test_summary_without_description() {
         let id = generate_id();
-        let summary = Summary {
-            id,
-            name: "simple-entity".to_string(),
-            description: None,
-        };
+        let summary = Summary { id, name: "simple-entity".to_string(), description: None };
 
         assert_eq!(summary.name, "simple-entity");
         assert!(summary.description.is_none());
@@ -69,11 +65,8 @@ mod tests {
     #[test]
     fn test_summary_serialization() {
         let id = generate_id();
-        let summary = Summary {
-            id,
-            name: "test".to_string(),
-            description: Some("desc".to_string()),
-        };
+        let summary =
+            Summary { id, name: "test".to_string(), description: Some("desc".to_string()) };
 
         let json = serde_json::to_string(&summary).unwrap();
         let deserialized: Summary = serde_json::from_str(&json).unwrap();
