@@ -25,14 +25,14 @@ test-one test_name:
 # --- COVERAGE ---
 
 coverage:
-    cargo llvm-cov clean --workspace
-    cargo llvm-cov --no-report --ignore-filename-regex "(examples).*" -F axum
-    cargo llvm-cov report -vv --html --output-dir coverage --open
+    cargo llvm-cov --html \
+     --ignore-filename-regex "(errors|examples).*" \
+     --output-dir coverage -F axum --open
 
 coverage-lcov:
-    cargo llvm-cov clean --workspace
-    cargo llvm-cov --no-report --ignore-filename-regex "(examples).*" -F axum
-    cargo llvm-cov report --lcov --output-path lcov.info
+    cargo llvm-cov --lcov \
+     --ignore-filename-regex "(errors|examples).*" \
+     --output-path coverage/lcov.info -F axum
 
 # --- EXAMPLES ---
 

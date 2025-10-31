@@ -232,3 +232,196 @@ mod api {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use serde::{Deserialize, Serialize};
+
+    use super::*;
+
+    #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+    struct TestEntity {
+        name:  String,
+        value: i32,
+    }
+
+    impl StateEntity for TestEntity {
+        const STATE_ENTRY: &'static str = "test_entity";
+
+        fn name(&self) -> &str { &self.name }
+    }
+
+    #[test]
+    fn test_link_create_ref() {
+        let link: Link<TestEntity> = Link::create_ref("entity-123");
+        assert_eq!(link.get_ref(), Some("entity-123"));
+        assert_eq!(link.name(), "entity-123");
+    }
+
+    #[test]
+    fn test_link_inline() {
+        let entity = TestEntity { name: "test".to_string(), value: 42 };
+        let link = Link::inline(entity.clone());
+
+        assert_eq!(link.get_ref(), None);
+        assert_eq!(link.name(), "test");
+
+        match link {
+            Link::Inline(e) => assert_eq!(e, entity),
+            Link::Ref(_) => panic!("Expected Inline variant"),
+        }
+    }
+
+    #[test]
+    fn test_link_resolve_ref_success() {
+        let link: Link<TestEntity> = Link::create_ref("entity-123");
+        let entity = TestEntity { name: "test".to_string(), value: 42 };
+
+        let resolver = |id: &str| {
+            if id == "entity-123" { Some(entity.clone()) } else { None }
+        };
+
+        let resolved_ref = link.resolve(resolver).unwrap();
+        assert_eq!(resolved_ref, entity);
+    }
+
+    #[test]
+    fn test_link_resolve_ref_failure() {
+        let link: Link<TestEntity> = Link::create_ref("entity-123");
+
+        let resolver = |_id: &str| None;
+
+        let result = link.resolve(resolver);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "entity-123");
+    }
+
+    #[test]
+    fn test_link_resolve_inline() {
+        let entity = TestEntity { name: "test".to_string(), value: 42 };
+        let link = Link::inline(entity.clone());
+
+        let resolver = |_id: &str| panic!("Resolver should not be called for inline");
+
+        let resolved_ref = link.resolve(resolver).unwrap();
+        assert_eq!(resolved_ref, entity);
+    }
+
+    #[test]
+    fn test_link_serialize_ref() {
+        let link: Link<TestEntity> = Link::create_ref("entity-123");
+        let json = serde_json::to_string(&link).unwrap();
+
+        let value: serde_json::Value = serde_json::from_str(&json).unwrap();
+        assert_eq!(value["entity_type"], "test_entity");
+        assert_eq!(value["ref"], "entity-123");
+    }
+
+    #[test]
+    fn test_link_serialize_inline() {
+        let entity = TestEntity { name: "test".to_string(), value: 42 };
+        let link = Link::inline(entity);
+        let json = serde_json::to_string(&link).unwrap();
+
+        let value: serde_json::Value = serde_json::from_str(&json).unwrap();
+        assert_eq!(value["entity_type"], "test_entity");
+        assert_eq!(value["inline"]["name"], "test");
+        assert_eq!(value["inline"]["value"], 42);
+    }
+
+    #[test]
+    fn test_link_deserialize_ref_new_format() {
+        let json = r#"{"entity_type":"test_entity","ref":"entity-123"}"#;
+        let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
+
+        assert_eq!(link.get_ref(), Some("entity-123"));
+    }
+
+    #[test]
+    fn test_link_deserialize_inline_new_format() {
+        let json = r#"{"entity_type":"test_entity","inline":{"name":"test","value":42}}"#;
+        let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
+
+        match link {
+            Link::Inline(entity) => {
+                assert_eq!(entity.name, "test");
+                assert_eq!(entity.value, 42);
+            }
+            Link::Ref(_) => panic!("Expected Inline variant"),
+        }
+    }
+
+    #[test]
+    fn test_link_deserialize_ref_old_format_string() {
+        let json = r#""entity-123""#;
+        let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
+
+        assert_eq!(link.get_ref(), Some("entity-123"));
+    }
+
+    #[test]
+    fn test_link_deserialize_inline_old_format() {
+        let json = r#"{"name":"test","value":42}"#;
+        let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
+
+        match link {
+            Link::Inline(entity) => {
+                assert_eq!(entity.name, "test");
+                assert_eq!(entity.value, 42);
+            }
+            Link::Ref(_) => panic!("Expected Inline variant"),
+        }
+    }
+
+    #[test]
+    fn test_link_round_trip_ref() {
+        let original: Link<TestEntity> = Link::create_ref("entity-123");
+        let json = serde_json::to_string(&original).unwrap();
+        let deserialized: Link<TestEntity> = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(original, deserialized);
+    }
+
+    #[test]
+    fn test_link_round_trip_inline() {
+        let entity = TestEntity { name: "test".to_string(), value: 42 };
+        let original = Link::inline(entity);
+        let json = serde_json::to_string(&original).unwrap();
+        let deserialized: Link<TestEntity> = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(original, deserialized);
+    }
+
+    #[test]
+    fn test_link_equality() {
+        let ref1: Link<TestEntity> = Link::create_ref("entity-123");
+        let ref2: Link<TestEntity> = Link::create_ref("entity-123");
+        assert_eq!(ref1, ref2);
+
+        let entity1 = TestEntity { name: "test".to_string(), value: 42 };
+        let entity2 = TestEntity { name: "test".to_string(), value: 42 };
+        let inline1 = Link::inline(entity1);
+        let inline2 = Link::inline(entity2);
+        assert_eq!(inline1, inline2);
+
+        let ref_link: Link<TestEntity> = Link::create_ref("entity-123");
+        let inline_link = Link::inline(TestEntity { name: "entity-123".to_string(), value: 0 });
+        assert_ne!(ref_link, inline_link);
+    }
+
+    #[test]
+    fn test_link_hash() {
+        use std::collections::HashSet;
+
+        let mut set = HashSet::new();
+        let link1: Link<TestEntity> = Link::create_ref("entity-1");
+        let link2: Link<TestEntity> = Link::create_ref("entity-2");
+        let link3: Link<TestEntity> = Link::create_ref("entity-1");
+
+        let _ = set.insert(link1);
+        let _ = set.insert(link2);
+        let _ = set.insert(link3);
+
+        assert_eq!(set.len(), 2);
+    }
+}
