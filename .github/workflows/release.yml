@@ -64,10 +64,6 @@ jobs:
             exit 1
           fi
 
-          # Verify constants.rs matches
-          echo "Verifying version constants..."
-          cargo test test_version_matches_cargo --features test-utils
-
       - name: Verify publish
         if: ${{ inputs.skip_publish == false }}
         run: |

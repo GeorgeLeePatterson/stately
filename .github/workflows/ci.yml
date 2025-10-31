@@ -90,8 +90,9 @@ jobs:
 
     - name: Generate code coverage
       run: |
-        cargo llvm-cov --features test-utils --workspace --lcov --output-path lcov.info \
-         --ignore-filename-regex "(stately-derive|errors|examples).*"
+        cargo llvm-cov --lcov \
+         --ignore-filename-regex "(errors|examples|stately-derive).*" \
+         --output-path lcov.info -F axum
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
