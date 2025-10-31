@@ -240,6 +240,7 @@ mod tests {
     use super::*;
 
     #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+    #[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
     struct TestEntity {
         name:  String,
         value: i32,
@@ -423,5 +424,29 @@ mod tests {
         let _ = set.insert(link3);
 
         assert_eq!(set.len(), 2);
+    }
+
+    #[cfg(feature = "openapi")]
+    #[test]
+    fn test_link_openapi_schema() {
+        use utoipa::openapi::{RefOr, Schema};
+
+        let link = Link::<TestEntity>::create_ref("LinkTestEntity");
+        // Test that the schema name is generated correctly
+        assert_eq!(link.name(), "LinkTestEntity");
+
+        // Test that ComposeSchema generates a valid OneOf schema
+        let schema = <Link<TestEntity> as utoipa::__dev::ComposeSchema>::compose(vec![]);
+
+        match schema {
+            RefOr::T(Schema::OneOf(one_of)) => {
+                // Should have two variants: ref and inline
+                assert_eq!(one_of.items.len(), 2);
+
+                // Verify the schema has a description
+                assert!(one_of.description.is_some());
+            }
+            _ => panic!("Expected OneOf schema"),
+        }
     }
 }

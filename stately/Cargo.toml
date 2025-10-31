@@ -71,7 +71,7 @@ name = "axum_api"
 required-features = ["axum"]
 
 [[tests]]
-name = "test"
+name = "core"
 
 [[tests]]
 name = "axum"

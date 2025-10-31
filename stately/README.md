@@ -3,6 +3,7 @@
 [![Crates.io](https://img.shields.io/crates/v/stately.svg)](https://crates.io/crates/stately)
 [![Documentation](https://docs.rs/stately/badge.svg)](https://docs.rs/stately)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../LICENSE)
+[![Coverage](https://codecov.io/gh/GeorgeLeePatterson/stately/branch/main/graph/badge.svg)](https://codecov.io/gh/GeorgeLeePatterson/stately)
 
 > Type-safe state management with entity relationships and CRUD operations
 
@@ -96,7 +97,7 @@ let pipeline_id = state.pipelines.create(pipeline);
 
 // Query
 let (id, entity) = state.get_entity(
-    &pipeline_id.to_string(), 
+    &pipeline_id.to_string(),
     StateEntry::Pipeline
 ).unwrap();
 
@@ -166,18 +167,18 @@ pub struct AppState {
 async fn main() {
     use std::sync::Arc;
     use tokio::sync::RwLock;
-    
+
     let state = Arc::new(RwLock::new(AppState::new()));
     let axum_state = axum_api::StatelyState::new(state);
-    
+
     let app = axum::Router::new()
         .nest("/api/v1/entity", axum_api::router())
         .with_state(axum_state);
-    
+
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
         .unwrap();
-    
+
     axum::serve(listener, app).await.unwrap();
 }
 ```

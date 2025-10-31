@@ -26,12 +26,12 @@ test-one test_name:
 
 coverage:
     cargo llvm-cov --html \
-     --ignore-filename-regex "(errors|examples).*" \
+     --ignore-filename-regex "(errors|examples|stately-derive).*" \
      --output-dir coverage -F axum --open
 
 coverage-lcov:
     cargo llvm-cov --lcov \
-     --ignore-filename-regex "(errors|examples).*" \
+     --ignore-filename-regex "(errors|examples|stately-derive).*" \
      --output-path coverage/lcov.info -F axum
 
 # --- EXAMPLES ---

@@ -226,3 +226,68 @@ impl<T: StateEntity> StateCollection for Singleton<T> {
 
     fn is_empty(&self) -> bool { false }
 }
+
+#[cfg(test)]
+mod tests {
+    use serde::{Deserialize, Serialize};
+
+    use super::*;
+
+    #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+    struct TestEntity {
+        name:  String,
+        value: i32,
+    }
+
+    impl StateEntity for TestEntity {
+        const STATE_ENTRY: &'static str = "test_entity";
+
+        fn name(&self) -> &str { &self.name }
+    }
+
+    #[test]
+    fn test_singleton_serde_roundtrip() {
+        let entity = TestEntity { name: "test".to_string(), value: 42 };
+        let singleton = Singleton::new(entity.clone());
+
+        // Serialize
+        let json = serde_json::to_string(&singleton).unwrap();
+
+        // Deserialize
+        let deserialized: Singleton<TestEntity> = serde_json::from_str(&json).unwrap();
+
+        // Verify
+        assert_eq!(singleton, deserialized);
+        assert_eq!(deserialized.get().name, "test");
+        assert_eq!(deserialized.get().value, 42);
+    }
+
+    #[test]
+    fn test_singleton_deserialize_from_entity_json() {
+        // Test that we can deserialize directly from entity JSON
+        let json = r#"{"name":"direct","value":100}"#;
+        let singleton: Singleton<TestEntity> = serde_json::from_str(json).unwrap();
+
+        assert_eq!(singleton.get().name, "direct");
+        assert_eq!(singleton.get().value, 100);
+    }
+
+    #[test]
+    fn test_collection_serde_roundtrip() {
+        let mut collection = Collection::<TestEntity>::new();
+        let id1 = collection.create(TestEntity { name: "entity1".to_string(), value: 10 });
+        let id2 = collection.create(TestEntity { name: "entity2".to_string(), value: 20 });
+
+        // Serialize
+        let json = serde_json::to_string(&collection).unwrap();
+
+        // Deserialize
+        let deserialized: Collection<TestEntity> = serde_json::from_str(&json).unwrap();
+
+        // Verify
+        assert_eq!(collection, deserialized);
+        assert_eq!(deserialized.len(), 2);
+        assert_eq!(deserialized.get_by_id(&id1).unwrap().value, 10);
+        assert_eq!(deserialized.get_by_id(&id2).unwrap().value, 20);
+    }
+}
