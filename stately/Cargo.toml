@@ -27,7 +27,7 @@ serde = { version = "1", features = ["derive", "std", "rc"] }
 serde_json = "1"
 thiserror = "2"
 uuid = { version = "1", features = ["v7", "serde"] }
-utoipa = { version = "5", features = ["macros", "uuid"], optional = true }
+utoipa = { version = "5", features = ["macros", "uuid", "rc_schema"], optional = true }
 axum = { version = "0.8", optional = true }
 tokio = { version = "1", features = ["sync", "rt-multi-thread", "macros"], optional = true }
 
