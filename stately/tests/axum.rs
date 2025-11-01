@@ -1,26 +1,82 @@
 #![expect(unused_crate_dependencies)]
 use utoipa::OpenApi;
 
+// Test entities
 #[stately::entity]
-#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, Default)]
 #[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Pipeline {
-    pub name:        String,
-    pub description: Option<String>,
+    name:        String,
+    description: Option<String>,
 }
 
 #[stately::entity]
-#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
 pub struct Source {
-    pub name: String,
-    pub url:  String,
+    name: String,
+    url:  String,
 }
 
+#[stately::entity]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
+pub struct Sink {
+    name:        String,
+    destination: String,
+}
+
+#[stately::entity(singleton, description = "Global configuration")]
+#[derive(Debug, Clone, Copy, PartialEq, serde::Serialize, serde::Deserialize, Default)]
+#[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
+pub struct Config {
+    max_connections: usize,
+    timeout_seconds: u64,
+}
+
+// Additional entities for demonstrating collection syntax variations
+#[stately::entity]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
+pub struct Task {
+    name:   String,
+    status: String,
+}
+
+#[stately::entity]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
+pub struct Job {
+    name:     String,
+    priority: u32,
+}
+
+// Type alias for custom StateCollection demonstration
+type TaskCache = stately::Collection<Task>;
+
+// Test state demonstrating all collection syntax permutations
 #[stately::state]
 pub struct State {
-    pipelines: Pipeline,
-    sources:   Source,
+    // Singleton
+    #[singleton]
+    config:     Config,
+    // Case 1: Implicit collection (no attribute)
+    pipelines:  Pipeline,
+    // Case 2: Explicit collection (same as case 1, with variant to avoid collision)
+    #[collection(variant = "ExplicitSource")]
+    sources:    Source,
+    // Case 3: Custom StateCollection type (using type alias)
+    #[collection(TaskCache, variant = "CachedTask")]
+    tasks:      Task,
+    // Case 4: Variant override only (reusing Pipeline entity)
+    #[collection(variant = "ArchivedPipeline")]
+    archived:   Pipeline,
+    // Case 5: Custom type + variant override (reusing Task entity and TaskCache type)
+    #[collection(TaskCache, variant = "BackgroundTask")]
+    background: Task,
+    // Keep existing fields for backward compatibility with existing tests
+    sinks:      Sink,
+    jobs:       Job,
 }
 
 #[stately::axum_api]
@@ -131,7 +187,7 @@ async fn test_get_entity_by_id() {
         Entity::Pipeline(p) => {
             assert_eq!(p.name, "get-test-pipeline");
         }
-        Entity::Source(_) => panic!("Expected Pipeline entity"),
+        _ => panic!("Expected Pipeline entity"),
     }
 }
 

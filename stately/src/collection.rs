@@ -1,10 +1,9 @@
 //! Collection and Singleton types for managing entities
 
 use hashbrown::HashMap;
-use hashbrown::hash_map::Entry;
 use serde::{Deserialize, Serialize};
 
-use crate::entity::{EntityId, Summary};
+use crate::entity::{EntityId, SINGLETON_ENTITY_ID, Summary};
 use crate::traits::{StateCollection, StateEntity};
 
 /// A collection of entities of type `T`
@@ -95,38 +94,16 @@ impl<T: StateEntity> StateCollection for Collection<T> {
     }
 
     fn update(&mut self, id: &str, entity: Self::Entity) -> Result<Self::Entity, String> {
-        // Try direct ID lookup first
-        let entity_id = EntityId::from(id);
-        if let Entry::Occupied(mut e) = self.inner.entry(entity_id) {
-            return Ok(e.insert(entity));
-        }
-
-        // Fall back to name lookup
-        if let Some((found_id, _)) = self.get_by_name(id) {
-            let found_id = found_id.clone();
-            return self
-                .inner
-                .insert(found_id, entity)
-                .ok_or_else(|| format!("Entity not found: {id}"));
-        }
-
-        Err(format!("Entity not found: {id}"))
+        // Only direct ID lookup - no name fallback for destructive operations
+        self.inner
+            .get_mut(id)
+            .map(|e| std::mem::replace(e, entity))
+            .ok_or_else(|| format!("Entity not found: {id}"))
     }
 
     fn remove(&mut self, id: &str) -> Result<Self::Entity, String> {
-        // Try direct ID lookup first
-        let entity_id = EntityId::from(id);
-        if let Some(entity) = self.inner.remove(&entity_id) {
-            return Ok(entity);
-        }
-
-        // Fall back to name lookup
-        if let Some((found_id, _)) = self.get_by_name(id) {
-            let found_id = found_id.clone();
-            return self.inner.remove(&found_id).ok_or_else(|| format!("Entity not found: {id}"));
-        }
-
-        Err(format!("Entity not found: {id}"))
+        // Only direct ID lookup - no name fallback for destructive operations
+        self.inner.remove(id).ok_or_else(|| format!("Entity not found: {id}"))
     }
 
     fn list(&self) -> Vec<Summary> {
@@ -142,7 +119,6 @@ impl<T: StateEntity> StateCollection for Collection<T> {
 /// only read and updated.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Singleton<T: StateEntity> {
-    id:    EntityId,
     inner: T,
 }
 
@@ -163,13 +139,13 @@ impl<'de, T: StateEntity> Deserialize<'de> for Singleton<T> {
         D: serde::Deserializer<'de>,
     {
         let inner = T::deserialize(deserializer)?;
-        Ok(Self { id: EntityId::singleton(), inner })
+        Ok(Self { inner })
     }
 }
 
 impl<T: StateEntity> Singleton<T> {
     /// Creates a new singleton with the given entity
-    pub fn new(entity: T) -> Self { Self { id: EntityId::singleton(), inner: entity } }
+    pub fn new(entity: T) -> Self { Self { inner: entity } }
 
     /// Gets a reference to the singleton entity
     pub fn get(&self) -> &T { &self.inner }
@@ -181,7 +157,7 @@ impl<T: StateEntity> Singleton<T> {
     pub fn set(&mut self, entity: T) { self.inner = entity; }
 }
 
-impl<T: StateEntity> StateCollection for Singleton<T> {
+impl<T: StateEntity + Default> StateCollection for Singleton<T> {
     type Entity = T;
 
     const STATE_ENTRY: &'static str = T::STATE_ENTRY;
@@ -190,28 +166,30 @@ impl<T: StateEntity> StateCollection for Singleton<T> {
     where
         I: IntoIterator<Item = (EntityId, Self::Entity)>,
     {
-        // For singleton, just take the first entity if present
-        // Panics if no entity provided (Singleton must have exactly one entity to load)
+        // For singleton, take the first entity if present, otherwise use Default
         let mut iter = entities.into_iter();
         if let Some((_, entity)) = iter.next() {
             Self::new(entity)
         } else {
-            panic!("Singleton::load requires at least one entity")
+            Self::new(T::default())
         }
     }
 
     fn get_entity(&self, _id: &str) -> Option<(&EntityId, &Self::Entity)> {
-        Some((&self.id, &self.inner))
+        Some((&SINGLETON_ENTITY_ID, &self.inner))
     }
 
-    fn get_entities(&self) -> Vec<(&EntityId, &Self::Entity)> { vec![(&self.id, &self.inner)] }
+    fn get_entities(&self) -> Vec<(&EntityId, &Self::Entity)> {
+        vec![(&SINGLETON_ENTITY_ID, &self.inner)]
+    }
 
     fn search_entities(&self, needle: &str) -> Vec<(&EntityId, &Self::Entity)> {
+        // Search the singleton's name and description
         let needle_lower = needle.to_lowercase();
         if self.inner.name().to_lowercase().contains(&needle_lower)
             || self.inner.description().is_some_and(|d| d.to_lowercase().contains(&needle_lower))
         {
-            vec![(&self.id, &self.inner)]
+            vec![(&SINGLETON_ENTITY_ID, &self.inner)]
         } else {
             vec![]
         }
@@ -224,9 +202,8 @@ impl<T: StateEntity> StateCollection for Singleton<T> {
     }
 
     fn update(&mut self, _id: &str, entity: Self::Entity) -> Result<Self::Entity, String> {
-        let old = self.inner.clone();
-        self.inner = entity;
-        Ok(old)
+        // Singleton update is infallible - ID doesn't matter
+        Ok(std::mem::replace(&mut self.inner, entity))
     }
 
     fn remove(&mut self, _id: &str) -> Result<Self::Entity, String> {

@@ -1,8 +1,58 @@
 //! Implementation of the `#[stately::state]` attribute macro
 
+use std::collections::HashMap;
+
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{Data, DeriveInput, Fields};
+use syn::parse::{Parse, ParseStream};
+use syn::{Data, DeriveInput, Fields, Token};
+
+/// Parsing structure for #[collection(...)] attribute arguments
+struct CollectionArgs {
+    custom_type: Option<syn::Type>,
+    variant:     Option<syn::Ident>,
+}
+
+impl Parse for CollectionArgs {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let mut custom_type = None;
+        let mut variant = None;
+
+        // Parse optional custom type (appears first if present)
+        if input.peek(syn::Ident) || input.peek(syn::token::PathSep) {
+            // Look ahead to check if this is a type or a keyword
+            let fork = input.fork();
+            if fork.parse::<syn::Ident>().is_ok() && !input.peek2(Token![=]) {
+                custom_type = Some(input.parse()?);
+
+                // Optional comma after type
+                if input.peek(Token![,]) {
+                    input.parse::<Token![,]>()?;
+                }
+            }
+        }
+
+        // Parse variant = "Name" if present
+        while !input.is_empty() {
+            let key: syn::Ident = input.parse()?;
+
+            if key == "variant" {
+                input.parse::<Token![=]>()?;
+                let lit: syn::LitStr = input.parse()?;
+                variant = Some(syn::Ident::new(&lit.value(), lit.span()));
+            } else {
+                return Err(input.error(format!("Unknown attribute argument: {}", key)));
+            }
+
+            // Optional trailing comma
+            if input.peek(Token![,]) {
+                input.parse::<Token![,]>()?;
+            }
+        }
+
+        Ok(CollectionArgs { custom_type, variant })
+    }
+}
 
 /// Generates application state with entity collections.
 pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
@@ -31,38 +81,137 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
         }
     };
 
-    // Separate singletons from collections
-    let mut singletons = Vec::new();
-    let mut collections = Vec::new();
+    // Structure to hold field information
+    struct FieldInfo<'a> {
+        name:             &'a syn::Ident,
+        entity_type:      &'a syn::Type,
+        is_singleton:     bool,
+        custom_type:      Option<syn::Type>,
+        variant_override: Option<syn::Ident>,
+    }
+
+    // Parse all fields and their attributes
+    let mut field_infos = Vec::new();
 
     for field in fields {
         let field_name = field.ident.as_ref().unwrap();
         let field_type = &field.ty;
 
-        // Check if this field has #[singleton] attribute
-        let is_singleton = field.attrs.iter().any(|attr| attr.path().is_ident("singleton"));
+        let mut is_singleton = false;
+        let mut custom_type = None;
+        let mut variant_override = None;
 
-        if is_singleton {
-            singletons.push((field_name, field_type));
+        // Parse attributes
+        for attr in &field.attrs {
+            if attr.path().is_ident("singleton") {
+                is_singleton = true;
+            } else if attr.path().is_ident("collection") {
+                // Parse #[collection] or #[collection(...)]
+                let args = if attr.meta.require_path_only().is_ok() {
+                    // Bare #[collection] with no args
+                    CollectionArgs { custom_type: None, variant: None }
+                } else {
+                    // #[collection(...)] - parse the args
+                    match attr.parse_args::<CollectionArgs>() {
+                        Ok(args) => args,
+                        Err(e) => return e.to_compile_error().into(),
+                    }
+                };
+
+                custom_type = args.custom_type;
+                variant_override = args.variant;
+            }
+        }
+
+        field_infos.push(FieldInfo {
+            name: field_name,
+            entity_type: field_type,
+            is_singleton,
+            custom_type,
+            variant_override,
+        });
+    }
+
+    // Separate singletons from collections
+    let mut singletons = Vec::new();
+    let mut collections = Vec::new();
+    let mut custom_collections = Vec::new();
+
+    for info in &field_infos {
+        if info.is_singleton {
+            singletons.push((info.name, info.entity_type));
+        } else if let Some(ref custom) = info.custom_type {
+            custom_collections.push((info.name, info.entity_type, custom));
         } else {
-            collections.push((field_name, field_type));
+            collections.push((info.name, info.entity_type));
         }
     }
 
-    // Extract type identifiers for enum variants
-    let singleton_variants: Vec<_> =
-        singletons.iter().map(|(_, ty)| extract_type_ident(ty)).collect();
+    // Build variant names with collision detection
+    let mut variant_map: HashMap<String, &syn::Ident> = HashMap::new();
+    let mut field_variants = Vec::new();
 
-    let collection_variants: Vec<_> =
-        collections.iter().map(|(_, ty)| extract_type_ident(ty)).collect();
+    for info in &field_infos {
+        let variant = if let Some(ref override_name) = info.variant_override {
+            override_name.clone()
+        } else {
+            extract_type_ident(info.entity_type)
+        };
+
+        // Check for collisions
+        let variant_str = variant.to_string();
+        if let Some(existing_field) = variant_map.insert(variant_str.clone(), info.name) {
+            let entity_type = info.entity_type;
+            return syn::Error::new(
+                info.name.span(),
+                format!(
+                    "Duplicate variant '{}' from entity type '{}' used in fields '{}' and '{}'. \
+                     Use #[collection(variant = \"UniqueName\")] on one of the fields to \
+                     disambiguate.",
+                    variant,
+                    quote::quote!(#entity_type),
+                    existing_field,
+                    info.name
+                ),
+            )
+            .to_compile_error()
+            .into();
+        }
+
+        field_variants.push((info, variant));
+    }
+
+    // Extract variants by category
+    let singleton_variants: Vec<_> = field_variants
+        .iter()
+        .filter(|(info, _)| info.is_singleton)
+        .map(|(_, variant)| variant.clone())
+        .collect();
+
+    let collection_variants: Vec<_> = field_variants
+        .iter()
+        .filter(|(info, _)| !info.is_singleton && info.custom_type.is_none())
+        .map(|(_, variant)| variant.clone())
+        .collect();
+
+    let custom_variants: Vec<_> = field_variants
+        .iter()
+        .filter(|(info, _)| !info.is_singleton && info.custom_type.is_some())
+        .map(|(_, variant)| variant.clone())
+        .collect();
 
     // Collect everything into vectors for reuse in the quote! macro
-    let all_variants: Vec<_> =
-        singleton_variants.iter().chain(&collection_variants).cloned().collect();
+    let all_variants: Vec<_> = singleton_variants
+        .iter()
+        .chain(&collection_variants)
+        .chain(&custom_variants)
+        .cloned()
+        .collect();
     let all_types: Vec<_> = singletons
         .iter()
         .map(|(_, ty)| *ty)
         .chain(collections.iter().map(|(_, ty)| *ty))
+        .chain(custom_collections.iter().map(|(_, ty, _)| *ty))
         .collect();
 
     let singleton_fields: Vec<_> = singletons.iter().map(|(name, _)| *name).collect();
@@ -70,6 +219,10 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
     let collection_fields: Vec<_> = collections.iter().map(|(name, _)| *name).collect();
     let collection_types: Vec<_> = collections.iter().map(|(_, ty)| *ty).collect();
+
+    let custom_fields: Vec<_> = custom_collections.iter().map(|(name, _, _)| *name).collect();
+    let custom_coll_types: Vec<_> =
+        custom_collections.iter().map(|(_, _, coll_ty)| *coll_ty).collect();
 
     // Generate the core state code
     let core_code = quote! {
@@ -112,6 +265,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
         #vis struct #name {
             #( #vis #singleton_fields: ::stately::Singleton<#singleton_types>, )*
             #( #vis #collection_fields: ::stately::Collection<#collection_types>, )*
+            #( #vis #custom_fields: #custom_coll_types, )*
         }
 
         impl Default for #name {
@@ -126,6 +280,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 Self {
                     #( #singleton_fields: ::stately::Singleton::new(Default::default()), )*
                     #( #collection_fields: ::stately::Collection::new(), )*
+                    #( #custom_fields: Default::default(), )*
                 }
             }
 
@@ -142,6 +297,12 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                     #(
                         Entity::#collection_variants(inner) => {
                             let id = self.#collection_fields.create(inner);
+                            Ok((id, Some("Entity created successfully".to_string())))
+                        }
+                    )*
+                    #(
+                        Entity::#custom_variants(inner) => {
+                            let id = self.#custom_fields.create(inner);
                             Ok((id, Some("Entity created successfully".to_string())))
                         }
                     )*
@@ -170,6 +331,13 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                             Ok((entity_id, Some("Entity updated successfully".to_string())))
                         }
                     )*
+                    #(
+                        Entity::#custom_variants(inner) => {
+                            self.#custom_fields.update(id, inner)
+                                .map_err(|e| format!("Failed to update entity: {}", e))?;
+                            Ok((entity_id, Some("Entity updated successfully".to_string())))
+                        }
+                    )*
                 }
             }
 
@@ -186,6 +354,12 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                     #(
                         StateEntry::#collection_variants => {
                             self.#collection_fields.remove(id)?;
+                            Ok(Some("Entity removed successfully".to_string()))
+                        }
+                    )*
+                    #(
+                        StateEntry::#custom_variants => {
+                            self.#custom_fields.remove(id)?;
                             Ok(Some("Entity removed successfully".to_string()))
                         }
                     )*
@@ -206,6 +380,11 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                             self.#collection_fields.get_entity(id).map(|(id, e)| (id.clone(), Entity::#collection_variants(e.clone())))
                         }
                     )*
+                    #(
+                        StateEntry::#custom_variants => {
+                            self.#custom_fields.get_entity(id).map(|(id, e)| (id.clone(), Entity::#custom_variants(e.clone())))
+                        }
+                    )*
                 }
             }
 
@@ -222,6 +401,11 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 #(
                     if entry.is_none() || entry == Some(StateEntry::#collection_variants) {
                         result.insert(StateEntry::#collection_variants, self.#collection_fields.list());
+                    }
+                )*
+                #(
+                    if entry.is_none() || entry == Some(StateEntry::#custom_variants) {
+                        result.insert(StateEntry::#custom_variants, self.#custom_fields.list());
                     }
                 )*
 
@@ -254,6 +438,18 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                                 entities.insert(id.clone(), Entity::#collection_variants(entity.clone()));
                             }
                             result.insert(StateEntry::#collection_variants, entities);
+                        }
+                    }
+                )*
+                #(
+                    {
+                        let matches = self.#custom_fields.search_entities(needle);
+                        if !matches.is_empty() {
+                            let mut entities = ::stately::hashbrown::HashMap::default();
+                            for (id, entity) in matches {
+                                entities.insert(id.clone(), Entity::#custom_variants(entity.clone()));
+                            }
+                            result.insert(StateEntry::#custom_variants, entities);
                         }
                     }
                 )*

@@ -66,10 +66,19 @@ pub trait StateCollection {
     /// Creates a new entity in the collection, returning its ID
     fn create(&mut self, entity: Self::Entity) -> EntityId;
 
-    /// Updates an existing entity by ID or name
+    /// Updates an existing entity by ID
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the entity with the given ID does not exist in the collection.
     fn update(&mut self, id: &str, entity: Self::Entity) -> Result<Self::Entity, String>;
 
-    /// Removes an entity by ID or name
+    /// Removes an entity by ID
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the entity with the given ID does not exist in the collection.
+    /// For singletons, always returns an error as they cannot be removed.
     fn remove(&mut self, id: &str) -> Result<Self::Entity, String>;
 
     /// Lists all entities as summaries

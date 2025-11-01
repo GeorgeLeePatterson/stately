@@ -1,11 +1,16 @@
 //! Entity types and identifiers
 
+use std::borrow::Borrow;
 use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
-/// Singleton entity identifier - uses nil UUID string for singleton collections
+/// Singleton entity identifier string - uses nil UUID string for singleton collections
 pub const SINGLETON_ID: &str = "00000000-0000-0000-0000-000000000000";
+
+// Singleton entity ID as a module-level static
+pub static SINGLETON_ENTITY_ID: std::sync::LazyLock<EntityId> =
+    std::sync::LazyLock::new(EntityId::singleton);
 
 /// Entity identifier type - wraps String for flexibility with UUID v7 generation
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -81,6 +86,10 @@ impl From<&str> for EntityId {
 
 impl<'a> From<&'a EntityId> for &'a str {
     fn from(id: &'a EntityId) -> Self { &id.0 }
+}
+
+impl Borrow<str> for EntityId {
+    fn borrow(&self) -> &str { &self.0 }
 }
 
 /// Summary of an entity for listings
