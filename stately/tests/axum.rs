@@ -79,10 +79,8 @@ pub struct State {
     jobs:       Job,
 }
 
-#[stately::axum_api]
-pub struct AppState {
-    state: StatelyState,
-}
+#[stately::axum_api(State)]
+pub struct AppState {}
 
 #[tokio::test]
 async fn test_openapi_generation() {
@@ -97,8 +95,10 @@ async fn test_create_entity() {
     use axum::http::{Request, StatusCode};
     use tower::ServiceExt;
 
-    let stately_state = StatelyState::new(State::new());
-    let app = axum::Router::new().nest("/api/v1/entity", api::router()).with_state(stately_state);
+    let app_state = AppState::new(State::new());
+    let app = axum::Router::new()
+        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .with_state(app_state);
 
     // Create a pipeline
     let pipeline = Entity::Pipeline(Pipeline {
@@ -127,11 +127,11 @@ async fn test_list_entities() {
     use axum::http::{Request, StatusCode};
     use tower::ServiceExt;
 
-    let stately_state = StatelyState::new(State::new());
+    let app_state = AppState::new(State::new());
 
     // Add a pipeline directly to state
     {
-        let mut s = stately_state.state.write().await;
+        let mut s = app_state.state.state.write().await;
         let pipeline = Pipeline {
             name:        "filtered-pipeline".to_string(),
             description: Some("Test".to_string()),
@@ -139,7 +139,9 @@ async fn test_list_entities() {
         drop(s.create_entity(Entity::Pipeline(pipeline)).unwrap());
     }
 
-    let app = axum::Router::new().nest("/api/v1/entity", api::router()).with_state(stately_state);
+    let app = axum::Router::new()
+        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .with_state(app_state);
 
     // Get all entities
     let request =
@@ -155,11 +157,11 @@ async fn test_get_entity_by_id() {
     use axum::http::{Request, StatusCode};
     use tower::ServiceExt;
 
-    let stately_state = StatelyState::new(State::new());
+    let app_state = AppState::new(State::new());
 
     // Create a pipeline and get its ID
     let id = {
-        let mut s = stately_state.state.write().await;
+        let mut s = app_state.state.state.write().await;
         let pipeline = Pipeline {
             name:        "get-test-pipeline".to_string(),
             description: Some("Test".to_string()),
@@ -168,7 +170,9 @@ async fn test_get_entity_by_id() {
         id
     };
 
-    let app = axum::Router::new().nest("/api/v1/entity", api::router()).with_state(stately_state);
+    let app = axum::Router::new()
+        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .with_state(app_state);
 
     // Get entity by ID - need to specify type
     let request = Request::builder()
@@ -197,11 +201,11 @@ async fn test_update_entity() {
     use axum::http::{Request, StatusCode};
     use tower::ServiceExt;
 
-    let stately_state = StatelyState::new(State::new());
+    let app_state = AppState::new(State::new());
 
     // Create a pipeline
     let id = {
-        let mut s = stately_state.state.write().await;
+        let mut s = app_state.state.state.write().await;
         let pipeline = Pipeline {
             name:        "update-test".to_string(),
             description: Some("Original".to_string()),
@@ -210,7 +214,9 @@ async fn test_update_entity() {
         id
     };
 
-    let app = axum::Router::new().nest("/api/v1/entity", api::router()).with_state(stately_state);
+    let app = axum::Router::new()
+        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .with_state(app_state);
 
     // Update the pipeline
     let updated_pipeline = Entity::Pipeline(Pipeline {
@@ -239,11 +245,11 @@ async fn test_delete_entity() {
     use axum::http::{Request, StatusCode};
     use tower::ServiceExt;
 
-    let stately_state = StatelyState::new(State::new());
+    let app_state = AppState::new(State::new());
 
     // Create a pipeline
     let id = {
-        let mut s = stately_state.state.write().await;
+        let mut s = app_state.state.state.write().await;
         let pipeline = Pipeline {
             name:        "delete-test".to_string(),
             description: Some("Will be deleted".to_string()),
@@ -252,7 +258,9 @@ async fn test_delete_entity() {
         id
     };
 
-    let app = axum::Router::new().nest("/api/v1/entity", api::router()).with_state(stately_state);
+    let app = axum::Router::new()
+        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .with_state(app_state);
 
     // Delete the pipeline
     let request = Request::builder()

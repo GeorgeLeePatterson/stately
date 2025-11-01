@@ -2,95 +2,67 @@
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{Data, DeriveInput, Fields, Type, parse_macro_input};
+use syn::{DeriveInput, Type, parse_macro_input};
 
 /// Generates FromRef implementation and api module with CRUD handlers
 ///
 /// Usage:
 /// ```ignore
-/// #[stately::axum_api]
+/// #[stately::axum_api(State)]  // Pass the state type name
 /// pub struct AppState {
-///     state: StatelyState,  // Field named "state" by default, or mark with #[state]
+///     state: StatelyState,
 /// }
 /// ```
 ///
 /// This generates:
-/// 1. `FromRef<AppState> for StatelyState` - allows Axum to extract state
-/// 2. `AppState::api` module with all CRUD handlers, router, and OpenAPI docs
-pub fn generate(_attr: TokenStream, item: TokenStream) -> TokenStream {
+/// 1. The `state` field with type `StatelyState` (generated from State)
+/// 2. `FromRef<AppState> for StatelyState` - allows Axum to extract state
+/// 3. `AppState::api` module with all CRUD handlers, router, and OpenAPI docs
+pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as DeriveInput);
 
+    // Parse the state type name from the attribute
+    let state_type_name = if attr.is_empty() {
+        return syn::Error::new_spanned(
+            &input,
+            "axum_api requires a state type parameter: #[stately::axum_api(StateName)]",
+        )
+        .to_compile_error()
+        .into();
+    } else {
+        parse_macro_input!(attr as syn::Ident)
+    };
+
     let struct_name = &input.ident;
+    let vis = &input.vis;
 
-    // Find the fields
-    let fields = match &input.data {
-        Data::Struct(data) => match &data.fields {
-            Fields::Named(fields) => &fields.named,
-            _ => {
-                return syn::Error::new_spanned(
-                    &input,
-                    "axum_api can only be used on structs with named fields",
-                )
-                .to_compile_error()
-                .into();
-            }
-        },
-        _ => {
-            return syn::Error::new_spanned(&input, "axum_api can only be used on structs")
-                .to_compile_error()
-                .into();
-        }
-    };
-
-    // Find the field of type Stately{Something} - default name "state"
-    let state_field = fields.iter().find(|f| {
-        // Check if field has #[state] attribute OR is named "state" and type starts with "Stately"
-        if f.attrs.iter().any(|attr| attr.path().is_ident("state")) {
-            return true;
-        }
-
-        // Check if field name is "state" by default
-        if let Some(ident) = &f.ident
-            && ident == "state"
-        {
-            // Check if type starts with "Stately"
-            if let Type::Path(type_path) = &f.ty
-                && let Some(segment) = type_path.path.segments.last()
-            {
-                return segment.ident.to_string().starts_with("Stately");
-            }
-        }
-        false
-    });
-
-    let state_field = match state_field {
-        Some(field) => field,
-        None => {
-            return syn::Error::new_spanned(
-                &input,
-                "axum_api requires a field named 'state' of type Stately{Name}, or mark a field \
-                 with #[state]",
-            )
-            .to_compile_error()
-            .into();
-        }
-    };
-
-    let state_field_name = state_field.ident.as_ref().unwrap();
-
-    // Extract the Stately{Name} type
-    let stately_type = &state_field.ty;
+    // Generate the Stately{StateName} type name
+    let stately_type_name =
+        syn::Ident::new(&format!("Stately{}", state_type_name), state_type_name.span());
+    let stately_type: Type = syn::parse_quote!(#stately_type_name);
 
     // Generate FromRef implementation and api module
     let expanded = quote! {
-        // Preserve the original struct definition
-        #input
+        // Generate the AppState struct with the state field
+        #[derive(Clone)]
+        #vis struct #struct_name {
+            #vis state: #stately_type,
+        }
+
+        impl #struct_name {
+            /// Creates a new API state wrapper
+            #vis fn new(state: #state_type_name) -> Self {
+                Self {
+                    state: #stately_type_name::new(state),
+                }
+            }
+        }
 
         // Generate FromRef so Axum can extract Stately{Name} from user's AppState
         #[cfg(feature = "axum")]
         impl ::axum::extract::FromRef<#struct_name> for #stately_type {
             fn from_ref(app_state: &#struct_name) -> Self {
-                app_state.#state_field_name.clone()
+                app_state.state.clone()
             }
         }
 
@@ -277,11 +249,16 @@ pub fn generate(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             /// Creates the Axum router with all entity CRUD endpoints
-            pub fn router() -> ::axum::Router<#stately_type> {
+            pub fn router<S>(state: S) -> ::axum::Router<S>
+            where
+                S: Send + Sync + Clone + 'static,
+                #stately_type: ::axum::extract::FromRef<S>,
+            {
                 ::axum::Router::new()
                     .route("/", ::axum::routing::get(list_entities).put(create_entity))
                     .route("/{id}", ::axum::routing::get(get_entity_by_id).post(update_entity).patch(patch_entity_by_id))
                     .route("/{entry}/{id}", ::axum::routing::delete(remove_entity))
+                    .with_state(state)
             }
 
             /// OpenAPI documentation

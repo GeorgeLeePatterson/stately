@@ -157,8 +157,6 @@ pub use stately_derive::axum_api;
 pub use stately_derive::{entity, state};
 #[cfg(feature = "axum")]
 pub use tokio;
-#[cfg(feature = "axum")]
-pub use traits::StatelyState;
 pub use traits::{StateCollection, StateEntity};
 
 /// Prelude module for convenient imports

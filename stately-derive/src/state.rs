@@ -457,37 +457,6 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 result
             }
         }
-
-        // Generate StatelyState trait implementation for axum feature
-        #[cfg(feature = "axum")]
-        impl ::stately::StatelyState for #name {
-            type StateEntry = StateEntry;
-            type Entity = Entity;
-
-            fn create_entity(&mut self, entity: Self::Entity) -> ::std::result::Result<(::stately::EntityId, Option<String>), String> {
-                self.create_entity(entity)
-            }
-
-            fn update_entity(&mut self, id: &str, entity: Self::Entity) -> ::std::result::Result<(::stately::EntityId, Option<String>), String> {
-                self.update_entity(id, entity)
-            }
-
-            fn remove_entity(&mut self, id: &str, entry: Self::StateEntry) -> ::std::result::Result<Option<String>, String> {
-                self.remove_entity(id, entry)
-            }
-
-            fn get_entity(&self, id: &str, entry: Self::StateEntry) -> Option<(::stately::EntityId, Self::Entity)> {
-                self.get_entity(id, entry)
-            }
-
-            fn list_entities(&self, entry: Option<Self::StateEntry>) -> ::stately::hashbrown::HashMap<Self::StateEntry, Vec<::stately::Summary>> {
-                self.list_entities(entry)
-            }
-
-            fn search_entities(&self, needle: &str) -> ::stately::hashbrown::HashMap<Self::StateEntry, ::stately::hashbrown::HashMap<::stately::EntityId, Self::Entity>> {
-                self.search_entities(needle)
-            }
-        }
     };
 
     // Note: API generation is now handled by the #[axum_api] macro
@@ -498,11 +467,14 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
     let stately_struct = quote! {
         /// Wrapper around state for Axum integration with Arc<RwLock<T>>
+        /// Only available when the `axum` feature is enabled
+        #[cfg(feature = "axum")]
         #[derive(Clone)]
         #vis struct #stately_name {
             #vis state: ::std::sync::Arc<::tokio::sync::RwLock<#name>>,
         }
 
+        #[cfg(feature = "axum")]
         impl #stately_name {
             /// Creates a new wrapped state for use with Axum
             #vis fn new(state: #name) -> Self {

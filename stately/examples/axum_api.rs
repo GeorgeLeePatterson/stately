@@ -79,22 +79,21 @@ pub struct State {
     pub jobs:       Job,
 }
 
-#[stately::axum_api]
-pub struct AppState {
-    state: StatelyState,
-}
+#[stately::axum_api(State)]
+pub struct AppState {}
 
 #[tokio::main]
 async fn main() {
     // Create the state
     let state = State::new();
 
-    // Create the axum state wrapper
-    let stately_state = StatelyState::new(state);
+    // Create the app state wrapper
+    let app_state = AppState::new(state);
 
     // Get the router from the generated api module
-    let _app: axum::Router =
-        axum::Router::new().nest("/api/v1/entity", api::router()).with_state(stately_state);
+    let _app: axum::Router = axum::Router::new()
+        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .with_state(app_state);
 
     println!("✓ Axum router created successfully!");
     println!("✓ Available routes:");

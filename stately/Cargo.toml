@@ -29,7 +29,7 @@ thiserror = "2"
 uuid = { version = "1", features = ["v7", "serde"] }
 utoipa = { version = "5", features = ["macros", "uuid", "rc_schema"], optional = true }
 axum = { version = "0.8", optional = true }
-tokio = { version = "1", features = ["sync", "rt-multi-thread", "macros"], optional = true }
+tokio = { version = "1", features = ["sync"], optional = true }
 
 stately-derive = { path = "../stately-derive", version = "0.1.0" }
 
