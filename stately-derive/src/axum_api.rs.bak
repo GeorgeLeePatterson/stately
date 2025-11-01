@@ -109,7 +109,7 @@ pub fn generate(_attr: TokenStream, item: TokenStream) -> TokenStream {
             #[cfg_attr(feature = "openapi", derive(::utoipa::ToSchema))]
             pub struct OperationResponse {
                 #[cfg_attr(feature = "openapi", schema(value_type = String, format = "uuid"))]
-                pub id: ::stately::EntityId,
+                pub id: ::stately::EntityIdentifier,
                 #[serde(skip_serializing_if = "Option::is_none")]
                 pub message: Option<String>,
             }

@@ -3,7 +3,6 @@
 
 use serde::{Deserialize, Serialize};
 use stately::prelude::*;
-use uuid::Uuid;
 
 // Test entities
 #[stately::entity]
@@ -177,7 +176,7 @@ fn test_list_entities_by_type() {
     assert_eq!(sinks.len(), 1);
     assert_eq!(sinks.get(&StateEntry::Sink).map(Vec::len), Some(1));
 
-    let all_sinks = state.sinks.iter().map(|(k, v)| (*k, v.clone())).collect::<Vec<_>>();
+    let all_sinks = state.sinks.iter().map(|(k, v)| (k.clone(), v.clone())).collect::<Vec<_>>();
     assert!(all_sinks.len() == 1);
 }
 
@@ -294,5 +293,5 @@ fn test_singleton_operations() {
     assert!(result.is_ok());
 
     let create_id = state.config.create(Config { max_connections: 400, timeout_seconds: 120 });
-    assert_eq!(create_id, Uuid::nil());
+    assert_eq!(create_id, EntityId::singleton());
 }

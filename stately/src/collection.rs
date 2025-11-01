@@ -4,8 +4,7 @@ use hashbrown::HashMap;
 use hashbrown::hash_map::Entry;
 use serde::{Deserialize, Serialize};
 
-use crate::entity::{EntityIdentifier, Summary};
-use crate::id;
+use crate::entity::{EntityId, Summary};
 use crate::traits::{StateCollection, StateEntity};
 
 /// A collection of entities of type `T`
@@ -14,7 +13,7 @@ use crate::traits::{StateCollection, StateEntity};
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Collection<T: StateEntity> {
     #[serde(bound(deserialize = "T: StateEntity"))]
-    inner: HashMap<EntityIdentifier, T>,
+    inner: HashMap<EntityId, T>,
 }
 
 impl<T: StateEntity> Default for Collection<T> {
@@ -25,16 +24,19 @@ impl<T: StateEntity> Collection<T> {
     /// Creates a new empty collection
     pub fn new() -> Self { Self::default() }
 
+    /// Access the inner `HashMap`
+    pub fn inner(&self) -> &HashMap<EntityId, T> { &self.inner }
+
     /// Gets an entity by ID
-    pub fn get_by_id(&self, id: &EntityIdentifier) -> Option<&T> { self.inner.get(id) }
+    pub fn get_by_id(&self, id: &EntityId) -> Option<&T> { self.inner.get(id) }
 
     /// Gets an entity by name
-    pub fn get_by_name(&self, name: &str) -> Option<(&EntityIdentifier, &T)> {
+    pub fn get_by_name(&self, name: &str) -> Option<(&EntityId, &T)> {
         self.inner.iter().find(|(_, entity)| entity.name() == name)
     }
 
     /// Inserts an entity with a specific ID
-    pub fn insert_with_id(&mut self, id: EntityIdentifier, entity: T) -> Option<T> {
+    pub fn insert_with_id(&mut self, id: EntityId, entity: T) -> Option<T> {
         self.inner.insert(id, entity)
     }
 
@@ -45,7 +47,7 @@ impl<T: StateEntity> Collection<T> {
     pub fn is_empty(&self) -> bool { self.inner.is_empty() }
 
     /// Returns an iterator over the collection
-    pub fn iter(&self) -> impl Iterator<Item = (&EntityIdentifier, &T)> { self.inner.iter() }
+    pub fn iter(&self) -> impl Iterator<Item = (&EntityId, &T)> { self.inner.iter() }
 }
 
 impl<T: StateEntity> StateCollection for Collection<T> {
@@ -53,24 +55,27 @@ impl<T: StateEntity> StateCollection for Collection<T> {
 
     const STATE_ENTRY: &'static str = T::STATE_ENTRY;
 
-    fn get_entity(&self, id: &str) -> Option<(&EntityIdentifier, &Self::Entity)> {
-        // Try parsing as UUID first
-        if let Ok(uuid) = id.parse::<EntityIdentifier>() {
-            // Need to find the actual key in the hashmap to return a valid reference
-            if let Some((key, entity)) = self.inner.iter().find(|(k, _)| **k == uuid) {
-                return Some((key, entity));
-            }
+    fn load<I>(entities: I) -> Self
+    where
+        I: IntoIterator<Item = (EntityId, Self::Entity)>,
+    {
+        Self { inner: entities.into_iter().collect() }
+    }
+
+    fn get_entity(&self, id: &str) -> Option<(&EntityId, &Self::Entity)> {
+        // Try direct ID lookup first
+        let entity_id = EntityId::from(id);
+        if let Some((key, entity)) = self.inner.iter().find(|(k, _)| **k == entity_id) {
+            return Some((key, entity));
         }
 
         // Fall back to name lookup
         self.get_by_name(id)
     }
 
-    fn get_entities(&self) -> Vec<(&EntityIdentifier, &Self::Entity)> {
-        self.inner.iter().collect()
-    }
+    fn get_entities(&self) -> Vec<(&EntityId, &Self::Entity)> { self.inner.iter().collect() }
 
-    fn search_entities(&self, needle: &str) -> Vec<(&EntityIdentifier, &Self::Entity)> {
+    fn search_entities(&self, needle: &str) -> Vec<(&EntityId, &Self::Entity)> {
         let needle_lower = needle.to_lowercase();
         self.inner
             .iter()
@@ -83,50 +88,49 @@ impl<T: StateEntity> StateCollection for Collection<T> {
             .collect()
     }
 
-    fn create(&mut self, entity: Self::Entity) -> EntityIdentifier {
-        let id = id::generate();
-        drop(self.inner.insert(id, entity));
+    fn create(&mut self, entity: Self::Entity) -> EntityId {
+        let id = EntityId::new();
+        drop(self.inner.insert(id.clone(), entity));
         id
     }
 
-    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<EntityIdentifier, String> {
-        // Try UUID first
-        if let Ok(uuid) = id.parse::<EntityIdentifier>()
-            && let Entry::Occupied(mut e) = self.inner.entry(uuid)
-        {
-            drop(e.insert(entity));
-            return Ok(uuid);
+    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<Self::Entity, String> {
+        // Try direct ID lookup first
+        let entity_id = EntityId::from(id);
+        if let Entry::Occupied(mut e) = self.inner.entry(entity_id) {
+            return Ok(e.insert(entity));
         }
 
         // Fall back to name lookup
-        if let Some((entity_id, _)) = self.get_by_name(id) {
-            let entity_id = *entity_id;
-            drop(self.inner.insert(entity_id, entity));
-            return Ok(entity_id);
+        if let Some((found_id, _)) = self.get_by_name(id) {
+            let found_id = found_id.clone();
+            return self
+                .inner
+                .insert(found_id, entity)
+                .ok_or_else(|| format!("Entity not found: {id}"));
         }
 
         Err(format!("Entity not found: {id}"))
     }
 
     fn remove(&mut self, id: &str) -> Result<Self::Entity, String> {
-        // Try UUID first
-        if let Ok(uuid) = id.parse::<EntityIdentifier>()
-            && let Some(entity) = self.inner.remove(&uuid)
-        {
+        // Try direct ID lookup first
+        let entity_id = EntityId::from(id);
+        if let Some(entity) = self.inner.remove(&entity_id) {
             return Ok(entity);
         }
 
         // Fall back to name lookup
-        if let Some((entity_id, _)) = self.get_by_name(id) {
-            let entity_id = *entity_id;
-            return self.inner.remove(&entity_id).ok_or_else(|| format!("Entity not found: {id}"));
+        if let Some((found_id, _)) = self.get_by_name(id) {
+            let found_id = found_id.clone();
+            return self.inner.remove(&found_id).ok_or_else(|| format!("Entity not found: {id}"));
         }
 
         Err(format!("Entity not found: {id}"))
     }
 
     fn list(&self) -> Vec<Summary> {
-        self.inner.iter().map(|(id, entity)| entity.summary(id)).collect()
+        self.inner.iter().map(|(id, entity)| entity.summary(id.clone())).collect()
     }
 
     fn is_empty(&self) -> bool { self.inner.is_empty() }
@@ -138,6 +142,7 @@ impl<T: StateEntity> StateCollection for Collection<T> {
 /// only read and updated.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Singleton<T: StateEntity> {
+    id:    EntityId,
     inner: T,
 }
 
@@ -158,13 +163,13 @@ impl<'de, T: StateEntity> Deserialize<'de> for Singleton<T> {
         D: serde::Deserializer<'de>,
     {
         let inner = T::deserialize(deserializer)?;
-        Ok(Self { inner })
+        Ok(Self { id: EntityId::singleton(), inner })
     }
 }
 
 impl<T: StateEntity> Singleton<T> {
     /// Creates a new singleton with the given entity
-    pub fn new(entity: T) -> Self { Self { inner: entity } }
+    pub fn new(entity: T) -> Self { Self { id: EntityId::singleton(), inner: entity } }
 
     /// Gets a reference to the singleton entity
     pub fn get(&self) -> &T { &self.inner }
@@ -181,40 +186,47 @@ impl<T: StateEntity> StateCollection for Singleton<T> {
 
     const STATE_ENTRY: &'static str = T::STATE_ENTRY;
 
-    fn get_entity(&self, _id: &str) -> Option<(&EntityIdentifier, &Self::Entity)> {
-        // Singletons don't have real IDs, but we need to return something
-        // We'll use a static UUID for the singleton
-        static SINGLETON_ID: std::sync::LazyLock<EntityIdentifier> =
-            std::sync::LazyLock::new(uuid::Uuid::nil);
-        Some((&SINGLETON_ID, &self.inner))
+    fn load<I>(entities: I) -> Self
+    where
+        I: IntoIterator<Item = (EntityId, Self::Entity)>,
+    {
+        // For singleton, just take the first entity if present
+        // Panics if no entity provided (Singleton must have exactly one entity to load)
+        let mut iter = entities.into_iter();
+        if let Some((_, entity)) = iter.next() {
+            Self::new(entity)
+        } else {
+            panic!("Singleton::load requires at least one entity")
+        }
     }
 
-    fn get_entities(&self) -> Vec<(&EntityIdentifier, &Self::Entity)> {
-        static SINGLETON_ID: std::sync::LazyLock<EntityIdentifier> =
-            std::sync::LazyLock::new(uuid::Uuid::nil);
-        vec![(&SINGLETON_ID, &self.inner)]
+    fn get_entity(&self, _id: &str) -> Option<(&EntityId, &Self::Entity)> {
+        Some((&self.id, &self.inner))
     }
 
-    fn search_entities(&self, needle: &str) -> Vec<(&EntityIdentifier, &Self::Entity)> {
+    fn get_entities(&self) -> Vec<(&EntityId, &Self::Entity)> { vec![(&self.id, &self.inner)] }
+
+    fn search_entities(&self, needle: &str) -> Vec<(&EntityId, &Self::Entity)> {
         let needle_lower = needle.to_lowercase();
         if self.inner.name().to_lowercase().contains(&needle_lower)
             || self.inner.description().is_some_and(|d| d.to_lowercase().contains(&needle_lower))
         {
-            self.get_entities()
+            vec![(&self.id, &self.inner)]
         } else {
             vec![]
         }
     }
 
-    fn create(&mut self, entity: Self::Entity) -> EntityIdentifier {
+    fn create(&mut self, entity: Self::Entity) -> EntityId {
         // For singletons, "create" is really just an update
         self.inner = entity;
-        uuid::Uuid::nil()
+        EntityId::singleton()
     }
 
-    fn update(&mut self, _id: &str, entity: Self::Entity) -> Result<EntityIdentifier, String> {
+    fn update(&mut self, _id: &str, entity: Self::Entity) -> Result<Self::Entity, String> {
+        let old = self.inner.clone();
         self.inner = entity;
-        Ok(uuid::Uuid::nil())
+        Ok(old)
     }
 
     fn remove(&mut self, _id: &str) -> Result<Self::Entity, String> {
@@ -222,7 +234,7 @@ impl<T: StateEntity> StateCollection for Singleton<T> {
         Err("Cannot remove singleton entity".to_string())
     }
 
-    fn list(&self) -> Vec<Summary> { vec![self.inner.summary(&uuid::Uuid::nil())] }
+    fn list(&self) -> Vec<Summary> { vec![self.inner.summary(EntityId::singleton())] }
 
     fn is_empty(&self) -> bool { false }
 }

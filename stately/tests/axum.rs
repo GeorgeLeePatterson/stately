@@ -62,7 +62,7 @@ async fn test_create_entity() {
 
     let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
     let result: api::OperationResponse = serde_json::from_slice(&body).unwrap();
-    assert!(!result.id.is_nil());
+    assert!(result.id.is_uuid());
 }
 
 #[tokio::test]

@@ -130,7 +130,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             /// Creates a new entity
-            #vis fn create_entity(&mut self, entity: Entity) -> ::std::result::Result<(::stately::EntityId, Option<String>), String> {
+            #vis fn create_entity(&mut self, entity: Entity) -> ::std::result::Result<(::stately::EntityIdentifier, Option<String>), String> {
                 use ::stately::StateCollection;
                 match entity {
                     #(
@@ -149,10 +149,10 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             /// Updates an existing entity by ID
-            #vis fn update_entity(&mut self, id: &str, entity: Entity) -> ::std::result::Result<(::stately::EntityId, Option<String>), String> {
+            #vis fn update_entity(&mut self, id: &str, entity: Entity) -> ::std::result::Result<(::stately::EntityIdentifier, Option<String>), String> {
                 use ::stately::StateCollection;
                 // Parse the ID to Uuid
-                let entity_id: ::stately::EntityId = id.parse()
+                let entity_id: ::stately::EntityIdentifier = id.parse()
                     .map_err(|_| format!("Invalid UUID: {}", id))?;
 
                 match entity {
@@ -193,17 +193,17 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             /// Gets an entity by ID and type
-            #vis fn get_entity(&self, id: &str, entry: StateEntry) -> Option<(::stately::EntityId, Entity)> {
+            #vis fn get_entity(&self, id: &str, entry: StateEntry) -> Option<(::stately::EntityIdentifier, Entity)> {
                 use ::stately::StateCollection;
                 match entry {
                     #(
                         StateEntry::#singleton_variants => {
-                            self.#singleton_fields.get_entity(id).map(|(id, e)| (id.clone(), Entity::#singleton_variants(e.clone())))
+                            self.#singleton_fields.get_entity(id).map(|(id, e)| (*id, Entity::#singleton_variants(e.clone())))
                         }
                     )*
                     #(
                         StateEntry::#collection_variants => {
-                            self.#collection_fields.get_entity(id).map(|(id, e)| (id.clone(), Entity::#collection_variants(e.clone())))
+                            self.#collection_fields.get_entity(id).map(|(id, e)| (*id, Entity::#collection_variants(e.clone())))
                         }
                     )*
                 }
@@ -229,7 +229,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             /// Searches entities across all collections
-            #vis fn search_entities(&self, needle: &str) -> ::stately::hashbrown::HashMap<StateEntry, ::stately::hashbrown::HashMap<::stately::EntityId, Entity>> {
+            #vis fn search_entities(&self, needle: &str) -> ::stately::hashbrown::HashMap<StateEntry, ::stately::hashbrown::HashMap<::stately::EntityIdentifier, Entity>> {
                 use ::stately::StateCollection;
                 let mut result = ::stately::hashbrown::HashMap::default();
 
@@ -239,7 +239,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                         if !matches.is_empty() {
                             let mut entities = ::stately::hashbrown::HashMap::default();
                             for (id, entity) in matches {
-                                entities.insert(id.clone(), Entity::#singleton_variants(entity.clone()));
+                                entities.insert(*id, Entity::#singleton_variants(entity.clone()));
                             }
                             result.insert(StateEntry::#singleton_variants, entities);
                         }
@@ -251,7 +251,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                         if !matches.is_empty() {
                             let mut entities = ::stately::hashbrown::HashMap::default();
                             for (id, entity) in matches {
-                                entities.insert(id.clone(), Entity::#collection_variants(entity.clone()));
+                                entities.insert(*id, Entity::#collection_variants(entity.clone()));
                             }
                             result.insert(StateEntry::#collection_variants, entities);
                         }
@@ -268,11 +268,11 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
             type StateEntry = StateEntry;
             type Entity = Entity;
 
-            fn create_entity(&mut self, entity: Self::Entity) -> ::std::result::Result<(::stately::EntityId, Option<String>), String> {
+            fn create_entity(&mut self, entity: Self::Entity) -> ::std::result::Result<(::stately::EntityIdentifier, Option<String>), String> {
                 self.create_entity(entity)
             }
 
-            fn update_entity(&mut self, id: &str, entity: Self::Entity) -> ::std::result::Result<(::stately::EntityId, Option<String>), String> {
+            fn update_entity(&mut self, id: &str, entity: Self::Entity) -> ::std::result::Result<(::stately::EntityIdentifier, Option<String>), String> {
                 self.update_entity(id, entity)
             }
 
@@ -280,7 +280,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 self.remove_entity(id, entry)
             }
 
-            fn get_entity(&self, id: &str, entry: Self::StateEntry) -> Option<(::stately::EntityId, Self::Entity)> {
+            fn get_entity(&self, id: &str, entry: Self::StateEntry) -> Option<(::stately::EntityIdentifier, Self::Entity)> {
                 self.get_entity(id, entry)
             }
 
@@ -288,7 +288,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 self.list_entities(entry)
             }
 
-            fn search_entities(&self, needle: &str) -> ::stately::hashbrown::HashMap<Self::StateEntry, ::stately::hashbrown::HashMap<::stately::EntityId, Self::Entity>> {
+            fn search_entities(&self, needle: &str) -> ::stately::hashbrown::HashMap<Self::StateEntry, ::stately::hashbrown::HashMap<::stately::EntityIdentifier, Self::Entity>> {
                 self.search_entities(needle)
             }
         }
@@ -302,6 +302,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
     let stately_struct = quote! {
         /// Wrapper around state for Axum integration with Arc<RwLock<T>>
+        #[cfg(feature = "axum")]
         #[derive(Clone)]
         #vis struct #stately_name {
             #vis state: ::std::sync::Arc<::tokio::sync::RwLock<#name>>,

@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::entity::{EntityIdentifier, Summary};
+use crate::entity::{EntityId, Summary};
 
 /// Trait that all state entities must implement.
 ///
@@ -23,10 +23,10 @@ pub trait StateEntity: Clone + Serialize + for<'de> Deserialize<'de> {
     fn description(&self) -> Option<&str> { None }
 
     /// Returns a summary of this entity for listings
-    fn summary(&self, id: &EntityIdentifier) -> Summary {
+    fn summary(&self, id: EntityId) -> Summary {
         Summary {
-            id:          *id,
-            name:        self.name().to_string(),
+            id,
+            name: self.name().to_string(),
             description: self.description().map(ToString::to_string),
         }
     }
@@ -49,28 +49,27 @@ pub trait StateCollection {
     /// The type identifier for this collection's entities
     const STATE_ENTRY: &'static str;
 
+    /// Loads a collection from a list of entities and IDs
+    fn load<I>(entities: I) -> Self
+    where
+        I: IntoIterator<Item = (EntityId, Self::Entity)>;
+
     /// Gets an entity by ID or name
-    fn get_entity(&self, id: &str) -> Option<(&EntityIdentifier, &Self::Entity)>;
+    fn get_entity(&self, id: &str) -> Option<(&EntityId, &Self::Entity)>;
 
     /// Gets all entities in the collection
-    fn get_entities(&self) -> Vec<(&EntityIdentifier, &Self::Entity)>;
+    fn get_entities(&self) -> Vec<(&EntityId, &Self::Entity)>;
 
     /// Searches entities by a needle string (matches against name/description)
-    fn search_entities(&self, needle: &str) -> Vec<(&EntityIdentifier, &Self::Entity)>;
+    fn search_entities(&self, needle: &str) -> Vec<(&EntityId, &Self::Entity)>;
 
     /// Creates a new entity in the collection, returning its ID
-    fn create(&mut self, entity: Self::Entity) -> EntityIdentifier;
+    fn create(&mut self, entity: Self::Entity) -> EntityId;
 
     /// Updates an existing entity by ID or name
-    ///
-    /// # Errors
-    /// - If the entity does not exist
-    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<EntityIdentifier, String>;
+    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<Self::Entity, String>;
 
     /// Removes an entity by ID or name
-    ///
-    /// # Errors
-    /// - If the entity does not exist
     fn remove(&mut self, id: &str) -> Result<Self::Entity, String>;
 
     /// Lists all entities as summaries
@@ -111,10 +110,8 @@ pub trait StatelyState: Send + Sync + 'static {
     ///
     /// # Errors
     /// * The entity already exists or the entity is invalid
-    fn create_entity(
-        &mut self,
-        entity: Self::Entity,
-    ) -> Result<(EntityIdentifier, Option<String>), String>;
+    fn create_entity(&mut self, entity: Self::Entity)
+    -> Result<(EntityId, Option<String>), String>;
 
     /// Updates an existing entity by ID or name
     ///
@@ -131,7 +128,7 @@ pub trait StatelyState: Send + Sync + 'static {
         &mut self,
         id: &str,
         entity: Self::Entity,
-    ) -> Result<(EntityIdentifier, Option<String>), String>;
+    ) -> Result<(EntityId, Option<String>), String>;
 
     /// Removes an entity by ID or name and type
     ///
@@ -158,11 +155,7 @@ pub trait StatelyState: Send + Sync + 'static {
     ///
     /// # Returns
     /// The entity identifier and entity if found
-    fn get_entity(
-        &self,
-        id: &str,
-        entry: Self::StateEntry,
-    ) -> Option<(EntityIdentifier, Self::Entity)>;
+    fn get_entity(&self, id: &str, entry: Self::StateEntry) -> Option<(EntityId, Self::Entity)>;
 
     /// Lists all entities, optionally filtered by type
     ///
@@ -186,5 +179,43 @@ pub trait StatelyState: Send + Sync + 'static {
     fn search_entities(
         &self,
         needle: &str,
-    ) -> hashbrown::HashMap<Self::StateEntry, hashbrown::HashMap<EntityIdentifier, Self::Entity>>;
+    ) -> hashbrown::HashMap<Self::StateEntry, hashbrown::HashMap<EntityId, Self::Entity>>;
+}
+
+//----
+// Blanket impls
+//----
+impl<T: StateCollection> StateCollection for Box<T> {
+    type Entity = T::Entity;
+
+    const STATE_ENTRY: &'static str = T::STATE_ENTRY;
+
+    fn load<I>(entities: I) -> Self
+    where
+        I: IntoIterator<Item = (EntityId, Self::Entity)>,
+    {
+        Box::new(T::load(entities))
+    }
+
+    fn get_entity(&self, id: &str) -> Option<(&EntityId, &Self::Entity)> {
+        self.as_ref().get_entity(id)
+    }
+
+    fn get_entities(&self) -> Vec<(&EntityId, &Self::Entity)> { self.as_ref().get_entities() }
+
+    fn search_entities(&self, needle: &str) -> Vec<(&EntityId, &Self::Entity)> {
+        self.as_ref().search_entities(needle)
+    }
+
+    fn create(&mut self, entity: Self::Entity) -> EntityId { self.as_mut().create(entity) }
+
+    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<Self::Entity, String> {
+        self.as_mut().update(id, entity)
+    }
+
+    fn remove(&mut self, id: &str) -> Result<Self::Entity, String> { self.as_mut().remove(id) }
+
+    fn list(&self) -> Vec<Summary> { self.as_ref().list() }
+
+    fn is_empty(&self) -> bool { self.as_ref().is_empty() }
 }

@@ -113,7 +113,7 @@ fn main() {
         url:  "http://example.com/new-data".to_string(),
     };
     match state.sources.update(&source_id.to_string(), updated_source) {
-        Ok(id) => println!("Updated source: {id}"),
+        Ok(old) => println!("Updated source (old value: {})", old.name),
         Err(e) => println!("Error updating source: {e}"),
     }
 
