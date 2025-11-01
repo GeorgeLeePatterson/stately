@@ -151,6 +151,8 @@ pub use collection::{Collection, Singleton};
 pub use entity::{EntityIdentifier, Summary};
 pub use error::{Error, Result};
 pub use link::Link;
+#[cfg(feature = "axum")]
+pub use stately_derive::axum_api;
 pub use stately_derive::{entity, state};
 #[cfg(feature = "axum")]
 pub use traits::StatelyState;

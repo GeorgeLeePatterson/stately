@@ -33,6 +33,9 @@ tokio = { version = "1", features = ["sync", "rt-multi-thread", "macros"], optio
 
 stately-derive = { path = "../stately-derive", version = "0.1.0" }
 
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }
+
 [lints.clippy]
 pedantic = { level = "warn", priority = -1 }
 # Detects large stack-allocated futures that may cause stack overflow crashes (see threshold in clippy.toml)
@@ -68,11 +71,4 @@ required-features = ["openapi"]
 
 [[example]]
 name = "axum_api"
-required-features = ["axum"]
-
-[[tests]]
-name = "core"
-
-[[tests]]
-name = "axum"
 required-features = ["axum"]

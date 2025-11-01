@@ -17,27 +17,28 @@ pub struct Source {
     pub url:  String,
 }
 
-#[stately::state(api = ["axum"])]
-pub struct AppState {
+#[stately::state]
+pub struct State {
     pipelines: Pipeline,
     sources:   Source,
 }
 
+#[stately::axum_api]
+pub struct AppState {
+    state: StatelyState,
+}
+
 #[tokio::main]
 async fn main() {
-    use std::sync::Arc;
-
-    use tokio::sync::RwLock;
-
     // Create the state
-    let state = Arc::new(RwLock::new(AppState::new()));
+    let state = State::new();
 
-    // Create the axum state wrapper from the generated module
-    let axum_state = axum_api::StatelyState::new(Arc::clone(&state));
+    // Create the axum state wrapper
+    let stately_state = StatelyState::new(state);
 
-    // Get the router from the generated module
+    // Get the router from the generated api module
     let _app: axum::Router =
-        axum::Router::new().nest("/api/v1/entity", axum_api::router()).with_state(axum_state);
+        axum::Router::new().nest("/api/v1/entity", api::router()).with_state(stately_state);
 
     println!("✓ Axum router created successfully!");
     println!("✓ Available routes:");
@@ -50,7 +51,7 @@ async fn main() {
     #[cfg(feature = "openapi")]
     {
         use utoipa::OpenApi;
-        let api_doc = axum_api::ApiDoc::openapi();
+        let api_doc = api::ApiDoc::openapi();
         println!("\n✓ OpenAPI documentation generated!");
         println!("  Paths: {}", api_doc.paths.paths.len());
         println!("  Components: {}", api_doc.components.as_ref().map_or(0, |c| c.schemas.len()));

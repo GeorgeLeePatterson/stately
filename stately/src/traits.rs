@@ -101,6 +101,55 @@ pub trait StatelyState: Send + Sync + 'static {
     /// The generated `Entity` enum type for this state
     type Entity: Clone + Serialize + for<'de> Deserialize<'de>;
 
+    /// Creates a new entity
+    ///
+    /// # Arguments
+    /// * `entity` - The entity to create
+    ///
+    /// # Returns
+    /// The entity identifier and optional message, or an error
+    ///
+    /// # Errors
+    /// * The entity already exists or the entity is invalid
+    fn create_entity(
+        &mut self,
+        entity: Self::Entity,
+    ) -> Result<(EntityIdentifier, Option<String>), String>;
+
+    /// Updates an existing entity by ID or name
+    ///
+    /// # Arguments
+    /// * `id` - The entity ID or name to update
+    /// * `entity` - The updated entity data
+    ///
+    /// # Returns
+    /// The entity identifier and optional message, or an error
+    ///
+    /// # Errors
+    /// * The entity does not exist or the entity is invalid
+    fn update_entity(
+        &mut self,
+        id: &str,
+        entity: Self::Entity,
+    ) -> Result<(EntityIdentifier, Option<String>), String>;
+
+    /// Removes an entity by ID or name and type
+    ///
+    /// # Arguments
+    /// * `id` - The entity ID or name to remove
+    /// * `entry` - The type of entity to remove
+    ///
+    /// # Returns
+    /// Optional message on success, or an error
+    ///
+    /// # Errors
+    /// * The entity does not exist
+    fn remove_entity(
+        &mut self,
+        id: &str,
+        entry: Self::StateEntry,
+    ) -> Result<Option<String>, String>;
+
     /// Gets an entity by ID or name and type
     ///
     /// # Arguments

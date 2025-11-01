@@ -18,6 +18,8 @@ Stately provides a framework for managing application configuration and state wi
 - 🆔 **Time-Sortable IDs** - UUID v7 for naturally ordered identifiers
 - 🚀 **Web APIs** - Optional Axum integration with generated handlers
 
+Stately does not provide the configuration and structures that comprise the state. Instead it provides an ultra-thin container management strategy that provides seamless integration with [@stately/ui](stately-ui).
+
 ## Installation
 
 Add to your `Cargo.toml`:
