@@ -97,9 +97,9 @@ prepare-release version:
     for readme in README.md stately/README.md; do
         if [ -f "$readme" ]; then
             # Update simple dependency format
-            sed -i '' "s/stately = \"[0-9]*\.[0-9]*\.[0-9]*\"/clickhouse-datafusion = \"{{version}}\"/" "$readme" || true
+            sed -i '' "s/stately = \"[0-9]*\.[0-9]*\.[0-9]*\"/stately = \"{{version}}\"/" "$readme" || true
             # Update version field in dependency table format
-            sed -i '' "s/stately = { version = \"[0-9]*\.[0-9]*\.[0-9]*\"/clickhouse-datafusion = { version = \"{{version}}\"/" "$readme" || true
+            sed -i '' "s/stately = { version = \"[0-9]*\.[0-9]*\.[0-9]*\"/stately = { version = \"{{version}}\"/" "$readme" || true
         fi
     done
 
