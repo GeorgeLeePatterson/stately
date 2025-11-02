@@ -92,8 +92,14 @@ prepare-release version:
     # This uses a more specific pattern to only match the version under [workspace.package]
     awk '/^\[workspace\.package\]/ {in_workspace=1} in_workspace && /^version = / {gsub(/"[^"]*"/, "\"{{version}}\""); in_workspace=0} {print}' Cargo.toml > Cargo.toml.tmp && mv Cargo.toml.tmp Cargo.toml
 
-    # Update clickhouse-datafusion version references in README files (if they exist)
-    # Look for patterns like: clickhouse-datafusion = "0.1.1" or clickhouse-datafusion = { version = "0.1.1"
+    # Update stately-derive dependency version in stately/Cargo.toml
+    if [ -f "stately/Cargo.toml" ]; then
+        # Update stately-derive version reference (handles both "X.Y.Z" and "*")
+        sed -i '' "s/stately-derive = { path = \"..\/stately-derive\", version = \"[^\"]*\" }/stately-derive = { path = \"..\/stately-derive\", version = \"{{version}}\" }/" "stately/Cargo.toml" || true
+    fi
+
+    # Update stately version references in README files (if they exist)
+    # Look for patterns like: stately = "0.1.1" or stately = { version = "0.1.1"
     for readme in README.md stately/README.md; do
         if [ -f "$readme" ]; then
             # Update simple dependency format

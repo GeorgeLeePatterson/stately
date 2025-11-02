@@ -31,7 +31,7 @@ utoipa = { version = "5", features = ["macros", "uuid", "rc_schema"], optional =
 axum = { version = "0.8", optional = true }
 tokio = { version = "1", features = ["sync"], optional = true }
 
-stately-derive = { path = "../stately-derive", version = "*" }
+stately-derive = { path = "../stately-derive", version = "0.2.0" }
 
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }
