@@ -60,6 +60,11 @@
 //! }
 //! ```
 //!
+//! The `state` macro generates:
+//! - `StateEntry` enum - discriminator for entity types
+//! - `Entity` enum - type-erased wrapper for all entities
+//! - `link_aliases` module - type aliases like `PipelineLink = Link<Pipeline>`
+//!
 //! Use your state with full type safety:
 //!
 //! ```rust,ignore
@@ -101,30 +106,71 @@
 //! Generate complete REST APIs with `OpenAPI` documentation using the `axum` feature:
 //!
 //! ```rust,ignore
-//! #[stately::state(api = ["axum"])]
-//! pub struct AppState {
+//! #[stately::state(openapi)]
+//! pub struct State {
 //!     pipelines: Pipeline,
 //! }
 //!
+//! #[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+//! pub struct AppState {}
+//!
 //! #[tokio::main]
 //! async fn main() {
-//!     use std::sync::Arc;
-//!     use tokio::sync::RwLock;
-//!
-//!     let state = Arc::new(RwLock::new(AppState::new()));
-//!     let axum_state = axum_api::StatelyState::new(state);
+//!     let app_state = AppState::new(State::new());
 //!
 //!     let app = axum::Router::new()
-//!         .nest("/api/v1/entity", axum_api::router())
-//!         .with_state(axum_state);
+//!         .nest("/api/v1/entity", AppState::router(app_state.clone()))
+//!         .with_state(app_state);
 //!
 //!     // Routes automatically generated:
-//!     // GET /api/v1/entity/list
-//!     // GET /api/v1/entity/list/:type
-//!     // GET /api/v1/entity/search/:needle
-//!     // GET /api/v1/entity/:id?type=<type>
+//!     // PUT    /api/v1/entity - Create entity
+//!     // GET    /api/v1/entity - List entities
+//!     // GET    /api/v1/entity/{id}?type=<type> - Get entity
+//!     // POST   /api/v1/entity/{id} - Update entity
+//!     // PATCH  /api/v1/entity/{id} - Patch entity
+//!     // DELETE /api/v1/entity/{entry}/{id} - Delete entity
+//!
+//!     // OpenAPI spec available at:
+//!     let openapi = AppState::openapi();
 //! }
 //! ```
+//!
+//! The `axum_api` macro generates:
+//! - Handler methods on your struct (`create_entity`, `list_entities`, etc.)
+//! - `router()` method returning configured Axum router
+//! - `StatelyState` wrapper for `Arc<RwLock<T>>` integration
+//! - `OpenAPI` documentation when `openapi` parameter is specified
+//!
+//! ## Generated Code Reference
+//!
+//! ### What the `state` Macro Generates
+//!
+//! When you use `#[stately::state]` on your struct, the macro generates:
+//!
+//! 1. **`StateEntry` enum** - Used to specify entity types in queries: ```rust,ignore pub enum
+//!    StateEntry { Pipeline, Source, Sink, } ```
+//!
+//! 2. **`Entity` enum** - Type-erased wrapper for all entity types: ```rust,ignore pub enum Entity
+//!    { Pipeline(Pipeline), Source(SourceConfig), Sink(SinkConfig), } ```
+//!
+//! 3. **`link_aliases` module** - Convenient type aliases for `Link<T>`: ```rust,ignore pub mod
+//!    link_aliases { pub type PipelineLink = ::stately::Link<Pipeline>; pub type SourceLink =
+//!    ::stately::Link<SourceConfig>; pub type SinkLink = ::stately::Link<SinkConfig>; } ```
+//!
+//! ### What the `axum_api` Macro Generates
+//!
+//! When you use `#[stately::axum_api(State)]`, the macro generates:
+//!
+//! 1. **`StatelyState` wrapper** - `Arc<RwLock<T>>` wrapper for Axum: ```rust,ignore pub struct
+//!    StatelyState { pub state: Arc<tokio::sync::RwLock<State>>, } ```
+//!
+//! 2. **Handler methods** - REST API handlers as methods on your struct:
+//!    - `create_entity()`, `list_entities()`, `get_entity_by_id()`
+//!    - `update_entity()`, `patch_entity_by_id()`, `remove_entity()`
+//!
+//! 3. **`router()` method** - Returns configured Axum router with all routes
+//!
+//! 4. **`OpenAPI` trait** (when `openapi` parameter used) - Implements `utoipa::OpenApi`
 //!
 //! ## Feature Flags
 //!

@@ -160,22 +160,21 @@ pub struct AppState {
 Generate a complete REST API with OpenAPI documentation:
 
 ```rust
-#[stately::state(api = ["axum"])]
-pub struct AppState {
+#[stately::state(openapi)]
+pub struct State {
     pipelines: Pipeline,
 }
 
+#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+pub struct AppState {}
+
 #[tokio::main]
 async fn main() {
-    use std::sync::Arc;
-    use tokio::sync::RwLock;
-
-    let state = Arc::new(RwLock::new(AppState::new()));
-    let axum_state = axum_api::StatelyState::new(state);
+    let app_state = AppState::new(State::new());
 
     let app = axum::Router::new()
-        .nest("/api/v1/entity", axum_api::router())
-        .with_state(axum_state);
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
+        .with_state(app_state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
@@ -185,14 +184,24 @@ async fn main() {
 }
 ```
 
+### Macro Parameters
+
+- **`#[stately::state(openapi)]`** - Enables OpenAPI schema generation for entities
+- **`#[stately::axum_api(State, openapi, components = [...])]`**
+  - First parameter: The state type name
+  - `openapi`: Enable OpenAPI documentation generation
+  - `components = [...]`: Additional types to include in OpenAPI schemas (e.g., Link types)
+
 ### Generated API Routes
 
-The `api = ["axum"]` attribute generates these endpoints:
+The `axum_api` macro generates these endpoints:
 
-- `GET /list` - List all entities across all collections
-- `GET /list/:type` - List entities of a specific type
-- `GET /search/:needle` - Search entities by name/description
-- `GET /:id?type=<type>` - Get a specific entity by ID
+- `PUT /` - Create a new entity
+- `GET /` - List all entities
+- `GET /{id}?type=<type>` - Get entity by ID and type
+- `POST /{id}` - Update an existing entity
+- `PATCH /{id}` - Patch an existing entity
+- `DELETE /{entry}/{id}` - Delete an entity
 
 ### OpenAPI Documentation
 
@@ -201,7 +210,7 @@ Access the generated OpenAPI spec:
 ```rust
 use utoipa::OpenApi;
 
-let openapi = axum_api::ApiDoc::openapi();
+let openapi = AppState::openapi();
 let json = openapi.to_json().unwrap();
 ```
 
@@ -271,12 +280,31 @@ Stately uses procedural macros to generate boilerplate at compile time:
 
 1. **`#[stately::entity]`** implements the `StateEntity` trait
 2. **`#[stately::state]`** generates:
-   - Enum types for entity discrimination
+   - `StateEntry` enum for entity type discrimination
+   - `Entity` enum for type-erased entity wrapper
    - Collection fields with type-safe accessors
    - CRUD operation methods
-   - Optional web framework integration code
+   - `link_aliases` module with `Link<T>` type aliases
+3. **`#[stately::axum_api(State)]`** generates (optional):
+   - REST API handler methods on your struct
+   - `router()` method for Axum integration
+   - OpenAPI documentation (when `openapi` parameter is used)
 
 All generated code is type-safe and benefits from Rust's compile-time guarantees.
+
+### Generated `link_aliases` Module
+
+The `state` macro automatically generates a module with type aliases for `Link<T>`:
+
+```rust
+pub mod link_aliases {
+    pub type PipelineLink = ::stately::Link<Pipeline>;
+    pub type SourceLink = ::stately::Link<Source>;
+    // ... one type alias for each entity in your state
+}
+```
+
+These can be used in your code as shortcuts and are particularly useful for including in OpenAPI schemas via the `components` parameter.
 
 ## License
 

@@ -115,34 +115,38 @@ fn main() {
 Generate complete REST APIs with OpenAPI documentation:
 
 ```rust
-#[stately::state(api = ["axum"])]
-pub struct AppState {
+#[stately::state(openapi)]
+pub struct State {
     pipelines: Pipeline,
     sources: SourceConfig,
 }
 
+#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+pub struct AppState {}
+
 #[tokio::main]
 async fn main() {
-    let state = Arc::new(RwLock::new(AppState::new()));
-    let axum_state = axum_api::StatelyState::new(state.clone());
+    let app_state = AppState::new(State::new());
 
     let app = axum::Router::new()
-        .nest("/api/v1/entity", axum_api::router())
-        .with_state(axum_state);
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
+        .with_state(app_state);
 
     // Generated routes:
-    // GET  /api/v1/entity/list
-    // GET  /api/v1/entity/list/:type
-    // GET  /api/v1/entity/search/:needle
-    // GET  /api/v1/entity/:id?type=<type>
+    // PUT    /api/v1/entity - Create entity
+    // GET    /api/v1/entity - List all entities
+    // GET    /api/v1/entity/{id}?type=<type> - Get entity by ID
+    // POST   /api/v1/entity/{id} - Update entity
+    // PATCH  /api/v1/entity/{id} - Patch entity
+    // DELETE /api/v1/entity/{entry}/{id} - Delete entity
 }
 ```
 
-The `api = ["axum"]` attribute generates:
-- ✅ Complete REST API handlers
-- ✅ OpenAPI 3.0 documentation
+The `axum_api` macro generates:
+- ✅ Complete REST API handlers as methods on your struct
+- ✅ OpenAPI 3.0 documentation (with `openapi` parameter)
 - ✅ Type-safe request/response types
-- ✅ Ready-to-use `Router` and `ApiDoc`
+- ✅ `router()` method and `AppState::openapi()` for docs
 
 ## 📚 Feature Flags
 
@@ -160,7 +164,25 @@ Stately uses procedural macros to generate:
    - `StateEntry` enum (entity type discriminator)
    - `Entity` enum (type-erased entity wrapper)
    - Collection fields with CRUD operations
-   - Optional web API code (handlers, routes, OpenAPI docs)
+   - `link_aliases` module with type aliases for `Link<T>` (e.g., `PipelineLink`)
+3. **`#[stately::axum_api(State, openapi)]`** - Generates (optional):
+   - REST API handlers as methods on your struct
+   - `router()` method for Axum integration
+   - OpenAPI documentation via `::openapi()` method
+
+### Generated Code
+
+The `state` macro automatically generates a `link_aliases` module:
+
+```rust
+pub mod link_aliases {
+    pub type PipelineLink = ::stately::Link<Pipeline>;
+    pub type SourceLink = ::stately::Link<Source>;
+    // ... one for each entity type
+}
+```
+
+These aliases are useful for OpenAPI schemas and as type shortcuts in your code.
 
 ## 📝 Examples
 
