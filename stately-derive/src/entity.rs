@@ -47,9 +47,15 @@ pub fn entity(attr: TokenStream, item: TokenStream) -> TokenStream {
     // Parse attributes from the attribute arguments
     let mut name_field: Option<syn::Ident> = None;
     let mut name_method: Option<syn::Ident> = None;
+    let mut is_singleton = false;
 
     // Parse the attribute token stream manually
     let attr_str = attr.to_string();
+
+    // Check for singleton
+    if attr_str.contains("singleton") {
+        is_singleton = true;
+    }
 
     // Parse name_field
     if let Some(start) = attr_str.find("name_field")
@@ -71,8 +77,8 @@ pub fn entity(attr: TokenStream, item: TokenStream) -> TokenStream {
         }
     }
 
-    // Check for conflicting name specifications
-    if name_field.is_some() && name_method.is_some() {
+    // Check for conflicting name specifications (except for singletons)
+    if !is_singleton && name_field.is_some() && name_method.is_some() {
         return syn::Error::new_spanned(&input, "Cannot specify both name_field and name_method")
             .to_compile_error()
             .into();
@@ -99,7 +105,14 @@ pub fn entity(attr: TokenStream, item: TokenStream) -> TokenStream {
     };
 
     // Determine how to implement name()
-    let name_impl = if let Some(method) = name_method {
+    let name_impl = if is_singleton {
+        // Singletons return "default" as their name
+        quote! {
+            fn name(&self) -> &str {
+                "default"
+            }
+        }
+    } else if let Some(method) = name_method {
         // Call the specified method
         quote! {
             fn name(&self) -> &str {
