@@ -1,5 +1,19 @@
 ## [unreleased]
 
+### 🐛 Bug Fixes
+
+- Adds new endpoints, updates tests
+
+### 💼 Other
+
+- Patches release workflow
+- Patches justfile for release
+
+### 📚 Documentation
+
+- Updates readmes at root and in stately
+## [0.2.0] - 2025-11-02
+
 ### 🚀 Features
 
 - Updates state, axum, macros, crate (#4)
@@ -16,6 +30,7 @@
 
 - Address lints
 - Updates justfile
+- Prepare release v0.2.0 (#5)
 ## [0.1.0] - 2025-10-31
 
 ### 🐛 Bug Fixes
