@@ -67,8 +67,8 @@ jobs:
       - name: Verify publish
         if: ${{ inputs.skip_publish == false }}
         run: |
+          # Only dry-run stately-derive since stately depends on it being published first
           cargo publish --dry-run -p stately-derive --no-verify --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
-          cargo publish --dry-run -p stately --no-verify --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
