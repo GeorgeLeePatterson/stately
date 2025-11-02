@@ -27,21 +27,41 @@ where
 }
 
 impl<T: StateEntity> Link<T> {
-    /// Returns the name of the referenced entity
-    pub fn name(&self) -> String {
+    /// Returns a reference to the ID if this is a Ref variant
+    pub fn as_ref(&self) -> Option<&str> {
         match self {
-            Self::Ref(s) => s.clone(),
-            Self::Inline(t) => t.name().to_string(),
-        }
-    }
-
-    /// Returns the reference ID if this is a reference
-    pub fn get_ref(&self) -> Option<&str> {
-        match self {
-            Self::Ref(s) => Some(s),
+            Self::Ref(id) => Some(id),
             Self::Inline(_) => None,
         }
     }
+
+    /// Returns a reference to the entity if this is an Inline variant
+    pub fn as_inline(&self) -> Option<&T> {
+        match self {
+            Self::Ref(_) => None,
+            Self::Inline(entity) => Some(entity),
+        }
+    }
+
+    /// Converts into the ID if this is a Ref variant
+    pub fn into_ref(self) -> Option<String> {
+        match self {
+            Self::Ref(id) => Some(id),
+            Self::Inline(_) => None,
+        }
+    }
+
+    /// Converts into the entity if this is an Inline variant
+    pub fn into_inline(self) -> Option<T> {
+        match self {
+            Self::Ref(_) => None,
+            Self::Inline(entity) => Some(entity),
+        }
+    }
+
+    /// Returns the reference ID if this is a reference (deprecated, use `as_ref` instead)
+    #[deprecated(since = "0.3.0", note = "use `as_ref()` instead")]
+    pub fn get_ref(&self) -> Option<&str> { self.as_ref() }
 
     /// Creates a new reference link
     pub fn create_ref(ref_id: impl Into<String>) -> Self { Self::Ref(ref_id.into()) }
@@ -261,17 +281,19 @@ mod tests {
         value: i32,
     }
 
+    impl crate::HasName for TestEntity {
+        fn name(&self) -> &str { &self.name }
+    }
+
     impl StateEntity for TestEntity {
         const STATE_ENTRY: &'static str = "test_entity";
-
-        fn name(&self) -> &str { &self.name }
     }
 
     #[test]
     fn test_link_create_ref() {
         let link: Link<TestEntity> = Link::create_ref("entity-123");
-        assert_eq!(link.get_ref(), Some("entity-123"));
-        assert_eq!(link.name(), "entity-123");
+        assert_eq!(link.as_ref(), Some("entity-123"));
+        assert_eq!(link.as_inline(), None);
     }
 
     #[test]
@@ -279,8 +301,8 @@ mod tests {
         let entity = TestEntity { name: "test".to_string(), value: 42 };
         let link = Link::inline(entity.clone());
 
-        assert_eq!(link.get_ref(), None);
-        assert_eq!(link.name(), "test");
+        assert_eq!(link.as_ref(), None);
+        assert_eq!(link.as_inline(), Some(&entity));
 
         match link {
             Link::Inline(e) => assert_eq!(e, entity),
@@ -446,9 +468,9 @@ mod tests {
     fn test_link_openapi_schema() {
         use utoipa::openapi::{RefOr, Schema};
 
-        let link = Link::<TestEntity>::create_ref("LinkTestEntity");
-        // Test that the schema name is generated correctly
-        assert_eq!(link.name(), "LinkTestEntity");
+        let link = Link::<TestEntity>::create_ref("test-ref-id");
+        // Test that we can access the ref ID
+        assert_eq!(link.as_ref(), Some("test-ref-id"));
 
         // Test that ComposeSchema generates a valid OneOf schema
         let schema = <Link<TestEntity> as utoipa::__dev::ComposeSchema>::compose(vec![]);

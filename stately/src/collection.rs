@@ -233,10 +233,12 @@ mod tests {
         value: i32,
     }
 
+    impl crate::HasName for TestEntity {
+        fn name(&self) -> &str { &self.name }
+    }
+
     impl StateEntity for TestEntity {
         const STATE_ENTRY: &'static str = "test_entity";
-
-        fn name(&self) -> &str { &self.name }
     }
 
     #[test]
