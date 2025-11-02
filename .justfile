@@ -103,9 +103,9 @@ prepare-release version:
     for readme in README.md stately/README.md; do
         if [ -f "$readme" ]; then
             # Update simple dependency format (handles both "X.Y" and "X.Y.Z")
-            sed -i '' "s/stately = \"[0-9]*\.[0-9]*\(\.[0-9]*\)\?\"/stately = \"{{version}}\"/" "$readme" || true
+            sed -i '' -E "s/stately = \"[0-9]+\.[0-9]+(\.[0-9]+)?\"/stately = \"{{version}}\"/" "$readme" || true
             # Update version field in dependency table format (handles both "X.Y" and "X.Y.Z")
-            sed -i '' "s/stately = { version = \"[0-9]*\.[0-9]*\(\.[0-9]*\)\?\"/stately = { version = \"{{version}}\"/" "$readme" || true
+            sed -i '' -E "s/stately = \\{ version = \"[0-9]+\.[0-9]+(\.[0-9]+)?\"/stately = { version = \"{{version}}\"/" "$readme" || true
         fi
     done
 
