@@ -122,7 +122,8 @@ prepare-release version:
 
     # Stage all changes
     git add Cargo.toml Cargo.lock CHANGELOG.md RELEASE_NOTES.md
-    # Also add README files if they were modified
+    # Also add modified crate Cargo.toml and README files
+    git add stately/Cargo.toml 2>/dev/null || true
     git add README.md stately/README.md 2>/dev/null || true
 
     # Commit
