@@ -468,7 +468,44 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
         }
     };
 
-    TokenStream::from(core_code)
+    // Generate link_aliases module with type aliases for Link<T> for all entity types
+    let all_entity_types: Vec<_> = collection_types
+        .iter()
+        .chain(custom_collections.iter().map(|(_, entity_ty, _)| entity_ty))
+        .collect();
+
+    // Deduplicate entity types by their string representation
+    let mut seen_types = std::collections::HashSet::new();
+    let mut unique_entity_types = Vec::new();
+    let mut link_alias_names = Vec::new();
+
+    for ty in all_entity_types {
+        let type_name = extract_type_ident(ty);
+        let type_name_str = type_name.to_string();
+
+        if seen_types.insert(type_name_str) {
+            unique_entity_types.push(ty);
+            link_alias_names.push(syn::Ident::new(&format!("{}Link", type_name), type_name.span()));
+        }
+    }
+
+    let link_aliases = quote! {
+        /// Type aliases for `Link<T>` for all entity types in this state
+        #vis mod link_aliases {
+            use super::*;
+
+            #(
+                #vis type #link_alias_names = ::stately::Link<#unique_entity_types>;
+            )*
+        }
+    };
+
+    let expanded = quote! {
+        #core_code
+        #link_aliases
+    };
+
+    TokenStream::from(expanded)
 }
 
 /// Extracts the type identifier from a type

@@ -33,22 +33,86 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         .into();
     }
 
-    let attr_str = attr.to_string();
-    let parts: Vec<&str> = attr_str.split(',').map(|s| s.trim()).collect();
+    // Parse macro attributes
+    // Expected formats:
+    //   StateName
+    //   StateName, openapi
+    //   StateName, openapi, components = [Type1, Type2, ...]
 
-    let state_type_name = match syn::parse_str::<syn::Ident>(parts[0]) {
+    let attr_str = attr.to_string();
+
+    // First, extract the state type name (always first)
+    let state_type_name = if let Some(first_comma) = attr_str.find(',') {
+        attr_str[..first_comma].trim()
+    } else {
+        attr_str.trim()
+    };
+
+    let state_type_name = match syn::parse_str::<syn::Ident>(state_type_name) {
         Ok(ident) => ident,
         Err(_) => {
             return syn::Error::new_spanned(
                 &input,
-                format!("Invalid state type name: {}", parts[0]),
+                format!("Invalid state type name: {}", state_type_name),
             )
             .to_compile_error()
             .into();
         }
     };
 
-    let enable_openapi = parts.len() > 1 && parts[1] == "openapi";
+    // Check for 'openapi' flag
+    let enable_openapi = attr_str.contains("openapi");
+
+    // Parse components if present
+    let additional_components: Vec<syn::Type> = if let Some(components_start) =
+        attr_str.find("components")
+    {
+        // Validate that openapi is also enabled
+        if !enable_openapi {
+            return syn::Error::new_spanned(
+                &input,
+                "components parameter requires openapi to be enabled: #[stately::axum_api(State, \
+                 openapi, components = [...])]",
+            )
+            .to_compile_error()
+            .into();
+        }
+
+        // Extract the content between [ and ]
+        if let Some(bracket_start) = attr_str[components_start..].find('[') {
+            if let Some(bracket_end) = attr_str[components_start..].find(']') {
+                let components_content =
+                    &attr_str[components_start + bracket_start + 1..components_start + bracket_end];
+
+                // Parse each type separated by commas
+                components_content
+                    .split(',')
+                    .map(|s| s.trim())
+                    .filter(|s| !s.is_empty())
+                    .map(|type_str| {
+                        syn::parse_str::<syn::Type>(type_str)
+                            .unwrap_or_else(|_| panic!("Invalid type in components: {}", type_str))
+                    })
+                    .collect()
+            } else {
+                return syn::Error::new_spanned(
+                    &input,
+                    "components parameter missing closing bracket ']'",
+                )
+                .to_compile_error()
+                .into();
+            }
+        } else {
+            return syn::Error::new_spanned(
+                &input,
+                "components parameter missing opening bracket '['",
+            )
+            .to_compile_error()
+            .into();
+        }
+    } else {
+        Vec::new()
+    };
 
     let struct_name = &input.ident;
     let vis = &input.vis;
@@ -280,8 +344,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                         GetEntityResponse,
                         ::stately::Summary,
                         ::stately::EntityId,
-                        // TODO: Remove - Figure this out
-                        // ::stately::Link<T>
+                        #(#additional_components),*
                     )
                 ),
                 tags(
