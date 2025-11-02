@@ -59,10 +59,6 @@ impl<T: StateEntity> Link<T> {
         }
     }
 
-    /// Returns the reference ID if this is a reference (deprecated, use `as_ref` instead)
-    #[deprecated(since = "0.3.0", note = "use `as_ref()` instead")]
-    pub fn get_ref(&self) -> Option<&str> { self.as_ref() }
-
     /// Creates a new reference link
     pub fn create_ref(ref_id: impl Into<String>) -> Self { Self::Ref(ref_id.into()) }
 
@@ -112,7 +108,8 @@ where
     {
         use serde::ser::SerializeMap;
 
-        let entity_type = T::STATE_ENTRY;
+        let state_entry = T::STATE_ENTRY;
+        let entity_type = state_entry.as_ref();
         let mut map = serializer.serialize_map(Some(2))?;
 
         map.serialize_entry("entity_type", entity_type)?;
@@ -216,7 +213,8 @@ mod api {
     // Note: PartialSchema is automatically implemented for types that implement ComposeSchema
     impl<T: StateEntity + ToSchema> utoipa::__dev::ComposeSchema for Link<T> {
         fn compose(_generics: Vec<RefOr<Schema>>) -> RefOr<Schema> {
-            let entity_type = T::STATE_ENTRY;
+            let state_entry = T::STATE_ENTRY;
+            let entity_type = state_entry.as_ref();
 
             // Build the oneOf schema with entity_type embedded
             RefOr::T(Schema::OneOf(
@@ -281,12 +279,27 @@ mod tests {
         value: i32,
     }
 
+    #[derive(Debug, Copy, Clone)]
+    enum TestStateEntry {
+        TestEntity,
+    }
+
+    impl AsRef<str> for TestStateEntry {
+        fn as_ref(&self) -> &str {
+            match self {
+                TestStateEntry::TestEntity => "test_entity",
+            }
+        }
+    }
+
     impl crate::HasName for TestEntity {
         fn name(&self) -> &str { &self.name }
     }
 
     impl StateEntity for TestEntity {
-        const STATE_ENTRY: &'static str = "test_entity";
+        type Entry = TestStateEntry;
+
+        const STATE_ENTRY: TestStateEntry = TestStateEntry::TestEntity;
     }
 
     #[test]
@@ -372,7 +385,7 @@ mod tests {
         let json = r#"{"entity_type":"test_entity","ref":"entity-123"}"#;
         let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
 
-        assert_eq!(link.get_ref(), Some("entity-123"));
+        assert_eq!(link.as_ref(), Some("entity-123"));
     }
 
     #[test]
@@ -380,13 +393,17 @@ mod tests {
         let json = r#"{"entity_type":"test_entity","inline":{"name":"test","value":42}}"#;
         let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
 
-        match link {
+        match &link {
             Link::Inline(entity) => {
                 assert_eq!(entity.name, "test");
                 assert_eq!(entity.value, 42);
             }
             Link::Ref(_) => panic!("Expected Inline variant"),
         }
+
+        assert!(link.as_inline().is_some());
+        assert!(link.as_ref().is_none());
+        assert!(link.into_inline().unwrap().name == "test");
     }
 
     #[test]
@@ -394,7 +411,7 @@ mod tests {
         let json = r#""entity-123""#;
         let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
 
-        assert_eq!(link.get_ref(), Some("entity-123"));
+        assert_eq!(link.as_ref(), Some("entity-123"));
     }
 
     #[test]

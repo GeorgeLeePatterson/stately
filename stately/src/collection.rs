@@ -35,11 +35,6 @@ impl<T: StateEntity> Collection<T> {
         self.inner.iter().find(|(_, entity)| entity.name() == name)
     }
 
-    /// Inserts an entity with a specific ID
-    pub fn insert_with_id(&mut self, id: EntityId, entity: T) -> Option<T> {
-        self.inner.insert(id, entity)
-    }
-
     /// Returns the number of entities in the collection
     pub fn len(&self) -> usize { self.inner.len() }
 
@@ -53,7 +48,7 @@ impl<T: StateEntity> Collection<T> {
 impl<T: StateEntity> StateCollection for Collection<T> {
     type Entity = T;
 
-    const STATE_ENTRY: &'static str = T::STATE_ENTRY;
+    const STATE_ENTRY: <T as StateEntity>::Entry = T::STATE_ENTRY;
 
     fn load<I>(entities: I) -> Self
     where
@@ -163,7 +158,7 @@ impl<T: StateEntity> Singleton<T> {
 impl<T: StateEntity + Default> StateCollection for Singleton<T> {
     type Entity = T;
 
-    const STATE_ENTRY: &'static str = T::STATE_ENTRY;
+    const STATE_ENTRY: <T as StateEntity>::Entry = T::STATE_ENTRY;
 
     fn load<I>(entities: I) -> Self
     where
@@ -233,12 +228,27 @@ mod tests {
         value: i32,
     }
 
+    #[derive(Debug, Copy, Clone)]
+    enum TestStateEntry {
+        TestEntity,
+    }
+
+    impl AsRef<str> for TestStateEntry {
+        fn as_ref(&self) -> &str {
+            match self {
+                TestStateEntry::TestEntity => "test_entity",
+            }
+        }
+    }
+
     impl crate::HasName for TestEntity {
         fn name(&self) -> &str { &self.name }
     }
 
     impl StateEntity for TestEntity {
-        const STATE_ENTRY: &'static str = "test_entity";
+        type Entry = TestStateEntry;
+
+        const STATE_ENTRY: TestStateEntry = TestStateEntry::TestEntity;
     }
 
     #[test]

@@ -282,3 +282,6 @@ pub mod prelude {
     pub use crate::traits::{StateCollection, StateEntity};
     pub use crate::{Error, Result, entity, state};
 }
+
+// TODO: Remove
+// mod test_macros;

@@ -2,6 +2,7 @@
 //! Integration tests for stately proc macros and generated code
 
 use serde::{Deserialize, Serialize};
+use stately::HasName;
 use stately::prelude::*;
 
 // Test entities
@@ -305,6 +306,7 @@ fn test_remove_entity() {
     let source_id = state.sources.create(source.clone());
 
     assert_eq!(state.sources.len(), 1);
+    assert_eq!(state.sources.inner().len(), 1);
 
     let removed = state.sources.remove(&source_id);
     assert!(removed.is_ok());
@@ -324,10 +326,19 @@ fn test_singleton_operations() {
     assert_eq!(state.config.get(), &config);
     assert!(!state.config.is_empty());
 
+    let new_collection = Singleton::<Config>::load(vec![(EntityId::singleton(), config.clone())]);
+    assert_eq!(new_collection.get(), &config);
+
     // Update singleton
     let updated_config = Config { max_connections: 200, timeout_seconds: 60 };
     state.config.set(updated_config.clone());
     assert_eq!(state.config.get(), &updated_config);
+
+    state.config.get_mut().max_connections = 250;
+    match state.get_entity(&EntityId::singleton(), StateEntry::Config) {
+        Some((_, Entity::Config(config))) => assert_eq!(config.max_connections, 250),
+        _ => panic!("Entity not found"),
+    }
 
     let returned = state.config.get_entity("");
     assert!(returned.is_some());
@@ -374,12 +385,12 @@ fn test_custom_collection_syntax() {
         name:        "archived-pipeline".to_string(),
         description: Some("Created in archived collection".to_string()),
     };
-    let id4 = state.archived.create(pipeline2.clone());
+    let id4 = state.archived.create(ArchivedPipeline(pipeline2.clone()));
     assert_eq!(state.archived.len(), 1);
 
     // Test Case 5: Custom type + variant override (background field -> BackgroundTask)
     let task2 = Task { name: "background-task".to_string(), status: "running".to_string() };
-    let id5 = state.background.create(task2.clone());
+    let id5 = state.background.create(BackgroundTask(task2.clone()));
     assert_eq!(state.background.len(), 1);
 
     // Test that each variant is distinct in StateEntry enum
@@ -414,7 +425,7 @@ fn test_custom_collection_syntax() {
     let result4 = state.get_entity(&id4, StateEntry::ArchivedPipeline);
     assert!(result4.is_some());
     if let Entity::ArchivedPipeline(p) = result4.unwrap().1 {
-        assert_eq!(p, pipeline2);
+        assert_eq!(p.0, pipeline2); // Access inner value of wrapper
     } else {
         panic!("Wrong entity type");
     }
@@ -422,7 +433,7 @@ fn test_custom_collection_syntax() {
     let result5 = state.get_entity(&id5, StateEntry::BackgroundTask);
     assert!(result5.is_some());
     if let Entity::BackgroundTask(t) = result5.unwrap().1 {
-        assert_eq!(t, task2);
+        assert_eq!(t.0, task2); // Access inner value of wrapper
     } else {
         panic!("Wrong entity type");
     }
@@ -430,11 +441,42 @@ fn test_custom_collection_syntax() {
     // Test update operations
     let updated_task =
         Task { name: "background-task".to_string(), status: "completed".to_string() };
-    assert!(state.background.update(&id5, updated_task.clone()).is_ok());
+    assert!(state.background.update(&id5, BackgroundTask(updated_task.clone())).is_ok());
     let retrieved = state.background.get_by_id(&id5).unwrap();
     assert_eq!(retrieved.status, "completed");
 
     // Test remove operations
     assert!(state.archived.remove(&id4).is_ok());
     assert_eq!(state.archived.len(), 0);
+}
+
+#[test]
+fn test_state_entry_constants() {
+    // Verify that STATE_ENTRY constants are based on the VARIANT names (unique per field)
+    // This ensures each collection is uniquely identified, even when the same type is reused
+    use stately::StateEntity;
+
+    // Types without variant override have STATE_ENTRY matching their type name
+    assert_eq!(Pipeline::STATE_ENTRY.as_ref(), "pipeline");
+    assert_eq!(Sink::STATE_ENTRY.as_ref(), "sink");
+    assert_eq!(Config::STATE_ENTRY.as_ref(), "config");
+    assert_eq!(Job::STATE_ENTRY.as_ref(), "job");
+
+    // Types with variant override (even first occurrence) use the variant name
+    assert_eq!(Source::STATE_ENTRY.as_ref(), "explicit_source"); // Only occurrence, but has variant override
+    assert_eq!(Task::STATE_ENTRY.as_ref(), "cached_task"); // First occurrence has variant override
+
+    // Wrapper types have STATE_ENTRY matching their WRAPPER/VARIANT name
+    assert_eq!(ArchivedPipeline::STATE_ENTRY.as_ref(), "archived_pipeline");
+    assert_eq!(BackgroundTask::STATE_ENTRY.as_ref(), "background_task");
+
+    // Verify StateEntry enum variants serialize to their variant name in snake_case
+    assert_eq!(StateEntry::Pipeline.as_ref(), "pipeline");
+    assert_eq!(StateEntry::ExplicitSource.as_ref(), "explicit_source"); // Variant name, not type
+    assert_eq!(StateEntry::Sink.as_ref(), "sink");
+    assert_eq!(StateEntry::Config.as_ref(), "config");
+    assert_eq!(StateEntry::CachedTask.as_ref(), "cached_task"); // Variant name, not type
+    assert_eq!(StateEntry::ArchivedPipeline.as_ref(), "archived_pipeline"); // Wrapper variant
+    assert_eq!(StateEntry::BackgroundTask.as_ref(), "background_task"); // Wrapper variant
+    assert_eq!(StateEntry::Job.as_ref(), "job");
 }
