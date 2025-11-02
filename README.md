@@ -17,239 +17,33 @@ Stately is a Rust framework for managing application configuration and state wit
 - **📚 OpenAPI Schema**: Automatic schema generation with `utoipa`
 - **🚀 Web Framework Integration**: Optional Axum API generation (more frameworks coming soon)
 - **🆔 Time-Sortable IDs**: UUID v7 for naturally ordered entity identifiers
-- **🔍 Search & Query**: Built-in entity search across collections
 
 ## 🚀 Quick Start
+
+### 1. 🦀 Rust (API)
 
 Add stately to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stately = "0.1"
+stately = "0.2.0"
 ```
 
 For web API generation with Axum:
 
 ```toml
 [dependencies]
-stately = { version = "0.1", features = ["axum"] }
+stately = { version = "0.2.0", features = ["axum"] }
 ```
+
+### 2. 🌐 Web (React + TypeScript)
+
+Coming soon
 
 ## 📖 Example
 
-```rust
-use stately::prelude::*;
-
-// Define your entities
-#[stately::entity]
-#[derive(Clone, serde::Serialize, serde::Deserialize)]
-pub struct Pipeline {
-    pub name: String,
-    pub source: Link<SourceConfig>,
-    pub sink: Link<SinkConfig>,
-}
-
-#[stately::entity]
-#[derive(Clone, serde::Serialize, serde::Deserialize)]
-pub struct SourceConfig {
-    pub name: String,
-    pub url: String,
-}
-
-#[stately::entity]
-#[derive(Clone, serde::Serialize, serde::Deserialize)]
-pub struct SinkConfig {
-    pub name: String,
-    pub destination: String,
-}
-
-// Define your application state
-#[stately::state]
-pub struct AppState {
-    pipelines: Pipeline,
-    sources: SourceConfig,
-    sinks: SinkConfig,
-}
-
-fn main() {
-    let mut state = AppState::new();
-
-    // Create entities
-    let source_id = state.sources.create(SourceConfig {
-        name: "my-source".to_string(),
-        url: "http://example.com/data".to_string(),
-    });
-
-    let sink_id = state.sinks.create(SinkConfig {
-        name: "my-sink".to_string(),
-        destination: "s3://my-bucket/output".to_string(),
-    });
-
-    // Create a pipeline referencing the source and sink
-    let pipeline = Pipeline {
-        name: "my-pipeline".to_string(),
-        source: Link::create_ref(source_id.to_string()),
-        sink: Link::create_ref(sink_id.to_string()),
-    };
-
-    let pipeline_id = state.pipelines.create(pipeline);
-
-    // Query entities
-    if let Some((id, entity)) = state.get_entity(&pipeline_id.to_string(), StateEntry::Pipeline) {
-        println!("Found pipeline: {:?}", entity);
-    }
-
-    // List all entities
-    let summaries = state.list_entities(None);
-    for (entry, entities) in summaries {
-        println!("{}: {} entities", entry.as_ref(), entities.len());
-    }
-
-    // Search across collections
-    let results = state.search_entities("pipeline");
-}
-```
-
-## 🌐 Axum API Generation
-
-Generate complete REST APIs with OpenAPI documentation:
-
-```rust
-#[stately::state(openapi)]
-pub struct State {
-    pipelines: Pipeline,
-    sources: SourceConfig,
-}
-
-#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
-pub struct AppState {}
-
-#[tokio::main]
-async fn main() {
-    let app_state = AppState::new(State::new());
-
-    let app = axum::Router::new()
-        .nest("/api/v1/entity", AppState::router(app_state.clone()))
-        .with_state(app_state);
-
-    // Generated routes:
-    // PUT    /api/v1/entity - Create entity
-    // GET    /api/v1/entity - List all entities
-    // GET    /api/v1/entity/{id}?type=<type> - Get entity by ID
-    // POST   /api/v1/entity/{id} - Update entity
-    // PATCH  /api/v1/entity/{id} - Patch entity
-    // DELETE /api/v1/entity/{entry}/{id} - Delete entity
-}
-```
-
-The `axum_api` macro generates:
-- ✅ Complete REST API handlers as methods on your struct
-- ✅ OpenAPI 3.0 documentation (with `openapi` parameter)
-- ✅ Type-safe request/response types
-- ✅ `router()` method and `AppState::openapi()` for docs
-- ✅ `ResponseEvent` enum and `event_middleware()` for event-driven persistence
-
-### Event-Driven Persistence
-
-Integrate with databases or other stores using the event middleware:
-
-```rust
-use tokio::sync::mpsc;
-
-// Define your event enum
-pub enum ApiEvent {
-    StateEvent(ResponseEvent),
-    // ... other event types
-}
-
-impl From<ResponseEvent> for ApiEvent {
-    fn from(event: ResponseEvent) -> Self {
-        ApiEvent::StateEvent(event)
-    }
-}
-
-let (event_tx, mut event_rx) = mpsc::channel(100);
-
-let app = axum::Router::new()
-    .nest("/api/v1/entity", AppState::router(app_state.clone()))
-    .layer(axum::middleware::from_fn(
-        AppState::event_middleware::<ApiEvent>(event_tx)
-    ))
-    .with_state(app_state);
-
-// Handle events in background
-tokio::spawn(async move {
-    while let Some(ApiEvent::StateEvent(event)) = event_rx.recv().await {
-        match event {
-            ResponseEvent::Created { id, entity } => store.insert(id, entity).await,
-            ResponseEvent::Updated { id, entity } => store.update(id, entity).await,
-            ResponseEvent::Deleted { id, entry } => store.delete(id, entry).await,
-        }
-    }
-});
-```
-
-## 📚 Feature Flags
-
-| Feature | Description | Default |
-|---------|-------------|---------|
-| `openapi` | OpenAPI schema generation with `utoipa` | ✅ |
-| `axum` | Axum web framework integration (implies `openapi`) | ❌ |
-
-## 🏗️ Architecture
-
-Stately uses procedural macros to generate:
-
-1. **`#[stately::entity]`** - Implements `StateEntity` trait for your types
-2. **`#[stately::state]`** - Generates:
-   - `StateEntry` enum (entity type discriminator)
-   - `Entity` enum (type-erased entity wrapper)
-   - Collection fields with CRUD operations
-   - `link_aliases` module with type aliases for `Link<T>` (e.g., `PipelineLink`)
-3. **`#[stately::axum_api(State, openapi)]`** - Generates (optional):
-   - REST API handlers as methods on your struct
-   - `router()` method for Axum integration
-   - OpenAPI documentation via `::openapi()` method
-   - `ResponseEvent` enum for CRUD events
-   - `event_middleware()` method for event streaming
-
-### Generated Code
-
-**From `#[stately::state]`:**
-
-```rust
-pub mod link_aliases {
-    pub type PipelineLink = ::stately::Link<Pipeline>;
-    pub type SourceLink = ::stately::Link<Source>;
-    // ... one for each entity type
-}
-```
-
-**From `#[stately::axum_api]`:**
-
-```rust
-pub enum ResponseEvent {
-    Created { id: EntityId, entity: Entity },
-    Updated { id: EntityId, entity: Entity },
-    Deleted { id: EntityId, entry: StateEntry },
-}
-```
-
-These enable type-safe event-driven architectures for persistence and integration.
-
-## 📝 Examples
-
-See the [examples](examples/) directory:
-
-- [`basic.rs`](examples/basic.rs) - Core CRUD operations and entity relationships
-- [`axum_api.rs`](examples/axum_api.rs) - Web API generation with Axum
-
-Run examples:
-
-```bash
-cargo run --example basic
-cargo run --example axum_api --features axum
-```
+* For `stately` examples, refer to the [README](stately/README.md) or the [examples](stately/examples).
+* For `@stately/ui`, stand by... coming soon.
 
 ## 🤝 Contributing
 
