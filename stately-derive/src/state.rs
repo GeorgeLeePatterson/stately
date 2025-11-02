@@ -55,11 +55,20 @@ impl Parse for CollectionArgs {
 }
 
 /// Generates application state with entity collections.
-pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
     let input = syn::parse_macro_input!(item as DeriveInput);
+
+    // Parse optional 'openapi' parameter
+    let enable_openapi = if !attr.is_empty() {
+        let attr_str = attr.to_string();
+        attr_str.trim() == "openapi"
+    } else {
+        false
+    };
 
     let vis = &input.vis;
     let name = &input.ident;
+    let attrs = &input.attrs;
 
     // Parse the struct fields
     let fields = match &input.data {
@@ -224,11 +233,31 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let custom_coll_types: Vec<_> =
         custom_collections.iter().map(|(_, _, coll_ty)| *coll_ty).collect();
 
+    // Conditionally add ToSchema derive based on openapi parameter
+    let state_entry_derives = if enable_openapi {
+        quote! {
+            #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, ::serde::Serialize, ::serde::Deserialize, ::utoipa::ToSchema)]
+        }
+    } else {
+        quote! {
+            #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, ::serde::Serialize, ::serde::Deserialize)]
+        }
+    };
+
+    let entity_derives = if enable_openapi {
+        quote! {
+            #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::utoipa::ToSchema)]
+        }
+    } else {
+        quote! {
+            #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+        }
+    };
+
     // Generate the core state code
     let core_code = quote! {
         // Generate StateEntry enum
-        #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, ::serde::Serialize, ::serde::Deserialize)]
-        #[cfg_attr(feature = "openapi", derive(::utoipa::ToSchema))]
+        #state_entry_derives
         #[serde(rename_all = "snake_case")]
         #vis enum StateEntry {
             #( #all_variants, )*
@@ -254,14 +283,14 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
         }
 
         // Generate Entity enum
-        #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
-        #[cfg_attr(feature = "openapi", derive(::utoipa::ToSchema))]
+        #entity_derives
         #[serde(tag = "type", content = "data", rename_all = "snake_case")]
         #vis enum Entity {
             #( #all_variants(#all_types), )*
         }
 
         // Generate the State struct
+        #(#attrs)*
         #vis struct #name {
             #( #vis #singleton_fields: ::stately::Singleton<#singleton_types>, )*
             #( #vis #collection_fields: ::stately::Collection<#collection_types>, )*
@@ -285,83 +314,57 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             /// Creates a new entity
-            #vis fn create_entity(&mut self, entity: Entity) -> ::std::result::Result<(::stately::EntityId, Option<String>), String> {
+            #vis fn create_entity(&mut self, entity: Entity) -> ::stately::EntityId {
                 use ::stately::StateCollection;
                 match entity {
                     #(
-                        Entity::#singleton_variants(inner) => {
-                            let id = self.#singleton_fields.create(inner);
-                            Ok((id, Some("Entity created successfully".to_string())))
-                        }
+                        Entity::#singleton_variants(inner) => self.#singleton_fields.create(inner),
                     )*
                     #(
-                        Entity::#collection_variants(inner) => {
-                            let id = self.#collection_fields.create(inner);
-                            Ok((id, Some("Entity created successfully".to_string())))
-                        }
+                        Entity::#collection_variants(inner) => self.#collection_fields.create(inner),
                     )*
                     #(
-                        Entity::#custom_variants(inner) => {
-                            let id = self.#custom_fields.create(inner);
-                            Ok((id, Some("Entity created successfully".to_string())))
-                        }
+                        Entity::#custom_variants(inner) => self.#custom_fields.create(inner),
                     )*
                 }
             }
 
             /// Updates an existing entity by ID
-            #vis fn update_entity(&mut self, id: &str, entity: Entity) -> ::std::result::Result<(::stately::EntityId, Option<String>), String> {
+            #vis fn update_entity(&mut self, id: &str, entity: Entity) -> ::stately::Result<()> {
                 use ::stately::StateCollection;
-                // Parse the ID to Uuid
-                let entity_id: ::stately::EntityId = id.parse()
-                    .map_err(|_| format!("Invalid UUID: {}", id))?;
 
                 match entity {
                     #(
                         Entity::#singleton_variants(inner) => {
-                            self.#singleton_fields.update(id, inner)
-                                .map_err(|e| format!("Failed to update entity: {}", e))?;
-                            Ok((entity_id, Some("Entity updated successfully".to_string())))
+                            self.#singleton_fields.update(id, inner)?;
                         }
                     )*
                     #(
                         Entity::#collection_variants(inner) => {
-                            self.#collection_fields.update(id, inner)
-                                .map_err(|e| format!("Failed to update entity: {}", e))?;
-                            Ok((entity_id, Some("Entity updated successfully".to_string())))
+                            self.#collection_fields.update(id, inner)?;
                         }
                     )*
                     #(
                         Entity::#custom_variants(inner) => {
-                            self.#custom_fields.update(id, inner)
-                                .map_err(|e| format!("Failed to update entity: {}", e))?;
-                            Ok((entity_id, Some("Entity updated successfully".to_string())))
+                            self.#custom_fields.update(id, inner)?;
                         }
                     )*
                 }
+                Ok(())
             }
 
             /// Removes an entity by ID and type
-            #vis fn remove_entity(&mut self, id: &str, entry: StateEntry) -> ::std::result::Result<Option<String>, String> {
+            #vis fn remove_entity(&mut self, id: &str, entry: StateEntry) -> bool {
                 use ::stately::StateCollection;
                 match entry {
                     #(
-                        StateEntry::#singleton_variants => {
-                            self.#singleton_fields.remove(id)?;
-                            Ok(Some("Entity removed successfully".to_string()))
-                        }
+                        StateEntry::#singleton_variants => self.#singleton_fields.remove(id).is_ok(),
                     )*
                     #(
-                        StateEntry::#collection_variants => {
-                            self.#collection_fields.remove(id)?;
-                            Ok(Some("Entity removed successfully".to_string()))
-                        }
+                        StateEntry::#collection_variants => self.#collection_fields.remove(id).is_ok(),
                     )*
                     #(
-                        StateEntry::#custom_variants => {
-                            self.#custom_fields.remove(id)?;
-                            Ok(Some("Entity removed successfully".to_string()))
-                        }
+                        StateEntry::#custom_variants => self.#custom_fields.remove(id).is_ok(),
                     )*
                 }
             }
@@ -413,7 +416,13 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             /// Searches entities across all collections
-            #vis fn search_entities(&self, needle: &str) -> ::stately::hashbrown::HashMap<StateEntry, ::stately::hashbrown::HashMap<::stately::EntityId, Entity>> {
+            #vis fn search_entities(
+                &self,
+                needle: &str
+            ) -> ::stately::hashbrown::HashMap<
+                StateEntry,
+                ::stately::hashbrown::HashMap<::stately::EntityId, Entity>
+            > {
                 use ::stately::StateCollection;
                 let mut result = ::stately::hashbrown::HashMap::default();
 
@@ -459,38 +468,7 @@ pub fn state(_attr: TokenStream, item: TokenStream) -> TokenStream {
         }
     };
 
-    // Note: API generation is now handled by the #[axum_api] macro
-    // Users should explicitly use #[axum_api(StateName)] on their API state struct
-
-    // Generate Stately{Name} wrapper struct for axum integration
-    let stately_name = syn::Ident::new(&format!("Stately{}", name), name.span());
-
-    let stately_struct = quote! {
-        /// Wrapper around state for Axum integration with Arc<RwLock<T>>
-        /// Only available when the `axum` feature is enabled
-        #[cfg(feature = "axum")]
-        #[derive(Clone)]
-        #vis struct #stately_name {
-            #vis state: ::std::sync::Arc<::tokio::sync::RwLock<#name>>,
-        }
-
-        #[cfg(feature = "axum")]
-        impl #stately_name {
-            /// Creates a new wrapped state for use with Axum
-            #vis fn new(state: #name) -> Self {
-                Self {
-                    state: ::std::sync::Arc::new(::tokio::sync::RwLock::new(state)),
-                }
-            }
-        }
-    };
-
-    let expanded = quote! {
-        #core_code
-        #stately_struct
-    };
-
-    TokenStream::from(expanded)
+    TokenStream::from(core_code)
 }
 
 /// Extracts the type identifier from a type

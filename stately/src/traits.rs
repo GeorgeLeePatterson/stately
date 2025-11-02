@@ -2,6 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::Result;
 use crate::entity::{EntityId, Summary};
 
 /// Trait that all state entities must implement.
@@ -71,7 +72,7 @@ pub trait StateCollection {
     /// # Errors
     ///
     /// Returns an error if the entity with the given ID does not exist in the collection.
-    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<Self::Entity, String>;
+    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<()>;
 
     /// Removes an entity by ID
     ///
@@ -79,7 +80,7 @@ pub trait StateCollection {
     ///
     /// Returns an error if the entity with the given ID does not exist in the collection.
     /// For singletons, always returns an error as they cannot be removed.
-    fn remove(&mut self, id: &str) -> Result<Self::Entity, String>;
+    fn remove(&mut self, id: &str) -> Result<Self::Entity>;
 
     /// Lists all entities as summaries
     fn list(&self) -> Vec<Summary>;
@@ -115,11 +116,11 @@ impl<T: StateCollection> StateCollection for Box<T> {
 
     fn create(&mut self, entity: Self::Entity) -> EntityId { self.as_mut().create(entity) }
 
-    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<Self::Entity, String> {
+    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<()> {
         self.as_mut().update(id, entity)
     }
 
-    fn remove(&mut self, id: &str) -> Result<Self::Entity, String> { self.as_mut().remove(id) }
+    fn remove(&mut self, id: &str) -> Result<Self::Entity> { self.as_mut().remove(id) }
 
     fn list(&self) -> Vec<Summary> { self.as_ref().list() }
 

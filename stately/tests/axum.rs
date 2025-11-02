@@ -1,4 +1,5 @@
 #![expect(unused_crate_dependencies)]
+
 use utoipa::OpenApi;
 
 // Test entities
@@ -55,7 +56,7 @@ pub struct Job {
 type TaskCache = stately::Collection<Task>;
 
 // Test state demonstrating all collection syntax permutations
-#[stately::state]
+#[stately::state(openapi)]
 pub struct State {
     // Singleton
     #[singleton]
@@ -79,12 +80,12 @@ pub struct State {
     jobs:       Job,
 }
 
-#[stately::axum_api(State)]
+#[stately::axum_api(State, openapi)]
 pub struct AppState {}
 
 #[tokio::test]
 async fn test_openapi_generation() {
-    let api_doc = api::ApiDoc::openapi();
+    let api_doc = AppState::openapi();
     assert!(!api_doc.paths.paths.is_empty());
     assert!(api_doc.components.as_ref().map_or(0, |c| c.schemas.len()) > 0);
 }
@@ -97,7 +98,7 @@ async fn test_create_entity() {
 
     let app_state = AppState::new(State::new());
     let app = axum::Router::new()
-        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
         .with_state(app_state);
 
     // Create a pipeline
@@ -117,7 +118,7 @@ async fn test_create_entity() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
-    let result: api::OperationResponse = serde_json::from_slice(&body).unwrap();
+    let result: OperationResponse = serde_json::from_slice(&body).unwrap();
     assert!(result.id.is_uuid());
 }
 
@@ -136,11 +137,11 @@ async fn test_list_entities() {
             name:        "filtered-pipeline".to_string(),
             description: Some("Test".to_string()),
         };
-        drop(s.create_entity(Entity::Pipeline(pipeline)).unwrap());
+        drop(s.create_entity(Entity::Pipeline(pipeline)));
     }
 
     let app = axum::Router::new()
-        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
         .with_state(app_state);
 
     // Get all entities
@@ -166,12 +167,11 @@ async fn test_get_entity_by_id() {
             name:        "get-test-pipeline".to_string(),
             description: Some("Test".to_string()),
         };
-        let (id, _) = s.create_entity(Entity::Pipeline(pipeline)).unwrap();
-        id
+        s.create_entity(Entity::Pipeline(pipeline))
     };
 
     let app = axum::Router::new()
-        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
         .with_state(app_state);
 
     // Get entity by ID - need to specify type
@@ -185,9 +185,10 @@ async fn test_get_entity_by_id() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
-    let result: Entity = serde_json::from_slice(&body).unwrap();
+    let result: GetEntityResponse = serde_json::from_slice(&body).unwrap();
     // Verify we got an entity back
-    match result {
+    assert_eq!(result.id, id);
+    match result.entity {
         Entity::Pipeline(p) => {
             assert_eq!(p.name, "get-test-pipeline");
         }
@@ -210,12 +211,11 @@ async fn test_update_entity() {
             name:        "update-test".to_string(),
             description: Some("Original".to_string()),
         };
-        let (id, _) = s.create_entity(Entity::Pipeline(pipeline)).unwrap();
-        id
+        s.create_entity(Entity::Pipeline(pipeline))
     };
 
     let app = axum::Router::new()
-        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
         .with_state(app_state);
 
     // Update the pipeline
@@ -235,7 +235,7 @@ async fn test_update_entity() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
-    let result: api::OperationResponse = serde_json::from_slice(&body).unwrap();
+    let result: OperationResponse = serde_json::from_slice(&body).unwrap();
     assert_eq!(result.id, id);
 }
 
@@ -254,12 +254,11 @@ async fn test_delete_entity() {
             name:        "delete-test".to_string(),
             description: Some("Will be deleted".to_string()),
         };
-        let (id, _) = s.create_entity(Entity::Pipeline(pipeline)).unwrap();
-        id
+        s.create_entity(Entity::Pipeline(pipeline))
     };
 
     let app = axum::Router::new()
-        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
         .with_state(app_state);
 
     // Delete the pipeline

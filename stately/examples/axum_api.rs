@@ -55,7 +55,7 @@ pub struct Job {
 type TaskCache = stately::Collection<Task>;
 
 // Test state demonstrating all collection syntax permutations
-#[stately::state]
+#[stately::state(openapi)]
 pub struct State {
     // Singleton
     #[singleton]
@@ -79,7 +79,7 @@ pub struct State {
     pub jobs:       Job,
 }
 
-#[stately::axum_api(State)]
+#[stately::axum_api(State, openapi)]
 pub struct AppState {}
 
 #[tokio::main]
@@ -92,7 +92,7 @@ async fn main() {
 
     // Get the router from the generated api module
     let _app: axum::Router = axum::Router::new()
-        .nest("/api/v1/entity", api::router(app_state.clone()))
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
         .with_state(app_state);
 
     println!("✓ Axum router created successfully!");
@@ -106,7 +106,8 @@ async fn main() {
     #[cfg(feature = "openapi")]
     {
         use utoipa::OpenApi;
-        let api_doc = api::ApiDoc::openapi();
+
+        let api_doc = AppState::openapi();
         println!("\n✓ OpenAPI documentation generated!");
         println!("  Paths: {}", api_doc.paths.paths.len());
         println!("  Components: {}", api_doc.components.as_ref().map_or(0, |c| c.schemas.len()));

@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::entity::{EntityId, SINGLETON_ENTITY_ID, Summary};
 use crate::traits::{StateCollection, StateEntity};
+use crate::{Error, Result};
 
 /// A collection of entities of type `T`
 ///
@@ -79,7 +80,8 @@ impl<T: StateEntity> StateCollection for Collection<T> {
         self.inner
             .iter()
             .filter(|(_, entity)| {
-                entity.name().to_lowercase().contains(&needle_lower)
+                needle.is_empty()
+                    || entity.name().to_lowercase().contains(&needle_lower)
                     || entity
                         .description()
                         .is_some_and(|d| d.to_lowercase().contains(&needle_lower))
@@ -93,17 +95,18 @@ impl<T: StateEntity> StateCollection for Collection<T> {
         id
     }
 
-    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<Self::Entity, String> {
+    fn update(&mut self, id: &str, entity: Self::Entity) -> Result<()> {
         // Only direct ID lookup - no name fallback for destructive operations
-        self.inner
-            .get_mut(id)
-            .map(|e| std::mem::replace(e, entity))
-            .ok_or_else(|| format!("Entity not found: {id}"))
+        let Some(e) = self.inner.get_mut(id) else {
+            return Err(Error::NotFound(format!("Entity not found: {id}")));
+        };
+        drop(std::mem::replace(e, entity));
+        Ok(())
     }
 
-    fn remove(&mut self, id: &str) -> Result<Self::Entity, String> {
+    fn remove(&mut self, id: &str) -> Result<Self::Entity> {
         // Only direct ID lookup - no name fallback for destructive operations
-        self.inner.remove(id).ok_or_else(|| format!("Entity not found: {id}"))
+        self.inner.remove(id).ok_or_else(|| Error::NotFound(format!("Entity not found: {id}")))
     }
 
     fn list(&self) -> Vec<Summary> {
@@ -124,7 +127,7 @@ pub struct Singleton<T: StateEntity> {
 
 // Manual Serialize implementation to avoid complex trait bound resolution
 impl<T: StateEntity> Serialize for Singleton<T> {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
     {
@@ -134,7 +137,7 @@ impl<T: StateEntity> Serialize for Singleton<T> {
 
 // Manual Deserialize implementation to avoid complex trait bound resolution
 impl<'de, T: StateEntity> Deserialize<'de> for Singleton<T> {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
@@ -186,7 +189,8 @@ impl<T: StateEntity + Default> StateCollection for Singleton<T> {
     fn search_entities(&self, needle: &str) -> Vec<(&EntityId, &Self::Entity)> {
         // Search the singleton's name and description
         let needle_lower = needle.to_lowercase();
-        if self.inner.name().to_lowercase().contains(&needle_lower)
+        if needle.is_empty()
+            || self.inner.name().to_lowercase().contains(&needle_lower)
             || self.inner.description().is_some_and(|d| d.to_lowercase().contains(&needle_lower))
         {
             vec![(&SINGLETON_ENTITY_ID, &self.inner)]
@@ -201,14 +205,15 @@ impl<T: StateEntity + Default> StateCollection for Singleton<T> {
         EntityId::singleton()
     }
 
-    fn update(&mut self, _id: &str, entity: Self::Entity) -> Result<Self::Entity, String> {
+    fn update(&mut self, _id: &str, entity: Self::Entity) -> Result<()> {
         // Singleton update is infallible - ID doesn't matter
-        Ok(std::mem::replace(&mut self.inner, entity))
+        drop(std::mem::replace(&mut self.inner, entity));
+        Ok(())
     }
 
-    fn remove(&mut self, _id: &str) -> Result<Self::Entity, String> {
+    fn remove(&mut self, _id: &str) -> Result<Self::Entity> {
         // Can't remove a singleton
-        Err("Cannot remove singleton entity".to_string())
+        Err(Error::IllegalOperation("Cannot remove singleton entity".to_string()))
     }
 
     fn list(&self) -> Vec<Summary> { vec![self.inner.summary(EntityId::singleton())] }

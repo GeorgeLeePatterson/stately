@@ -179,7 +179,7 @@ fn main() {
     let updated_source =
         Source { name: "api-source".to_string(), url: "http://example.com/new-data".to_string() };
     match state.sources.update(&source_id, updated_source) {
-        Ok(old) => println!("Updated source (old URL: {})", old.url),
+        Ok(()) => println!("Updated source"),
         Err(e) => println!("Error updating source: {e}"),
     }
 
