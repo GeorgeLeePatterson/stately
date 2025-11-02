@@ -99,13 +99,13 @@ prepare-release version:
     fi
 
     # Update stately version references in README files (if they exist)
-    # Look for patterns like: stately = "0.1.1" or stately = { version = "0.1.1"
+    # Look for patterns like: stately = "0.1" or stately = "0.1.1" or stately = { version = "0.1", features = [...] }
     for readme in README.md stately/README.md; do
         if [ -f "$readme" ]; then
-            # Update simple dependency format
-            sed -i '' "s/stately = \"[0-9]*\.[0-9]*\.[0-9]*\"/stately = \"{{version}}\"/" "$readme" || true
-            # Update version field in dependency table format
-            sed -i '' "s/stately = { version = \"[0-9]*\.[0-9]*\.[0-9]*\"/stately = { version = \"{{version}}\"/" "$readme" || true
+            # Update simple dependency format (handles both "X.Y" and "X.Y.Z")
+            sed -i '' "s/stately = \"[0-9]*\.[0-9]*\(\.[0-9]*\)\?\"/stately = \"{{version}}\"/" "$readme" || true
+            # Update version field in dependency table format (handles both "X.Y" and "X.Y.Z")
+            sed -i '' "s/stately = { version = \"[0-9]*\.[0-9]*\(\.[0-9]*\)\?\"/stately = { version = \"{{version}}\"/" "$readme" || true
         fi
     done
 
@@ -123,7 +123,7 @@ prepare-release version:
     # Stage all changes
     git add Cargo.toml Cargo.lock CHANGELOG.md RELEASE_NOTES.md
     # Also add README files if they were modified
-    git add README.md 2>/dev/null || true
+    git add README.md stately/README.md 2>/dev/null || true
 
     # Commit
     git commit -m "chore: prepare release v{{version}}"
