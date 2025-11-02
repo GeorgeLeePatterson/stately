@@ -2,6 +2,8 @@
 // NOTE: This is an error in the `utoipa` crate.
 #![cfg_attr(feature = "openapi", allow(clippy::needless_for_each))]
 
+use axum::body::Body;
+use axum::response::Response;
 use utoipa::OpenApi;
 
 // Test entities
@@ -89,6 +91,13 @@ pub struct State {
 )]
 pub struct AppState {}
 
+// Helper function to deserialize a response
+async fn response_body<T: serde::de::DeserializeOwned>(response: Response<Body>) -> T {
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
+    let result: T = serde_json::from_slice(&body).unwrap();
+    result
+}
+
 #[tokio::test]
 async fn test_openapi_generation() {
     let api_doc = AppState::openapi();
@@ -123,13 +132,12 @@ async fn test_create_entity() {
     let response = app.clone().oneshot(request).await.unwrap();
     assert_eq!(response.status(), StatusCode::OK);
 
-    let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
-    let result: OperationResponse = serde_json::from_slice(&body).unwrap();
+    let result = response_body::<OperationResponse>(response).await;
     assert!(result.id.is_uuid());
 }
 
 #[tokio::test]
-async fn test_list_entities() {
+async fn test_get_entities() {
     use axum::body::Body;
     use axum::http::{Request, StatusCode};
     use tower::ServiceExt;
@@ -156,6 +164,65 @@ async fn test_list_entities() {
 
     let response = app.clone().oneshot(request).await.unwrap();
     assert_eq!(response.status(), StatusCode::OK);
+
+    // NOTE: EntitiesResponse is optimized for the UI. To Deserialize, use EntitiesMap directly.
+    let result = response_body::<EntitiesMap>(response).await;
+    assert!(result.entities.get(&StateEntry::Pipeline).unwrap().len() == 1);
+}
+
+#[tokio::test]
+async fn test_list_entities() {
+    use axum::body::Body;
+    use axum::http::{Request, StatusCode};
+    use tower::ServiceExt;
+
+    let app_state = AppState::new(State::new());
+
+    // Add a pipeline directly to state
+    {
+        let mut s = app_state.state.write().await;
+        let pipeline = Pipeline {
+            name:        "filtered-pipeline".to_string(),
+            description: Some("Test".to_string()),
+        };
+        drop(s.create_entity(Entity::Pipeline(pipeline)));
+    }
+
+    // Add a sink directly to state
+    {
+        let mut s = app_state.state.write().await;
+        let sink =
+            Sink { name: "filtered-pipeline".to_string(), destination: "Test".to_string() };
+        drop(s.create_entity(Entity::Sink(sink)));
+    }
+
+    let app = axum::Router::new()
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
+        .with_state(app_state);
+
+    // Get all entity summaries
+    let request =
+        Request::builder().method("GET").uri("/api/v1/entity/list").body(Body::empty()).unwrap();
+
+    let response = app.clone().oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let result = response_body::<ListResponse>(response).await;
+    assert!(result.entities.get(&StateEntry::Pipeline).unwrap().len() == 1);
+
+    // Get sink summaries
+    let request = Request::builder()
+        .method("GET")
+        .uri("/api/v1/entity/list/sink")
+        .body(Body::empty())
+        .unwrap();
+
+    let response = app.clone().oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let result = response_body::<ListResponse>(response).await;
+    assert!(result.entities.get(&StateEntry::Pipeline).is_none());
+    assert!(result.entities.get(&StateEntry::Sink).unwrap().len() == 1);
 }
 
 #[tokio::test]

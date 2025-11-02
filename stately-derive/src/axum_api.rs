@@ -124,40 +124,22 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         quote! { #[derive(::serde::Deserialize)] }
     };
 
-    let operation_response_derives = if enable_openapi {
-        quote! { #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize, ::utoipa::ToSchema, ::utoipa::ToResponse)] }
-    } else {
-        quote! { #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize)] }
-    };
-
     let operation_response_id_schema = if enable_openapi {
         quote! { #[schema(value_type = String, format = "uuid")] }
     } else {
         quote! {}
     };
 
-    let get_entity_response_derive = if enable_openapi {
-        quote! { #[derive(::serde::Serialize, ::serde::Deserialize, ::utoipa::ToSchema, utoipa::ToResponse)] }
+    let common_response_derive = if enable_openapi {
+        quote! { #[derive(Debug, ::serde::Serialize, ::serde::Deserialize, ::utoipa::ToSchema, ::utoipa::ToResponse)] }
     } else {
-        quote! { #[derive(::serde::Serialize, ::serde::Deserialize)] }
-    };
-
-    let entities_response_derive = if enable_openapi {
-        quote! { #[derive(::serde::Serialize, ::utoipa::ToSchema, ::utoipa::ToResponse)] }
-    } else {
-        quote! { #[derive(::serde::Serialize)] }
+        quote! { #[derive(Debug, ::serde::Serialize, ::serde::Deserialize)] }
     };
 
     let entities_map_derive = if enable_openapi {
-        quote! { #[derive(Debug, Clone, PartialEq, ::utoipa::ToSchema)] }
+        quote! { #[derive(Debug, Clone, PartialEq, ::serde::Deserialize, ::utoipa::ToSchema)] }
     } else {
-        quote! { #[derive(Debug, Clone, PartialEq)] }
-    };
-
-    let list_response_derive = if enable_openapi {
-        quote! { #[derive(::serde::Serialize, ::utoipa::ToSchema, ::utoipa::ToResponse)] }
-    } else {
-        quote! { #[derive(::serde::Serialize)] }
+        quote! { #[derive(Debug, Clone, PartialEq, ::serde::Deserialize)] }
     };
 
     let list_response_field_attr = if enable_openapi {
@@ -196,15 +178,27 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         quote! {}
     };
 
+    let list_all_entities_path = if enable_openapi {
+        quote! {
+            #[::utoipa::path(
+                get,
+                path = "/list",
+                tag = "entity",
+                responses((status = 200, description = "List all entities", body = ListResponse))
+            )]
+        }
+    } else {
+        quote! {}
+    };
+
     let list_entities_path = if enable_openapi {
         quote! {
             #[::utoipa::path(
                 get,
-                path = "",
+                path = "/list/{type}",
                 tag = "entity",
-                responses(
-                    (status = 200, description = "Successfully retrieved all entities")
-                )
+                params(("type" = StateEntry, Path, description = "Entity type to list")),
+                responses((status = 200, description = "List entities by type", body = ListResponse)),
             )]
         }
     } else {
@@ -222,7 +216,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                     GetEntityQuery
                 ),
                 responses(
-                    (status = 200, description = "Successfully retrieved entity", body = Entity),
+                    (status = 200, description = "Successfully retrieved entity", body = GetEntityResponse),
                     (status = 404, description = "Entity not found")
                 )
             )]
@@ -237,9 +231,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                 post,
                 path = "/{id}",
                 tag = "entity",
-                params(
-                    ("id" = String, Path, description = "Entity ID")
-                ),
+                params(("id" = String, Path, description = "Entity ID")),
                 request_body = Entity,
                 responses(
                     (status = 200, description = "Entity updated successfully", body = OperationResponse),
@@ -257,9 +249,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                 patch,
                 path = "/{id}",
                 tag = "entity",
-                params(
-                    ("id" = String, Path, description = "Entity ID")
-                ),
+                params(("id" = String, Path, description = "Entity ID")),
                 request_body = Entity,
                 responses(
                     (status = 200, description = "Entity patched successfully", body = OperationResponse),
@@ -282,7 +272,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                     ("id" = String, Path, description = "Entity ID")
                 ),
                 responses(
-                    (status = 200, description = "Entity removed successfully", body = String),
+                    (status = 200, description = "Entity removed successfully", body = OperationResponse),
                     (status = 404, description = "Entity not found"),
                     (status = 500, description = "Internal server error", body = String)
                 )
@@ -298,11 +288,11 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                 get,
                 path = "",
                 tag = "entity",
-                responses((status = 200, description = "Get entities with filters", body = EntitiesResponse)),
                 params(
                     ("name" = Option<String>, Query, description = "Identifier of entity, ie id or name"),
                     ("type" = Option<StateEntry>, Query, description = "Type of entity")
-                )
+                ),
+                responses((status = 200, description = "Get entities with filters", body = EntitiesResponse)),
             )]
         }
     } else {
@@ -386,8 +376,19 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                 ::axum::Router::new()
                     .route(
                         "/",
-                        ::axum::routing::get(list_entities)
+                        ::axum::routing::get(get_entities)
                             .put(create_entity)
+                            .layer(::tower_http::compression::CompressionLayer::new())
+                    )
+                    .route(
+                        "/list",
+                        ::axum::routing::get(list_all_entities)
+                            .layer(::tower_http::compression::CompressionLayer::new())
+                    )
+                    .route(
+                        "/list/{type}",
+                        ::axum::routing::get(list_entities)
+                            .layer(::tower_http::compression::CompressionLayer::new())
                     )
                     .route(
                         "/{id}",
@@ -434,7 +435,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
 
         // Generate the OperationResponse type (outside impl block)
         /// Standard operation response with ID and optional message
-        #operation_response_derives
+        #common_response_derive
         #vis struct OperationResponse {
             #operation_response_id_schema
             pub id: ::stately::EntityId,
@@ -442,25 +443,28 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         }
 
         /// Query parameters for getting a single entity by ID and type
-        #get_entity_response_derive
+        #common_response_derive
         #vis struct GetEntityResponse {
             id: ::stately::EntityId,
             entity: Entity,
         }
 
         /// Response for full entity queries
-        #entities_response_derive
+        #common_response_derive
         #vis struct EntitiesResponse {
             #vis entities: EntitiesMap,
         }
 
         #entities_map_derive
         #vis struct EntitiesMap {
-            entities: ::stately::hashbrown::HashMap<StateEntry, ::stately::hashbrown::HashMap<::stately::EntityId, Entity>>,
+            #vis entities: ::stately::hashbrown::HashMap<
+                StateEntry,
+                ::stately::hashbrown::HashMap<::stately::EntityId, Entity>
+            >,
         }
 
         /// Response for entity summary list queries
-        #list_response_derive
+        #common_response_derive
         #vis struct ListResponse {
             #list_response_field_attr
             #vis entities: ::stately::hashbrown::HashMap<StateEntry, Vec<::stately::Summary>>,
@@ -551,9 +555,9 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
             response
         }
 
-        /// List entity summaries
-        #list_entities_path
-        pub async fn list_entities(
+        /// List all entity summaries
+        #list_all_entities_path
+        pub async fn list_all_entities(
             ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
         ) -> ::stately::Result<::axum::Json<ListResponse>> {
             let state = stately.state.read().await;
@@ -562,6 +566,17 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         }
 
         /// List entity summaries
+        #list_entities_path
+        pub async fn list_entities(
+            ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
+            ::axum::extract::Path(entity_type): ::axum::extract::Path<StateEntry>,
+        ) -> ::stately::Result<::axum::Json<ListResponse>> {
+            let state = stately.state.read().await;
+            let entities = state.list_entities(Some(entity_type));
+            Ok(::axum::Json(ListResponse { entities }))
+        }
+
+        /// Get all entities for all types
         #get_entities_path
         pub async fn get_entities(
             ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
