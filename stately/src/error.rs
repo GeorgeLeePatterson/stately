@@ -60,4 +60,20 @@ mod axum_impl {
             (status, body).into_response()
         }
     }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+
+        #[tokio::test]
+        async fn test_error_into_response() {
+            let error = Error::NotFound("Not found".to_string());
+            let response = error.into_response();
+            assert_eq!(response.status(), StatusCode::NOT_FOUND);
+            let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
+            let body: serde_json::Value = serde_json::from_reader(&*body).unwrap();
+            assert_eq!(body["error"], "Not found");
+            assert_eq!(body["status"], 404);
+        }
+    }
 }

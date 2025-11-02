@@ -284,4 +284,28 @@ mod tests {
         assert_eq!(deserialized.get_by_id(&id1).unwrap().value, 10);
         assert_eq!(deserialized.get_by_id(&id2).unwrap().value, 20);
     }
+
+    #[test]
+    fn test_box_wrapper() {
+        let id1 = EntityId::new();
+        let entities = vec![
+            (id1.clone(), TestEntity { name: "entity1".to_string(), value: 10 }),
+            (EntityId::new(), TestEntity { name: "entity2".to_string(), value: 20 }),
+        ];
+        let mut collections: Box<Collection<TestEntity>> =
+            Box::<Collection<TestEntity>>::load(entities);
+        assert!(collections.iter().collect::<Vec<_>>().len() == 2);
+        assert!(collections.len() == 2);
+        assert!(collections.get_entities().len() == 2);
+        assert!(collections.list().len() == 2);
+        assert!(!collections.is_empty());
+        let new_entity = TestEntity { name: "entity3".to_string(), value: 10 };
+        let id3 = collections.create(new_entity);
+        assert!(collections.get_by_id(&id3).unwrap().value == 10);
+        let removed = collections.remove(&id3).unwrap();
+        assert!(removed.value == 10);
+        let new_entity = TestEntity { name: "entity4".to_string(), value: 10 };
+        let result = collections.update(&id1, new_entity);
+        assert!(result.is_ok());
+    }
 }
