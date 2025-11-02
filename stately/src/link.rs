@@ -6,6 +6,7 @@ use serde::de::{self, MapAccess, Visitor};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::traits::StateEntity;
+use crate::{Collection, StateCollection};
 
 /// Reference configuration either by ID or inline.
 ///
@@ -55,12 +56,26 @@ impl<T: StateEntity> Link<T> {
     ///
     /// # Errors
     /// - If the reference ID is not found in the resolver.
-    pub fn resolve<F>(self, resolver: F) -> Result<T, String>
+    pub fn resolve(self, resolver: &Collection<T>) -> Result<T, String> {
+        match self {
+            Self::Ref(id) => resolver.get_entity(&id).map(|(_, e)| e.clone()).ok_or(id),
+            Self::Inline(entity) => Ok(entity),
+        }
+    }
+
+    /// Resolves the link to an entity.
+    ///
+    /// For `Ref` variants, looks up the entity in the provided resolver.
+    /// For `Inline` variants, returns the embedded entity.
+    ///
+    /// # Errors
+    /// - If the reference ID is not found in the resolver.
+    pub fn find<F>(self, finder: F) -> Result<T, String>
     where
-        F: FnOnce(&str) -> Option<T>,
+        F: Fn(&str) -> Option<T>,
     {
         match self {
-            Self::Ref(id) => resolver(&id).ok_or(id),
+            Self::Ref(id) => finder(&id).ok_or(id),
             Self::Inline(entity) => Ok(entity),
         }
     }
@@ -282,7 +297,7 @@ mod tests {
             if id == "entity-123" { Some(entity.clone()) } else { None }
         };
 
-        let resolved_ref = link.resolve(resolver).unwrap();
+        let resolved_ref = link.find(resolver).unwrap();
         assert_eq!(resolved_ref, entity);
     }
 
@@ -292,7 +307,7 @@ mod tests {
 
         let resolver = |_id: &str| None;
 
-        let result = link.resolve(resolver);
+        let result = link.find(resolver);
         assert!(result.is_err());
         assert_eq!(result.unwrap_err(), "entity-123");
     }
@@ -304,7 +319,7 @@ mod tests {
 
         let resolver = |_id: &str| panic!("Resolver should not be called for inline");
 
-        let resolved_ref = link.resolve(resolver).unwrap();
+        let resolved_ref = link.find(resolver).unwrap();
         assert_eq!(resolved_ref, entity);
     }
 

@@ -473,6 +473,7 @@ dependencies = [
  "stately-derive",
  "thiserror",
  "tokio",
+ "tower",
  "utoipa",
  "uuid",
 ]

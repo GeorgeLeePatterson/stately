@@ -36,6 +36,10 @@ coverage-lcov:
 
 # --- EXAMPLES ---
 
+examples:
+    cargo run -F axum --example "basic"
+    cargo run -F axum --example "axum_api"
+
 example example:
     cargo run -F axum --example "{{ example }}"
 

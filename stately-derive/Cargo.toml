@@ -14,6 +14,13 @@ documentation.workspace = true
 [lib]
 proc-macro = true
 
+[features]
+# These features are used in generated code via #[cfg(feature = "...")]
+# and are checked against the consuming crate's enabled features, not this proc-macro crate's.
+# They must be declared here to avoid "unexpected_cfgs" warnings.
+openapi = []
+axum = []
+
 [dependencies]
 proc-macro2 = "1.0"
 quote = "1.0"

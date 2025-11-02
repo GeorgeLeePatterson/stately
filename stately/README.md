@@ -18,6 +18,8 @@ Stately provides a framework for managing application configuration and state wi
 - 🆔 **Time-Sortable IDs** - UUID v7 for naturally ordered identifiers
 - 🚀 **Web APIs** - Optional Axum integration with generated handlers
 
+Stately does not provide the configuration and structures that comprise the state. Instead it provides an ultra-thin container management strategy that provides seamless integration with [@stately/ui](stately-ui).
+
 ## Installation
 
 Add to your `Cargo.toml`:
@@ -158,22 +160,21 @@ pub struct AppState {
 Generate a complete REST API with OpenAPI documentation:
 
 ```rust
-#[stately::state(api = ["axum"])]
-pub struct AppState {
+#[stately::state(openapi)]
+pub struct State {
     pipelines: Pipeline,
 }
 
+#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+pub struct AppState {}
+
 #[tokio::main]
 async fn main() {
-    use std::sync::Arc;
-    use tokio::sync::RwLock;
-
-    let state = Arc::new(RwLock::new(AppState::new()));
-    let axum_state = axum_api::StatelyState::new(state);
+    let app_state = AppState::new(State::new());
 
     let app = axum::Router::new()
-        .nest("/api/v1/entity", axum_api::router())
-        .with_state(axum_state);
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
+        .with_state(app_state);
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
@@ -183,14 +184,70 @@ async fn main() {
 }
 ```
 
+### Event Middleware for Persistence
+
+The `axum_api` macro generates a `ResponseEvent` enum and `event_middleware()` method for integrating with databases:
+
+```rust
+use tokio::sync::mpsc;
+
+// Your event enum that wraps ResponseEvent
+pub enum ApiEvent {
+    StateEvent(ResponseEvent),
+}
+
+impl From<ResponseEvent> for ApiEvent {
+    fn from(event: ResponseEvent) -> Self {
+        ApiEvent::StateEvent(event)
+    }
+}
+
+let (event_tx, mut event_rx) = mpsc::channel(100);
+
+let app = axum::Router::new()
+    .nest("/api/v1/entity", AppState::router(app_state.clone()))
+    .layer(axum::middleware::from_fn(
+        AppState::event_middleware::<ApiEvent>(event_tx)
+    ))
+    .with_state(app_state);
+
+// Background task to handle events
+tokio::spawn(async move {
+    while let Some(ApiEvent::StateEvent(event)) = event_rx.recv().await {
+        match event {
+            ResponseEvent::Created { id, entity } => {
+                // Persist to database after state update
+                db.insert(id, entity).await.unwrap();
+            }
+            ResponseEvent::Updated { id, entity } => {
+                db.update(id, entity).await.unwrap();
+            }
+            ResponseEvent::Deleted { id, entry } => {
+                db.delete(id, entry).await.unwrap();
+            }
+        }
+    }
+});
+```
+
+### Macro Parameters
+
+- **`#[stately::state(openapi)]`** - Enables OpenAPI schema generation for entities
+- **`#[stately::axum_api(State, openapi, components = [...])]`**
+  - First parameter: The state type name
+  - `openapi`: Enable OpenAPI documentation generation
+  - `components = [...]`: Additional types to include in OpenAPI schemas (e.g., Link types)
+
 ### Generated API Routes
 
-The `api = ["axum"]` attribute generates these endpoints:
+The `axum_api` macro generates these endpoints:
 
-- `GET /list` - List all entities across all collections
-- `GET /list/:type` - List entities of a specific type
-- `GET /search/:needle` - Search entities by name/description
-- `GET /:id?type=<type>` - Get a specific entity by ID
+- `PUT /` - Create a new entity
+- `GET /` - List all entities
+- `GET /{id}?type=<type>` - Get entity by ID and type
+- `POST /{id}` - Update an existing entity
+- `PATCH /{id}` - Patch an existing entity
+- `DELETE /{entry}/{id}` - Delete an entity
 
 ### OpenAPI Documentation
 
@@ -199,7 +256,7 @@ Access the generated OpenAPI spec:
 ```rust
 use utoipa::OpenApi;
 
-let openapi = axum_api::ApiDoc::openapi();
+let openapi = AppState::openapi();
 let json = openapi.to_json().unwrap();
 ```
 
@@ -269,12 +326,43 @@ Stately uses procedural macros to generate boilerplate at compile time:
 
 1. **`#[stately::entity]`** implements the `StateEntity` trait
 2. **`#[stately::state]`** generates:
-   - Enum types for entity discrimination
+   - `StateEntry` enum for entity type discrimination
+   - `Entity` enum for type-erased entity wrapper
    - Collection fields with type-safe accessors
    - CRUD operation methods
-   - Optional web framework integration code
+   - `link_aliases` module with `Link<T>` type aliases
+3. **`#[stately::axum_api(State)]`** generates (optional):
+   - REST API handler methods on your struct
+   - `router()` method for Axum integration
+   - OpenAPI documentation (when `openapi` parameter is used)
+   - `ResponseEvent` enum for CRUD operations
+   - `event_middleware()` method for event streaming
 
 All generated code is type-safe and benefits from Rust's compile-time guarantees.
+
+### Generated Code
+
+**`link_aliases` Module** (from `#[stately::state]`):
+
+```rust
+pub mod link_aliases {
+    pub type PipelineLink = ::stately::Link<Pipeline>;
+    pub type SourceLink = ::stately::Link<Source>;
+    // ... one type alias for each entity in your state
+}
+```
+
+**`ResponseEvent` Enum** (from `#[stately::axum_api]`):
+
+```rust
+pub enum ResponseEvent {
+    Created { id: EntityId, entity: Entity },
+    Updated { id: EntityId, entity: Entity },
+    Deleted { id: EntityId, entry: StateEntry },
+}
+```
+
+These enable type-safe event-driven architectures for persistence, logging, and system integration.
 
 ## License
 

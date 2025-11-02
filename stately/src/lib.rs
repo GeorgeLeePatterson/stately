@@ -60,6 +60,11 @@
 //! }
 //! ```
 //!
+//! The `state` macro generates:
+//! - `StateEntry` enum - discriminator for entity types
+//! - `Entity` enum - type-erased wrapper for all entities
+//! - `link_aliases` module - type aliases like `PipelineLink = Link<Pipeline>`
+//!
 //! Use your state with full type safety:
 //!
 //! ```rust,ignore
@@ -101,30 +106,140 @@
 //! Generate complete REST APIs with `OpenAPI` documentation using the `axum` feature:
 //!
 //! ```rust,ignore
-//! #[stately::state(api = ["axum"])]
-//! pub struct AppState {
+//! #[stately::state(openapi)]
+//! pub struct State {
 //!     pipelines: Pipeline,
 //! }
 //!
+//! #[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+//! pub struct AppState {}
+//!
 //! #[tokio::main]
 //! async fn main() {
-//!     use std::sync::Arc;
-//!     use tokio::sync::RwLock;
-//!
-//!     let state = Arc::new(RwLock::new(AppState::new()));
-//!     let axum_state = axum_api::StatelyState::new(state);
+//!     let app_state = AppState::new(State::new());
 //!
 //!     let app = axum::Router::new()
-//!         .nest("/api/v1/entity", axum_api::router())
-//!         .with_state(axum_state);
+//!         .nest("/api/v1/entity", AppState::router(app_state.clone()))
+//!         .with_state(app_state);
 //!
 //!     // Routes automatically generated:
-//!     // GET /api/v1/entity/list
-//!     // GET /api/v1/entity/list/:type
-//!     // GET /api/v1/entity/search/:needle
-//!     // GET /api/v1/entity/:id?type=<type>
+//!     // PUT    /api/v1/entity - Create entity
+//!     // GET    /api/v1/entity - List entities
+//!     // GET    /api/v1/entity/{id}?type=<type> - Get entity
+//!     // POST   /api/v1/entity/{id} - Update entity
+//!     // PATCH  /api/v1/entity/{id} - Patch entity
+//!     // DELETE /api/v1/entity/{entry}/{id} - Delete entity
+//!
+//!     // OpenAPI spec available at:
+//!     let openapi = AppState::openapi();
 //! }
 //! ```
+//!
+//! ### Event-Driven Persistence
+//!
+//! The `axum_api` macro generates a `ResponseEvent` enum and middleware for event-driven
+//! persistence:
+//!
+//! ```rust,ignore
+//! use tokio::sync::mpsc;
+//!
+//! #[tokio::main]
+//! async fn main() {
+//!     let (event_tx, mut event_rx) = mpsc::channel(100);
+//!
+//!     let app_state = AppState::new(State::new());
+//!
+//!     // Attach event middleware - handlers emit events after state updates
+//!     let app = axum::Router::new()
+//!         .nest("/api/v1/entity", AppState::router(app_state.clone()))
+//!         .layer(axum::middleware::from_fn(
+//!             AppState::event_middleware(event_tx)
+//!         ))
+//!         .with_state(app_state);
+//!
+//!     // Handle events in background task
+//!     tokio::spawn(async move {
+//!         while let Some(event) = event_rx.recv().await {
+//!             match event {
+//!                 ResponseEvent::Created { id, entity } => {
+//!                     // Persist to database
+//!                 }
+//!                 ResponseEvent::Updated { id, entity } => {
+//!                     // Update in database
+//!                 }
+//!                 ResponseEvent::Deleted { id, entry } => {
+//!                     // Delete from database
+//!                 }
+//!             }
+//!         }
+//!     });
+//! }
+//! ```
+//!
+//! The middleware is generic and can convert to your own event types:
+//!
+//! ```rust,ignore
+//! enum MyEvent {
+//!     Api(ResponseEvent),
+//!     // ... other variants
+//! }
+//!
+//! impl From<ResponseEvent> for MyEvent {
+//!     fn from(event: ResponseEvent) -> Self {
+//!         MyEvent::Api(event)
+//!     }
+//! }
+//!
+//! // Use with your custom event type
+//! let app = axum::Router::new()
+//!     .layer(axum::middleware::from_fn(
+//!         AppState::event_middleware::<MyEvent>(event_tx)
+//!     ))
+//!     .with_state(app_state);
+//! ```
+//!
+//! The `axum_api` macro generates:
+//! - Handler methods on your struct (`create_entity`, `list_entities`, etc.)
+//! - `router()` method returning configured Axum router
+//! - `ResponseEvent` enum with Created, Updated, and Deleted variants
+//! - `event_middleware()` method for event-driven persistence
+//! - `OpenAPI` documentation when `openapi` parameter is specified
+//!
+//! ## Generated Code Reference
+//!
+//! ### What the `state` Macro Generates
+//!
+//! When you use `#[stately::state]` on your struct, the macro generates:
+//!
+//! 1. **`StateEntry` enum** - Used to specify entity types in queries: ```rust,ignore pub enum
+//!    StateEntry { Pipeline, Source, Sink, } ```
+//!
+//! 2. **`Entity` enum** - Type-erased wrapper for all entity types: ```rust,ignore pub enum Entity
+//!    { Pipeline(Pipeline), Source(SourceConfig), Sink(SinkConfig), } ```
+//!
+//! 3. **`link_aliases` module** - Convenient type aliases for `Link<T>`: ```rust,ignore pub mod
+//!    link_aliases { pub type PipelineLink = ::stately::Link<Pipeline>; pub type SourceLink =
+//!    ::stately::Link<SourceConfig>; pub type SinkLink = ::stately::Link<SinkConfig>; } ```
+//!
+//! ### What the `axum_api` Macro Generates
+//!
+//! When you use `#[stately::axum_api(State)]`, the macro generates:
+//!
+//! 1. **Handler methods** - REST API handlers as methods on your struct:
+//!    - `create_entity()`, `list_entities()`, `get_entity_by_id()`
+//!    - `update_entity()`, `patch_entity_by_id()`, `remove_entity()`
+//!
+//! 2. **`router()` method** - Returns configured Axum router with all routes
+//!
+//! 3. **`ResponseEvent` enum** - Events emitted after CRUD operations: ```rust,ignore pub enum
+//!    ResponseEvent { Created { id: EntityId, entity: Entity }, Updated { id: EntityId, entity:
+//!    Entity }, Deleted { id: EntityId, entry: StateEntry }, } ```
+//!
+//! 4. **`event_middleware()` method** - Generic middleware for event-driven persistence:
+//!    ```rust,ignore pub fn event_middleware<T>( event_tx: tokio::sync::mpsc::Sender<T> ) -> impl
+//!    Fn(...) + Clone where T: From<ResponseEvent> + Send + 'static ```
+//!
+//! 5. **`OpenAPI` trait** (when `openapi` parameter used) - Implements `utoipa::OpenApi`
 //!
 //! ## Feature Flags
 //!
@@ -141,25 +256,28 @@
 pub mod collection;
 pub mod entity;
 pub mod error;
-pub mod id;
 pub mod link;
 pub mod traits;
 
+// Re-export dependencies that are used in generated code
 // Re-export derive macros
 // Re-export key types
 pub use collection::{Collection, Singleton};
-pub use entity::{EntityIdentifier, Summary};
+pub use entity::{EntityId, Summary};
 pub use error::{Error, Result};
+pub use hashbrown;
 pub use link::Link;
+#[cfg(feature = "axum")]
+pub use stately_derive::axum_api;
 pub use stately_derive::{entity, state};
 #[cfg(feature = "axum")]
-pub use traits::StatelyState;
+pub use tokio;
 pub use traits::{StateCollection, StateEntity};
 
 /// Prelude module for convenient imports
 pub mod prelude {
     pub use crate::collection::{Collection, Singleton};
-    pub use crate::entity::{EntityIdentifier, Summary};
+    pub use crate::entity::{EntityId, Summary};
     pub use crate::link::Link;
     pub use crate::traits::{StateCollection, StateEntity};
     pub use crate::{Error, Result, entity, state};

@@ -115,34 +115,79 @@ fn main() {
 Generate complete REST APIs with OpenAPI documentation:
 
 ```rust
-#[stately::state(api = ["axum"])]
-pub struct AppState {
+#[stately::state(openapi)]
+pub struct State {
     pipelines: Pipeline,
     sources: SourceConfig,
 }
 
+#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+pub struct AppState {}
+
 #[tokio::main]
 async fn main() {
-    let state = Arc::new(RwLock::new(AppState::new()));
-    let axum_state = axum_api::StatelyState::new(state.clone());
+    let app_state = AppState::new(State::new());
 
     let app = axum::Router::new()
-        .nest("/api/v1/entity", axum_api::router())
-        .with_state(axum_state);
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
+        .with_state(app_state);
 
     // Generated routes:
-    // GET  /api/v1/entity/list
-    // GET  /api/v1/entity/list/:type
-    // GET  /api/v1/entity/search/:needle
-    // GET  /api/v1/entity/:id?type=<type>
+    // PUT    /api/v1/entity - Create entity
+    // GET    /api/v1/entity - List all entities
+    // GET    /api/v1/entity/{id}?type=<type> - Get entity by ID
+    // POST   /api/v1/entity/{id} - Update entity
+    // PATCH  /api/v1/entity/{id} - Patch entity
+    // DELETE /api/v1/entity/{entry}/{id} - Delete entity
 }
 ```
 
-The `api = ["axum"]` attribute generates:
-- ✅ Complete REST API handlers
-- ✅ OpenAPI 3.0 documentation
+The `axum_api` macro generates:
+- ✅ Complete REST API handlers as methods on your struct
+- ✅ OpenAPI 3.0 documentation (with `openapi` parameter)
 - ✅ Type-safe request/response types
-- ✅ Ready-to-use `Router` and `ApiDoc`
+- ✅ `router()` method and `AppState::openapi()` for docs
+- ✅ `ResponseEvent` enum and `event_middleware()` for event-driven persistence
+
+### Event-Driven Persistence
+
+Integrate with databases or other stores using the event middleware:
+
+```rust
+use tokio::sync::mpsc;
+
+// Define your event enum
+pub enum ApiEvent {
+    StateEvent(ResponseEvent),
+    // ... other event types
+}
+
+impl From<ResponseEvent> for ApiEvent {
+    fn from(event: ResponseEvent) -> Self {
+        ApiEvent::StateEvent(event)
+    }
+}
+
+let (event_tx, mut event_rx) = mpsc::channel(100);
+
+let app = axum::Router::new()
+    .nest("/api/v1/entity", AppState::router(app_state.clone()))
+    .layer(axum::middleware::from_fn(
+        AppState::event_middleware::<ApiEvent>(event_tx)
+    ))
+    .with_state(app_state);
+
+// Handle events in background
+tokio::spawn(async move {
+    while let Some(ApiEvent::StateEvent(event)) = event_rx.recv().await {
+        match event {
+            ResponseEvent::Created { id, entity } => store.insert(id, entity).await,
+            ResponseEvent::Updated { id, entity } => store.update(id, entity).await,
+            ResponseEvent::Deleted { id, entry } => store.delete(id, entry).await,
+        }
+    }
+});
+```
 
 ## 📚 Feature Flags
 
@@ -160,7 +205,37 @@ Stately uses procedural macros to generate:
    - `StateEntry` enum (entity type discriminator)
    - `Entity` enum (type-erased entity wrapper)
    - Collection fields with CRUD operations
-   - Optional web API code (handlers, routes, OpenAPI docs)
+   - `link_aliases` module with type aliases for `Link<T>` (e.g., `PipelineLink`)
+3. **`#[stately::axum_api(State, openapi)]`** - Generates (optional):
+   - REST API handlers as methods on your struct
+   - `router()` method for Axum integration
+   - OpenAPI documentation via `::openapi()` method
+   - `ResponseEvent` enum for CRUD events
+   - `event_middleware()` method for event streaming
+
+### Generated Code
+
+**From `#[stately::state]`:**
+
+```rust
+pub mod link_aliases {
+    pub type PipelineLink = ::stately::Link<Pipeline>;
+    pub type SourceLink = ::stately::Link<Source>;
+    // ... one for each entity type
+}
+```
+
+**From `#[stately::axum_api]`:**
+
+```rust
+pub enum ResponseEvent {
+    Created { id: EntityId, entity: Entity },
+    Updated { id: EntityId, entity: Entity },
+    Deleted { id: EntityId, entry: StateEntry },
+}
+```
+
+These enable type-safe event-driven architectures for persistence and integration.
 
 ## 📝 Examples
 
