@@ -135,10 +135,74 @@
 //! }
 //! ```
 //!
+//! ### Event-Driven Persistence
+//!
+//! The `axum_api` macro generates a `ResponseEvent` enum and middleware for event-driven
+//! persistence:
+//!
+//! ```rust,ignore
+//! use tokio::sync::mpsc;
+//!
+//! #[tokio::main]
+//! async fn main() {
+//!     let (event_tx, mut event_rx) = mpsc::channel(100);
+//!
+//!     let app_state = AppState::new(State::new());
+//!
+//!     // Attach event middleware - handlers emit events after state updates
+//!     let app = axum::Router::new()
+//!         .nest("/api/v1/entity", AppState::router(app_state.clone()))
+//!         .layer(axum::middleware::from_fn(
+//!             AppState::event_middleware(event_tx)
+//!         ))
+//!         .with_state(app_state);
+//!
+//!     // Handle events in background task
+//!     tokio::spawn(async move {
+//!         while let Some(event) = event_rx.recv().await {
+//!             match event {
+//!                 ResponseEvent::Created { id, entity } => {
+//!                     // Persist to database
+//!                 }
+//!                 ResponseEvent::Updated { id, entity } => {
+//!                     // Update in database
+//!                 }
+//!                 ResponseEvent::Deleted { id, entry } => {
+//!                     // Delete from database
+//!                 }
+//!             }
+//!         }
+//!     });
+//! }
+//! ```
+//!
+//! The middleware is generic and can convert to your own event types:
+//!
+//! ```rust,ignore
+//! enum MyEvent {
+//!     Api(ResponseEvent),
+//!     // ... other variants
+//! }
+//!
+//! impl From<ResponseEvent> for MyEvent {
+//!     fn from(event: ResponseEvent) -> Self {
+//!         MyEvent::Api(event)
+//!     }
+//! }
+//!
+//! // Use with your custom event type
+//! let app = axum::Router::new()
+//!     .layer(axum::middleware::from_fn(
+//!         AppState::event_middleware::<MyEvent>(event_tx)
+//!     ))
+//!     .with_state(app_state);
+//! ```
+//!
 //! The `axum_api` macro generates:
 //! - Handler methods on your struct (`create_entity`, `list_entities`, etc.)
 //! - `router()` method returning configured Axum router
-//! - `StatelyState` wrapper for `Arc<RwLock<T>>` integration
+//! - `ResponseEvent` enum with Created, Updated, and Deleted variants
+//! - `event_middleware()` method for event-driven persistence
 //! - `OpenAPI` documentation when `openapi` parameter is specified
 //!
 //! ## Generated Code Reference
@@ -161,16 +225,21 @@
 //!
 //! When you use `#[stately::axum_api(State)]`, the macro generates:
 //!
-//! 1. **`StatelyState` wrapper** - `Arc<RwLock<T>>` wrapper for Axum: ```rust,ignore pub struct
-//!    StatelyState { pub state: Arc<tokio::sync::RwLock<State>>, } ```
-//!
-//! 2. **Handler methods** - REST API handlers as methods on your struct:
+//! 1. **Handler methods** - REST API handlers as methods on your struct:
 //!    - `create_entity()`, `list_entities()`, `get_entity_by_id()`
 //!    - `update_entity()`, `patch_entity_by_id()`, `remove_entity()`
 //!
-//! 3. **`router()` method** - Returns configured Axum router with all routes
+//! 2. **`router()` method** - Returns configured Axum router with all routes
 //!
-//! 4. **`OpenAPI` trait** (when `openapi` parameter used) - Implements `utoipa::OpenApi`
+//! 3. **`ResponseEvent` enum** - Events emitted after CRUD operations: ```rust,ignore pub enum
+//!    ResponseEvent { Created { id: EntityId, entity: Entity }, Updated { id: EntityId, entity:
+//!    Entity }, Deleted { id: EntityId, entry: StateEntry }, } ```
+//!
+//! 4. **`event_middleware()` method** - Generic middleware for event-driven persistence:
+//!    ```rust,ignore pub fn event_middleware<T>( event_tx: tokio::sync::mpsc::Sender<T> ) -> impl
+//!    Fn(...) + Clone where T: From<ResponseEvent> + Send + 'static ```
+//!
+//! 5. **`OpenAPI` trait** (when `openapi` parameter used) - Implements `utoipa::OpenApi`
 //!
 //! ## Feature Flags
 //!

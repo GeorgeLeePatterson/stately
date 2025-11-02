@@ -2,7 +2,7 @@
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{DeriveInput, Type, parse_macro_input};
+use syn::{DeriveInput, parse_macro_input};
 
 /// Generates FromRef implementation and api module with CRUD handlers
 ///
@@ -116,11 +116,6 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
 
     let struct_name = &input.ident;
     let vis = &input.vis;
-
-    // Generate the Stately{StateName} type name
-    let stately_type_name =
-        syn::Ident::new(&format!("Stately{}", state_type_name), state_type_name.span());
-    let stately_type: Type = syn::parse_quote!(#stately_type_name);
 
     // Conditional OpenAPI annotations
     let get_entity_query_derive = if enable_openapi {
@@ -358,45 +353,26 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
 
     // Generate StatelyState wrapper and api module
     let expanded = quote! {
-        // Generate the Stately{StateName} wrapper struct for Axum integration
-        /// Wrapper around state for Axum integration with Arc<RwLock<T>>
-        #[derive(Clone)]
-        #vis struct #stately_type_name {
-            #vis state: ::std::sync::Arc<::tokio::sync::RwLock<#state_type_name>>,
-        }
-
-        impl #stately_type_name {
-            /// Creates a new wrapped state for use with Axum
-            #vis fn new(state: #state_type_name) -> Self {
-                Self {
-                    state: ::std::sync::Arc::new(::tokio::sync::RwLock::new(state)),
-                }
-            }
-        }
-
         // Generate the AppState struct with the state field
         #[derive(Clone)]
         #api_doc
         #vis struct #struct_name {
-            #vis state: #stately_type,
+            #vis state: ::std::sync::Arc<::tokio::sync::RwLock<#state_type_name>>,
         }
 
         impl #struct_name {
             /// Creates a new API state wrapper
             #vis fn new(state: #state_type_name) -> Self {
                 Self {
-                    state: #stately_type_name::new(state),
+                    state: ::std::sync::Arc::new(::tokio::sync::RwLock::new(state)),
                 }
             }
-        }
 
-        // Generate FromRef so Axum can extract Stately{Name} from user's AppState
-        impl ::axum::extract::FromRef<#struct_name> for #stately_type {
-            fn from_ref(app_state: &#struct_name) -> Self {
-                app_state.state.clone()
+            /// Creates a new wrapped state for use with Axum
+            #vis fn new_from_state(state: ::std::sync::Arc<::tokio::sync::RwLock<#state_type_name>>) -> Self {
+                Self { state }
             }
         }
-
 
         // Generated API implementation on the user's struct
         #[allow(clippy::needless_for_each)] // TODO: Remove or keep
@@ -405,7 +381,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
             pub fn router<S>(state: S) -> ::axum::Router<S>
             where
                 S: Send + Sync + Clone + 'static,
-                #stately_type: ::axum::extract::FromRef<S>,
+                #struct_name: ::axum::extract::FromRef<S>,
             {
                 ::axum::Router::new()
                     .route(
@@ -421,6 +397,31 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                     )
                     .route("/{entry}/{id}", ::axum::routing::delete(remove_entity))
                     .with_state(state)
+            }
+
+            /// Creates middleware that extracts ResponseEvent from response extensions and sends to channel
+            ///
+            /// The channel can send any type `T` that implements `From<ResponseEvent>`, allowing you to
+            /// convert the event into your own enum variant (e.g., `events::Api::StateEvent(event)`).
+            pub fn event_middleware<T>(
+                event_tx: ::tokio::sync::mpsc::Sender<T>
+            ) -> impl Fn(::axum::http::Request<::axum::body::Body>, ::axum::middleware::Next) -> std::pin::Pin<Box<dyn std::future::Future<Output = ::axum::response::Response> + Send>> + Clone
+            where
+                T: From<ResponseEvent> + Send + 'static,
+            {
+                move |req: ::axum::http::Request<::axum::body::Body>, next: ::axum::middleware::Next| {
+                    let tx = event_tx.clone();
+                    Box::pin(async move {
+                        let response = next.run(req).await;
+
+                        if let Some(event) = response.extensions().get::<ResponseEvent>() {
+                            let converted: T = event.clone().into();
+                            let _ = tx.send(converted).await;
+                        }
+
+                        response
+                    })
+                }
             }
         }
 
@@ -465,59 +466,95 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
             #vis entities: ::stately::hashbrown::HashMap<StateEntry, Vec<::stately::Summary>>,
         }
 
+        /// Event emitted after CRUD operations
+        #[derive(Debug, Clone)]
+        #vis enum ResponseEvent {
+            Created { id: ::stately::EntityId, entity: Entity },
+            Updated { id: ::stately::EntityId, entity: Entity },
+            Deleted { id: ::stately::EntityId, entry: StateEntry },
+        }
+
         /// Create a new entity
         #create_entity_path
         #vis async fn create_entity(
-            ::axum::extract::State(stately): ::axum::extract::State<#stately_type>,
+            ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
             ::axum::Json(entity): ::axum::Json<Entity>,
-        ) -> ::stately::Result<::axum::Json<OperationResponse>> {
+        ) -> ::axum::response::Response {
+            use ::axum::response::IntoResponse;
+
             let mut state = stately.state.write().await;
-            let id = state.create_entity(entity);
-            Ok(::axum::Json(OperationResponse{ id, message: format!("Entity created") }))
+            let id = state.create_entity(entity.clone());
+
+            let mut response = ::axum::Json(OperationResponse { id: id.clone(), message: format!("Entity created") }).into_response();
+            response.extensions_mut().insert(ResponseEvent::Created { id, entity });
+            response
         }
 
         /// Update an existing entity (full replacement)
         #update_entity_path
         pub async fn update_entity(
-            ::axum::extract::State(stately): ::axum::extract::State<#stately_type>,
+            ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
             ::axum::extract::Path(id): ::axum::extract::Path<String>,
             ::axum::Json(entity): ::axum::Json<Entity>,
-        ) -> ::stately::Result<::axum::Json<OperationResponse>> {
+        ) -> ::axum::response::Response {
+            use ::axum::response::IntoResponse;
+
             let mut state = stately.state.write().await;
-            state.update_entity(&id, entity)?;
-            Ok(::axum::Json(OperationResponse { id: id.into(), message: format!("Entity updated") }))
+            match state.update_entity(&id, entity.clone()) {
+                Ok(_) => {
+                    let entity_id: ::stately::EntityId = id.into();
+                    let mut response = ::axum::Json(OperationResponse { id: entity_id.clone(), message: format!("Entity updated") }).into_response();
+                    response.extensions_mut().insert(ResponseEvent::Updated { id: entity_id, entity });
+                    response
+                }
+                Err(e) => e.into_response()
+            }
         }
 
         /// Patch an existing entity (same as update)
         #patch_entity_by_id_path
         pub async fn patch_entity_by_id(
-            ::axum::extract::State(stately): ::axum::extract::State<#stately_type>,
+            ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
             ::axum::extract::Path(id): ::axum::extract::Path<String>,
             ::axum::Json(entity): ::axum::Json<Entity>,
-        ) -> ::stately::Result<::axum::Json<OperationResponse>> {
+        ) -> ::axum::response::Response {
+            use ::axum::response::IntoResponse;
+
             let mut state = stately.state.write().await;
-            state.update_entity(&id, entity)?;
-            Ok(::axum::Json(OperationResponse { id: id.into(), message: format!("Entity patched") }))
+            match state.update_entity(&id, entity.clone()) {
+                Ok(_) => {
+                    let entity_id: ::stately::EntityId = id.into();
+                    let mut response = ::axum::Json(OperationResponse { id: entity_id.clone(), message: format!("Entity patched") }).into_response();
+                    response.extensions_mut().insert(ResponseEvent::Updated { id: entity_id, entity });
+                    response
+                }
+                Err(e) => e.into_response()
+            }
         }
 
         /// Remove an entity
         #remove_entity_path
         pub async fn remove_entity(
-            ::axum::extract::State(stately): ::axum::extract::State<#stately_type>,
+            ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
             ::axum::extract::Path((entry, id)): ::axum::extract::Path<(StateEntry, String)>,
-        ) -> ::stately::Result<::axum::Json<OperationResponse>> {
+        ) -> ::axum::response::Response {
+            use ::axum::response::IntoResponse;
+
             let mut state = stately.state.write().await;
             if state.remove_entity(&id, entry) {
-                Ok(::axum::Json(OperationResponse { id: id.into(), message: format!("Entity removed") }))
+                let entity_id: ::stately::EntityId = id.into();
+                let mut response = ::axum::Json(OperationResponse { id: entity_id.clone(), message: format!("Entity removed") }).into_response();
+                response.extensions_mut().insert(ResponseEvent::Deleted { id: entity_id, entry });
+                response
             } else {
-                Err(::stately::Error::NotFound(id.to_string()))
+                ::stately::Error::NotFound(id.to_string()).into_response()
             }
         }
 
         /// List entity summaries
         #list_entities_path
         pub async fn list_entities(
-            ::axum::extract::State(stately): ::axum::extract::State<#stately_type>,
+            ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
         ) -> ::stately::Result<::axum::Json<ListResponse>> {
             let state = stately.state.read().await;
             let entities = state.list_entities(None);
@@ -527,7 +564,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         /// List entity summaries
         #get_entities_path
         pub async fn get_entities(
-            ::axum::extract::State(stately): ::axum::extract::State<#stately_type>,
+            ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
         ) -> ::stately::Result<::axum::Json<EntitiesResponse>> {
             let state = stately.state.read().await;
             let entities = state.search_entities("");
@@ -537,7 +574,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         /// Get entity by ID and type
         #get_entity_by_id_path
         pub async fn get_entity_by_id(
-            ::axum::extract::State(stately): ::axum::extract::State<#stately_type>,
+            ::axum::extract::State(stately): ::axum::extract::State<#struct_name>,
             ::axum::extract::Path(id): ::axum::extract::Path<String>,
             ::axum::extract::Query(query): ::axum::extract::Query<GetEntityQuery>,
         ) -> ::stately::Result<::axum::Json<GetEntityResponse>> {

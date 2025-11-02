@@ -134,7 +134,7 @@ async fn test_list_entities() {
 
     // Add a pipeline directly to state
     {
-        let mut s = app_state.state.state.write().await;
+        let mut s = app_state.state.write().await;
         let pipeline = Pipeline {
             name:        "filtered-pipeline".to_string(),
             description: Some("Test".to_string()),
@@ -155,6 +155,112 @@ async fn test_list_entities() {
 }
 
 #[tokio::test]
+async fn test_event_middleware() {
+    use axum::body::Body;
+    use axum::http::{Request, StatusCode};
+    use tokio::sync::mpsc;
+    use tower::ServiceExt;
+
+    let (event_tx, mut event_rx) = mpsc::channel(100);
+
+    let app_state = AppState::new(State::new());
+
+    let app = axum::Router::new()
+        .nest("/api/v1/entity", AppState::router(app_state.clone()))
+        .layer(axum::middleware::from_fn(AppState::event_middleware::<ResponseEvent>(event_tx)))
+        .with_state(app_state);
+
+    // Test 1: Create entity - should emit Created event
+    let pipeline = Entity::Pipeline(Pipeline {
+        name:        "event-test-pipeline".to_string(),
+        description: Some("Testing events".to_string()),
+    });
+
+    let request = Request::builder()
+        .method("PUT")
+        .uri("/api/v1/entity")
+        .header("content-type", "application/json")
+        .body(Body::from(serde_json::to_string(&pipeline).unwrap()))
+        .unwrap();
+
+    let response = app.clone().oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let body = axum::body::to_bytes(response.into_body(), usize::MAX).await.unwrap();
+    let result: OperationResponse = serde_json::from_slice(&body).unwrap();
+    let created_id = result.id.clone();
+
+    // Verify Created event was emitted
+    let event = event_rx.recv().await.expect("Should receive Created event");
+    match event {
+        ResponseEvent::Created { id, entity } => {
+            assert_eq!(id, created_id);
+            match entity {
+                Entity::Pipeline(p) => {
+                    assert_eq!(p.name, "event-test-pipeline");
+                }
+                _ => panic!("Expected Pipeline entity"),
+            }
+        }
+        _ => panic!("Expected Created event, got {event:?}"),
+    }
+
+    // Test 2: Update entity - should emit Updated event
+    let updated_pipeline = Entity::Pipeline(Pipeline {
+        name:        "event-test-pipeline-updated".to_string(),
+        description: Some("Updated description".to_string()),
+    });
+
+    let request = Request::builder()
+        .method("POST")
+        .uri(format!("/api/v1/entity/{created_id}"))
+        .header("content-type", "application/json")
+        .body(Body::from(serde_json::to_string(&updated_pipeline).unwrap()))
+        .unwrap();
+
+    let response = app.clone().oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+
+    // Verify Updated event was emitted
+    let event = event_rx.recv().await.expect("Should receive Updated event");
+    match event {
+        ResponseEvent::Updated { id, entity } => {
+            assert_eq!(id, created_id);
+            match entity {
+                Entity::Pipeline(p) => {
+                    assert_eq!(p.name, "event-test-pipeline-updated");
+                }
+                _ => panic!("Expected Pipeline entity"),
+            }
+        }
+        _ => panic!("Expected Updated event, got {event:?}"),
+    }
+
+    // Test 3: Delete entity - should emit Deleted event
+    let request = Request::builder()
+        .method("DELETE")
+        .uri(format!("/api/v1/entity/pipeline/{created_id}"))
+        .body(Body::empty())
+        .unwrap();
+
+    let response = app.clone().oneshot(request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+
+    // Verify Deleted event was emitted
+    let event = event_rx.recv().await.expect("Should receive Deleted event");
+    match event {
+        ResponseEvent::Deleted { id, entry } => {
+            assert_eq!(id, created_id);
+            assert_eq!(entry, StateEntry::Pipeline);
+        }
+        _ => panic!("Expected Deleted event, got {event:?}"),
+    }
+
+    // Verify no more events
+    assert!(event_rx.try_recv().is_err(), "Should have no more events");
+}
+
+#[tokio::test]
 async fn test_get_entity_by_id() {
     use axum::body::Body;
     use axum::http::{Request, StatusCode};
@@ -164,7 +270,7 @@ async fn test_get_entity_by_id() {
 
     // Create a pipeline and get its ID
     let id = {
-        let mut s = app_state.state.state.write().await;
+        let mut s = app_state.state.write().await;
         let pipeline = Pipeline {
             name:        "get-test-pipeline".to_string(),
             description: Some("Test".to_string()),
@@ -208,7 +314,7 @@ async fn test_update_entity() {
 
     // Create a pipeline
     let id = {
-        let mut s = app_state.state.state.write().await;
+        let mut s = app_state.state.write().await;
         let pipeline = Pipeline {
             name:        "update-test".to_string(),
             description: Some("Original".to_string()),
@@ -251,7 +357,7 @@ async fn test_delete_entity() {
 
     // Create a pipeline
     let id = {
-        let mut s = app_state.state.state.write().await;
+        let mut s = app_state.state.write().await;
         let pipeline = Pipeline {
             name:        "delete-test".to_string(),
             description: Some("Will be deleted".to_string()),

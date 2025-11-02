@@ -184,6 +184,52 @@ async fn main() {
 }
 ```
 
+### Event Middleware for Persistence
+
+The `axum_api` macro generates a `ResponseEvent` enum and `event_middleware()` method for integrating with databases:
+
+```rust
+use tokio::sync::mpsc;
+
+// Your event enum that wraps ResponseEvent
+pub enum ApiEvent {
+    StateEvent(ResponseEvent),
+}
+
+impl From<ResponseEvent> for ApiEvent {
+    fn from(event: ResponseEvent) -> Self {
+        ApiEvent::StateEvent(event)
+    }
+}
+
+let (event_tx, mut event_rx) = mpsc::channel(100);
+
+let app = axum::Router::new()
+    .nest("/api/v1/entity", AppState::router(app_state.clone()))
+    .layer(axum::middleware::from_fn(
+        AppState::event_middleware::<ApiEvent>(event_tx)
+    ))
+    .with_state(app_state);
+
+// Background task to handle events
+tokio::spawn(async move {
+    while let Some(ApiEvent::StateEvent(event)) = event_rx.recv().await {
+        match event {
+            ResponseEvent::Created { id, entity } => {
+                // Persist to database after state update
+                db.insert(id, entity).await.unwrap();
+            }
+            ResponseEvent::Updated { id, entity } => {
+                db.update(id, entity).await.unwrap();
+            }
+            ResponseEvent::Deleted { id, entry } => {
+                db.delete(id, entry).await.unwrap();
+            }
+        }
+    }
+});
+```
+
 ### Macro Parameters
 
 - **`#[stately::state(openapi)]`** - Enables OpenAPI schema generation for entities
@@ -289,12 +335,14 @@ Stately uses procedural macros to generate boilerplate at compile time:
    - REST API handler methods on your struct
    - `router()` method for Axum integration
    - OpenAPI documentation (when `openapi` parameter is used)
+   - `ResponseEvent` enum for CRUD operations
+   - `event_middleware()` method for event streaming
 
 All generated code is type-safe and benefits from Rust's compile-time guarantees.
 
-### Generated `link_aliases` Module
+### Generated Code
 
-The `state` macro automatically generates a module with type aliases for `Link<T>`:
+**`link_aliases` Module** (from `#[stately::state]`):
 
 ```rust
 pub mod link_aliases {
@@ -304,7 +352,17 @@ pub mod link_aliases {
 }
 ```
 
-These can be used in your code as shortcuts and are particularly useful for including in OpenAPI schemas via the `components` parameter.
+**`ResponseEvent` Enum** (from `#[stately::axum_api]`):
+
+```rust
+pub enum ResponseEvent {
+    Created { id: EntityId, entity: Entity },
+    Updated { id: EntityId, entity: Entity },
+    Deleted { id: EntityId, entry: StateEntry },
+}
+```
+
+These enable type-safe event-driven architectures for persistence, logging, and system integration.
 
 ## License
 

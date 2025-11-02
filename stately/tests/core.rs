@@ -127,6 +127,8 @@ fn test_get_entity_by_id() {
     let source = Source { name: "my-source".to_string(), url: "http://example.com".to_string() };
     let source_id = state.sources.create(source.clone());
 
+    assert!(!state.is_empty());
+
     let result = state.get_entity(&source_id, StateEntry::ExplicitSource);
     assert!(result.is_some());
 

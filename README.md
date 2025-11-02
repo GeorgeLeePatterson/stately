@@ -147,6 +147,47 @@ The `axum_api` macro generates:
 - ✅ OpenAPI 3.0 documentation (with `openapi` parameter)
 - ✅ Type-safe request/response types
 - ✅ `router()` method and `AppState::openapi()` for docs
+- ✅ `ResponseEvent` enum and `event_middleware()` for event-driven persistence
+
+### Event-Driven Persistence
+
+Integrate with databases or other stores using the event middleware:
+
+```rust
+use tokio::sync::mpsc;
+
+// Define your event enum
+pub enum ApiEvent {
+    StateEvent(ResponseEvent),
+    // ... other event types
+}
+
+impl From<ResponseEvent> for ApiEvent {
+    fn from(event: ResponseEvent) -> Self {
+        ApiEvent::StateEvent(event)
+    }
+}
+
+let (event_tx, mut event_rx) = mpsc::channel(100);
+
+let app = axum::Router::new()
+    .nest("/api/v1/entity", AppState::router(app_state.clone()))
+    .layer(axum::middleware::from_fn(
+        AppState::event_middleware::<ApiEvent>(event_tx)
+    ))
+    .with_state(app_state);
+
+// Handle events in background
+tokio::spawn(async move {
+    while let Some(ApiEvent::StateEvent(event)) = event_rx.recv().await {
+        match event {
+            ResponseEvent::Created { id, entity } => store.insert(id, entity).await,
+            ResponseEvent::Updated { id, entity } => store.update(id, entity).await,
+            ResponseEvent::Deleted { id, entry } => store.delete(id, entry).await,
+        }
+    }
+});
+```
 
 ## 📚 Feature Flags
 
@@ -169,10 +210,12 @@ Stately uses procedural macros to generate:
    - REST API handlers as methods on your struct
    - `router()` method for Axum integration
    - OpenAPI documentation via `::openapi()` method
+   - `ResponseEvent` enum for CRUD events
+   - `event_middleware()` method for event streaming
 
 ### Generated Code
 
-The `state` macro automatically generates a `link_aliases` module:
+**From `#[stately::state]`:**
 
 ```rust
 pub mod link_aliases {
@@ -182,7 +225,17 @@ pub mod link_aliases {
 }
 ```
 
-These aliases are useful for OpenAPI schemas and as type shortcuts in your code.
+**From `#[stately::axum_api]`:**
+
+```rust
+pub enum ResponseEvent {
+    Created { id: EntityId, entity: Entity },
+    Updated { id: EntityId, entity: Entity },
+    Deleted { id: EntityId, entry: StateEntry },
+}
+```
+
+These enable type-safe event-driven architectures for persistence and integration.
 
 ## 📝 Examples
 

@@ -289,6 +289,14 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
             #( #all_variants(#all_types), )*
         }
 
+        impl From<&Entity> for StateEntry {
+            fn from(entity: &Entity) -> Self {
+                match entity {
+                    #( Entity::#all_variants(_) => StateEntry::#all_variants, )*
+                }
+            }
+        }
+
         // Generate the State struct
         #(#attrs)*
         #vis struct #name {
@@ -464,6 +472,15 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
                 )*
 
                 result
+            }
+
+            #vis fn is_empty(&self) -> bool {
+                #(
+                    self.#collection_fields.is_empty() &&
+                )*
+                #(
+                    self.#custom_fields.is_empty() &&
+                )* true
             }
         }
     };
