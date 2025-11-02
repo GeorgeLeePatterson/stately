@@ -49,8 +49,8 @@ mod axum_impl {
     impl IntoResponse for Error {
         fn into_response(self) -> Response {
             let (status, message) = match &self {
-                Error::NotFound(msg) => (StatusCode::NOT_FOUND, msg.to_string()),
-                Error::IllegalOperation(msg) => (StatusCode::BAD_REQUEST, msg.to_string()),
+                Error::NotFound(msg) => (StatusCode::NOT_FOUND, msg.clone()),
+                Error::IllegalOperation(msg) => (StatusCode::BAD_REQUEST, msg.clone()),
                 _ => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()),
             };
             let body = Json(json!({
