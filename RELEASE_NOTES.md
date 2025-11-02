@@ -1,18 +1,14 @@
-## [0.2.0] - 2025-11-02
+## [0.2.1] - 2025-11-02
 
-### 🚀 Features
+### 🐛 Bug Fixes
 
-- Updates state, axum, macros, crate (#4)
+- Adds new endpoints, updates tests
 
 ### 💼 Other
 
-- *(deps)* Bump actions/checkout from 4 to 5 (#1)
+- Patches release workflow
+- Patches justfile for release
 
 ### 📚 Documentation
 
-- Updates readme
-
-### ⚙️ Miscellaneous Tasks
-
-- Address lints
-- Updates justfile
+- Updates readmes at root and in stately
