@@ -162,10 +162,10 @@ tag-release version:
         exit 1
     fi
 
-    # Verify publish will work
+    # Verify publish will work for stately-derive
+    # Note: We can't dry-run stately because it depends on stately-derive which
+    # hasn't been published yet. The actual publish will be handled by CI.
     cargo publish --dry-run -p stately-derive --no-verify
-    sleep 10 # Wait for crates.io to index
-    cargo publish --dry-run -p stately --no-verify
 
     # Create and push tag
     git tag -a "v{{version}}" -m "Release v{{version}}"
