@@ -1,29 +1,18 @@
-## [0.1.0] - 2025-10-31
+## [0.2.0] - 2025-11-02
 
-### 🐛 Bug Fixes
+### 🚀 Features
 
-- Addresses linting
-- Address utoipa OpenApi lint issue
+- Updates state, axum, macros, crate (#4)
 
 ### 💼 Other
 
-- Adds workflows
-- *(deps)* Bump softprops/action-gh-release from 1 to 2 (#2)
-- Fixes ci
+- *(deps)* Bump actions/checkout from 4 to 5 (#1)
 
 ### 📚 Documentation
 
-- Updates READMEs
-- Better doc index
-- Updates docs
-- Updates crates category
-
-### 🧪 Testing
-
-- Adds more tests
-- Adds more coverage
+- Updates readme
 
 ### ⚙️ Miscellaneous Tasks
 
-- Housekeeping
-- Patches lint
+- Address lints
+- Updates justfile
