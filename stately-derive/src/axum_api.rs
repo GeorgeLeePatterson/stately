@@ -541,14 +541,14 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
             use ::axum::response::IntoResponse;
 
             let mut state = stately.state.write().await;
-            if state.remove_entity(&id, entry) {
-                let entity_id: ::stately::EntityId = id.into();
-                let mut response = ::axum::Json(OperationResponse { id: entity_id.clone(), message: format!("Entity removed") }).into_response();
-                response.extensions_mut().insert(ResponseEvent::Deleted { id: entity_id, entry });
-                response
-            } else {
-                ::stately::Error::NotFound(id.to_string()).into_response()
-            }
+            if let Err(e) = state.remove_entity(&id, entry) {
+                return e.into_response();
+            };
+
+            let entity_id: ::stately::EntityId = id.into();
+            let mut response = ::axum::Json(OperationResponse { id: entity_id.clone(), message: format!("Entity removed") }).into_response();
+            response.extensions_mut().insert(ResponseEvent::Deleted { id: entity_id, entry });
+            response
         }
 
         /// List entity summaries

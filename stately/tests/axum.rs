@@ -82,7 +82,11 @@ pub struct State {
     jobs:       Job,
 }
 
-#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink, link_aliases::SourceLink, link_aliases::SinkLink])]
+#[stately::axum_api(
+    State,
+    openapi,
+    components = [link_aliases::PipelineLink, link_aliases::SourceLink, link_aliases::SinkLink]
+)]
 pub struct AppState {}
 
 #[tokio::test]

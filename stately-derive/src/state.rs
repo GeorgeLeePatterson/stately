@@ -362,17 +362,17 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
             }
 
             /// Removes an entity by ID and type
-            #vis fn remove_entity(&mut self, id: &str, entry: StateEntry) -> bool {
+            #vis fn remove_entity(&mut self, id: &str, entry: StateEntry) -> ::stately::Result<()> {
                 use ::stately::StateCollection;
                 match entry {
                     #(
-                        StateEntry::#singleton_variants => self.#singleton_fields.remove(id).is_ok(),
+                        StateEntry::#singleton_variants => self.#singleton_fields.remove(id).map(|_| ()),
                     )*
                     #(
-                        StateEntry::#collection_variants => self.#collection_fields.remove(id).is_ok(),
+                        StateEntry::#collection_variants => self.#collection_fields.remove(id).map(|_| ()),
                     )*
                     #(
-                        StateEntry::#custom_variants => self.#custom_fields.remove(id).is_ok(),
+                        StateEntry::#custom_variants => self.#custom_fields.remove(id).map(|_| ()),
                     )*
                 }
             }
