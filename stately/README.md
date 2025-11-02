@@ -289,8 +289,8 @@ The `#[stately::entity]` macro supports these attributes:
 
 See the [examples directory](../examples/):
 
-- [`basic.rs`](../examples/basic.rs) - Core functionality demonstration
-- [`axum_api.rs`](../examples/axum_api.rs) - Web API generation
+- [`basic.rs`](examples/basic.rs) - Core functionality demonstration
+- [`axum_api.rs`](examples/axum_api.rs) - Web API generation
 
 Run examples:
 
@@ -306,7 +306,7 @@ cargo run --example axum_api --features axum
 - **`Collection<T>`** - A collection of entities with CRUD operations
 - **`Singleton<T>`** - A single entity instance
 - **`Link<T>`** - Reference to another entity (by ID or inline)
-- **`EntityIdentifier`** - UUID v7 identifier for entities
+- **`EntityId`** - UUID v7 identifier for entities
 - **`Summary`** - Lightweight entity summary for listings
 
 ### Traits
