@@ -78,9 +78,10 @@ struct TestState {
     // Case 5: Custom type + variant override (reusing Task entity and TaskCache type)
     #[collection(TaskCache, variant = "BackgroundTask")]
     background: Task,
-    // Keep existing fields for backward compatibility with existing tests
-    sinks:      Sink,
-    jobs:       Job,
+
+    // Standard case
+    sinks: Sink,
+    jobs:  Job,
 }
 
 #[test]
@@ -479,4 +480,122 @@ fn test_state_entry_constants() {
     assert_eq!(StateEntry::ArchivedPipeline.as_ref(), "archived_pipeline"); // Wrapper variant
     assert_eq!(StateEntry::BackgroundTask.as_ref(), "background_task"); // Wrapper variant
     assert_eq!(StateEntry::Job.as_ref(), "job");
+}
+
+#[test]
+fn test_state_serialization_roundtrip() {
+    let mut state = TestState::new();
+
+    // Create various entities across all collection types
+    let pipeline_id = state.pipelines.create(Pipeline {
+        name:        "main-pipeline".to_string(),
+        description: Some("Main data pipeline".to_string()),
+    });
+
+    let source_id = state.sources.create(Source {
+        name: "api-source".to_string(),
+        url:  "https://api.example.com".to_string(),
+    });
+
+    let task_id = state
+        .tasks
+        .create(Task { name: "process-task".to_string(), status: "pending".to_string() });
+
+    let archived_id = state.archived.create(ArchivedPipeline::from(Pipeline {
+        name:        "archived-pipeline".to_string(),
+        description: Some("Old pipeline".to_string()),
+    }));
+
+    let background_id = state.background.create(BackgroundTask::from(Task {
+        name:   "background-job".to_string(),
+        status: "running".to_string(),
+    }));
+
+    let _sink_id = state.sinks.create(Sink {
+        name:        "output-sink".to_string(),
+        destination: "s3://bucket/path".to_string(),
+    });
+
+    // Update singleton config
+    state
+        .config
+        .update("default", Config { max_connections: 100, timeout_seconds: 30 })
+        .unwrap();
+
+    // Serialize to JSON
+    let json = serde_json::to_string_pretty(&state).expect("Failed to serialize state");
+
+    // Verify the JSON structure doesn't have "inner" fields for wrappers/singletons
+    assert!(!json.contains("\"inner\""), "Serialized JSON should not contain 'inner' fields");
+
+    // Deserialize back
+    let deserialized: TestState = serde_json::from_str(&json).expect("Failed to deserialize state");
+
+    // Verify all entities are preserved
+    assert_eq!(deserialized.pipelines.get_by_id(&pipeline_id).unwrap().name, "main-pipeline");
+    assert_eq!(deserialized.sources.get_by_id(&source_id).unwrap().url, "https://api.example.com");
+    assert_eq!(deserialized.tasks.get_by_id(&task_id).unwrap().status, "pending");
+    assert_eq!(deserialized.archived.get_by_id(&archived_id).unwrap().name, "archived-pipeline");
+    assert_eq!(deserialized.background.get_by_id(&background_id).unwrap().status, "running");
+
+    // Verify singleton config
+    let config = deserialized.config.get_entity("default").unwrap().1;
+    assert_eq!(config.max_connections, 100);
+    assert_eq!(config.timeout_seconds, 30);
+
+    // Verify collection counts
+    assert_eq!(deserialized.pipelines.len(), 1);
+    assert_eq!(deserialized.sources.len(), 1);
+    assert_eq!(deserialized.tasks.len(), 1);
+    assert_eq!(deserialized.archived.len(), 1);
+    assert_eq!(deserialized.background.len(), 1);
+    assert_eq!(deserialized.sinks.len(), 1);
+}
+
+#[test]
+fn test_wrapper_transparency() {
+    // Test that wrapper types serialize transparently (no "inner" field)
+    use stately::StateCollection;
+
+    let mut state = TestState::new();
+
+    // Create an entity in a wrapped collection (ArchivedPipeline wraps Pipeline)
+    let id = state.archived.create(ArchivedPipeline::from(Pipeline {
+        name:        "test".to_string(),
+        description: Some("test desc".to_string()),
+    }));
+
+    // Serialize just the collection
+    let json = serde_json::to_string(&state.archived).expect("Failed to serialize collection");
+
+    // Should be a map of IDs to Pipeline objects, NOT {inner: {...}}
+    assert!(!json.contains("\"inner\""), "Wrapper should be transparent in serialization");
+
+    // Deserialize and verify
+    let deserialized: Collection<ArchivedPipeline> =
+        serde_json::from_str(&json).expect("Failed to deserialize");
+    assert_eq!(deserialized.get_by_id(&id).unwrap().name, "test");
+}
+
+#[test]
+fn test_singleton_serialization() {
+    // Test that singletons serialize transparently
+    let mut state = TestState::new();
+
+    state
+        .config
+        .update("default", Config { max_connections: 50, timeout_seconds: 15 })
+        .unwrap();
+
+    // Serialize just the singleton
+    let json = serde_json::to_string(&state.config).expect("Failed to serialize singleton");
+
+    // Should serialize as just the Config object, not {inner: {...}}
+    assert!(!json.contains("\"inner\""), "Singleton should be transparent in serialization");
+
+    // Should be able to deserialize directly from the entity JSON
+    let deserialized: Singleton<Config> =
+        serde_json::from_str(&json).expect("Failed to deserialize");
+    assert_eq!(deserialized.get().max_connections, 50);
+    assert_eq!(deserialized.get().timeout_seconds, 15);
 }

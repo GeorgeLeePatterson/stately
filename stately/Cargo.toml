@@ -76,6 +76,8 @@ name = "core"
 name = "axum"
 required-features = ["axum"]
 
+[[test]]
+name = "foreign"
 
 [[example]]
 name = "basic"

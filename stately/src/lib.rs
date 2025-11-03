@@ -1,11 +1,3 @@
-// #![cfg_attr(
-//     not(feature = "axum"),
-//     allow(unused_crate_dependencies, reason = "axum and tokio used only in generated code")
-// )]
-// #![cfg_attr(
-//     not(feature = "axum"),
-//     allow(unused_crate_dependencies, reason = "axum and tokio used only in generated code")
-// )]
 //! # Stately
 //!
 //! Type-safe state management with entity relationships and CRUD operations.
@@ -276,7 +268,7 @@ pub use stately_derive::axum_api;
 pub use stately_derive::{entity, state};
 #[cfg(feature = "axum")]
 pub use tokio;
-pub use traits::{HasName, StateCollection, StateEntity};
+pub use traits::{ForeignEntity, HasName, StateCollection, StateEntity};
 
 /// Prelude module for convenient imports
 pub mod prelude {

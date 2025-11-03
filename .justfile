@@ -17,6 +17,7 @@ test-unit:
 
 # Runs unit tests first then integration
 test:
+    cargo test -- --nocapture --show-output
     cargo test -F axum -- --nocapture --show-output
 
 test-one test_name:
