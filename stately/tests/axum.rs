@@ -1,5 +1,5 @@
 #![expect(unused_crate_dependencies)]
-// NOTE: This is an error in the `utoipa` crate.
+// NOTE: This is a lint issue in the `utoipa` crate.
 #![cfg_attr(feature = "openapi", allow(clippy::needless_for_each))]
 
 use axum::body::Body;

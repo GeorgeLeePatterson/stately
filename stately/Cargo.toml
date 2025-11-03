@@ -69,6 +69,14 @@ unused_results = "warn"
 unused_qualifications = "warn"
 variant_size_differences = "warn"
 
+[[test]]
+name = "core"
+
+[[test]]
+name = "axum"
+required-features = ["axum"]
+
+
 [[example]]
 name = "basic"
 required-features = ["openapi"]

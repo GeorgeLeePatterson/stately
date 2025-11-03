@@ -11,6 +11,7 @@ use crate::{Error, Result};
 ///
 /// Provides CRUD operations and lookup by both ID and name.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct Collection<T: StateEntity> {
     #[serde(bound(deserialize = "T: StateEntity"))]
     inner: HashMap<EntityId, T>,
@@ -115,30 +116,11 @@ impl<T: StateEntity> StateCollection for Collection<T> {
 ///
 /// Unlike collections, singletons don't have IDs and can't be created/deleted,
 /// only read and updated.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct Singleton<T: StateEntity> {
+    #[serde(bound(deserialize = "T: StateEntity"))]
     inner: T,
-}
-
-// Manual Serialize implementation to avoid complex trait bound resolution
-impl<T: StateEntity> Serialize for Singleton<T> {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        self.inner.serialize(serializer)
-    }
-}
-
-// Manual Deserialize implementation to avoid complex trait bound resolution
-impl<'de, T: StateEntity> Deserialize<'de> for Singleton<T> {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let inner = T::deserialize(deserializer)?;
-        Ok(Self { inner })
-    }
 }
 
 impl<T: StateEntity> Singleton<T> {

@@ -1,7 +1,11 @@
-#![cfg_attr(
-    feature = "axum",
-    allow(unused_crate_dependencies, reason = "axum and tokio used only in generated code")
-)]
+// #![cfg_attr(
+//     not(feature = "axum"),
+//     allow(unused_crate_dependencies, reason = "axum and tokio used only in generated code")
+// )]
+// #![cfg_attr(
+//     not(feature = "axum"),
+//     allow(unused_crate_dependencies, reason = "axum and tokio used only in generated code")
+// )]
 //! # Stately
 //!
 //! Type-safe state management with entity relationships and CRUD operations.
@@ -283,5 +287,10 @@ pub mod prelude {
     pub use crate::{Error, Result, entity, state};
 }
 
-// TODO: Remove
-// mod test_macros;
+// Silence unused_crate_dependencies lint for dev/optional dependencies
+#[cfg(all(test, not(feature = "axum")))]
+use tokio as _;
+#[cfg(test)]
+use tower as _;
+#[cfg(feature = "axum")]
+use tower_http as _;
