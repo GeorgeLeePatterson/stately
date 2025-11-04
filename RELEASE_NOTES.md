@@ -1,14 +1,14 @@
-## [0.2.1] - 2025-11-02
+## [0.3.0] - 2025-11-04
 
 ### 🐛 Bug Fixes
 
-- Adds new endpoints, updates tests
+- Remove stately dry-run from release workflow (depends on unpublished stately-derive)
 
-### 💼 Other
+### 🚜 Refactor
 
-- Patches release workflow
-- Patches justfile for release
+- Establish state macro identity across api boundaries, crud (#7)
 
-### 📚 Documentation
+### ⚙️ Miscellaneous Tasks
 
-- Updates readmes at root and in stately
+- Updates .gitignore
+- Updates justfile

@@ -26,14 +26,14 @@ Add stately to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stately = "0.2.1"
+stately = "0.3.0"
 ```
 
 For web API generation with Axum:
 
 ```toml
 [dependencies]
-stately = { version = "0.2.1", features = ["axum"] }
+stately = { version = "0.3.0", features = ["axum"] }
 ```
 
 ### 2. 🌐 Web (React + TypeScript)
