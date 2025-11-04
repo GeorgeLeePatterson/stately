@@ -1,0 +1,40 @@
+{
+  "name": "@stately/schema-types",
+  "version": "0.3.0",
+  "description": "Type definitions for Stately schema nodes",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rm -rf dist .turbo",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsc --build --watch"
+  },
+  "keywords": [
+    "stately",
+    "schema",
+    "types",
+    "openapi"
+  ],
+  "author": "George Lee Patterson <patterson.george@gmail.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/georgeleepatterson/stately.git",
+    "directory": "packages/schema-types"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

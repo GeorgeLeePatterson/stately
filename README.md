@@ -2,14 +2,16 @@
 
 [![Crates.io](https://img.shields.io/crates/v/stately.svg)](https://crates.io/crates/stately)
 [![Documentation](https://docs.rs/stately/badge.svg)](https://docs.rs/stately)
+[![npm](https://img.shields.io/npm/v/@stately/ui)](https://www.npmjs.com/package/@stately/ui)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-> Type-safe state management with entity relationships and CRUD operations
+> Full-stack type-safe state management with auto-generated UI
 
-Stately is a Rust framework for managing application configuration and state with built-in support for entity relationships, CRUD operations, serialization, and automatic API generation.
+Stately is a full-stack framework for managing application configuration and state. The Rust backend provides type-safe entity relationships, CRUD operations, and automatic API generation. The TypeScript UI packages automatically generate React interfaces from your OpenAPI schemas.
 
 ## ✨ Features
 
+### Backend (Rust)
 - **🎯 Type-Safe**: Compile-time guarantees for entity relationships and state operations
 - **🔗 Entity Relationships**: Reference entities inline or by ID with `Link<T>`
 - **📝 CRUD Operations**: Built-in create, read, update, delete for all entity types
@@ -18,32 +20,63 @@ Stately is a Rust framework for managing application configuration and state wit
 - **🚀 Web Framework Integration**: Optional Axum API generation (more frameworks coming soon)
 - **🆔 Time-Sortable IDs**: UUID v7 for naturally ordered entity identifiers
 
+### Frontend (TypeScript/React)
+- **🎨 Auto-Generated UI**: React components generated from OpenAPI schemas
+- **🧩 Composable**: Use individual field components or complete CRUD views
+- **📱 Responsive**: Built on shadcn/ui with mobile-first design
+- **⚡ Fast**: Powered by Tanstack Query and Router
+- **🔧 Customizable**: Override any component or behavior
+
 ## 🚀 Quick Start
 
-### 1. 🦀 Rust (API)
+### Backend: Rust API
 
 Add stately to your `Cargo.toml`:
-
-```toml
-[dependencies]
-stately = "0.3.0"
-```
-
-For web API generation with Axum:
 
 ```toml
 [dependencies]
 stately = { version = "0.3.0", features = ["axum"] }
 ```
 
-### 2. 🌐 Web (React + TypeScript)
+See [`crates/stately`](crates/stately) for full documentation.
 
-Coming soon
+### Frontend: React UI
 
-## 📖 Example
+Install the UI packages:
 
-* For `stately` examples, refer to the [README](stately/README.md) or the [examples](stately/examples).
-* For `@stately/ui`, stand by... coming soon.
+```bash
+# Code generation tool (dev dependency)
+pnpm add -D @stately/codegen
+
+# React UI components
+pnpm add @stately/ui @tanstack/react-query @tanstack/react-router
+```
+
+Generate schemas from your OpenAPI spec:
+
+```bash
+npx stately-codegen ./openapi.json --output ./src/generated
+```
+
+See [`packages/ui`](packages/ui) for full documentation.
+
+## 📦 Packages
+
+This is a monorepo containing both Rust and TypeScript packages:
+
+### Rust Crates
+- **[`stately`](crates/stately)** - Core library for state management
+- **[`stately-derive`](crates/stately-derive)** - Procedural macros
+
+### TypeScript Packages
+- **[`@stately/schema-types`](packages/schema-types)** - Shared type definitions
+- **[`@stately/codegen`](packages/codegen)** - CLI tool for schema generation
+- **[`@stately/ui`](packages/ui)** - React UI components
+
+## 📖 Examples
+
+- [Rust examples](crates/stately/examples)
+- TypeScript examples (coming soon)
 
 ## 🤝 Contributing
 

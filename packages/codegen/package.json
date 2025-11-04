@@ -1,0 +1,48 @@
+{
+  "name": "@stately/codegen",
+  "version": "0.3.0",
+  "description": "Code generation tools for Stately UI from OpenAPI schemas",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "stately-codegen": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build && chmod +x dist/cli.js",
+    "clean": "rm -rf dist .turbo",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsc --build --watch"
+  },
+  "keywords": [
+    "stately",
+    "codegen",
+    "openapi",
+    "schema",
+    "cli"
+  ],
+  "author": "George Lee Patterson <patterson.george@gmail.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/georgeleepatterson/stately.git",
+    "directory": "packages/codegen"
+  },
+  "dependencies": {
+    "@stately/schema-types": "workspace:*",
+    "openapi-typescript": "^7.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "typescript": "^5.7.2"
+  }
+}

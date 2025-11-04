@@ -4,13 +4,12 @@ LOG := env('RUST_LOG', '')
 features := 'openapi axum'
 
 # List of Examples
-
 examples := "basic axum_api"
 
 default:
     @just --list
 
-# --- TESTS ---
+# --- RUST TESTS ---
 
 test-unit:
     cargo test --lib -F axum -- --nocapture --show-output
@@ -35,6 +34,28 @@ coverage-lcov:
      --ignore-filename-regex "(errors|examples|stately-derive).*" \
      --output-path coverage/lcov.info -F axum
 
+# --- TYPESCRIPT ---
+
+# Build TypeScript packages
+ts-build:
+    pnpm run build
+
+# Run TypeScript tests
+ts-test:
+    pnpm run test
+
+# Type check TypeScript packages
+ts-typecheck:
+    pnpm run typecheck
+
+# Clean TypeScript build artifacts
+ts-clean:
+    pnpm run clean
+
+# Install TypeScript dependencies
+ts-install:
+    pnpm install
+
 # --- EXAMPLES ---
 
 examples:
@@ -52,6 +73,23 @@ generate-demo:
 docs:
     scripts/generate-demo.sh
     cargo doc --all-features --open
+
+# --- MONOREPO ---
+
+# Build everything (Rust + TypeScript)
+build-all:
+    cargo build --all-features
+    pnpm run build
+
+# Test everything (Rust + TypeScript)
+test-all:
+    cargo test --all-features
+    pnpm run test
+
+# Clean everything
+clean-all:
+    cargo clean
+    pnpm run clean
 
 # --- MAINTENANCE ---
 
@@ -101,15 +139,15 @@ prepare-release version:
     # This uses a more specific pattern to only match the version under [workspace.package]
     awk '/^\[workspace\.package\]/ {in_workspace=1} in_workspace && /^version = / {gsub(/"[^"]*"/, "\"{{version}}\""); in_workspace=0} {print}' Cargo.toml > Cargo.toml.tmp && mv Cargo.toml.tmp Cargo.toml
 
-    # Update stately-derive dependency version in stately/Cargo.toml
-    if [ -f "stately/Cargo.toml" ]; then
+    # Update stately-derive dependency version in crates/stately/Cargo.toml
+    if [ -f "crates/stately/Cargo.toml" ]; then
         # Update stately-derive version reference (handles both "X.Y.Z" and "*")
-        sed -i '' "s/stately-derive = { path = \"..\/stately-derive\", version = \"[^\"]*\" }/stately-derive = { path = \"..\/stately-derive\", version = \"{{version}}\" }/" "stately/Cargo.toml" || true
+        sed -i '' "s/stately-derive = { path = \"..\/stately-derive\", version = \"[^\"]*\" }/stately-derive = { path = \"..\/stately-derive\", version = \"{{version}}\" }/" "crates/stately/Cargo.toml" || true
     fi
 
     # Update stately version references in README files (if they exist)
     # Look for patterns like: stately = "0.1" or stately = "0.1.1" or stately = { version = "0.1", features = [...] }
-    for readme in README.md stately/README.md; do
+    for readme in README.md crates/stately/README.md; do
         if [ -f "$readme" ]; then
             # Update simple dependency format (handles both "X.Y" and "X.Y.Z")
             sed -i '' -E "s/stately = \"[0-9]+\.[0-9]+(\.[0-9]+)?\"/stately = \"{{version}}\"/" "$readme" || true
@@ -132,10 +170,10 @@ prepare-release version:
     # Stage all changes
     git add Cargo.toml Cargo.lock CHANGELOG.md RELEASE_NOTES.md
     # Also add modified crate Cargo.toml and README files
-    git add stately/Cargo.toml 2>/dev/null || true
-    git add README.md stately/README.md 2>/dev/null || true
+    git add crates/stately/Cargo.toml 2>/dev/null || true
+    git add README.md crates/stately/README.md 2>/dev/null || true
     # Add generated demo documentation
-    git add stately/src/demo.rs 2>/dev/null || true
+    git add crates/stately/src/demo.rs 2>/dev/null || true
 
     # Commit
     git commit -m "chore: prepare release v{{version}}"

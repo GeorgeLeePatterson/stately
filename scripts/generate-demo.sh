@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Main script
-OUTPUT_FILE="${1:-stately/src/demo.rs}"
+OUTPUT_FILE="${1:-crates/stately/src/demo.rs}"
 
 # Generate filtered macro expansion output for documentation
 # Removes derive macro expansions, utoipa impl blocks, and serde internals
