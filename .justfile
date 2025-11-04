@@ -81,6 +81,10 @@ prepare-release version:
         exit 1
     fi
 
+    # Generate demo documentation
+    echo "Generating demo documentation..."
+    ./scripts/generate-demo.sh
+
     # Make sure git cliff is installed
     git cliff --version || (echo "Error: git cliff is not installed" && exit 1)
 
@@ -116,10 +120,6 @@ prepare-release version:
 
     # Update Cargo.lock
     cargo update --workspace
-
-    # Generate demo documentation
-    echo "Generating demo documentation..."
-    ./scripts/generate-demo.sh
 
     # Generate full changelog
     echo "Generating changelog..."
