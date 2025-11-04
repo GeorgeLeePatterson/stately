@@ -34,7 +34,7 @@ tokio = { version = "1", features = ["sync"], optional = true }
 tower-http = { version = "0.6", features = ["compression-gzip"], optional = true }
 utoipa = { version = "5", features = ["macros", "uuid", "rc_schema"], optional = true }
 
-stately-derive = { path = "../stately-derive", version = "0.2.1" }
+stately-derive = { path = "../stately-derive", version = "0.3.0" }
 
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }
