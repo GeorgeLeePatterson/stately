@@ -365,7 +365,6 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         }
 
         // Generated API implementation on the user's struct
-        #[allow(clippy::needless_for_each)] // TODO: Remove or keep
         impl #struct_name {
             /// Creates the Axum router with all entity CRUD endpoints
             pub fn router<S>(state: S) -> ::axum::Router<S>

@@ -14,7 +14,16 @@ pub static SINGLETON_ENTITY_ID: std::sync::LazyLock<EntityId> =
 
 /// Entity identifier type - wraps String for flexibility with UUID v7 generation
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
-#[cfg_attr(feature = "openapi", derive(utoipa::ToSchema))]
+#[cfg_attr(
+    feature = "openapi",
+    derive(utoipa::ToSchema),
+    schema(
+        example = "00000000-0000-0000-0000-000000000000",
+        description = "Entity identifier type - wraps String for flexibility with UUID v7 \
+                       generation. Use the singleton ID '00000000-0000-0000-0000-000000000000' \
+                       for singleton entities."
+    )
+)]
 #[serde(transparent)]
 pub struct EntityId(String);
 

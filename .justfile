@@ -17,6 +17,7 @@ test-unit:
 
 # Runs unit tests first then integration
 test:
+    cargo test -- --nocapture --show-output
     cargo test -F axum -- --nocapture --show-output
 
 test-one test_name:
@@ -45,8 +46,12 @@ example example:
 
 # --- DOCS ---
 
+generate-demo:
+    scripts/generate-demo.sh
+
 docs:
-    cargo doc --open
+    scripts/generate-demo.sh
+    cargo doc --all-features --open
 
 # --- MAINTENANCE ---
 
@@ -112,6 +117,10 @@ prepare-release version:
     # Update Cargo.lock
     cargo update --workspace
 
+    # Generate demo documentation
+    echo "Generating demo documentation..."
+    ./scripts/generate-demo.sh
+
     # Generate full changelog
     echo "Generating changelog..."
     git cliff -o CHANGELOG.md
@@ -125,6 +134,8 @@ prepare-release version:
     # Also add modified crate Cargo.toml and README files
     git add stately/Cargo.toml 2>/dev/null || true
     git add README.md stately/README.md 2>/dev/null || true
+    # Add generated demo documentation
+    git add stately/src/demo.rs 2>/dev/null || true
 
     # Commit
     git commit -m "chore: prepare release v{{version}}"

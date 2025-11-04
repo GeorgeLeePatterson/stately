@@ -27,19 +27,35 @@ where
 }
 
 impl<T: StateEntity> Link<T> {
-    /// Returns the name of the referenced entity
-    pub fn name(&self) -> String {
+    /// Returns a reference to the ID if this is a Ref variant
+    pub fn as_ref(&self) -> Option<&str> {
         match self {
-            Self::Ref(s) => s.clone(),
-            Self::Inline(t) => t.name().to_string(),
+            Self::Ref(id) => Some(id),
+            Self::Inline(_) => None,
         }
     }
 
-    /// Returns the reference ID if this is a reference
-    pub fn get_ref(&self) -> Option<&str> {
+    /// Returns a reference to the entity if this is an Inline variant
+    pub fn as_inline(&self) -> Option<&T> {
         match self {
-            Self::Ref(s) => Some(s),
+            Self::Ref(_) => None,
+            Self::Inline(entity) => Some(entity),
+        }
+    }
+
+    /// Converts into the ID if this is a Ref variant
+    pub fn into_ref(self) -> Option<String> {
+        match self {
+            Self::Ref(id) => Some(id),
             Self::Inline(_) => None,
+        }
+    }
+
+    /// Converts into the entity if this is an Inline variant
+    pub fn into_inline(self) -> Option<T> {
+        match self {
+            Self::Ref(_) => None,
+            Self::Inline(entity) => Some(entity),
         }
     }
 
@@ -92,7 +108,8 @@ where
     {
         use serde::ser::SerializeMap;
 
-        let entity_type = T::STATE_ENTRY;
+        let state_entry = T::STATE_ENTRY;
+        let entity_type = state_entry.as_ref();
         let mut map = serializer.serialize_map(Some(2))?;
 
         map.serialize_entry("entity_type", entity_type)?;
@@ -196,7 +213,8 @@ mod api {
     // Note: PartialSchema is automatically implemented for types that implement ComposeSchema
     impl<T: StateEntity + ToSchema> utoipa::__dev::ComposeSchema for Link<T> {
         fn compose(_generics: Vec<RefOr<Schema>>) -> RefOr<Schema> {
-            let entity_type = T::STATE_ENTRY;
+            let state_entry = T::STATE_ENTRY;
+            let entity_type = state_entry.as_ref();
 
             // Build the oneOf schema with entity_type embedded
             RefOr::T(Schema::OneOf(
@@ -261,17 +279,34 @@ mod tests {
         value: i32,
     }
 
-    impl StateEntity for TestEntity {
-        const STATE_ENTRY: &'static str = "test_entity";
+    #[derive(Debug, Copy, Clone)]
+    enum TestStateEntry {
+        TestEntity,
+    }
 
+    impl AsRef<str> for TestStateEntry {
+        fn as_ref(&self) -> &str {
+            match self {
+                TestStateEntry::TestEntity => "test_entity",
+            }
+        }
+    }
+
+    impl crate::HasName for TestEntity {
         fn name(&self) -> &str { &self.name }
+    }
+
+    impl StateEntity for TestEntity {
+        type Entry = TestStateEntry;
+
+        const STATE_ENTRY: TestStateEntry = TestStateEntry::TestEntity;
     }
 
     #[test]
     fn test_link_create_ref() {
         let link: Link<TestEntity> = Link::create_ref("entity-123");
-        assert_eq!(link.get_ref(), Some("entity-123"));
-        assert_eq!(link.name(), "entity-123");
+        assert_eq!(link.as_ref(), Some("entity-123"));
+        assert_eq!(link.as_inline(), None);
     }
 
     #[test]
@@ -279,8 +314,8 @@ mod tests {
         let entity = TestEntity { name: "test".to_string(), value: 42 };
         let link = Link::inline(entity.clone());
 
-        assert_eq!(link.get_ref(), None);
-        assert_eq!(link.name(), "test");
+        assert_eq!(link.as_ref(), None);
+        assert_eq!(link.as_inline(), Some(&entity));
 
         match link {
             Link::Inline(e) => assert_eq!(e, entity),
@@ -350,7 +385,7 @@ mod tests {
         let json = r#"{"entity_type":"test_entity","ref":"entity-123"}"#;
         let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
 
-        assert_eq!(link.get_ref(), Some("entity-123"));
+        assert_eq!(link.as_ref(), Some("entity-123"));
     }
 
     #[test]
@@ -358,13 +393,17 @@ mod tests {
         let json = r#"{"entity_type":"test_entity","inline":{"name":"test","value":42}}"#;
         let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
 
-        match link {
+        match &link {
             Link::Inline(entity) => {
                 assert_eq!(entity.name, "test");
                 assert_eq!(entity.value, 42);
             }
             Link::Ref(_) => panic!("Expected Inline variant"),
         }
+
+        assert!(link.as_inline().is_some());
+        assert!(link.as_ref().is_none());
+        assert!(link.into_inline().unwrap().name == "test");
     }
 
     #[test]
@@ -372,7 +411,7 @@ mod tests {
         let json = r#""entity-123""#;
         let link: Link<TestEntity> = serde_json::from_str(json).unwrap();
 
-        assert_eq!(link.get_ref(), Some("entity-123"));
+        assert_eq!(link.as_ref(), Some("entity-123"));
     }
 
     #[test]
@@ -446,9 +485,9 @@ mod tests {
     fn test_link_openapi_schema() {
         use utoipa::openapi::{RefOr, Schema};
 
-        let link = Link::<TestEntity>::create_ref("LinkTestEntity");
-        // Test that the schema name is generated correctly
-        assert_eq!(link.name(), "LinkTestEntity");
+        let link = Link::<TestEntity>::create_ref("test-ref-id");
+        // Test that we can access the ref ID
+        assert_eq!(link.as_ref(), Some("test-ref-id"));
 
         // Test that ComposeSchema generates a valid OneOf schema
         let schema = <Link<TestEntity> as utoipa::__dev::ComposeSchema>::compose(vec![]);

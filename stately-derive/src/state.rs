@@ -11,28 +11,40 @@ use syn::{Data, DeriveInput, Fields, Token};
 struct CollectionArgs {
     custom_type: Option<syn::Type>,
     variant:     Option<syn::Ident>,
+    foreign:     bool,
 }
 
 impl Parse for CollectionArgs {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let mut custom_type = None;
         let mut variant = None;
+        let mut foreign = false;
 
         // Parse optional custom type (appears first if present)
         if input.peek(syn::Ident) || input.peek(syn::token::PathSep) {
             // Look ahead to check if this is a type or a keyword
             let fork = input.fork();
             if fork.parse::<syn::Ident>().is_ok() && !input.peek2(Token![=]) {
-                custom_type = Some(input.parse()?);
+                // Check if it's the "foreign" keyword
+                let lookahead = input.lookahead1();
+                if lookahead.peek(syn::Ident) {
+                    let ident: syn::Ident = input.fork().parse()?;
+                    if ident == "foreign" {
+                        // It's the foreign keyword, will be parsed below
+                    } else {
+                        // It's a custom type
+                        custom_type = Some(input.parse()?);
 
-                // Optional comma after type
-                if input.peek(Token![,]) {
-                    input.parse::<Token![,]>()?;
+                        // Optional comma after type
+                        if input.peek(Token![,]) {
+                            input.parse::<Token![,]>()?;
+                        }
+                    }
                 }
             }
         }
 
-        // Parse variant = "Name" if present
+        // Parse variant = "Name" or foreign flag
         while !input.is_empty() {
             let key: syn::Ident = input.parse()?;
 
@@ -40,6 +52,8 @@ impl Parse for CollectionArgs {
                 input.parse::<Token![=]>()?;
                 let lit: syn::LitStr = input.parse()?;
                 variant = Some(syn::Ident::new(&lit.value(), lit.span()));
+            } else if key == "foreign" {
+                foreign = true;
             } else {
                 return Err(input.error(format!("Unknown attribute argument: {}", key)));
             }
@@ -50,7 +64,7 @@ impl Parse for CollectionArgs {
             }
         }
 
-        Ok(CollectionArgs { custom_type, variant })
+        Ok(CollectionArgs { custom_type, variant, foreign })
     }
 }
 
@@ -69,6 +83,35 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let name = &input.ident;
     let attrs = &input.attrs;
+
+    // Check which serde derives are missing and need to be added
+    let needs_debug = !has_derive_trait(attrs, "Debug");
+    let needs_clone = !has_derive_trait(attrs, "Clone");
+    let needs_serialize = !has_derive_trait(attrs, "Serialize");
+    let needs_deserialize = !has_derive_trait(attrs, "Deserialize");
+
+    // Build the derive list for missing traits
+    let mut derive_traits = vec![];
+    if needs_debug {
+        derive_traits.push(quote! { Debug });
+    }
+    if needs_clone {
+        derive_traits.push(quote! { Clone });
+    }
+    if needs_serialize {
+        derive_traits.push(quote! { ::serde::Serialize });
+    }
+    if needs_deserialize {
+        derive_traits.push(quote! { ::serde::Deserialize });
+    }
+
+    let state_derives = if !derive_traits.is_empty() {
+        quote! {
+            #[derive(#(#derive_traits),*)]
+        }
+    } else {
+        quote! {}
+    };
 
     // Parse the struct fields
     let fields = match &input.data {
@@ -90,13 +133,68 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
         }
     };
 
-    // Structure to hold field information
+    // Structure to hold parsed field information from the user's struct
     struct FieldInfo<'a> {
         name:             &'a syn::Ident,
         entity_type:      &'a syn::Type,
         is_singleton:     bool,
+        is_foreign:       bool,
         custom_type:      Option<syn::Type>,
         variant_override: Option<syn::Ident>,
+    }
+
+    // Structure to hold all codegen-related information for a field
+    // This keeps all derived information explicitly associated with the field
+    #[derive(Clone)]
+    struct FieldCodegen {
+        // Original field info
+        field_name:             syn::Ident,
+        original_entity_type:   syn::Type,
+        is_singleton:           bool,
+        is_foreign:             bool,
+        custom_collection_type: Option<syn::Type>,
+
+        // Derived info
+        variant_name:       syn::Ident,
+        actual_entity_type: syn::Ident, // Either original type or wrapper name
+        needs_wrapper:      bool,
+        snake_case_entry:   syn::LitStr,
+
+        // For deduplication tracking
+        type_signature: String,
+    }
+
+    impl FieldCodegen {
+        /// Get the collection type to use in the State struct field
+        fn collection_type_tokens(&self) -> proc_macro2::TokenStream {
+            if let Some(custom) = &self.custom_collection_type {
+                if self.needs_wrapper {
+                    // Custom type with wrapper - use Collection<WrapperType>
+                    let wrapper = &self.actual_entity_type;
+                    quote! { ::stately::Collection<#wrapper> }
+                } else {
+                    // Custom type without wrapper - use the custom type as-is
+                    quote! { #custom }
+                }
+            } else if self.is_singleton {
+                // Singleton
+                let ty = &self.actual_entity_type;
+                quote! { ::stately::Singleton<#ty> }
+            } else {
+                // Regular collection
+                let ty = &self.actual_entity_type;
+                quote! { ::stately::Collection<#ty> }
+            }
+        }
+
+        /// Returns true if this is the first occurrence of this entity type
+        fn is_first_occurrence(&self, all_fields: &[FieldCodegen]) -> bool {
+            all_fields
+                .iter()
+                .find(|f| f.type_signature == self.type_signature)
+                .map(|f| f.field_name == self.field_name)
+                .unwrap_or(true)
+        }
     }
 
     // Parse all fields and their attributes
@@ -107,6 +205,7 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
         let field_type = &field.ty;
 
         let mut is_singleton = false;
+        let mut is_foreign = false;
         let mut custom_type = None;
         let mut variant_override = None;
 
@@ -118,7 +217,7 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
                 // Parse #[collection] or #[collection(...)]
                 let args = if attr.meta.require_path_only().is_ok() {
                     // Bare #[collection] with no args
-                    CollectionArgs { custom_type: None, variant: None }
+                    CollectionArgs { custom_type: None, variant: None, foreign: false }
                 } else {
                     // #[collection(...)] - parse the args
                     match attr.parse_args::<CollectionArgs>() {
@@ -129,6 +228,7 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
 
                 custom_type = args.custom_type;
                 variant_override = args.variant;
+                is_foreign = args.foreign;
             }
         }
 
@@ -136,24 +236,10 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
             name: field_name,
             entity_type: field_type,
             is_singleton,
+            is_foreign,
             custom_type,
             variant_override,
         });
-    }
-
-    // Separate singletons from collections
-    let mut singletons = Vec::new();
-    let mut collections = Vec::new();
-    let mut custom_collections = Vec::new();
-
-    for info in &field_infos {
-        if info.is_singleton {
-            singletons.push((info.name, info.entity_type));
-        } else if let Some(ref custom) = info.custom_type {
-            custom_collections.push((info.name, info.entity_type, custom));
-        } else {
-            collections.push((info.name, info.entity_type));
-        }
     }
 
     // Build variant names with collision detection
@@ -190,48 +276,60 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
         field_variants.push((info, variant));
     }
 
-    // Extract variants by category
-    let singleton_variants: Vec<_> = field_variants
+    // ========================================================================
+    // Build FieldCodegen structs with explicit associations
+    // ========================================================================
+
+    // First pass: Track type occurrences to detect duplicates
+    let mut type_occurrences: HashMap<String, Vec<usize>> = HashMap::new();
+
+    for (idx, (info, _)) in field_variants.iter().enumerate() {
+        let entity_type = info.entity_type;
+        let type_str = quote::quote!(#entity_type).to_string();
+        type_occurrences.entry(type_str).or_default().push(idx);
+    }
+
+    // Second pass: Build FieldCodegen for each field with all derived info
+    let field_codegens: Vec<FieldCodegen> = field_variants
         .iter()
-        .filter(|(info, _)| info.is_singleton)
-        .map(|(_, variant)| variant.clone())
+        .enumerate()
+        .map(|(idx, (info, variant))| {
+            let entity_type = info.entity_type;
+            let type_signature = quote::quote!(#entity_type).to_string();
+
+            // Determine if this field needs a wrapper
+            let occurrences = type_occurrences.get(&type_signature).unwrap();
+            let is_first_occurrence = occurrences[0] == idx;
+            let needs_wrapper = occurrences.len() > 1 && !is_first_occurrence;
+
+            // Foreign types ALWAYS get a wrapper (to implement StateEntity)
+            // Actual entity type is either the wrapper name or the original type
+            let actual_entity_type = if needs_wrapper || info.is_foreign {
+                variant.clone()
+            } else {
+                extract_type_ident(info.entity_type)
+            };
+
+            // Generate snake_case entry from the VARIANT name (not the original type)
+            // This ensures unique snake_case strings even when the same type is reused
+            let variant_str = variant.to_string();
+            let snake = to_snake_case(&variant_str);
+            let snake_case_entry = syn::LitStr::new(&snake, variant.span());
+
+            FieldCodegen {
+                field_name: info.name.clone(),
+                original_entity_type: info.entity_type.clone(),
+                is_singleton: info.is_singleton,
+                is_foreign: info.is_foreign,
+                custom_collection_type: info.custom_type.clone(),
+                variant_name: variant.clone(),
+                actual_entity_type,
+                needs_wrapper,
+                snake_case_entry,
+                type_signature,
+            }
+        })
         .collect();
-
-    let collection_variants: Vec<_> = field_variants
-        .iter()
-        .filter(|(info, _)| !info.is_singleton && info.custom_type.is_none())
-        .map(|(_, variant)| variant.clone())
-        .collect();
-
-    let custom_variants: Vec<_> = field_variants
-        .iter()
-        .filter(|(info, _)| !info.is_singleton && info.custom_type.is_some())
-        .map(|(_, variant)| variant.clone())
-        .collect();
-
-    // Collect everything into vectors for reuse in the quote! macro
-    let all_variants: Vec<_> = singleton_variants
-        .iter()
-        .chain(&collection_variants)
-        .chain(&custom_variants)
-        .cloned()
-        .collect();
-    let all_types: Vec<_> = singletons
-        .iter()
-        .map(|(_, ty)| *ty)
-        .chain(collections.iter().map(|(_, ty)| *ty))
-        .chain(custom_collections.iter().map(|(_, ty, _)| *ty))
-        .collect();
-
-    let singleton_fields: Vec<_> = singletons.iter().map(|(name, _)| *name).collect();
-    let singleton_types: Vec<_> = singletons.iter().map(|(_, ty)| *ty).collect();
-
-    let collection_fields: Vec<_> = collections.iter().map(|(name, _)| *name).collect();
-    let collection_types: Vec<_> = collections.iter().map(|(_, ty)| *ty).collect();
-
-    let custom_fields: Vec<_> = custom_collections.iter().map(|(name, _, _)| *name).collect();
-    let custom_coll_types: Vec<_> =
-        custom_collections.iter().map(|(_, _, coll_ty)| *coll_ty).collect();
 
     // Conditionally add ToSchema derive based on openapi parameter
     let state_entry_derives = if enable_openapi {
@@ -254,8 +352,204 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
         }
     };
 
+    // ========================================================================
+    // Generate wrapper types using FieldCodegen
+    // ========================================================================
+    let wrapper_derives = if enable_openapi {
+        quote! {
+            #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize, ::utoipa::ToSchema)]
+        }
+    } else {
+        quote! {
+            #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+        }
+    };
+
+    let wrapper_defs: Vec<_> = field_codegens
+        .iter()
+        .filter(|f| f.needs_wrapper || f.is_foreign)
+        .map(|field| {
+            let wrapper_name = &field.variant_name;
+            let inner_ty = &field.original_entity_type;
+            let is_foreign = field.is_foreign;
+
+            // For foreign types, delegate to ForeignEntity trait methods
+            // The user implements ForeignEntity on the foreign type in their crate
+            // For regular types, delegate to the inner type's StateEntity impl
+            let hasname_impl = if is_foreign {
+                quote! {
+                    impl ::stately::HasName for #wrapper_name {
+                        fn name(&self) -> &str {
+                            ForeignEntity::name(&self.0)
+                        }
+                    }
+                }
+            } else {
+                quote! {
+                    impl ::stately::HasName for #wrapper_name {
+                        fn name(&self) -> &str {
+                            self.0.name()
+                        }
+                    }
+                }
+            };
+
+            let state_entity_impl = if is_foreign {
+                quote! {
+                    impl ::stately::StateEntity for #wrapper_name {
+                        type Entry = StateEntry;
+                        const STATE_ENTRY: StateEntry = StateEntry::#wrapper_name;
+
+                        fn description(&self) -> Option<&str> {
+                            ForeignEntity::description(&self.0)
+                        }
+
+                        fn summary(&self, id: ::stately::EntityId) -> ::stately::Summary {
+                            ForeignEntity::summary(&self.0, id)
+                        }
+                    }
+                }
+            } else {
+                quote! {
+                    impl ::stately::StateEntity for #wrapper_name {
+                        type Entry = StateEntry;
+                        const STATE_ENTRY: StateEntry = StateEntry::#wrapper_name;
+
+                        fn description(&self) -> Option<&str> {
+                            self.0.description()
+                        }
+
+                        fn summary(&self, id: ::stately::EntityId) -> ::stately::Summary {
+                            self.0.summary(id)
+                        }
+                    }
+                }
+            };
+
+            quote! {
+                /// Wrapper type for disambiguating multiple uses of the same entity type
+                #wrapper_derives
+                #[serde(transparent)]
+                #vis struct #wrapper_name(#vis #inner_ty);
+
+                impl #wrapper_name {
+                    /// Creates a new wrapper instance
+                    #vis fn new(inner: #inner_ty) -> Self {
+                        Self(inner)
+                    }
+
+                    /// Consumes the wrapper and returns the inner value
+                    #vis fn into_inner(self) -> #inner_ty {
+                        self.0
+                    }
+
+                    /// Returns a reference to the inner value
+                    #vis fn inner(&self) -> &#inner_ty {
+                        &self.0
+                    }
+
+                    /// Returns a mutable reference to the inner value
+                    #vis fn inner_mut(&mut self) -> &mut #inner_ty {
+                        &mut self.0
+                    }
+                }
+
+                impl ::core::ops::Deref for #wrapper_name {
+                    type Target = #inner_ty;
+                    fn deref(&self) -> &Self::Target {
+                        &self.0
+                    }
+                }
+
+                impl ::core::ops::DerefMut for #wrapper_name {
+                    fn deref_mut(&mut self) -> &mut Self::Target {
+                        &mut self.0
+                    }
+                }
+
+                impl ::core::convert::AsRef<#inner_ty> for #wrapper_name {
+                    fn as_ref(&self) -> &#inner_ty {
+                        &self.0
+                    }
+                }
+
+                impl ::core::convert::AsMut<#inner_ty> for #wrapper_name {
+                    fn as_mut(&mut self) -> &mut #inner_ty {
+                        &mut self.0
+                    }
+                }
+
+                impl ::core::convert::From<#inner_ty> for #wrapper_name {
+                    fn from(inner: #inner_ty) -> Self {
+                        Self(inner)
+                    }
+                }
+
+                impl ::core::convert::From<#wrapper_name> for #inner_ty {
+                    fn from(wrapper: #wrapper_name) -> Self {
+                        wrapper.0
+                    }
+                }
+
+                #hasname_impl
+
+                #state_entity_impl
+            }
+        })
+        .collect();
+
+    // ========================================================================
+    // Pre-compute all data from FieldCodegen for use in quote! macros
+    // ========================================================================
+
+    // For State struct fields
+    let field_names: Vec<_> = field_codegens.iter().map(|f| &f.field_name).collect();
+    let field_types: Vec<_> = field_codegens.iter().map(|f| f.collection_type_tokens()).collect();
+
+    // For Entity enum and StateEntry
+    // Note: Foreign types use their wrapper types (e.g., JsonConfig) which ARE local
+    let all_variants: Vec<_> = field_codegens.iter().map(|f| &f.variant_name).collect();
+    let all_entity_types: Vec<_> = field_codegens.iter().map(|f| &f.actual_entity_type).collect();
+    let snake_case_entries: Vec<_> = field_codegens.iter().map(|f| &f.snake_case_entry).collect();
+
+    // For StateEntity impls (only first occurrence of each type, non-wrappers, non-foreign)
+    let impl_fields: Vec<_> = field_codegens
+        .iter()
+        .filter(|f| !f.needs_wrapper && !f.is_foreign && f.is_first_occurrence(&field_codegens))
+        .collect();
+    let impl_types: Vec<_> = impl_fields.iter().map(|f| &f.actual_entity_type).collect();
+    let impl_variants: Vec<_> = impl_fields.iter().map(|f| &f.variant_name).collect();
+
+    // For categorized iteration (singletons, collections, customs)
+    let singleton_codegens: Vec<_> = field_codegens.iter().filter(|f| f.is_singleton).collect();
+    let collection_codegens: Vec<_> = field_codegens
+        .iter()
+        .filter(|f| !f.is_singleton && f.custom_collection_type.is_none())
+        .collect();
+    let custom_codegens: Vec<_> = field_codegens
+        .iter()
+        .filter(|f| !f.is_singleton && f.custom_collection_type.is_some())
+        .collect();
+
+    // Extract field names and variants for categorized groups
+    let singleton_fields: Vec<_> = singleton_codegens.iter().map(|f| &f.field_name).collect();
+    let singleton_variants: Vec<_> = singleton_codegens.iter().map(|f| &f.variant_name).collect();
+    let collection_fields: Vec<_> = collection_codegens.iter().map(|f| &f.field_name).collect();
+    let collection_variants: Vec<_> = collection_codegens.iter().map(|f| &f.variant_name).collect();
+    let custom_fields: Vec<_> = custom_codegens.iter().map(|f| &f.field_name).collect();
+    let custom_variants: Vec<_> = custom_codegens.iter().map(|f| &f.variant_name).collect();
+
+    // For link_aliases deduplication
+    let collection_types: Vec<_> =
+        collection_codegens.iter().map(|f| &f.actual_entity_type).collect();
+    let custom_entity_types: Vec<_> =
+        custom_codegens.iter().map(|f| &f.actual_entity_type).collect();
+
     // Generate the core state code
     let core_code = quote! {
+        // Generate wrapper types for duplicate entity types
+        #( #wrapper_defs )*
+
         // Generate StateEntry enum
         #state_entry_derives
         #[serde(rename_all = "snake_case")]
@@ -266,8 +560,14 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
         impl StateEntry {
             #vis fn as_ref(&self) -> &str {
                 match self {
-                    #( Self::#all_variants => <#all_types as ::stately::StateEntity>::STATE_ENTRY, )*
+                    #( Self::#all_variants => #snake_case_entries, )*
                 }
+            }
+        }
+
+        impl ::core::convert::AsRef<str> for StateEntry {
+            fn as_ref(&self) -> &str {
+                self.as_ref()
             }
         }
 
@@ -276,8 +576,29 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
 
             fn from_str(s: &str) -> ::std::result::Result<Self, Self::Err> {
                 match s {
-                    #( <#all_types as ::stately::StateEntity>::STATE_ENTRY => Ok(Self::#all_variants), )*
+                    #( #snake_case_entries => Ok(Self::#all_variants), )*
                     _ => Err(format!("Unknown entity type: {}", s)),
+                }
+            }
+        }
+
+        // Generate ForeignEntity trait if any foreign types are used
+        // This allows users to implement the trait on foreign types without orphan rule violations
+        #vis trait ForeignEntity: Clone + ::serde::Serialize + for<'de> ::serde::Deserialize<'de> {
+            /// Returns the human-readable name of this entity instance
+            fn name(&self) -> &str;
+
+            /// Returns an optional description of this entity instance
+            fn description(&self) -> Option<&str> {
+                None
+            }
+
+            /// Returns a summary of this entity for listings
+            fn summary(&self, id: ::stately::EntityId) -> ::stately::Summary {
+                ::stately::Summary {
+                    id,
+                    name: self.name().to_string(),
+                    description: self.description().map(ToString::to_string),
                 }
             }
         }
@@ -286,7 +607,7 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
         #entity_derives
         #[serde(tag = "type", content = "data", rename_all = "snake_case")]
         #vis enum Entity {
-            #( #all_variants(#all_types), )*
+            #( #all_variants(#all_entity_types), )*
         }
 
         impl From<&Entity> for StateEntry {
@@ -297,12 +618,19 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
             }
         }
 
+        // Generate StateEntity implementations for original types (wrappers generate their own)
+        #(
+            impl ::stately::StateEntity for #impl_types {
+                type Entry = StateEntry;
+                const STATE_ENTRY: StateEntry = StateEntry::#impl_variants;
+            }
+        )*
+
         // Generate the State struct
         #(#attrs)*
+        #state_derives
         #vis struct #name {
-            #( #vis #singleton_fields: ::stately::Singleton<#singleton_types>, )*
-            #( #vis #collection_fields: ::stately::Collection<#collection_types>, )*
-            #( #vis #custom_fields: #custom_coll_types, )*
+            #( #vis #field_names: #field_types, )*
         }
 
         impl Default for #name {
@@ -486,10 +814,8 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
     };
 
     // Generate link_aliases module with type aliases for Link<T> for all entity types
-    let all_entity_types: Vec<_> = collection_types
-        .iter()
-        .chain(custom_collections.iter().map(|(_, entity_ty, _)| entity_ty))
-        .collect();
+    let all_entity_types: Vec<_> =
+        collection_types.iter().chain(custom_entity_types.iter()).collect();
 
     // Deduplicate entity types by their string representation
     let mut seen_types = std::collections::HashSet::new();
@@ -497,12 +823,12 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
     let mut link_alias_names = Vec::new();
 
     for ty in all_entity_types {
-        let type_name = extract_type_ident(ty);
-        let type_name_str = type_name.to_string();
+        // ty is already an Ident (wrapper name or original type name)
+        let type_name_str = ty.to_string();
 
         if seen_types.insert(type_name_str) {
             unique_entity_types.push(ty);
-            link_alias_names.push(syn::Ident::new(&format!("{}Link", type_name), type_name.span()));
+            link_alias_names.push(syn::Ident::new(&format!("{}Link", ty), ty.span()));
         }
     }
 
@@ -523,6 +849,48 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream {
     };
 
     TokenStream::from(expanded)
+}
+
+/// Checks if a struct has a specific trait in its derive attributes
+fn has_derive_trait(attrs: &[syn::Attribute], trait_name: &str) -> bool {
+    attrs.iter().any(|attr| {
+        if attr.path().is_ident("derive") {
+            // Parse the derive attribute and check if it contains the trait
+            if let syn::Meta::List(meta_list) = &attr.meta {
+                let tokens_str = meta_list.tokens.to_string();
+                // Check for the trait name as a whole word (not substring)
+                // This handles cases like "Serialize" vs "MySerialize"
+                tokens_str.split(&[',', ' ', ':'][..]).any(|s| {
+                    s.trim() == trait_name || s.trim().ends_with(&format!("::{}", trait_name))
+                })
+            } else {
+                false
+            }
+        } else {
+            false
+        }
+    })
+}
+
+/// Converts PascalCase to snake_case
+fn to_snake_case(s: &str) -> String {
+    let mut result = String::new();
+    let mut prev_is_lower = false;
+
+    for c in s.chars() {
+        if c.is_uppercase() {
+            if prev_is_lower {
+                result.push('_');
+            }
+            result.push(c.to_lowercase().next().unwrap());
+            prev_is_lower = false;
+        } else {
+            result.push(c);
+            prev_is_lower = c.is_lowercase();
+        }
+    }
+
+    result
 }
 
 /// Extracts the type identifier from a type

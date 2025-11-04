@@ -113,17 +113,18 @@ fn main() {
         .create(Task { name: "process-data".to_string(), status: "pending".to_string() });
     println!("✓ Case 3 - Custom type: Created task {task_id}");
 
-    // Case 4: Variant override only
-    let archived_id = state.archived.create(Pipeline {
+    // Case 4: Variant override only (requires wrapper type)
+    let archived_id = state.archived.create(ArchivedPipeline(Pipeline {
         name:        "old-pipeline".to_string(),
         description: Some("Archived for reference".to_string()),
-    });
+    }));
     println!("✓ Case 4 - Variant override: Created archived pipeline {archived_id}");
 
-    // Case 5: Custom type + variant override
-    let background_id = state
-        .background
-        .create(Task { name: "cleanup".to_string(), status: "running".to_string() });
+    // Case 5: Custom type + variant override (requires wrapper type)
+    let background_id = state.background.create(BackgroundTask(Task {
+        name:   "cleanup".to_string(),
+        status: "running".to_string(),
+    }));
     println!("✓ Case 5 - Custom + variant: Created background task {background_id}");
 
     // Create additional entities

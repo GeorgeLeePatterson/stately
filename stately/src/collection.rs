@@ -11,6 +11,7 @@ use crate::{Error, Result};
 ///
 /// Provides CRUD operations and lookup by both ID and name.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct Collection<T: StateEntity> {
     #[serde(bound(deserialize = "T: StateEntity"))]
     inner: HashMap<EntityId, T>,
@@ -35,11 +36,6 @@ impl<T: StateEntity> Collection<T> {
         self.inner.iter().find(|(_, entity)| entity.name() == name)
     }
 
-    /// Inserts an entity with a specific ID
-    pub fn insert_with_id(&mut self, id: EntityId, entity: T) -> Option<T> {
-        self.inner.insert(id, entity)
-    }
-
     /// Returns the number of entities in the collection
     pub fn len(&self) -> usize { self.inner.len() }
 
@@ -53,7 +49,7 @@ impl<T: StateEntity> Collection<T> {
 impl<T: StateEntity> StateCollection for Collection<T> {
     type Entity = T;
 
-    const STATE_ENTRY: &'static str = T::STATE_ENTRY;
+    const STATE_ENTRY: <T as StateEntity>::Entry = T::STATE_ENTRY;
 
     fn load<I>(entities: I) -> Self
     where
@@ -120,30 +116,11 @@ impl<T: StateEntity> StateCollection for Collection<T> {
 ///
 /// Unlike collections, singletons don't have IDs and can't be created/deleted,
 /// only read and updated.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(transparent)]
 pub struct Singleton<T: StateEntity> {
+    #[serde(bound(deserialize = "T: StateEntity"))]
     inner: T,
-}
-
-// Manual Serialize implementation to avoid complex trait bound resolution
-impl<T: StateEntity> Serialize for Singleton<T> {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        self.inner.serialize(serializer)
-    }
-}
-
-// Manual Deserialize implementation to avoid complex trait bound resolution
-impl<'de, T: StateEntity> Deserialize<'de> for Singleton<T> {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let inner = T::deserialize(deserializer)?;
-        Ok(Self { inner })
-    }
 }
 
 impl<T: StateEntity> Singleton<T> {
@@ -163,7 +140,7 @@ impl<T: StateEntity> Singleton<T> {
 impl<T: StateEntity + Default> StateCollection for Singleton<T> {
     type Entity = T;
 
-    const STATE_ENTRY: &'static str = T::STATE_ENTRY;
+    const STATE_ENTRY: <T as StateEntity>::Entry = T::STATE_ENTRY;
 
     fn load<I>(entities: I) -> Self
     where
@@ -233,10 +210,27 @@ mod tests {
         value: i32,
     }
 
-    impl StateEntity for TestEntity {
-        const STATE_ENTRY: &'static str = "test_entity";
+    #[derive(Debug, Copy, Clone)]
+    enum TestStateEntry {
+        TestEntity,
+    }
 
+    impl AsRef<str> for TestStateEntry {
+        fn as_ref(&self) -> &str {
+            match self {
+                TestStateEntry::TestEntity => "test_entity",
+            }
+        }
+    }
+
+    impl crate::HasName for TestEntity {
         fn name(&self) -> &str { &self.name }
+    }
+
+    impl StateEntity for TestEntity {
+        type Entry = TestStateEntry;
+
+        const STATE_ENTRY: TestStateEntry = TestStateEntry::TestEntity;
     }
 
     #[test]

@@ -14,10 +14,11 @@ Stately provides a framework for managing application configuration and state wi
 - 🔗 **Entity Relationships** - Reference entities inline or by ID
 - 📝 **CRUD Operations** - Create, read, update, delete for all entity types
 - 🔄 **Serialization** - Full serde support
-- 📚 **OpenAPI Schemas** - Automatic schema generatio with `utoipa`n
+- 📚 **OpenAPI Schemas** - Automatic schema generation with `utoipa`
 - 🆔 **Time-Sortable IDs** - UUID v7 for naturally ordered identifiers
 - 🚀 **Web APIs** - Optional Axum integration with generated handlers (more frameworks coming soon)
-- **🔍 Search & Query**: Built-in entity search across collections
+- 🔍 **Search & Query** - Built-in entity search across collections
+- 🌍 **Foreign Types** - Use types from external crates in your state
 
 Stately does not provide the configuration and structures that comprise the state. Instead it provides an ultra-thin container management strategy that provides seamless integration with [@stately/ui](stately-ui).
 
@@ -79,7 +80,9 @@ This generates:
 - Collections with full CRUD operations
 - Search and query methods
 
-Use the `#[collection(...)]` attributes to configure the application state properties:
+### Collection Attributes
+
+Use `#[collection(...)]` to customize how collections are generated:
 
 ```rust
 // Can be a struct that implements `StateCollection`. This type alias is for simplicity.
@@ -89,13 +92,25 @@ type CustomStateCollectionImpl = Collection<SourceConfig>;
 pub struct AppState {
     #[collection] // Default, same as omitting
     pipelines: Pipeline,
+
     #[collection(CustomStateCollectionImpl)]
     sources: SourceConfig,
-    // Rename the generated variants to prevent collision with `sources` above
+
+    // variant = "..." sets the name used in the StateEntry and Entity enums
+    // Useful when multiple collections use the same entity type
     #[collection(CustomStateCollectionImpl, variant = "CachedSourceConfig")]
     sources_cached: SourceConfig,
+
+    // foreign allows using types from external crates
+    #[collection(foreign)]
+    configs: serde_json::Value,
 }
 ```
+
+Without `variant`, the macro generates enum variant names from the entity type name. Use `variant` to:
+- Avoid naming collisions when using the same entity type in multiple collections
+- Control the names in generated `StateEntry` and `Entity` enums
+- Improve API clarity (e.g., `StateEntry::CachedSourceConfig` vs `StateEntry::SourceConfig`)
 
 ### Use the State
 
@@ -252,7 +267,7 @@ match &pipeline.source {
 For configuration that should have exactly one instance:
 
 ```rust
-#[stately::entity(singleton, description = "Global settings")]
+#[stately::entity(singleton)]
 #[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
     pub max_connections: usize,
@@ -264,6 +279,53 @@ pub struct AppState {
     settings: Settings,
 }
 ```
+
+## Foreign Type Support
+
+Stately allows you to use types from external crates (foreign types) in your state by using the `#[collection(foreign)]` attribute. This is useful for managing third-party types like configuration formats, API responses, or other external data structures.
+
+When you mark a collection as `foreign`, the `#[stately::state]` macro generates a `ForeignEntity` trait in your crate that you can implement on external types:
+
+```rust
+use serde_json::Value;
+
+#[stately::state]
+pub struct AppState {
+    #[collection(foreign, variant = "JsonConfig")]
+    json_configs: Value,
+}
+
+// The macro generates this trait in your crate:
+// pub trait ForeignEntity: Clone + Serialize + for<'de> Deserialize<'de> {
+//     fn name(&self) -> &str;
+//     fn description(&self) -> Option<&str> { None }
+//     fn summary(&self, id: EntityId) -> Summary { ... }
+// }
+
+// Now you can implement it on the external type
+impl ForeignEntity for Value {
+    fn name(&self) -> &str {
+        self.get("name")
+            .and_then(|v| v.as_str())
+            .unwrap_or("unnamed")
+    }
+
+    fn description(&self) -> Option<&str> {
+        self.get("description")
+            .and_then(|v| v.as_str())
+    }
+}
+
+// Use like any other entity
+let mut state = AppState::new();
+let config = serde_json::json!({
+    "name": "my-config",
+    "description": "A JSON configuration"
+});
+let id = state.json_configs.create(config);
+```
+
+Because `ForeignEntity` is generated in your crate (not in stately), you can implement it on types from external crates without violating Rust's orphan rules. The macro creates wrapper types in the `Entity` enum that delegate to your `ForeignEntity` implementation, ensuring full compatibility with state operations.
 
 ## 🌐 Web API Generation (Axum)
 
@@ -407,20 +469,20 @@ let json = openapi.to_json().unwrap();
 
 ## Entity Attributes
 
-The `#[stately::entity]` macro supports these attributes:
+The `#[stately::entity]` macro implements the `HasName` trait and supports these attributes:
 
 ```rust
+// Default: uses the "name" field
+#[stately::entity]
+
 // Use a different field for the entity name
 #[stately::entity(name_field = "title")]
 
-// Mark as singleton (only one instance)
+// Use a method to get the name
+#[stately::entity(name_method = "get_identifier")]
+
+// Mark as singleton (returns "default" as the name)
 #[stately::entity(singleton)]
-
-// Use a field for description
-#[stately::entity(description_field = "info")]
-
-// Use a static description
-#[stately::entity(description = "A pipeline configuration")]
 ```
 
 ## Examples
@@ -449,19 +511,20 @@ cargo run --example axum_api --features axum
 
 ### Traits
 
-- **`StateEntity`** - Trait for all entity types (implemented by `#[stately::entity]`)
+- **`HasName`** - Trait for providing entity names (implemented by `#[stately::entity]`)
+- **`StateEntity`** - Trait for all entity types (implemented by `#[stately::state]`)
 - **`StateCollection`** - Trait for entity collections (implemented by `#[stately::state]`)
 
 ### Macros
 
-- **`#[stately::entity]`** - Define an entity type
+- **`#[stately::entity]`** - Implements the `HasName` trait for an entity type
 - **`#[stately::state]`** - Define application state with entity collections
 
 ## Architecture
 
 Stately uses procedural macros to generate boilerplate at compile time:
 
-1. **`#[stately::entity]`** implements the `StateEntity` trait
+1. **`#[stately::entity]`** implements the `HasName` trait
 2. **`#[stately::state]`** generates:
    - `StateEntry` enum for entity type discrimination
    - `Entity` enum for type-erased entity wrapper
