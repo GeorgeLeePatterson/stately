@@ -14,10 +14,11 @@
 //! - 🆔 **Time-Sortable IDs** - UUID v7 for naturally ordered entity identifiers
 //! - 🚀 **Web APIs** - Optional Axum integration with generated REST handlers
 //! - 🔍 **Search & Query** - Built-in entity search across collections
+//! - 🌍 **Foreign Types** - Use types from external crates in your state
 //!
 //! ## Quick Start
 //!
-//! Define your entities using the [`entity`] macro:
+//! Define your entities using the [`macro@entity`] macro:
 //!
 //! ```rust,ignore
 //! use stately::prelude::*;
@@ -55,12 +56,7 @@
 //!     sinks: SinkConfig,
 //! }
 //! ```
-//!
-//! The `state` macro generates:
-//! - `StateEntry` enum - discriminator for entity types
-//! - `Entity` enum - type-erased wrapper for all entities
-//! - `link_aliases` module - type aliases like `PipelineLink = Link<Pipeline>`
-//!
+//
 //! Use your state with full type safety:
 //!
 //! ```rust,ignore
@@ -96,6 +92,50 @@
 //! // Delete entities
 //! state.pipelines.remove(&pipeline_id.to_string())?;
 //! ```
+//!
+//! ## Foreign Type Support
+//!
+//! Use types from external crates in your state with the `#[collection(foreign)]` attribute.
+//! When you mark a collection as `foreign`, the `#[stately::state]` macro generates a
+//! [`ForeignEntity`](`crate::demo::ForeignEntity`) trait in your crate that you implement on the
+//! external type:
+//!
+//! ```rust,ignore
+//! use serde_json::Value;
+//!
+//! #[stately::state]
+//! pub struct AppState {
+//!     #[collection(foreign, variant = "JsonConfig")]
+//!     json_configs: Value,
+//! }
+//!
+//! // The macro generates this trait in your crate:
+//! // pub trait ForeignEntity: Clone + Serialize + for<'de> Deserialize<'de> {
+//! //     fn name(&self) -> &str;
+//! //     fn description(&self) -> Option<&str> { None }
+//! //     fn summary(&self, id: EntityId) -> Summary { ... }
+//! // }
+//!
+//! // Now you can implement it on the external type
+//! impl ForeignEntity for Value {
+//!     fn name(&self) -> &str {
+//!         self.get("name").and_then(|v| v.as_str()).unwrap_or("unnamed")
+//!     }
+//!
+//!     fn description(&self) -> Option<&str> {
+//!         self.get("description").and_then(|v| v.as_str())
+//!     }
+//! }
+//!
+//! // Use like any other entity
+//! let mut state = AppState::new();
+//! let config = serde_json::json!({"name": "my-config"});
+//! let id = state.json_configs.create(config);
+//! ```
+//!
+//! Because [`ForeignEntity`](`crate::demo::ForeignEntity`) is generated in your crate, you can
+//! implement it on types from external crates without violating Rust's orphan rules. The macro
+//! creates wrapper types that delegate to your `ForeignEntity` implementation.
 //!
 //! ## Web API Generation
 //!
@@ -133,8 +173,8 @@
 //!
 //! ### Event-Driven Persistence
 //!
-//! The `axum_api` macro generates a `ResponseEvent` enum and middleware for event-driven
-//! persistence:
+//! The `axum_api` macro generates a [`ResponseEvent`](`crate::demo::ResponseEvent`) enum and
+//! middleware for crud events. The middleware is generic and can convert to your own event types:
 //!
 //! ```rust,ignore
 //! use tokio::sync::mpsc;
@@ -145,97 +185,64 @@
 //!
 //!     let app_state = AppState::new(State::new());
 //!
+//!     enum MyEvent {
+//!         Api(ResponseEvent),
+//!         // ... other variants
+//!     }
+//!
+//!     impl From<ResponseEvent> for MyEvent {
+//!         fn from(event: ResponseEvent) -> Self { MyEvent::Api(event) }
+//!     }
+//!
 //!     // Attach event middleware - handlers emit events after state updates
 //!     let app = axum::Router::new()
 //!         .nest("/api/v1/entity", AppState::router(app_state.clone()))
-//!         .layer(axum::middleware::from_fn(
-//!             AppState::event_middleware(event_tx)
-//!         ))
+//!         .layer(axum::middleware::from_fn(AppState::event_middleware(event_tx)))
+//!         .layer(axum::middleware::from_fn(AppState::event_middleware::<MyEvent>(event_tx)))
 //!         .with_state(app_state);
 //!
 //!     // Handle events in background task
 //!     tokio::spawn(async move {
 //!         while let Some(event) = event_rx.recv().await {
 //!             match event {
-//!                 ResponseEvent::Created { id, entity } => {
-//!                     // Persist to database
-//!                 }
-//!                 ResponseEvent::Updated { id, entity } => {
-//!                     // Update in database
-//!                 }
-//!                 ResponseEvent::Deleted { id, entry } => {
-//!                     // Delete from database
-//!                 }
+//!                 ResponseEvent::Created { id, entity } => { /* Persist to database */ }
+//!                 ResponseEvent::Updated { id, entity } => { /* Persist to database */ }
+//!                 ResponseEvent::Deleted { id, entry } => { /* Persist to database */ }
 //!             }
 //!         }
 //!     });
 //! }
 //! ```
 //!
-//! The middleware is generic and can convert to your own event types:
-//!
-//! ```rust,ignore
-//! enum MyEvent {
-//!     Api(ResponseEvent),
-//!     // ... other variants
-//! }
-//!
-//! impl From<ResponseEvent> for MyEvent {
-//!     fn from(event: ResponseEvent) -> Self {
-//!         MyEvent::Api(event)
-//!     }
-//! }
-//!
-//! // Use with your custom event type
-//! let app = axum::Router::new()
-//!     .layer(axum::middleware::from_fn(
-//!         AppState::event_middleware::<MyEvent>(event_tx)
-//!     ))
-//!     .with_state(app_state);
-//! ```
-//!
-//! The `axum_api` macro generates:
-//! - Handler methods on your struct (`create_entity`, `list_entities`, etc.)
-//! - `router()` method returning configured Axum router
-//! - `ResponseEvent` enum with Created, Updated, and Deleted variants
-//! - `event_middleware()` method for event-driven persistence
-//! - `OpenAPI` documentation when `openapi` parameter is specified
-//!
 //! ## Generated Code Reference
+//!
+//! To see a comprehensive demonstration of the code generated by the macros, refer to the
+//! [`mod@demo`] module. It is derived from the [doc_expand example](https://github.com/georgeleepatterson/stately/tree/main/examples/doc_expand.rs)
 //!
 //! ### What the `state` Macro Generates
 //!
 //! When you use `#[stately::state]` on your struct, the macro generates:
 //!
-//! 1. **`StateEntry` enum** - Used to specify entity types in queries: ```rust,ignore pub enum
-//!    StateEntry { Pipeline, Source, Sink, } ```
-//!
-//! 2. **`Entity` enum** - Type-erased wrapper for all entity types: ```rust,ignore pub enum Entity
-//!    { Pipeline(Pipeline), Source(SourceConfig), Sink(SinkConfig), } ```
-//!
-//! 3. **`link_aliases` module** - Convenient type aliases for `Link<T>`: ```rust,ignore pub mod
-//!    link_aliases { pub type PipelineLink = ::stately::Link<Pipeline>; pub type SourceLink =
-//!    ::stately::Link<SourceConfig>; pub type SinkLink = ::stately::Link<SinkConfig>; } ```
+//! 1. **[`StateEntry`](`demo::StateEntry`) enum** - Used to specify entity types in queries
+//! 2. **[`Entity`](`demo::Entity`) enum** - Type-erased wrapper for all entity types
+//! 3. **[`link_aliases`](`demo::link_aliases`) module** - Convenient type aliases for [`Link<T>`]
 //!
 //! ### What the `axum_api` Macro Generates
 //!
 //! When you use `#[stately::axum_api(State)]`, the macro generates:
 //!
 //! 1. **Handler methods** - REST API handlers as methods on your struct:
-//!    - `create_entity()`, `list_entities()`, `get_entity_by_id()`
-//!    - `update_entity()`, `patch_entity_by_id()`, `remove_entity()`
-//!
-//! 2. **`router()` method** - Returns configured Axum router with all routes
-//!
-//! 3. **`ResponseEvent` enum** - Events emitted after CRUD operations: ```rust,ignore pub enum
-//!    ResponseEvent { Created { id: EntityId, entity: Entity }, Updated { id: EntityId, entity:
-//!    Entity }, Deleted { id: EntityId, entry: StateEntry }, } ```
-//!
-//! 4. **`event_middleware()` method** - Generic middleware for event-driven persistence:
-//!    ```rust,ignore pub fn event_middleware<T>( event_tx: tokio::sync::mpsc::Sender<T> ) -> impl
-//!    Fn(...) + Clone where T: From<ResponseEvent> + Send + 'static ```
-//!
-//! 5. **`OpenAPI` trait** (when `openapi` parameter used) - Implements `utoipa::OpenApi`
+//!    - [`create_entity()`](`demo::create_entity`), [`update_entity()`](`demo::update_entity`),
+//!      [`patch_entity_by_id()`](`demo::patch_entity_by_id`),
+//!      [`remove_entity()`](`demo::remove_entity`)
+//!    - [`list_entities()`](`demo::list_entities`), [`get_entities()`](`demo::get_entities`),
+//!      [`get_entity_by_id()`](`demo::get_entity_by_id`)
+//! 2. **[`ApiState::router()`](`crate::demo::ApiState::router`)** - Returns Axum router with all
+//!    routes configured
+//! 3. **[`ResponseEvent`](`demo::ResponseEvent`) enum** - Events emitted after CRUD operations:
+//! 4. **[`ApiState::event_middleware()`](`crate::demo::ApiState::event_middleware`) method** -
+//!    Generic middleware for crud
+//! 5. **`OpenAPI` trait** (when `openapi` parameter used) - Implements [`utoipa::OpenApi`]
 //!
 //! ## Feature Flags
 //!
@@ -268,7 +275,7 @@ pub use stately_derive::axum_api;
 pub use stately_derive::{entity, state};
 #[cfg(feature = "axum")]
 pub use tokio;
-pub use traits::{ForeignEntity, HasName, StateCollection, StateEntity};
+pub use traits::{HasName, StateCollection, StateEntity};
 
 /// Prelude module for convenient imports
 pub mod prelude {
@@ -278,6 +285,10 @@ pub mod prelude {
     pub use crate::traits::{StateCollection, StateEntity};
     pub use crate::{Error, Result, entity, state};
 }
+
+// Include generated code examples for documentation
+#[cfg(all(doc, feature = "axum"))]
+pub mod demo;
 
 // Silence unused_crate_dependencies lint for dev/optional dependencies
 #[cfg(all(test, not(feature = "axum")))]

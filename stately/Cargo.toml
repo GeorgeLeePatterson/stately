@@ -86,3 +86,7 @@ required-features = ["openapi"]
 [[example]]
 name = "axum_api"
 required-features = ["axum"]
+
+[[example]]
+name = "doc_expand"
+required-features = ["axum"]

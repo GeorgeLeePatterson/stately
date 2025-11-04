@@ -6,23 +6,42 @@ mod axum_api;
 mod entity;
 mod state;
 
-/// Derives the `StateEntity` trait for a struct.
+/// Implements the `HasName` trait for an entity struct.
+///
+/// This macro provides flexible name resolution for entities. The `StateEntity` trait
+/// is automatically implemented by the `#[stately::state]` macro when the entity is
+/// added to a state struct.
 ///
 /// # Attributes
 ///
-/// - `#[stately(singleton)]` - Marks this as a singleton entity
-/// - `#[stately(name_field = "field_name")]` - Uses a different field for the name (default:
-///   "name")
-/// - `#[stately(description_field = "field_name")]` - Uses a specific field for description
-/// - `#[stately(description = "text")]` - Uses a static description
+/// - `#[stately::entity]` - Uses the default "name" field
+/// - `#[stately::entity(name_field = "field_name")]` - Uses a different field for the name
+/// - `#[stately::entity(name_method = "method_name")]` - Calls a method to get the name
+/// - `#[stately::entity(singleton)]` - For singleton entities, returns "default" as the name
 ///
-/// # Example
+/// # Examples
 ///
 /// ```rust,ignore
+/// // Default: uses the "name" field
 /// #[stately::entity]
 /// pub struct Pipeline {
 ///     pub name: String,
 ///     pub source: Link<SourceConfig>,
+/// }
+///
+/// // Custom field name
+/// #[stately::entity(name_field = "identifier")]
+/// pub struct Config {
+///     identifier: String,
+/// }
+///
+/// // Custom method
+/// #[stately::entity(name_method = "get_name")]
+/// pub struct Task {
+///     id: String,
+/// }
+/// impl Task {
+///     fn get_name(&self) -> &str { &self.id }
 /// }
 /// ```
 #[proc_macro_attribute]
