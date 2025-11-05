@@ -1,9 +1,10 @@
 /**
  * @stately/codegen
  *
- * Build-time code generation for Stately UI.
- * Generates TypeScript schema files from OpenAPI specifications.
+ * Programmatic API for schema generation (if needed)
  */
 
-// Placeholder - will be populated when porting from xeo4
 export const VERSION = '0.3.0';
+
+// Main functionality is in CLI for now
+// Can expose programmatic API later if needed

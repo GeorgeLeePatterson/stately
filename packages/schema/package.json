@@ -1,7 +1,7 @@
 {
-  "name": "@stately/schema-types",
+  "name": "@stately/schema",
   "version": "0.3.0",
-  "description": "Type definitions for Stately schema nodes",
+  "description": "Type definitions and schema parser for Stately",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -19,6 +19,7 @@
     "build": "tsc --build",
     "clean": "rm -rf dist .turbo",
     "typecheck": "tsc --noEmit",
+    "test": "tsc --noEmit tests/*.test.ts",
     "dev": "tsc --build --watch"
   },
   "keywords": [
@@ -32,7 +33,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/georgeleepatterson/stately.git",
-    "directory": "packages/schema-types"
+    "directory": "packages/schema"
   },
   "devDependencies": {
     "typescript": "^5.7.2"
