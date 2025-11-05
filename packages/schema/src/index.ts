@@ -50,7 +50,7 @@
  * Configuration for the StatelySchemas factory
  * User provides RAW inputs - factory does the rest
  */
-interface StatelyConfig {
+export interface StatelyConfig {
   /**
    * components: Raw OpenAPI schemas (components['schemas'])
    * Must contain at minimum: StateEntry, Entity, EntityId
@@ -323,3 +323,14 @@ export interface StatelySchemas<Config extends StatelyConfig> {
   // Union of all nodes
   AnySchemaNode: AnyNode<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
 }
+
+/**
+ * Version export
+ */
+export const VERSION = '0.3.0';
+
+/**
+ * Re-export OpenAPI integration utilities
+ */
+export { createOpenAPIIntegration } from './openapi.js';
+export type { OpenAPIIntegration } from './openapi.js';
