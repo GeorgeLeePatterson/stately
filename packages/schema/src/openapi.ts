@@ -19,6 +19,44 @@ interface OpenAPIDocument {
 }
 
 /**
+ * Validation error detail
+ */
+export interface ValidationError {
+  /** Path to the invalid field (e.g., 'pipeline.source.buffer_size') */
+  path: string;
+  /** Error message */
+  message: string;
+  /** The invalid value */
+  value?: any;
+}
+
+/**
+ * Validation result
+ */
+export interface ValidationResult {
+  /** Whether validation passed */
+  valid: boolean;
+  /** List of validation errors (empty if valid) */
+  errors: ValidationError[];
+}
+
+/**
+ * Validation options
+ */
+export interface ValidationOptions {
+  /** Current recursion depth (internal, auto-managed) */
+  depth?: number;
+  /** Maximum depth before warning (default: 15) */
+  warnDepth?: number;
+  /** Maximum depth before error (default: 20) */
+  maxDepth?: number;
+  /** Enable debug logging (default: false) */
+  debug?: boolean;
+  /** Callback for depth warnings */
+  onDepthWarning?: (path: string, depth: number) => void;
+}
+
+/**
  * Result returned from createOpenAPIIntegration
  * All types are derived from StatelySchemas using the provided generics
  */
@@ -26,7 +64,7 @@ export interface OpenAPIIntegration<Schemas extends StatelySchemas<any>> {
   // ===== Raw Inputs (passed through) =====
 
   /**
-   * Raw OpenAPI component schemas (openapi.components.schemas)
+   * OpenAPI component schemas (openapi.components.schemas)
    */
   schemas: Schemas['components'];
 
@@ -38,7 +76,7 @@ export interface OpenAPIIntegration<Schemas extends StatelySchemas<any>> {
   // ===== Parsed Entity Mappings =====
 
   /**
-   * Raw entity mappings extracted from Entity oneOf
+   * Entity mappings extracted from Entity oneOf
    * Maps StateEntry values to their corresponding schema names
    */
   entityMappings: Array<{
@@ -89,6 +127,87 @@ export interface OpenAPIIntegration<Schemas extends StatelySchemas<any>> {
     value: any,
     required: Set<string>,
   ) => Array<[string, Schemas['AnySchemaNode']]>;
+
+  // ===== String Utilities =====
+
+  /**
+   * Convert snake_case to Title Case for display
+   * Example: 'source_config' -> 'Source Config'
+   */
+  toTitleCase: (str: string) => string;
+
+  /**
+   * Convert snake_case to kebab-case for URLs
+   * Example: 'source_config' -> 'source-config'
+   */
+  toKebabCase: (str: string) => string;
+
+  /**
+   * Convert snake_case/kebab-case to space case
+   * Example: 'source_config' -> 'source config'
+   */
+  toSpaceCase: (str: string) => string;
+
+  /**
+   * Generate a human-readable label from a field name
+   * Example: 'field_name' -> 'Field Name'
+   */
+  generateFieldLabel: (fieldName: string) => string;
+
+  // ===== ID Utilities =====
+
+  /**
+   * Determine if an id is a singleton id (all zeros UUID)
+   * Example: '00000000-0000-0000-0000-000000000000' -> true
+   */
+  isSingletonId: (id: string) => boolean;
+
+  // ===== Default Values =====
+
+  /**
+   * Get default value for a schema node
+   * Returns appropriate default based on node type
+   */
+  getDefaultValue: (node: Schemas['AnySchemaNode']) => any;
+
+  // ===== Validation =====
+
+  /**
+   * Validation error details
+   */
+  validateSchema: (
+    path: string,
+    data: any,
+    schema: Schemas['AnySchemaNode'],
+    options?: ValidationOptions,
+  ) => ValidationResult;
+
+  /**
+   * Validate an object against an ObjectNode schema
+   */
+  validateObject: (
+    path: string,
+    data: Record<string, any>,
+    schema: Schemas['ObjectNode'],
+    options?: ValidationOptions,
+  ) => ValidationResult;
+
+  /**
+   * Validate a single object field
+   */
+  validateObjectField: (
+    path: string,
+    fieldName: string,
+    fieldValue: any,
+    fieldSchema: Schemas['AnySchemaNode'],
+    isRequired: boolean,
+    options?: ValidationOptions,
+  ) => ValidationResult;
+
+  /**
+   * Create a validation result cache key for memoization
+   */
+  createValidationCacheKey: (path: string, data: any) => string;
 }
 
 /**
@@ -105,7 +224,30 @@ function toTitleCase(str: string): string {
     .join(' ');
 }
 
-function validateObject(obj: any, schema: any): boolean {
+function toSpaceCase(str: string): string {
+  return str.replace(/[-_]/g, ' ');
+}
+
+function generateFieldLabel(fieldName: string): string {
+  return fieldName
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+/**
+ * ID utilities
+ */
+export const SINGLETON_ID = '00000000-0000-0000-0000-000000000000';
+
+function isSingletonId(id: string): boolean {
+  return id === SINGLETON_ID;
+}
+
+/**
+ * Basic validation helper (used internally)
+ */
+function validateObjectBasic(obj: any, schema: any): boolean {
   if (!obj || !schema) return false;
 
   if (schema.required) {
@@ -240,7 +382,7 @@ export function createOpenAPIIntegration<
     const nameRequired = 'name' in schema.properties;
     const nameValid = !nameRequired || ('name' in entity && !!(entity as any)?.name);
 
-    return nameValid && !!entity && validateObject(entity, schema);
+    return nameValid && !!entity && validateObjectBasic(entity, schema);
   };
 
   // Helper: Sort properties for display
@@ -269,6 +411,326 @@ export function createOpenAPIIntegration<
     });
   };
 
+  // Helper: Get default value for a schema node
+  const getDefaultValue = (node: Schemas['AnySchemaNode']): any => {
+    switch (node.nodeType) {
+      case NodeType.Primitive:
+        switch ((node as any).primitiveType) {
+          case 'string':
+            return '';
+          case 'number':
+          case 'integer':
+            return 0;
+          case 'boolean':
+            return false;
+        }
+        break;
+
+      case NodeType.Enum:
+        return (node as any).values[0] || '';
+
+      case NodeType.Array:
+        return [];
+
+      case NodeType.Map:
+        return {};
+
+      case NodeType.Tuple:
+        return (node as any).items.map(getDefaultValue);
+
+      case NodeType.Object: {
+        const obj: any = {};
+        const requiredFields = new Set((node as any).required || []);
+        for (const [name, propNode] of Object.entries((node as any).properties)) {
+          // Only include required fields in the default value
+          // Optional fields will be undefined/omitted until user explicitly sets them
+          if (requiredFields.has(name)) {
+            obj[name] = getDefaultValue(propNode as Schemas['AnySchemaNode']);
+          }
+        }
+        return obj;
+      }
+
+      case NodeType.Link:
+        return ''; // Empty string for ref mode
+
+      case NodeType.TaggedUnion:
+      case NodeType.UntaggedEnum:
+        return null; // User must select a variant
+
+      case NodeType.Nullable:
+        return null;
+    }
+
+    return null;
+  };
+
+  // Helper: Create validation cache key for memoization
+  const createValidationCacheKey = (path: string, data: any): string => {
+    // Create a stable cache key from path and data
+    // For objects/arrays, use JSON.stringify; for primitives, use direct value
+    const dataKey = typeof data === 'object' && data !== null
+      ? JSON.stringify(data)
+      : String(data);
+    return `${path}:${dataKey}`;
+  };
+
+  // TODO: Remove - Questions on validateSchemas
+  // - why is the return from max depth exceeded false? That will break the app.
+  // - let's review the function and ensure that "schema.required" drives certain validations such as no enum discriminant, missing value, etc.
+  // - empty array is always valid, just verifying
+  // - Primitives are invalid if the field is required, although that may be handled by the container-type schema instead, not sure
+
+  // Helper: Validate schema
+  const validateSchema = (
+    path: string,
+    data: any,
+    schema: Schemas['AnySchemaNode'],
+    options: ValidationOptions = {},
+  ): ValidationResult => {
+    const {
+      depth = 0,
+      warnDepth = 15,
+      maxDepth = 20,
+      debug = false,
+      onDepthWarning,
+    } = options;
+
+    if (debug) {
+      console.debug(`[Validation] ${path} at depth ${depth}`, { data, nodeType: schema.nodeType });
+    }
+
+    // Check depth limits
+    if (depth >= maxDepth) {
+      return {
+        valid: false,
+        errors: [{
+          path,
+          message: `Maximum validation depth (${maxDepth}) exceeded. This may indicate circular references or overly complex nesting.`,
+          value: data,
+        }],
+      };
+    }
+
+    if (depth >= warnDepth && onDepthWarning) {
+      onDepthWarning(path, depth);
+    }
+
+    const nextOptions: ValidationOptions = { ...options, depth: depth + 1 };
+
+    switch (schema.nodeType) {
+      case NodeType.Object:
+        return validateObject(path, data, schema as Schemas['ObjectNode'], nextOptions);
+
+      case NodeType.Nullable:
+        // Null/undefined is valid for nullable
+        if (data === null || data === undefined) {
+          return { valid: true, errors: [] };
+        }
+        return validateSchema(path, data, (schema as any).innerSchema, options);
+
+      case NodeType.UntaggedEnum: {
+        if (!data || typeof data !== 'object' || Object.keys(data).length === 0) {
+          return { valid: true, errors: [] }; // Empty is valid for optional enum
+        }
+
+        const variant = Object.keys(data)[0];
+        if (!variant) {
+          return { valid: true, errors: [] };
+        }
+
+        const variantData = data[variant];
+        const variantSchema = (schema as any).variants.find((v: any) => v.tag === variant);
+
+        if (!variantSchema) {
+          return {
+            valid: false,
+            errors: [{
+              path,
+              message: `Unknown variant '${variant}' in untagged enum`,
+              value: data,
+            }],
+          };
+        }
+
+        return validateSchema(`${path}.${variant}`, variantData, variantSchema.schema, nextOptions);
+      }
+
+      case NodeType.Array: {
+        if (!Array.isArray(data)) {
+          return { valid: true, errors: [] }; // Non-array is handled as optional
+        }
+
+        const errors: ValidationError[] = [];
+        for (let i = 0; i < data.length; i++) {
+          const itemResult = validateSchema(
+            `${path}[${i}]`,
+            data[i],
+            (schema as any).items,
+            nextOptions,
+          );
+          if (!itemResult.valid) {
+            errors.push(...itemResult.errors);
+          }
+        }
+
+        return {
+          valid: errors.length === 0,
+          errors,
+        };
+      }
+
+      case NodeType.TaggedUnion: {
+        if (!data || typeof data !== 'object') {
+          return { valid: true, errors: [] }; // Empty is valid for optional
+        }
+
+        const discriminator = (schema as any).discriminator;
+        const tag = data[discriminator];
+
+        if (!tag) {
+          return {
+            valid: false,
+            errors: [{
+              path: `${path}.${discriminator}`,
+              message: `Missing discriminator field '${discriminator}'`,
+              value: data,
+            }],
+          };
+        }
+
+        const variant = (schema as any).variants.find((v: any) => v.tag === tag);
+        if (!variant) {
+          return {
+            valid: false,
+            errors: [{
+              path: `${path}.${discriminator}`,
+              message: `Unknown variant '${tag}' for discriminator '${discriminator}'`,
+              value: tag,
+            }],
+          };
+        }
+
+        return validateObject(path, data, variant.schema, nextOptions);
+      }
+
+      case NodeType.Map: {
+        if (!data || typeof data !== 'object') {
+          return { valid: true, errors: [] };
+        }
+
+        const errors: ValidationError[] = [];
+        for (const [key, value] of Object.entries(data)) {
+          const itemResult = validateSchema(
+            `${path}.${key}`,
+            value,
+            (schema as any).valueSchema,
+            nextOptions,
+          );
+          if (!itemResult.valid) {
+            errors.push(...itemResult.errors);
+          }
+        }
+
+        return {
+          valid: errors.length === 0,
+          errors,
+        };
+      }
+
+      // Primitives, Enums, Links, RecursiveRef, RelativePath, Tuple
+      // These don't need deep validation - just presence checks
+      default:
+        return { valid: true, errors: [] };
+    }
+  };
+
+  // Helper: Validate object
+  const validateObject = (
+    path: string,
+    data: Record<string, any>,
+    schema: Schemas['ObjectNode'],
+    options: ValidationOptions = {},
+  ): ValidationResult => {
+    const { debug = false } = options;
+
+    if (debug) {
+      console.debug(`[Validation] Object at ${path}`, { data, schema });
+    }
+
+    if (!data || typeof data !== 'object') {
+      return {
+        valid: false,
+        errors: [{
+          path,
+          message: 'Expected an object',
+          value: data,
+        }],
+      };
+    }
+
+    const required = new Set((schema as any).required || []);
+    const errors: ValidationError[] = [];
+
+    // Validate each property
+    for (const [propertyName, propertySchema] of Object.entries((schema as any).properties)) {
+      const fieldRequired = required.has(propertyName);
+      const fieldValue = data[propertyName];
+
+      const fieldResult = validateObjectField(
+        path,
+        propertyName,
+        fieldValue,
+        propertySchema as Schemas['AnySchemaNode'],
+        fieldRequired,
+        options,
+      );
+
+      if (!fieldResult.valid) {
+        errors.push(...fieldResult.errors);
+      }
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors,
+    };
+  };
+
+  // Helper: Validate object field
+  const validateObjectField = (
+    parentPath: string,
+    fieldName: string,
+    fieldValue: any,
+    fieldSchema: Schemas['AnySchemaNode'],
+    isRequired: boolean,
+    options: ValidationOptions = {},
+  ): ValidationResult => {
+    const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
+
+    // Required field validation
+    if (isRequired) {
+      if (fieldValue === null || fieldValue === undefined || fieldValue === '') {
+        return {
+          valid: false,
+          errors: [{
+            path: fieldPath,
+            message: `Field '${fieldName}' is required`,
+            value: fieldValue,
+          }],
+        };
+      }
+    } else {
+      // Optional field - if not present, it's valid
+      if (fieldValue === null || fieldValue === undefined) {
+        return { valid: true, errors: [] };
+      }
+    }
+
+    // Validate the field value against its schema
+    return validateSchema(fieldPath, fieldValue, fieldSchema, options);
+  };
+
   return {
     // Pass through raw inputs
     schemas: openapi.components?.schemas as Schemas['components'],
@@ -287,5 +749,23 @@ export function createOpenAPIIntegration<
     extractNodeType,
     isEntityValid,
     sortEntityProperties,
+
+    // String utilities
+    toTitleCase,
+    toKebabCase,
+    toSpaceCase,
+    generateFieldLabel,
+
+    // ID utilities
+    isSingletonId,
+
+    // Default values
+    getDefaultValue,
+
+    // Validation
+    validateSchema,
+    validateObject,
+    validateObjectField,
+    createValidationCacheKey,
   };
 }

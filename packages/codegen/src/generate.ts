@@ -484,7 +484,7 @@ console.log(`✅ Parsed ${Object.keys(parsedSchemas).length} schemas`);
 const output = `// Auto-generated at build time from openapi.json
 // DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
 
-export const PARSED_SCHEMAS = ${JSON.stringify(parsedSchemas, null, 2)};
+export const PARSED_SCHEMAS = ${JSON.stringify(parsedSchemas, null, 2)} as const;
 
 export type ParsedSchemaName = keyof typeof PARSED_SCHEMAS;
 `;

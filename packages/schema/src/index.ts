@@ -157,7 +157,7 @@ interface PrimitiveNodeRaw extends BaseNode {
  */
 interface EnumNodeRaw extends BaseNode {
   nodeType: typeof NodeType.Enum;
-  values: string[];
+  values: readonly string[];
 }
 
 /**
@@ -165,8 +165,8 @@ interface EnumNodeRaw extends BaseNode {
  */
 interface ObjectNodeRaw<EntityType extends string, SchemaName extends string> extends BaseNode {
   nodeType: typeof NodeType.Object;
-  properties: Record<string, AnyNode<EntityType, SchemaName>>;
-  required: string[];
+  properties: Readonly<Record<string, AnyNode<EntityType, SchemaName>>>;
+  required: readonly string[];
   merged?: TaggedUnionNodeRaw<EntityType, SchemaName> | UntaggedEnumNodeRaw<EntityType, SchemaName>;
 }
 
@@ -192,7 +192,7 @@ interface MapNodeRaw<EntityType extends string, SchemaName extends string> exten
  */
 interface TupleNodeRaw<EntityType extends string, SchemaName extends string> extends BaseNode {
   nodeType: typeof NodeType.Tuple;
-  items: AnyNode<EntityType, SchemaName>[];
+  items: readonly AnyNode<EntityType, SchemaName>[];
 }
 
 /**
@@ -201,7 +201,7 @@ interface TupleNodeRaw<EntityType extends string, SchemaName extends string> ext
 interface TaggedUnionNodeRaw<EntityType extends string, SchemaName extends string> extends BaseNode {
   nodeType: typeof NodeType.TaggedUnion;
   discriminator: string;
-  variants: Array<{
+  variants: ReadonlyArray<{
     tag: string;
     schema: ObjectNodeRaw<EntityType, SchemaName>;
   }>;
@@ -212,7 +212,7 @@ interface TaggedUnionNodeRaw<EntityType extends string, SchemaName extends strin
  */
 interface UntaggedEnumNodeRaw<EntityType extends string, SchemaName extends string> extends BaseNode {
   nodeType: typeof NodeType.UntaggedEnum;
-  variants: Array<{
+  variants: ReadonlyArray<{
     tag: string;
     schema: AnyNode<EntityType, SchemaName>;
   }>;
