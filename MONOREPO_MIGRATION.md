@@ -22,7 +22,7 @@ stately/
 │   ├── stately/          # Core library
 │   └── stately-derive/   # Proc macros
 ├── packages/             # TypeScript packages
-│   ├── schema-types/     # @stately/schema-types
+│   ├── schema/           # @stately/schema
 │   ├── codegen/          # @stately/codegen
 │   └── ui/               # @stately/ui
 ├── Cargo.toml            # Rust workspace
@@ -47,7 +47,7 @@ stately/
 
 ## Package Overview
 
-### @stately/schema-types
+### @stately/schemas
 - **Purpose**: Shared TypeScript type definitions
 - **Used by**: codegen (build-time) and ui (runtime)
 - **Dependencies**: None (pure types)
@@ -56,13 +56,13 @@ stately/
 ### @stately/codegen
 - **Purpose**: CLI tool for schema generation from OpenAPI
 - **Usage**: `npx stately-codegen openapi.json`
-- **Dependencies**: @stately/schema-types, openapi-typescript
+- **Dependencies**: @stately/schema, openapi-typescript
 - **Build**: `tsc --build`
 - **Note**: Placeholder implementation - will be populated from xeo4
 
 ### @stately/ui
 - **Purpose**: React UI components for Stately entities
-- **Dependencies**: @stately/schema-types
+- **Dependencies**: @stately/schemas
 - **Peer Dependencies**: React 18/19, Tanstack Query/Router
 - **Build**: `vite build && tsc --build`
 - **Note**: Placeholder implementation - will be populated from xeo4
@@ -138,12 +138,12 @@ All systems verified working:
 ## Next Steps
 
 1. **Port xeo4 UI code** to `packages/`
-   - Start with schema-types (node-types.ts, etc.)
+   - Start with schema (node-types.ts, etc.)
    - Then codegen (generate-schemas.ts)
    - Finally ui (components, hooks, routes)
 
 2. **Publish initial versions** to npm (once ported)
-   - @stately/schema-types@0.3.0
+   - @stately/schema@0.3.0
    - @stately/codegen@0.3.0
    - @stately/ui@0.3.0
 
@@ -170,6 +170,6 @@ Cached build: ~86ms (FULL TURBO)
 
 See individual package READMEs:
 - [crates/stately/README.md](crates/stately/README.md)
-- [packages/schema-types/README.md](packages/schema-types/README.md)
+- [packages/schema/README.md](packages/schema/README.md)
 - [packages/codegen/README.md](packages/codegen/README.md)
 - [packages/ui/README.md](packages/ui/README.md)
