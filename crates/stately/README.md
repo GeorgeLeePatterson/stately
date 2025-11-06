@@ -28,14 +28,14 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stately = "0.3.0"
+stately = "0.3.1"
 ```
 
 With Axum API generation:
 
 ```toml
 [dependencies]
-stately = { version = "0.3.0", features = ["axum"] }
+stately = { version = "0.3.1", features = ["axum"] }
 ```
 
 ## Quick Start
