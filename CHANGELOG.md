@@ -2,12 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2025-11-06
+
+### 📚 Documentation
+
+- Patches broken links in docs
+
 ## [0.3.1] - 2025-11-06
 
 ### ⚙️ Miscellaneous Tasks
 
 - Restructure as Rust + TypeScript monorepo
 - Updates release task, introduces cliff.toml
+- Prepare release v0.3.1 (#9)
 
 ### 📚 Documentation
 

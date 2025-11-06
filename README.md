@@ -35,7 +35,7 @@ Add stately to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stately = { version = "0.3.1", features = ["axum"] }
+stately = { version = "0.3.2", features = ["axum"] }
 ```
 
 See [`crates/stately`](crates/stately) for full documentation.
