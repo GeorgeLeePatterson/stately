@@ -11,6 +11,12 @@ repository.workspace = true
 homepage.workspace = true
 documentation.workspace = true
 
+[package.metadata.docs.rs]
+# Build docs with all features enabled to show the complete API
+all-features = true
+# Alternatively, you can specify features explicitly:
+# features = ["axum"]
+
 [features]
 default = ["openapi"]
 openapi = ["dep:utoipa"]
