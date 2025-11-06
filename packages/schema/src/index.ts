@@ -1,5 +1,5 @@
 /**
- * @stately/schema-types
+ * @stately/schema
  *
  * Core type definitions for Stately schema nodes.
  * This package is shared between codegen (build-time) and ui (runtime).

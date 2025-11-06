@@ -26,9 +26,9 @@ importers:
 
   packages/codegen:
     dependencies:
-      '@stately/schema-types':
+      '@stately/schema':
         specifier: workspace:*
-        version: link:../schema-types
+        version: link:../schema
       openapi-typescript:
         specifier: ^7.5.0
         version: 7.10.1(typescript@5.9.3)
@@ -40,7 +40,7 @@ importers:
         specifier: ^5.7.2
         version: 5.9.3
 
-  packages/schema-types:
+  packages/schema:
     devDependencies:
       typescript:
         specifier: ^5.7.2
@@ -48,9 +48,9 @@ importers:
 
   packages/ui:
     dependencies:
-      '@stately/schema-types':
+      '@stately/schema':
         specifier: workspace:*
-        version: link:../schema-types
+        version: link:../schema
     devDependencies:
       '@tanstack/react-query':
         specifier: ^5.62.12

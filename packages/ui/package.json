@@ -24,7 +24,7 @@
     "clean": "rm -rf dist .turbo",
     "typecheck": "tsc --noEmit",
     "dev": "vite build --watch",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },
   "keywords": [
@@ -42,7 +42,7 @@
     "directory": "packages/ui"
   },
   "dependencies": {
-    "@stately/schema-types": "workspace:*"
+    "@stately/schema": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.0.0",

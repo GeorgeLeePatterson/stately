@@ -38,7 +38,7 @@
     "directory": "packages/codegen"
   },
   "dependencies": {
-    "@stately/schema-types": "workspace:*",
+    "@stately/schema": "workspace:*",
     "openapi-typescript": "^7.5.0"
   },
   "devDependencies": {
