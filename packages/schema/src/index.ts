@@ -325,11 +325,6 @@ export interface StatelySchemas<Config extends StatelyConfig> {
 }
 
 /**
- * Version export
- */
-export const VERSION = '0.3.0';
-
-/**
  * Re-export OpenAPI integration utilities
  */
 export { createOpenAPIIntegration } from './openapi.js';

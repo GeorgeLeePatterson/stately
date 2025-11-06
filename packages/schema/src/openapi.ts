@@ -476,10 +476,6 @@ export function createOpenAPIIntegration<
   };
 
   // TODO: Remove - Questions on validateSchemas
-  // - why is the return from max depth exceeded false? That will break the app.
-  // - let's review the function and ensure that "schema.required" drives certain validations such as no enum discriminant, missing value, etc.
-  // - empty array is always valid, just verifying
-  // - Primitives are invalid if the field is required, although that may be handled by the container-type schema instead, not sure
 
   // Helper: Validate schema
   const validateSchema = (
@@ -502,14 +498,16 @@ export function createOpenAPIIntegration<
 
     // Check depth limits
     if (depth >= maxDepth) {
-      return {
-        valid: false,
-        errors: [{
-          path,
-          message: `Maximum validation depth (${maxDepth}) exceeded. This may indicate circular references or overly complex nesting.`,
-          value: data,
-        }],
-      };
+      // WARNING: Returning valid=true here because we cannot break existing applications
+      // that have deep nesting. If validation has passed up to this point, we assume
+      // the rest is valid rather than failing the entire form.
+      if (debug) {
+        console.warn(`[Validation] Maximum depth (${maxDepth}) reached at ${path}. Skipping deeper validation.`);
+      }
+      if (onDepthWarning) {
+        onDepthWarning(path, depth);
+      }
+      return { valid: true, errors: [] };
     }
 
     if (depth >= warnDepth && onDepthWarning) {
@@ -530,13 +528,22 @@ export function createOpenAPIIntegration<
         return validateSchema(path, data, (schema as any).innerSchema, options);
 
       case NodeType.UntaggedEnum: {
+        // Note: Empty/missing check is handled by validateObjectField for required fields
         if (!data || typeof data !== 'object' || Object.keys(data).length === 0) {
-          return { valid: true, errors: [] }; // Empty is valid for optional enum
+          // If we got here, the field is optional and empty, which is valid
+          return { valid: true, errors: [] };
         }
 
         const variant = Object.keys(data)[0];
         if (!variant) {
-          return { valid: true, errors: [] };
+          return {
+            valid: false,
+            errors: [{
+              path,
+              message: 'Untagged enum must have exactly one variant',
+              value: data,
+            }],
+          };
         }
 
         const variantData = data[variant];
@@ -557,10 +564,23 @@ export function createOpenAPIIntegration<
       }
 
       case NodeType.Array: {
+        // Note: Missing/empty array check is handled by validateObjectField for required fields
         if (!Array.isArray(data)) {
-          return { valid: true, errors: [] }; // Non-array is handled as optional
+          // Non-array values: undefined/null are valid (handled by parent), other types are errors
+          if (data === null || data === undefined) {
+            return { valid: true, errors: [] };
+          }
+          return {
+            valid: false,
+            errors: [{
+              path,
+              message: 'Expected an array',
+              value: data,
+            }],
+          };
         }
 
+        // Empty array [] is valid (presence, not length constraint)
         const errors: ValidationError[] = [];
         for (let i = 0; i < data.length; i++) {
           const itemResult = validateSchema(
@@ -581,8 +601,10 @@ export function createOpenAPIIntegration<
       }
 
       case NodeType.TaggedUnion: {
+        // Note: Empty/missing check is handled by validateObjectField for required fields
         if (!data || typeof data !== 'object') {
-          return { valid: true, errors: [] }; // Empty is valid for optional
+          // If we got here, it's optional and empty, which is valid
+          return { valid: true, errors: [] };
         }
 
         const discriminator = (schema as any).discriminator;
@@ -708,9 +730,38 @@ export function createOpenAPIIntegration<
   ): ValidationResult => {
     const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
 
+    // Check for missing values
+    const isMissing = fieldValue === null || fieldValue === undefined;
+
     // Required field validation
     if (isRequired) {
-      if (fieldValue === null || fieldValue === undefined || fieldValue === '') {
+      // For primitives (string), empty string is invalid
+      if (fieldSchema.nodeType === NodeType.Primitive && (isMissing || fieldValue === '')) {
+        return {
+          valid: false,
+          errors: [{
+            path: fieldPath,
+            message: `Field '${fieldName}' is required`,
+            value: fieldValue,
+          }],
+        };
+      }
+
+      // For other types (objects, enums, unions), missing or empty object is invalid
+      if (isMissing || (typeof fieldValue === 'object' && !Array.isArray(fieldValue) && Object.keys(fieldValue).length === 0)) {
+        return {
+          valid: false,
+          errors: [{
+            path: fieldPath,
+            message: `Field '${fieldName}' is required`,
+            value: fieldValue,
+          }],
+        };
+      }
+
+      // Arrays: empty array [] is valid (presence check, not length check)
+      // Missing array is invalid
+      if (fieldSchema.nodeType === NodeType.Array && isMissing) {
         return {
           valid: false,
           errors: [{
@@ -722,7 +773,7 @@ export function createOpenAPIIntegration<
       }
     } else {
       // Optional field - if not present, it's valid
-      if (fieldValue === null || fieldValue === undefined) {
+      if (isMissing) {
         return { valid: true, errors: [] };
       }
     }
