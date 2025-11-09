@@ -46,25 +46,37 @@
  * ```
  */
 
+import type { OpenAPIV3_1 } from 'openapi-types';
+
 /**
  * Configuration for the StatelySchemas factory
  * User provides RAW inputs - factory does the rest
  */
 export interface StatelyConfig {
   /**
-   * components: Raw OpenAPI schemas (components['schemas'])
-   * Must contain at minimum: StateEntry, Entity, EntityId
+   * components: OpenAPI components object
+   * Must contain required schemas: StateEntry, Entity, EntityId, Summary
    */
-  components: {
-    StateEntry: any;
-    Entity: any;
-    EntityId: any;
-    [key: string]: any;
+  components: OpenAPIV3_1.ComponentsObject & {
+    schemas: {
+      StateEntry: string;
+      Entity: Record<string, any>;
+      EntityId: string;
+      Summary: { id: string; name: string; description: string; [key: string]: any };
+      [key: string]: any;
+    };
   };
+
+  /**
+   * paths: OpenAPI paths object
+   * Contains all API endpoint definitions
+   */
+  paths: OpenAPIV3_1.PathsObject;
 
   /**
    * nodes: Generated schema AST nodes
    * A record mapping schema names to their parsed node representations
+   * Kept as Record<string, any> to avoid circular dependency with AnySchemaNode
    */
   nodes: Record<string, any>;
 }
@@ -90,7 +102,6 @@ export const NodeType = {
   Link: 'link',
   Nullable: 'nullable',
   RecursiveRef: 'recursiveRef',
-  RelativePath: 'relativePath',
 } as const;
 
 export type NodeType = (typeof NodeType)[keyof typeof NodeType];
@@ -138,8 +149,7 @@ type AnyNode<EntityType extends string, SchemaName extends string> =
   | UntaggedEnumNodeRaw<EntityType, SchemaName>
   | LinkNodeRaw<EntityType, SchemaName>
   | NullableNodeRaw<EntityType, SchemaName>
-  | RecursiveRefNodeRaw<SchemaName>
-  | RelativePathNodeRaw;
+  | RecursiveRefNodeRaw<SchemaName>;
 
 /**
  * Primitive types: string, number, integer, boolean (no generics needed)
@@ -198,24 +208,20 @@ interface TupleNodeRaw<EntityType extends string, SchemaName extends string> ext
 /**
  * Tagged Union: Rust enum with explicit discriminator
  */
-interface TaggedUnionNodeRaw<EntityType extends string, SchemaName extends string> extends BaseNode {
+interface TaggedUnionNodeRaw<EntityType extends string, SchemaName extends string>
+  extends BaseNode {
   nodeType: typeof NodeType.TaggedUnion;
   discriminator: string;
-  variants: ReadonlyArray<{
-    tag: string;
-    schema: ObjectNodeRaw<EntityType, SchemaName>;
-  }>;
+  variants: ReadonlyArray<{ tag: string; schema: ObjectNodeRaw<EntityType, SchemaName> }>;
 }
 
 /**
  * Untagged Enum: Rust enum with inferred discriminator
  */
-interface UntaggedEnumNodeRaw<EntityType extends string, SchemaName extends string> extends BaseNode {
+interface UntaggedEnumNodeRaw<EntityType extends string, SchemaName extends string>
+  extends BaseNode {
   nodeType: typeof NodeType.UntaggedEnum;
-  variants: ReadonlyArray<{
-    tag: string;
-    schema: AnyNode<EntityType, SchemaName>;
-  }>;
+  variants: ReadonlyArray<{ tag: string; schema: AnyNode<EntityType, SchemaName> }>;
 }
 
 /**
@@ -245,12 +251,11 @@ interface RecursiveRefNodeRaw<SchemaName extends string> extends BaseNode {
   refName: SchemaName;
 }
 
-/**
- * RelativePath: Path relative to app directory (no generics needed)
- */
-interface RelativePathNodeRaw extends BaseNode {
-  nodeType: typeof NodeType.RelativePath;
-}
+// Type helper to extract the specific Entity variant based on type
+export type ExtractEntityByType<
+  Schemas extends StatelySchemas,
+  T extends Schemas['StateEntry'],
+> = Extract<Schemas['Entity'], { type: T }>;
 
 /**
  * =============================================================================
@@ -262,37 +267,48 @@ interface RelativePathNodeRaw extends BaseNode {
  * The StatelySchemas factory - call this ONCE with your raw inputs
  * It extracts, distributes, and returns ALL types you need
  */
-export interface StatelySchemas<Config extends StatelyConfig> {
-  // ===== Entity Types (from components) =====
-  // These are extracted from components['schemas'] and exposed
+export interface StatelySchemas<Config extends StatelyConfig = StatelyConfig> {
+  // ===== Raw OpenAPI Document Parts =====
 
   /**
-   * EntityId: Unique identifier for entities (UUID v7)
+   * components: OpenAPI components object
    */
   components: Config['components'];
+
+  /**
+   * paths: OpenAPI paths object
+   */
+  paths: Config['paths'];
+
+  // ===== Entity Types (from components) =====
+  // These are extracted from components['schemas'] and exposed
 
   /**
    * StateEntry: Union of entity type discriminators
    * Example: 'pipeline' | 'source_config' | 'transform'
    */
-  StateEntry: Config['components']['StateEntry'];
+  StateEntry: Config['components']['schemas']['StateEntry'];
 
   /**
    * Entity: Tagged union wrapper for CRUD operations
    * Example: { type: 'pipeline', data: Pipeline } | { type: 'source_config', data: SourceConfig }
    */
-  Entity: Config['components']['Entity'];
+  Entity: Config['components']['schemas']['Entity'];
 
   /**
    * EntityData: Union of all entity data types (unwrapped from Entity)
    * Example: Pipeline | SourceConfig | Transform
    */
-  EntityData: Config['components']['Entity'] extends { data: infer D } ? D : never;
+  EntityData: Config['components']['schemas']['Entity'] extends { data: infer D }
+    ? D extends { name?: string }
+      ? D
+      : Record<string, any>
+    : never;
 
   /**
    * EntityId: Unique identifier for entities (UUID v7)
    */
-  EntityId: Config['components']['EntityId'];
+  EntityId: Config['components']['schemas']['EntityId'];
 
   /**
    * Nodes: Generated schema nodes
@@ -302,30 +318,73 @@ export interface StatelySchemas<Config extends StatelyConfig> {
   /**
    * NodeNames: Union of all schema names from generated schemas
    */
-  NodeNames: keyof Config['nodes'];
+  NodeNames: keyof Config['nodes'] | string;
 
   // ===== Node Types (with distributed generics) =====
   // These have StateEntry and NodeNames already baked in
 
   PrimitiveNode: PrimitiveNodeRaw;
   EnumNode: EnumNodeRaw;
-  ObjectNode: ObjectNodeRaw<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
-  ArrayNode: ArrayNodeRaw<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
-  MapNode: MapNodeRaw<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
-  TupleNode: TupleNodeRaw<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
-  TaggedUnionNode: TaggedUnionNodeRaw<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
-  UntaggedEnumNode: UntaggedEnumNodeRaw<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
-  LinkNode: LinkNodeRaw<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
-  NullableNode: NullableNodeRaw<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
+  ObjectNode: ObjectNodeRaw<
+    Config['components']['schemas']['StateEntry'],
+    keyof Config['nodes'] & string
+  >;
+  ArrayNode: ArrayNodeRaw<
+    Config['components']['schemas']['StateEntry'],
+    keyof Config['nodes'] & string
+  >;
+  MapNode: MapNodeRaw<
+    Config['components']['schemas']['StateEntry'],
+    keyof Config['nodes'] & string
+  >;
+  TupleNode: TupleNodeRaw<
+    Config['components']['schemas']['StateEntry'],
+    keyof Config['nodes'] & string
+  >;
+  TaggedUnionNode: TaggedUnionNodeRaw<
+    Config['components']['schemas']['StateEntry'],
+    keyof Config['nodes'] & string
+  >;
+  UntaggedEnumNode: UntaggedEnumNodeRaw<
+    Config['components']['schemas']['StateEntry'],
+    keyof Config['nodes'] & string
+  >;
+  LinkNode: LinkNodeRaw<
+    Config['components']['schemas']['StateEntry'],
+    keyof Config['nodes'] & string
+  >;
+  NullableNode: NullableNodeRaw<
+    Config['components']['schemas']['StateEntry'],
+    keyof Config['nodes'] & string
+  >;
   RecursiveRefNode: RecursiveRefNodeRaw<keyof Config['nodes'] & string>;
-  RelativePathNode: RelativePathNodeRaw;
 
   // Union of all nodes
-  AnySchemaNode: AnyNode<Config['components']['StateEntry'], keyof Config['nodes'] & string>;
+  AnySchemaNode: AnyNode<
+    Config['components']['schemas']['StateEntry'],
+    keyof Config['nodes'] & string
+  >;
 }
 
+import type { StatelySchemaPlugin } from './plugin.js';
+import type {
+  Stately,
+  StatelyBuilder,
+  ValidationError,
+  ValidationOptions,
+  ValidationResult,
+} from './stately.js';
+export type {
+  StatelySchemaPlugin,
+  Stately,
+  StatelyBuilder,
+  ValidationError,
+  ValidationOptions,
+  ValidationResult,
+};
+
 /**
- * Re-export OpenAPI integration utilities
+ * Stately integration - Main API
  */
-export { createOpenAPIIntegration } from './openapi.js';
-export type { OpenAPIIntegration } from './openapi.js';
+import { stately } from './stately.js';
+export { stately };

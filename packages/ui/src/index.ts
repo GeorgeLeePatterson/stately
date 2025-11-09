@@ -1,9 +1,9 @@
 /**
- * @stately/ui
- *
- * React UI components for Stately state management.
- * Provides auto-generated forms, views, and CRUD interfaces.
+ * @stately/ui - Main exports
  */
 
-// Placeholder - will be populated when porting from xeo4
-export const VERSION = '0.3.0';
+export type { NodeTypeComponents, StatelyUiPlugin } from './plugin.js';
+export type { ComponentRegistry } from './runtime.js';
+
+import { statelyUi } from './runtime.js';
+export { statelyUi as createStatelyUi };

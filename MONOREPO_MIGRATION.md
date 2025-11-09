@@ -170,6 +170,6 @@ Cached build: ~86ms (FULL TURBO)
 
 See individual package READMEs:
 - [crates/stately/README.md](crates/stately/README.md)
-- [packages/schema-types/README.md](packages/schema-types/README.md)
+- [packages/schema/README.md](packages/schema/README.md)
 - [packages/codegen/README.md](packages/codegen/README.md)
 - [packages/ui/README.md](packages/ui/README.md)
