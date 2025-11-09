@@ -698,7 +698,7 @@ pub enum ResponseEvent {
 }
 /// Create a new entity
 /// Create a new entity via the REST API.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(method(get, post, put, patch, delete), path = "/")]
 pub async fn create_entity(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::Json(entity): ::axum::Json<Entity>,
@@ -714,7 +714,7 @@ pub async fn create_entity(
 }
 /// Update an existing entity (full replacement)
 /// Update an existing entity.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(method(get, post, put, patch, delete), path = "/")]
 pub async fn update_entity(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path(id): ::axum::extract::Path<String>,
@@ -738,7 +738,7 @@ pub async fn update_entity(
 }
 /// Patch an existing entity (same as update)
 /// Partially update an entity.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(method(get, post, put, patch, delete), path = "/")]
 pub async fn patch_entity_by_id(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path(id): ::axum::extract::Path<String>,
@@ -762,7 +762,7 @@ pub async fn patch_entity_by_id(
 }
 /// Remove an entity
 /// Delete an entity.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(method(get, post, put, patch, delete), path = "/")]
 pub async fn remove_entity(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path((entry, id)): ::axum::extract::Path<(StateEntry, String)>,
@@ -782,7 +782,7 @@ pub async fn remove_entity(
     response
 }
 /// List all entity summaries
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(method(get, post, put, patch, delete), path = "/")]
 pub async fn list_all_entities(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
 ) -> crate::Result<::axum::Json<ListResponse>> {
@@ -792,7 +792,7 @@ pub async fn list_all_entities(
 }
 /// List entity summaries
 /// List all entities grouped by type.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(method(get, post, put, patch, delete), path = "/")]
 pub async fn list_entities(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path(entity_type): ::axum::extract::Path<StateEntry>,
@@ -802,7 +802,7 @@ pub async fn list_entities(
     Ok(::axum::Json(ListResponse { entities }))
 }
 /// Get all entities for all types
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(method(get, post, put, patch, delete), path = "/")]
 pub async fn get_entities(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
 ) -> crate::Result<::axum::Json<EntitiesResponse>> {
@@ -812,7 +812,7 @@ pub async fn get_entities(
 }
 /// Get entity by ID and type
 /// Get a specific entity by ID and type.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(method(get, post, put, patch, delete), path = "/")]
 pub async fn get_entity_by_id(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path(id): ::axum::extract::Path<String>,

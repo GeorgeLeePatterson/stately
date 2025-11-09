@@ -15,7 +15,7 @@ import {
 import { useStatelyUi } from '@/context';
 import { ViewLinkControl } from '@/context/link-explore-context';
 
-interface EntitySelectFormProps<Config extends StatelyConfig = StatelyConfig> {
+export interface EntitySelectEditProps<Config extends StatelyConfig = StatelyConfig> {
   /** Whether the form is readonly */
   isReadOnly?: boolean;
   /** Show loading indicator */
@@ -25,7 +25,7 @@ interface EntitySelectFormProps<Config extends StatelyConfig = StatelyConfig> {
   /** List of entity refs */
   available: Array<Config['components']['schemas']['Summary']>;
   /** Schema for the inline entity */
-  schema: StatelySchemas<Config>['ObjectNode'];
+  node: StatelySchemas<Config>['ObjectNode'];
   /** Current value from parent (either ref or inline) */
   value: string | null;
   /** Called when save is clicked with new ref value */
@@ -38,18 +38,18 @@ interface EntitySelectFormProps<Config extends StatelyConfig = StatelyConfig> {
   onRefresh: () => void;
 }
 
-export function EntitySelectForm<Config extends StatelyConfig = StatelyConfig>({
-  isReadOnly,
-  isLoading,
+export function EntitySelectEdit<Config extends StatelyConfig = StatelyConfig>({
   targetType,
   available,
-  schema,
+  node,
   value,
   onChange,
   onRefresh,
   after,
   onEdit,
-}: EntitySelectFormProps<Config>) {
+  isReadOnly,
+  isLoading,
+}: EntitySelectEditProps<Config>) {
   const { integration } = useStatelyUi();
   const entityDisplayName = integration.entityDisplayNames[targetType];
   const label = integration.helpers.generateFieldLabel(targetType);
@@ -73,8 +73,8 @@ export function EntitySelectForm<Config extends StatelyConfig = StatelyConfig>({
 
           <span className="flex px-0 md:px-2 gap-1 md:gap-2">
             {/* Convenience button to view configuration */}
-            {schema && value && (
-              <ViewLinkControl entityType={targetType} entityName={value} schema={schema} />
+            {node && value && (
+              <ViewLinkControl entityType={targetType} entityName={value} schema={node} />
             )}
 
             {/* Edit the configuration in place as inline */}

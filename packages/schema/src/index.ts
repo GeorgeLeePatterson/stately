@@ -60,7 +60,10 @@ export interface StatelyConfig {
   components: OpenAPIV3_1.ComponentsObject & {
     schemas: {
       StateEntry: string;
-      Entity: Record<string, any>;
+      Entity: {
+        type: StatelyConfig['components']['schemas']['StateEntry'];
+        data: { [key: string]: any; name?: string };
+      };
       EntityId: string;
       Summary: { id: string; name: string; description: string; [key: string]: any };
       [key: string]: any;
@@ -139,8 +142,8 @@ interface BaseNode {
  * Forward declaration for AnyNode union
  */
 type AnyNode<EntityType extends string, SchemaName extends string> =
-  | PrimitiveNodeRaw
-  | EnumNodeRaw
+  | PrimitiveNode
+  | EnumNode
   | ObjectNodeRaw<EntityType, SchemaName>
   | ArrayNodeRaw<EntityType, SchemaName>
   | MapNodeRaw<EntityType, SchemaName>
@@ -154,7 +157,7 @@ type AnyNode<EntityType extends string, SchemaName extends string> =
 /**
  * Primitive types: string, number, integer, boolean (no generics needed)
  */
-interface PrimitiveNodeRaw extends BaseNode {
+interface PrimitiveNode extends BaseNode {
   nodeType: typeof NodeType.Primitive;
   primitiveType: PrimitiveType;
   format?: string;
@@ -165,7 +168,7 @@ interface PrimitiveNodeRaw extends BaseNode {
 /**
  * Enum: string with fixed set of values (no generics needed)
  */
-interface EnumNodeRaw extends BaseNode {
+interface EnumNode extends BaseNode {
   nodeType: typeof NodeType.Enum;
   values: readonly string[];
 }
@@ -299,11 +302,7 @@ export interface StatelySchemas<Config extends StatelyConfig = StatelyConfig> {
    * EntityData: Union of all entity data types (unwrapped from Entity)
    * Example: Pipeline | SourceConfig | Transform
    */
-  EntityData: Config['components']['schemas']['Entity'] extends { data: infer D }
-    ? D extends { name?: string }
-      ? D
-      : Record<string, any>
-    : never;
+  EntityData: Config['components']['schemas']['Entity']['data'];
 
   /**
    * EntityId: Unique identifier for entities (UUID v7)
@@ -323,8 +322,8 @@ export interface StatelySchemas<Config extends StatelyConfig = StatelyConfig> {
   // ===== Node Types (with distributed generics) =====
   // These have StateEntry and NodeNames already baked in
 
-  PrimitiveNode: PrimitiveNodeRaw;
-  EnumNode: EnumNodeRaw;
+  PrimitiveNode: PrimitiveNode;
+  EnumNode: EnumNode;
   ObjectNode: ObjectNodeRaw<
     Config['components']['schemas']['StateEntry'],
     keyof Config['nodes'] & string

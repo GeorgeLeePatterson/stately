@@ -1,12 +1,12 @@
 import type { StatelyConfig, StatelySchemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { FileJson, FormInput, WandSparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { FieldGroup } from '@/components/ui/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { JsonEdit } from '../../fields/json-edit';
 import { JsonView } from '../../fields/json-view';
-import { EntityEditForm } from './entity-form-view';
+import { EntityFormEdit } from './entity-form-edit';
 import { EntityWizardView } from './entity-wizard-view';
 
 export enum EditMode {
@@ -15,8 +15,8 @@ export enum EditMode {
   WIZARD = 'Wizard',
 }
 
-interface EntityEditViewProps<Config extends StatelyConfig = StatelyConfig> {
-  schema: StatelySchemas<Config>['ObjectNode'];
+export interface EntityEditViewProps<Config extends StatelyConfig = StatelyConfig> {
+  node: StatelySchemas<Config>['ObjectNode'];
   value: any; // Current entity data (from parent)
   defaultMode?: EditMode;
   onChange: (data: AnyRecord) => void;
@@ -30,7 +30,7 @@ interface EntityEditViewProps<Config extends StatelyConfig = StatelyConfig> {
  * Does not maintain its own state - just passes through to child field components
  */
 export function EntityEditView<Config extends StatelyConfig = StatelyConfig>({
-  schema,
+  node,
   value,
   defaultMode,
   onChange,
@@ -59,8 +59,8 @@ export function EntityEditView<Config extends StatelyConfig = StatelyConfig>({
       {/* Form or JSON Editor */}
       <TabsContent value={EditMode.FORM}>
         <div className="space-y-5 min-w-0 p-2">
-          <EntityEditForm
-            schema={schema}
+          <EntityFormEdit
+            node={node}
             value={value}
             onChange={onChange}
             isRootEntity={isRootEntity}
@@ -79,10 +79,11 @@ export function EntityEditView<Config extends StatelyConfig = StatelyConfig>({
       </TabsContent>
       <TabsContent value={EditMode.WIZARD}>
         <EntityWizardView
-          schema={schema}
+          node={node}
           value={value}
           onChange={onChange}
           onComplete={onSave}
+          isRootEntity={isRootEntity}
           isLoading={isLoading}
         />
       </TabsContent>

@@ -59,7 +59,7 @@ export function UntaggedEnumEdit<Config extends StatelyConfig = StatelyConfig>({
   };
 
   return (
-    <div className="space-y-3 border-1 rounded-md p-2 min-w-0">
+    <div className="space-y-3 border rounded-md p-2 min-w-0">
       <div className="flex flex-col gap-2">
         <Select value={currentTag || ''} onValueChange={handleVariantChange}>
           <SelectTrigger id={formId}>

@@ -1,4 +1,5 @@
 import type { StatelyConfig, StatelySchemas } from '@stately/schema';
+import { SINGLETON_ID } from '@stately/schema/helpers';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 import type { EditFieldProps } from '@/components/fields';
@@ -18,6 +19,12 @@ export type LinkFor<Config extends StatelyConfig = StatelyConfig> =
       inline: StatelySchemas<Config>['EntityData'];
     };
 
+export type LinkEditProps<Config extends StatelyConfig = StatelyConfig> = EditFieldProps<
+  Config,
+  StatelySchemas<Config>['LinkNode'],
+  LinkFor<Config> | null | undefined
+>;
+
 /**
  * Component for editing Link<T> fields
  * Orchestrates mode toggling and delegates save/cancel to child components
@@ -27,9 +34,7 @@ export function LinkEdit<Config extends StatelyConfig = StatelyConfig>({
   value,
   onChange,
   isWizard,
-}: EditFieldProps<Config, StatelySchemas<Config>['LinkNode'], LinkFor<Config> | null> & {
-  isWizard?: boolean;
-}) {
+}: LinkEditProps<Config>) {
   const { api } = useStatelyUi();
   const targetType = node.targetType;
 
@@ -109,7 +114,7 @@ export function LinkEdit<Config extends StatelyConfig = StatelyConfig>({
     );
   }
 
-  const isDefault = availableEntities.length === 1 && availableEntities[0].id === 'default';
+  const isDefault = availableEntities.length === 1 && availableEntities[0].id === SINGLETON_ID;
 
   const modeToggle = enableToggle ? (
     <div className="flex justify-end">
@@ -150,7 +155,7 @@ export function LinkEdit<Config extends StatelyConfig = StatelyConfig>({
               isReadOnly={isDefault}
               targetType={targetType}
               availableEntities={availableEntities}
-              schema={node.inlineSchema}
+              node={node.inlineSchema}
               value={value}
               onChange={handleRefChange}
               onRefresh={refetch}
@@ -160,7 +165,7 @@ export function LinkEdit<Config extends StatelyConfig = StatelyConfig>({
           ) : (
             <LinkInlineEdit
               targetType={targetType}
-              schema={node.inlineSchema}
+              node={node.inlineSchema}
               value={inlineData}
               onChange={onChange}
               after={modeToggle}

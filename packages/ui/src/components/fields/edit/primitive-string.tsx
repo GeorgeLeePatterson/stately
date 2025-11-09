@@ -115,10 +115,7 @@ export function PrimitiveStringEdit<Config extends StatelyConfig = StatelyConfig
       {/* Mode selector dropdown */}
       <ButtonGroup>
         <Select value={currentMode} onValueChange={v => setMode(v)}>
-          <SelectTrigger
-            id={`select-${formId}`}
-            className="w-auto min-w-[3rem] gap-1.5 bg-background"
-          >
+          <SelectTrigger id={`select-${formId}`} className="w-auto min-w-12 gap-1.5 bg-background">
             <Icon />
           </SelectTrigger>
           <SelectContent className="min-w-40">

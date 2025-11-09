@@ -9,48 +9,79 @@
 
 import * as fs from 'node:fs';
 import { NodeType } from '@stately/schema';
+import {
+  getCodegenPlugins,
+  loadPluginsFromConfig,
+  setCodegenPlugins,
+  type CodegenPluginContext,
+} from './plugin-manager.js';
 
 // Accept paths as arguments (will be called by CLI)
 const openapiPath = process.argv[2];
 const outputPath = process.argv[3];
+const pluginConfigPath = process.argv[4];
 
 if (!openapiPath || !outputPath) {
-  console.error('Usage: node generate.js <openapi.json> <output.ts>');
+  console.error('Usage: node generate.js <openapi.json> <output.ts> [pluginConfig.js]');
   process.exit(1);
 }
 
-// Import the OpenAPI spec
-const openapi = JSON.parse(fs.readFileSync(openapiPath, 'utf-8'));
-
-console.log('🔧 Generating schemas from openapi.json...');
-
-// We'll implement a simplified parser here that matches the runtime parser
-// but outputs serializable JSON with RecursiveRef nodes for cycles
-
 type SerializedNode = any;
 
-const schemaCache = new Map<
-  string,
-  { node: SerializedNode | null; state: 'uninitialized' | 'parsing' | 'complete' }
->();
-const componentSchemas = openapi.components?.schemas || {};
+async function main() {
+  const resolvedOpenapiPath = openapiPath!;
+  const resolvedOutputPath = outputPath!;
+  const plugins = await loadPluginsFromConfig(pluginConfigPath);
+  if (plugins.length) {
+    console.log(`🔌 Loaded ${plugins.length} stately-codegen plugin(s)`);
+  }
+  setCodegenPlugins(plugins);
 
-// Phase 1: Pre-initialize all schemas
-for (const schemaName in componentSchemas) {
-  schemaCache.set(`#/components/schemas/${schemaName}`, { node: null, state: 'uninitialized' });
-}
+  const openapi = JSON.parse(fs.readFileSync(resolvedOpenapiPath, 'utf-8'));
 
-console.log(`📋 Found ${Object.keys(componentSchemas).length} component schemas`);
+  console.log('🔧 Generating schemas from openapi.json...');
 
-// Phase 2: Parse each schema
-const parsedSchemas: Record<string, SerializedNode> = {};
+  const schemaCache = new Map<
+    string,
+    { node: SerializedNode | null; state: 'uninitialized' | 'parsing' | 'complete' }
+  >();
+  const componentSchemas = openapi.components?.schemas || {};
 
-function resolveRef(ref: string): any {
-  const schemaName = ref.split('/').pop();
-  return schemaName ? componentSchemas[schemaName] : null;
-}
+  for (const schemaName in componentSchemas) {
+    schemaCache.set(`#/components/schemas/${schemaName}`, { node: null, state: 'uninitialized' });
+  }
 
-function parseSchema(schema: any): SerializedNode | null {
+  console.log(`📋 Found ${Object.keys(componentSchemas).length} component schemas`);
+
+  const parsedSchemas: Record<string, SerializedNode> = {};
+
+  function resolveRef(ref: string): any {
+    const schemaName = ref.split('/').pop();
+    return schemaName ? componentSchemas[schemaName] : null;
+  }
+
+  const basePluginContext: Omit<CodegenPluginContext, 'schemaName'> = {
+    resolveRef,
+    parseSchema: (schema: any, schemaName?: string) => parseSchema(schema, schemaName),
+  };
+
+  function parseSchema(schema: any, schemaName?: string): SerializedNode | null {
+  if (!schema) return null;
+
+  const pluginContext: CodegenPluginContext = { schemaName, ...basePluginContext };
+  for (const plugin of getCodegenPlugins()) {
+    try {
+      const matches = plugin.match ? plugin.match(schema, pluginContext) : true;
+      if (!matches) continue;
+      const result = plugin.transform(schema, pluginContext);
+      if (result) {
+        return result;
+      }
+    } catch (error) {
+      console.warn(`[stately-codegen] Plugin "${plugin.name}" failed:`, error);
+    }
+  }
+
   // Handle $ref resolution with cycle detection
   if (schema.$ref) {
     const cached = schemaCache.get(schema.$ref);
@@ -78,7 +109,7 @@ function parseSchema(schema: any): SerializedNode | null {
       const placeholder: any = { nodeType: null };
       cached.node = placeholder;
 
-      const parsed = parseSchema(resolved);
+      const parsed = parseSchema(resolved, schemaName);
 
       if (parsed) {
         Object.assign(placeholder, parsed);
@@ -88,7 +119,7 @@ function parseSchema(schema: any): SerializedNode | null {
       return cached.node;
     }
 
-    return parseSchema(resolved);
+    return parseSchema(resolved, schemaName);
   }
 
   // Handle nullable via type array (e.g., type: ["string", "null"])
@@ -97,7 +128,7 @@ function parseSchema(schema: any): SerializedNode | null {
     if (nonNullTypes.length === 1) {
       const innerSchema = { ...schema, type: nonNullTypes[0] };
       delete innerSchema.type; // Will be re-added by inner parse
-      const parsed = parseSchema({ ...schema, type: nonNullTypes[0] });
+      const parsed = parseSchema({ ...schema, type: nonNullTypes[0] }, schemaName);
       if (parsed) {
         return {
           nodeType: NodeType.Nullable,
@@ -114,7 +145,7 @@ function parseSchema(schema: any): SerializedNode | null {
     let mergedRequired: string[] = [];
 
     for (const subSchema of schema.allOf) {
-      const parsed = parseSchema(subSchema);
+      const parsed = parseSchema(subSchema, schemaName);
       if (parsed && parsed.nodeType === NodeType.Object) {
         mergedProperties = { ...mergedProperties, ...parsed.properties };
         mergedRequired = [...mergedRequired, ...(parsed.required || [])];
@@ -135,55 +166,6 @@ function parseSchema(schema: any): SerializedNode | null {
   if (schema.oneOf && schema.oneOf.length > 0) {
     // Check for UserDefinedPath pattern (untagged: RelativePath | String)
     // UserDefinedPath has: two variants, one is RelativePath (tagged union with 'dir'), one is string
-    if (schema.oneOf.length === 2) {
-      const variants = schema.oneOf.map((v: any) => (v.$ref ? resolveRef(v.$ref) : v));
-      const hasString = variants.some((v: any) => v.type === 'string');
-      const hasRelativePath = variants.some((v: any) => {
-        // Must be a oneOf with 4 variants (Cache, Data, Upload, Config)
-        if (!v.oneOf || v.oneOf.length !== 4) return false;
-
-        // All variants must have dir/path properties with required fields
-        const allMatch = v.oneOf.every((inner: any) => {
-          const resolved = inner.$ref ? resolveRef(inner.$ref) : inner;
-          return (
-            resolved?.properties?.dir?.enum &&
-            resolved?.properties?.path &&
-            resolved?.required?.includes('dir') &&
-            resolved?.required?.includes('path')
-          );
-        });
-
-        if (!allMatch) return false;
-
-        // Check for expected dir values (cache, data, upload, config)
-        const dirValues = v.oneOf.map((inner: any) => {
-          const resolved = inner.$ref ? resolveRef(inner.$ref) : inner;
-          return resolved?.properties?.dir?.enum?.[0]?.toLowerCase();
-        });
-
-        return (
-          dirValues.includes('cache') &&
-          dirValues.includes('data') &&
-          dirValues.includes('upload') &&
-          dirValues.includes('config')
-        );
-      });
-
-      if (hasString && hasRelativePath) {
-        // This is UserDefinedPath!
-        // Parse the RelativePath variant and return it directly
-        // The UI will use runtime value inspection to determine if it's managed or external
-        const relativePathVariant = variants.find((v: any) => v.oneOf && v.oneOf.length === 4);
-
-        if (relativePathVariant) {
-          const parsed = parseSchema(relativePathVariant);
-          if (parsed) {
-            return parsed; // Returns RelativePathNode
-          }
-        }
-      }
-    }
-
     // Check for Link<T> pattern (before generic nullable check)
     // Link has: two variants with entity_type enum, one with 'ref', one with 'inline'
     if (schema.oneOf.length === 2) {
@@ -201,7 +183,7 @@ function parseSchema(schema: any): SerializedNode | null {
         const inlineSchema = inlineVariant?.properties?.inline;
 
         if (entityType && inlineSchema) {
-          const parsedInline = parseSchema(inlineSchema);
+          const parsedInline = parseSchema(inlineSchema, schemaName);
           if (parsedInline && parsedInline.nodeType === NodeType.Object) {
             return {
               nodeType: NodeType.Link,
@@ -214,39 +196,12 @@ function parseSchema(schema: any): SerializedNode | null {
       }
     }
 
-    // Check for RelativePath pattern (tagged union with 'dir' discriminator)
-    // RelativePath has: Cache/Data/Upload/Config variants with 'dir' tag and 'path' content
-    if (schema.oneOf.length === 4) {
-      const variants = schema.oneOf.map((v: any) => (v.$ref ? resolveRef(v.$ref) : v));
-      const allHaveDirAndPath = variants.every(
-        (v: any) =>
-          v.properties?.dir?.enum &&
-          v.properties?.path &&
-          v.required?.includes('dir') &&
-          v.required?.includes('path'),
-      );
-
-      if (allHaveDirAndPath) {
-        const dirValues = variants.map((v: any) => v.properties.dir.enum[0].toLowerCase());
-        const hasExpectedDirs =
-          dirValues.includes('cache') &&
-          dirValues.includes('data') &&
-          dirValues.includes('upload') &&
-          dirValues.includes('config');
-
-        if (hasExpectedDirs) {
-          // This is RelativePath
-          return { nodeType: NodeType.RelativePath, description: schema.description };
-        }
-      }
-    }
-
     // Check for nullable pattern
 
     if (schema.oneOf.some((v: any) => v.type === 'null')) {
       const innerSchema = schema.oneOf.find((v: any) => v.type !== 'null');
       if (innerSchema) {
-        const parsed = parseSchema(innerSchema);
+        const parsed = parseSchema(innerSchema, schemaName);
         if (parsed) {
           return {
             nodeType: NodeType.Nullable,
@@ -331,7 +286,7 @@ function parseSchema(schema: any): SerializedNode | null {
           // Untagged: single-key object where key is the tag
           tag = propertyKeys[0]!;
           const innerPropertySchema = properties[tag];
-          const parsed = parseSchema(innerPropertySchema);
+          const parsed = parseSchema(innerPropertySchema, schemaName);
           variantSchema = parsed || { nodeType: NodeType.Object, properties: {}, required: [] };
           untaggedVariants.push({ tag, schema: variantSchema });
         } else if (discriminatorField) {
@@ -345,7 +300,7 @@ function parseSchema(schema: any): SerializedNode | null {
           const variantProperties: Record<string, any> = {};
           for (const [propName, propSchema] of Object.entries(properties)) {
             if (propName === discriminatorField) continue;
-            const parsed = parseSchema(propSchema as any);
+            const parsed = parseSchema(propSchema as any, schemaName);
             if (parsed) {
               variantProperties[propName] = parsed;
             }
@@ -385,7 +340,7 @@ function parseSchema(schema: any): SerializedNode | null {
     // Handle tuples (arrays with prefixItems)
     if (schema.prefixItems) {
       const items = schema.prefixItems
-        .map((item: any) => parseSchema(item))
+        .map((item: any) => parseSchema(item, schemaName))
         .filter((node: any) => node !== null);
 
       if (items.length === schema.prefixItems.length) {
@@ -394,13 +349,13 @@ function parseSchema(schema: any): SerializedNode | null {
     }
 
     // Regular arrays
-    const itemSchema = schema.items ? parseSchema(schema.items) : null;
+    const itemSchema = schema.items ? parseSchema(schema.items, schemaName) : null;
     return { nodeType: NodeType.Array, items: itemSchema, description: schema.description };
   }
 
   // Handle map/dictionary (object with additionalProperties but no properties)
   if (schema.type === 'object' && schema.additionalProperties && !schema.properties) {
-    const valueSchema = parseSchema(schema.additionalProperties);
+    const valueSchema = parseSchema(schema.additionalProperties, schemaName);
     if (!valueSchema) return null;
 
     return { nodeType: NodeType.Map, valueSchema, description: schema.description };
@@ -410,7 +365,7 @@ function parseSchema(schema: any): SerializedNode | null {
   if (schema.type === 'object') {
     const properties: Record<string, SerializedNode> = {};
     for (const [propName, propSchema] of Object.entries(schema.properties || {})) {
-      const parsed = parseSchema(propSchema as any);
+      const parsed = parseSchema(propSchema as any, schemaName);
       if (parsed) {
         properties[propName] = parsed;
       }
@@ -447,41 +402,37 @@ function parseSchema(schema: any): SerializedNode | null {
 }
 
 // Parse all component schemas
-for (const [schemaName, schema] of Object.entries(componentSchemas)) {
-  try {
-    console.log(`  📝 Parsing ${schemaName}...`);
-    const refName = `#/components/schemas/${schemaName}`;
+  for (const [schemaName, schema] of Object.entries(componentSchemas)) {
+    try {
+      console.log(`  📝 Parsing ${schemaName}...`);
+      const refName = `#/components/schemas/${schemaName}`;
 
-    // Check if already cached (might be parsed as dependency)
-    const cached = schemaCache.get(refName);
-    if (cached?.state === 'complete' && cached.node) {
-      parsedSchemas[schemaName] = cached.node;
-      continue;
-    }
-
-    const parsed = parseSchema(schema);
-    if (parsed) {
-      parsedSchemas[schemaName] = parsed;
-
-      // Update cache
-      const cacheEntry = schemaCache.get(refName);
-      if (cacheEntry) {
-        cacheEntry.node = parsed;
-        cacheEntry.state = 'complete';
+      const cached = schemaCache.get(refName);
+      if (cached?.state === 'complete' && cached.node) {
+        parsedSchemas[schemaName] = cached.node;
+        continue;
       }
-    } else {
-      console.warn(`  ⚠️  Failed to parse ${schemaName}`);
+
+      const parsed = parseSchema(schema, schemaName);
+      if (parsed) {
+        parsedSchemas[schemaName] = parsed;
+
+        const cacheEntry = schemaCache.get(refName);
+        if (cacheEntry) {
+          cacheEntry.node = parsed;
+          cacheEntry.state = 'complete';
+        }
+      } else {
+        console.warn(`  ⚠️  Failed to parse ${schemaName}`);
+      }
+    } catch (err) {
+      console.error(`  ❌ Error parsing ${schemaName}:`, err);
     }
-  } catch (err) {
-    console.error(`  ❌ Error parsing ${schemaName}:`, err);
   }
-}
 
-console.log(`✅ Parsed ${Object.keys(parsedSchemas).length} schemas`);
+  console.log(`✅ Parsed ${Object.keys(parsedSchemas).length} schemas`);
 
-// Generate TypeScript file with valid JSON
-// NodeType enum values are strings, so JSON.stringify will output valid JSON
-const output = `// Auto-generated at build time from openapi.json
+  const output = `// Auto-generated at build time from openapi.json
 // DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
 
 export const PARSED_SCHEMAS = ${JSON.stringify(parsedSchemas, null, 2)} as const;
@@ -489,7 +440,13 @@ export const PARSED_SCHEMAS = ${JSON.stringify(parsedSchemas, null, 2)} as const
 export type ParsedSchemaName = keyof typeof PARSED_SCHEMAS;
 `;
 
-fs.writeFileSync(outputPath, output);
+  fs.writeFileSync(resolvedOutputPath, output);
 
-console.log(`💾 Written to ${outputPath}`);
-console.log('✨ Schema generation complete!');
+  console.log(`💾 Written to ${resolvedOutputPath}`);
+  console.log('✨ Schema generation complete!');
+}
+
+main().catch(error => {
+  console.error('[stately-codegen] generation failed:', error);
+  process.exit(1);
+});

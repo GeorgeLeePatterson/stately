@@ -1,9 +1,9 @@
 import type { StatelyConfig, StatelySchemas } from '@stately/schema';
 import { useCallback } from 'react';
-import { EntitySelectForm } from '../entity/entity-select-view';
+import { EntitySelectEdit } from '../entity/entity-select-edit';
 import type { LinkFor } from './link-edit-view';
 
-interface LinkRefEditProps<Config extends StatelyConfig = StatelyConfig> {
+export interface LinkRefEditProps<Config extends StatelyConfig = StatelyConfig> {
   /** Whether the form is readonly */
   isReadOnly?: boolean;
   /** Show loading indicator */
@@ -13,9 +13,9 @@ interface LinkRefEditProps<Config extends StatelyConfig = StatelyConfig> {
   /** List of entity refs */
   availableEntities: Array<Config['components']['schemas']['Summary']>;
   /** Schema for the inline entity */
-  schema: StatelySchemas<Config>['ObjectNode'];
+  node: StatelySchemas<Config>['ObjectNode'];
   /** Current value from parent (either ref or inline) */
-  value: LinkFor<Config> | null;
+  value?: LinkFor<Config> | null;
   /** Called when save is clicked with new ref value */
   onChange: (value: LinkFor<Config>) => void;
   /** Called when refresh is clicked */
@@ -40,7 +40,7 @@ export function LinkRefEdit<Config extends StatelyConfig = StatelyConfig>({
   isLoading,
   targetType,
   availableEntities,
-  schema,
+  node,
   value,
   onChange,
   onRefresh,
@@ -58,7 +58,7 @@ export function LinkRefEdit<Config extends StatelyConfig = StatelyConfig>({
   );
 
   return (
-    <EntitySelectForm
+    <EntitySelectEdit
       targetType={targetType}
       isReadOnly={isReadOnly}
       isLoading={isLoading}
@@ -66,7 +66,7 @@ export function LinkRefEdit<Config extends StatelyConfig = StatelyConfig>({
       value={ref}
       onChange={handleChange}
       onRefresh={onRefresh}
-      schema={schema}
+      node={node}
       after={after}
       onEdit={onEditAsInline}
     />

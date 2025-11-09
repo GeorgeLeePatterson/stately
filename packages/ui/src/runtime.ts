@@ -10,9 +10,15 @@ import type { AnyRecord, EmptyRecord } from '@stately/schema/helpers';
 import type { Client } from 'openapi-fetch';
 import * as editFields from '@/components/fields/edit';
 import * as viewFields from '@/components/fields/view';
+import * as linkFields from '@/components/views/link';
 import * as helpers from '@/lib/helpers';
-import { buildStatelyOperations, createStatelyApi } from '@/lib/operations';
 import type { StatelyApi, StatelyOperations } from '@/lib/operations';
+import {
+  buildOperationIndex,
+  buildStatelyOperations,
+  createStatelyApi,
+  type OperationIndex,
+} from '@/lib/operations';
 import type { ComponentsEntry, ValidateUiPlugin } from './plugin.js';
 
 /**
@@ -34,6 +40,7 @@ export type StatelyRuntime<
 > = {
   integration: Stately<TConfig, IExt>;
   client: Client<StatelySchemas<TConfig>['paths'] & {}>;
+  operationIndex: OperationIndex<TConfig>;
   operations: StatelyOperations<TConfig>;
   api: StatelyApi<TConfig>;
   componentRegistry: ComponentRegistry;
@@ -124,9 +131,8 @@ export function statelyUi<TConfig extends StatelyConfig, IExt extends AnyRecord 
   componentRegistry.set(`${NodeType.UntaggedEnum}:edit`, editFields.UntaggedEnumEdit);
   componentRegistry.set(`${NodeType.UntaggedEnum}:view`, viewFields.UntaggedEnumView);
 
-  // TODO: Link field components will be added when those files exist
-  // componentRegistry.set(`${NodeType.Link}:edit`, LinkField);
-  // componentRegistry.set(`${NodeType.Link}:view`, LinkFieldView);
+  componentRegistry.set(`${NodeType.Link}:edit`, linkFields.LinkEdit);
+  componentRegistry.set(`${NodeType.Link}:view`, linkFields.LinkView);
 
   function makeBuilder<UExt extends AnyRecord>(
     state: StatelyRuntime<TConfig, IExt, UExt>,
@@ -155,12 +161,14 @@ export function statelyUi<TConfig extends StatelyConfig, IExt extends AnyRecord 
     };
   }
 
-  const operations = buildStatelyOperations<TConfig>(integration.paths);
+  const operationIndex = buildOperationIndex<TConfig>(integration.paths);
+  const operations = buildStatelyOperations<TConfig>(operationIndex);
   const api = createStatelyApi<TConfig>(client, operations);
 
   const initial: StatelyRuntime<TConfig, IExt, EmptyRecord> = {
     integration,
     client,
+    operationIndex,
     operations,
     api,
     componentRegistry,

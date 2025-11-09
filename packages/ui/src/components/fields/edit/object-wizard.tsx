@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldGroup } from '@/components/ui/field';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
-import { EntityProperty } from '@/components/views/entity/entity-property';
+import { EntityPropertyView } from '@/components/views/entity/entity-property-view';
 import { useStatelyUi } from '@/context';
 import { useObjectField } from '@/hooks/use-object-field';
 import { cn } from '@/lib/utils';
@@ -18,10 +18,10 @@ export interface ObjectWizardBaseProps {
   isEmbedded?: boolean;
 }
 
-export type ObjectWizardProps<Config extends StatelyConfig = StatelyConfig> =
+export type ObjectWizardEditProps<Config extends StatelyConfig = StatelyConfig> =
   ObjectWizardBaseProps & ObjectEditProps<Config>;
 
-export const ObjectWizard = <Config extends StatelyConfig = StatelyConfig>({
+export const ObjectWizardEdit = <Config extends StatelyConfig = StatelyConfig>({
   formId,
   label,
   node,
@@ -30,7 +30,7 @@ export const ObjectWizard = <Config extends StatelyConfig = StatelyConfig>({
   onComplete,
   isLoading,
   isEmbedded,
-}: ObjectWizardProps<Config>) => {
+}: ObjectWizardEditProps<Config>) => {
   const { integration } = useStatelyUi();
   const onSave = useCallback(
     (data: any) => {
@@ -113,7 +113,7 @@ export const ObjectWizard = <Config extends StatelyConfig = StatelyConfig>({
           <Skeleton className="h-32 w-full" />
         ) : (
           <Fragment>
-            <EntityProperty fieldName={fieldName} schema={propNode} isRequired={isRequired}>
+            <EntityPropertyView fieldName={fieldName} node={propNode} isRequired={isRequired}>
               {/* Primitive field view */}
               {integration.helpers.isPrimitive(propNode) ? (
                 <Field>
@@ -138,7 +138,7 @@ export const ObjectWizard = <Config extends StatelyConfig = StatelyConfig>({
                   isWizard
                 />
               )}
-            </EntityProperty>
+            </EntityPropertyView>
           </Fragment>
         )}
       </FieldGroup>

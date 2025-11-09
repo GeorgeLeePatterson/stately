@@ -1,27 +1,35 @@
 import { useMutation } from '@tanstack/react-query';
-import { Upload } from 'lucide-react';
+import { Upload as UploadIcon } from 'lucide-react';
 import { useRef } from 'react';
 import { toast } from 'sonner';
 import { InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
 import { Spinner } from '@/components/ui/spinner';
-import type { PrimitiveFieldProps } from './primitive-field';
+import { useFilesApi } from '@/lib/files-api';
+
+interface UploadFieldProps {
+  formId: string;
+  value?: any;
+  onChange: (value: any) => void;
+  placeholder?: string;
+}
 
 export function UploadField({
   formId,
   onChange,
   value,
   placeholder,
-}: Omit<PrimitiveFieldProps, 'mode' | 'node'> & { placeholder?: string }) {
+}: UploadFieldProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const filesApi = useFilesApi();
 
   // Upload mutation
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await fetch('/api/v1/files/upload', { method: 'POST', body: formData });
-      if (!response.ok) throw new Error('Upload failed');
-      return response.json();
+      const { data, error } = await filesApi.upload({ body: formData });
+      if (!data || error) throw new Error('Upload failed');
+      return data;
     },
     onSuccess: data => {
       // Store managed path object
@@ -62,7 +70,7 @@ export function UploadField({
             </>
           ) : (
             <>
-              <Upload className="w-3.5 h-3.5" />
+              <UploadIcon className="w-3.5 h-3.5" />
               Browse
             </>
           )}
@@ -81,3 +89,5 @@ export function UploadField({
     </>
   );
 }
+
+export const Upload = UploadField;

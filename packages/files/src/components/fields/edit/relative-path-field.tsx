@@ -1,3 +1,4 @@
+import { Editor } from '@stately/ui';
 import { ExternalLink, FilePlus2, FileSearch2, FileText } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -13,7 +14,6 @@ import {
   SelectTrigger,
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
-import { Editor } from '@/components/views/editor';
 import { type FileUploadResponse, useSaveFile } from '@/hooks/use-save-file';
 import { cn } from '@/lib/utils';
 import { VersionedDataField } from './versioned-data-field';
@@ -96,10 +96,7 @@ export function RelativePathField({
     return (
       <ButtonGroup>
         <Select value={mode} onValueChange={v => setMode(v as RelativePathMode)}>
-          <SelectTrigger
-            id={`select-${formId}`}
-            className="w-auto min-w-[3rem] gap-1.5 bg-background"
-          >
+          <SelectTrigger id={`select-${formId}`} className="w-auto min-w-12 gap-1.5 bg-background">
             <Icon />
           </SelectTrigger>
           <SelectContent className="min-w-40">

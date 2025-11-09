@@ -1,11 +1,23 @@
 import { Filter, Folder, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { FileEntry, type FileEntryProps } from '@/components/base/file-entry';
+import { Button } from '@/components/ui/button';
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from '@/components/ui/empty';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from '@/components/ui/input-group';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { FileEntry, type FileEntryProps, type FileInfo } from '../../base/file-entry';
-import { Button } from '../../ui/button';
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '../../ui/empty';
-import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '../../ui/input-group';
-import { ScrollArea } from '../../ui/scroll-area';
+import type { FileInfo } from '@/types/file';
 
 export type FileViewProps = {
   files: FileInfo[];
@@ -48,7 +60,7 @@ export function FileView({
         />
       </InputGroup>
       <div className="flex-1 flex flex-col sm:flex-row h-full">
-        <ScrollArea {...rest} className={cn('flex-1 border-1 border-border', rest?.className)}>
+        <ScrollArea {...rest} className={cn('flex-1 border border-border', rest?.className)}>
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -72,7 +84,7 @@ export function FileView({
                   onClick={navigateUp}
                   className="w-full justify-start gap-2 font-mono text-sm h-auto py-2 px-3 mb-2"
                 >
-                  <Folder className="h-4 w-4 flex-shrink-0" />
+                  <Folder className="h-4 w-4 shrink-0" />
                   <span className="flex-1 truncate text-left">..</span>
                 </Button>
               )}

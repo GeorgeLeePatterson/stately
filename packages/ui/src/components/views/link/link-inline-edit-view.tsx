@@ -5,13 +5,13 @@ import { useStatelyUi } from '@/context';
 import { EditMode, EntityEditView } from '../entity/entity-edit-view';
 import type { LinkFor } from './link-edit-view';
 
-interface LinkInlineEditProps<Config extends StatelyConfig = StatelyConfig> {
+export interface LinkInlineEditProps<Config extends StatelyConfig = StatelyConfig> {
   /** The entity type being configured inline */
   targetType: StatelySchemas<Config>['StateEntry'];
   /** Schema for the inline entity */
-  schema: StatelySchemas<Config>['ObjectNode'];
+  node: StatelySchemas<Config>['ObjectNode'];
   /** Current value from parent (either ref or inline) */
-  value: LinkFor<StatelySchemas<Config>> | null;
+  value?: LinkFor<StatelySchemas<Config>> | null;
   /** Called when save is clicked with new inline value */
   onChange: (value: LinkFor<StatelySchemas<Config>>) => void;
   /** Render the mode toggle */
@@ -31,7 +31,7 @@ interface LinkInlineEditProps<Config extends StatelyConfig = StatelyConfig> {
  */
 export function LinkInlineEdit<Config extends StatelyConfig = StatelyConfig>({
   targetType,
-  schema,
+  node,
   value,
   onChange,
   after,
@@ -57,7 +57,7 @@ export function LinkInlineEdit<Config extends StatelyConfig = StatelyConfig>({
 
       <div className={'flex flex-col min-h-0 border-l-4 border-primary/20 pl-3 space-y-3'}>
         <EntityEditView
-          schema={schema}
+          node={node}
           value={entityValue}
           onChange={handleChange}
           defaultMode={isWizard ? EditMode.WIZARD : undefined}

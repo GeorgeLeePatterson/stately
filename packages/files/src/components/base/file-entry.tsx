@@ -1,9 +1,7 @@
 import { ChevronRight, FileText, Folder, FolderOpen, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { components } from '@/types/api';
+import type { FileInfo } from '@/types/file';
 import { Button } from '../ui/button';
-
-export type FileInfo = components['schemas']['FileInfo'];
 
 export interface FileEntryProps {
   entry: FileInfo;
@@ -17,14 +15,14 @@ export function FileEntry({ entry, isSelected, onSelectEntry, isCompact }: FileE
   const icon =
     entry.type === 'directory' ? (
       isSelected ? (
-        <FolderOpen className="h-4 w-4 flex-shrink-0" />
+        <FolderOpen className="h-4 w-4 shrink-0" />
       ) : (
-        <Folder className="h-4 w-4 flex-shrink-0" />
+        <Folder className="h-4 w-4 shrink-0" />
       )
     ) : entry.type === 'versioned_file' ? (
-      <History className="h-4 w-4 flex-shrink-0 text-purple-500" />
+      <History className="h-4 w-4 shrink-0 text-purple-500" />
     ) : (
-      <FileText className="h-4 w-4 flex-shrink-0" />
+      <FileText className="h-4 w-4 shrink-0" />
     );
 
   return (
@@ -45,10 +43,12 @@ export function FileEntry({ entry, isSelected, onSelectEntry, isCompact }: FileE
           {entry.versions.length} {entry.versions.length === 1 ? 'version' : 'versions'}
         </span>
       )}
-      {entry.type === 'file' && entry.size > 0 && (
+      {entry.type === 'file' && typeof entry.size === 'number' && entry.size > 0 && (
         <span className="text-xs text-muted-foreground">{(entry.size / 1024).toFixed(1)}kb</span>
       )}
       {entry.type === 'directory' && <ChevronRight className="h-3 w-3 text-muted-foreground" />}
     </Button>
   );
 }
+
+export type { FileInfo } from '@/types/file';

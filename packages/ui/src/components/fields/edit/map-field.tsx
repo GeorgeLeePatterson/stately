@@ -350,7 +350,7 @@ function ValueEdit<Config extends StatelyConfig = StatelyConfig>({
           </div>
         ) : (
           // Complex value
-          <div className="flex flex-col border-border border-1 rounded-md">
+          <div className="flex flex-col border-border border rounded-md">
             <div
               className={cn(
                 'py-2 px-3 flex justify-between items-center',

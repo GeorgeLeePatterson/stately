@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
-import { api } from '@/api/client';
-import type { FileInfo } from '@/components/base/file-entry';
+import type { FileInfo } from '@/types/file';
+import type { FileListResponse } from '@/types/fs-api';
+import { useFilesApi } from '@/lib/files-api';
 
 export function useFileView({
   initialPath,
@@ -12,6 +13,7 @@ export function useFileView({
   onSelectFile?: (file: FileInfo, currentPath?: string) => void;
   isDisabled?: boolean;
 }) {
+  const filesApi = useFilesApi();
   const [currentPath, setCurrentPath] = useState<string>('');
   const [selectedEntry, setSelectedEntry] = useState<FileInfo | null>(null);
 
@@ -24,16 +26,16 @@ export function useFileView({
 
   // Fetch files list for current path
   const queryResults = useQuery({
-    queryKey: ['files', 'list', currentPath],
+    queryKey: filesApi.key.list(currentPath),
     queryFn: async () => {
       const params = currentPath ? { path: currentPath } : {};
-      const { data, error } = await api.GET('/api/v1/files/list', { params: { query: params } });
+      const { data, error } = await filesApi.list({ path: params.path });
       if (error || !data) {
         throw new Error('Failed to load files');
       }
-      return data;
+      return data as FileListResponse;
     },
-    enabled: !isDisabled,
+    enabled: !isDisabled && !!filesApi.listMeta,
   });
 
   // Handle entry click - navigate into directories or select files

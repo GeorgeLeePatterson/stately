@@ -18,7 +18,7 @@ export function FieldEdit<
   const { node } = props;
   const { componentRegistry } = useStatelyUi();
 
-  const Edit = getEditComponent<Config>(componentRegistry, node.nodeType);
+  const Edit = getEditComponent<Config, N, V>(componentRegistry, node.nodeType);
 
   if (!Edit) {
     return <div className="text-destructive text-sm">Unknown node type: {node.nodeType}</div>;

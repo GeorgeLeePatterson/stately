@@ -2,8 +2,15 @@ import { ArrowLeft, ChevronRight, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useFileView } from '@/hooks/use-file-view';
-import type { FileInfo } from '../../base/file-entry';
+import type { FileInfo } from '@/types/file';
 import { FileView } from './file-explorer';
+
+const formatTimestamp = (value?: number | string | null, withTime = false) => {
+  if (value === undefined || value === null) return null;
+  const date = typeof value === 'number' ? new Date(value * 1000) : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return withTime ? date.toLocaleString() : date.toLocaleDateString();
+};
 
 interface FileManagerProps {
   initialPath?: string;
@@ -125,20 +132,28 @@ function FileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClose: () => 
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Size:</span>
-            <span className="font-mono">{(entry.size / 1024).toFixed(2)} KB</span>
+            <span className="font-mono">
+              {typeof entry.size === 'number' ? `${(entry.size / 1024).toFixed(2)} KB` : '—'}
+            </span>
           </div>
-          {entry.created && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Created:</span>
-              <span>{new Date(entry.created * 1000).toLocaleDateString()}</span>
-            </div>
-          )}
-          {entry.modified && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Modified:</span>
-              <span>{new Date(entry.modified * 1000).toLocaleDateString()}</span>
-            </div>
-          )}
+          {(() => {
+            const created = formatTimestamp(entry.created);
+            return created ? (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Created:</span>
+                <span>{created}</span>
+              </div>
+            ) : null;
+          })()}
+          {(() => {
+            const modified = formatTimestamp(entry.modified);
+            return modified ? (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Modified:</span>
+                <span>{modified}</span>
+              </div>
+            ) : null;
+          })()}
         </div>
       </div>
     </div>
@@ -170,21 +185,29 @@ function VersionedFileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClos
           <div className="flex justify-between">
             <span className="text-muted-foreground">Latest version:</span>
             <span className="font-mono">
-              {latestVersion?.size ? `${(latestVersion.size / 1024).toFixed(2)} KB` : 'N/A'}
+              {typeof latestVersion?.size === 'number'
+                ? `${(latestVersion.size / 1024).toFixed(2)} KB`
+                : 'N/A'}
             </span>
           </div>
-          {entry.created && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">First uploaded:</span>
-              <span>{new Date(entry.created * 1000).toLocaleString()}</span>
-            </div>
-          )}
-          {entry.modified && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Last updated:</span>
-              <span>{new Date(entry.modified * 1000).toLocaleString()}</span>
-            </div>
-          )}
+          {(() => {
+            const created = formatTimestamp(entry.created, true);
+            return created ? (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">First uploaded:</span>
+                <span>{created}</span>
+              </div>
+            ) : null;
+          })()}
+          {(() => {
+            const modified = formatTimestamp(entry.modified, true);
+            return modified ? (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Last updated:</span>
+                <span>{modified}</span>
+              </div>
+            ) : null;
+          })()}
           <div className="flex justify-between">
             <span className="text-muted-foreground">Total versions:</span>
             <span>{versions.length}</span>
@@ -198,23 +221,26 @@ function VersionedFileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClos
             <div className="space-y-1">
               {versions.map((version, index) => (
                 <div
-                  key={version.uuid}
+                  key={version.uuid ?? version.id ?? index}
                   className="flex flex-col items-start justify-between p-2 gap-1 rounded hover:bg-muted/50 text-xs"
                 >
                   <div className="flex-1 flex flex-row w-full min-w-0 items-center justify-between">
                     <div className="font-medium">v{versions.length - index}</div>
-                    {version.created && (
-                      <span className="text-muted-foreground">
-                        {new Date(version.created * 1000).toLocaleString()}
-                      </span>
-                    )}
+                    {(() => {
+                      const created = formatTimestamp(version.created ?? version.created_at, true);
+                      return created ? (
+                        <span className="text-muted-foreground">{created}</span>
+                      ) : null;
+                    })()}
                   </div>
                   <div className="flex-1 w-full flex flex-row items-center justify-between">
                     <div className="text-muted-foreground font-mono truncate text-[10px]">
-                      {version.uuid}
+                      {version.uuid ?? version.id ?? 'unknown'}
                     </div>
                     <span className="text-muted-foreground">
-                      {(version.size / 1024).toFixed(1)}kb
+                      {typeof version.size === 'number'
+                        ? `${(version.size / 1024).toFixed(1)}kb`
+                        : 'N/A'}
                     </span>
                   </div>
                 </div>

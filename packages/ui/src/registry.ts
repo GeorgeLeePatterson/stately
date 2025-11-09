@@ -1,5 +1,5 @@
-import type { StatelyConfig } from '@stately/schema';
-import type { ViewFieldProps } from './components/fields';
+import type { StatelyConfig, StatelySchemas } from '@stately/schema';
+import type { EditFieldProps, ViewFieldProps } from './components/fields';
 import type { ComponentsEntry, KeyGrammar } from './plugin';
 import type { ComponentRegistry } from './runtime';
 
@@ -23,12 +23,16 @@ export function getComponentByPath<Config extends StatelyConfig = StatelyConfig>
   return getComponent<Config>(registry, [node, ...path].join(':'));
 }
 
-export function getEditComponent<Config extends StatelyConfig = StatelyConfig>(
+export function getEditComponent<
+  Config extends StatelyConfig = StatelyConfig,
+  N extends StatelySchemas<Config>['AnySchemaNode'] = StatelySchemas<Config>['AnySchemaNode'],
+  V = unknown,
+>(
   registry: ComponentRegistry,
   node: string,
-): React.ComponentType<ViewFieldProps<Config>> | undefined {
+): React.ComponentType<EditFieldProps<Config, N, V>> | undefined {
   return getComponent<Config>(registry, `${node}:edit`) as React.ComponentType<
-    ViewFieldProps<Config>
+    EditFieldProps<Config, N, V>
   >;
 }
 

@@ -1,9 +1,9 @@
+// import { Explain } from '@/components/base/explain';
+// import { NotSet } from '@/components/base/not-set';
+import { Explain, NotSet } from '@stately/ui/base';
 import { Database, ExternalLink, FolderOpen, HardDrive, HardDriveUpload } from 'lucide-react';
-import { Explain } from '@/components/base/explain';
 import { FileBrowserDialog } from '@/components/dialogs/file-browser-dialog';
-import type { components } from '@/types/api';
 import { RELATIVE_PATH_MODES } from '../edit/relative-path-field';
-import { NotSet } from '../field-view';
 
 export function RelativePathFieldView({ value }: { value: any }) {
   if (!value) {
@@ -36,7 +36,7 @@ export function RelativePathFieldView({ value }: { value: any }) {
             ) : (
               Icon
             )}
-            <span dir="rtl" className="text-right truncate border-l-1 pl-2">
+            <span dir="rtl" className="text-right truncate border-l pl-2">
               {pathValue}
             </span>
           </span>
@@ -56,7 +56,7 @@ export function RelativePathFieldView({ value }: { value: any }) {
     return <NotSet />;
   }
 
-  const pathValue = value as components['schemas']['RelativePath'];
+  const pathValue = value as { dir?: string; path: string };
 
   // Choose icon based on directory
   const Icon =

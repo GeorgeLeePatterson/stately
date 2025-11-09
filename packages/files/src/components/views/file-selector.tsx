@@ -4,7 +4,8 @@ import { useCallback, useId } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useFileView } from '@/hooks/use-file-view';
-import type { FileInfo } from '../../base/file-entry';
+import { useFilesApi } from '@/lib/files-api';
+import type { FileInfo } from '@/types/file';
 import { FileView } from './file-explorer';
 
 interface FileSelectorProps {
@@ -23,6 +24,7 @@ interface FileSelectorProps {
 export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
   const queryClient = useQueryClient();
   const formId = useId();
+  const filesApi = useFilesApi();
 
   const onSelectFile = useCallback(
     (file: FileInfo, currentPath?: string) => {
@@ -46,13 +48,13 @@ export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await fetch('/api/v1/files/upload', { method: 'POST', body: formData });
-      if (!response.ok) throw new Error('Upload failed');
-      return response.json();
+      const { data, error } = await filesApi.upload({ body: formData });
+      if (!data || error) throw new Error('Upload failed');
+      return data;
     },
     onSuccess: data => {
       toast.success('File uploaded successfully');
-      queryClient.invalidateQueries({ queryKey: ['files', 'list', currentPath] });
+      queryClient.invalidateQueries({ queryKey: filesApi.key.list(currentPath) });
       onSelect(data.path);
       onClose?.();
     },

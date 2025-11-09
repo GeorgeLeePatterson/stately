@@ -7,6 +7,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./base": {
+      "types": "./dist/components/base/index.d.ts",
+      "import": "./dist/components/base/index.js"
+    },
     "./fields": {
       "types": "./dist/components/fields/index.d.ts",
       "import": "./dist/components/fields/index.js"

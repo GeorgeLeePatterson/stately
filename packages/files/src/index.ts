@@ -17,7 +17,6 @@ export { Upload } from './components/fields/edit/upload.js';
 // View components
 export { FileManager } from './components/views/file-manager.js';
 export { FileSelector } from './components/views/file-selector.js';
-export { FileExplorer } from './components/views/file-explorer.js';
 
 // Base components
 export { FileEntry } from './components/base/file-entry.js';
@@ -25,5 +24,9 @@ export { FileEntry } from './components/base/file-entry.js';
 // Hooks
 export { useSaveFile } from './hooks/use-save-file.js';
 export { useFileView } from './hooks/use-file-view.js';
+
+export { filesCodegenPlugin } from './codegen.js';
+export { useFilesApi } from './lib/files-api.js';
+export { createFilesUiPlugin, filesUiPlugin } from './ui-plugin.js';
 
 export const VERSION = '0.1.0';

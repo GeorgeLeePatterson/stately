@@ -17,7 +17,7 @@ import { useObjectField } from '@/hooks/use-object-field';
 import { GlowingSave } from '../../base/glowing-save';
 import { FieldEdit } from '../field-edit';
 import type { EditFieldProps } from '../types';
-import { ObjectWizard } from './object-wizard';
+import { ObjectWizardEdit } from './object-wizard';
 
 export enum ObjectEditMode {
   FORM = 'Form',
@@ -71,7 +71,7 @@ export function ObjectEdit<Config extends StatelyConfig = StatelyConfig>({
 
       {/* Wizard mode */}
       <TabsContent value={ObjectEditMode.WIZARD}>
-        <ObjectWizard
+        <ObjectWizardEdit
           formId={objectFormId}
           label={label}
           node={node}

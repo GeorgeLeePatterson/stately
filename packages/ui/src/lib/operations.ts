@@ -21,6 +21,11 @@ export interface OperationMeta<Config extends StatelyConfig = StatelyConfig> {
   operationId: string;
 }
 
+export type OperationIndex<Config extends StatelyConfig = StatelyConfig> = Record<
+  string,
+  OperationMeta<Config>
+>;
+
 export type StatelyOperations<Config extends StatelyConfig = StatelyConfig> = {
   [K in StatelyOperationKey]: OperationMeta<Config>;
 };
@@ -31,8 +36,27 @@ export type OperationOverrides<Config extends StatelyConfig = StatelyConfig> = P
 
 const METHOD_KEYS: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 
-export function buildStatelyOperations<Config extends StatelyConfig = StatelyConfig>(
+export function buildOperationIndex<Config extends StatelyConfig>(
   paths: StatelySchemas<Config>['paths'],
+): OperationIndex<Config> {
+  const index: Partial<OperationIndex<Config>> = {};
+  for (const [pathKey, record] of Object.entries(paths ?? {})) {
+    for (const method of METHOD_KEYS) {
+      const op = (record as Record<string, { operationId?: string }>)[method];
+      if (op?.operationId) {
+        index[op.operationId] = {
+          path: pathKey as keyof StatelySchemas<Config>['paths'] & string,
+          method,
+          operationId: op.operationId,
+        };
+      }
+    }
+  }
+  return index as OperationIndex<Config>;
+}
+
+export function buildStatelyOperations<Config extends StatelyConfig = StatelyConfig>(
+  index: OperationIndex<Config>,
   overrides?: OperationOverrides<Config>,
 ): StatelyOperations<Config> {
   const entries = Object.entries(DEFAULT_OPERATION_IDS).map(([key, operationId]) => {
@@ -40,31 +64,15 @@ export function buildStatelyOperations<Config extends StatelyConfig = StatelyCon
     if (override) {
       return [key, { ...override, operationId }] as const;
     }
-    const resolved = resolveOperation(paths, operationId);
+    const resolved = index[operationId];
+    if (!resolved) {
+      throw new Error(
+        `Unable to resolve Stately operation "${operationId}". Verify the openapi feature is enabled and the spec was generated with #[stately::axum_api(openapi)].`,
+      );
+    }
     return [key, resolved] as const;
   });
   return Object.fromEntries(entries) as StatelyOperations<Config>;
-}
-
-function resolveOperation<Config extends StatelyConfig>(
-  paths: StatelySchemas<Config>['paths'],
-  operationId: string,
-): OperationMeta<Config> {
-  for (const [pathKey, record] of Object.entries(paths ?? {})) {
-    for (const method of METHOD_KEYS) {
-      const op = (record as Record<string, { operationId?: string }>)[method];
-      if (op?.operationId === operationId) {
-        return {
-          path: pathKey as keyof StatelySchemas<Config>['paths'] & string,
-          method,
-          operationId,
-        };
-      }
-    }
-  }
-  throw new Error(
-    `Unable to resolve Stately operation "${operationId}". Verify the openapi feature is enabled and the spec was generated with #[stately::axum_api(openapi)].`,
-  );
 }
 
 export interface StatelyEntityApi<Config extends StatelyConfig = StatelyConfig> {
@@ -89,13 +97,13 @@ export function createStatelyApi<Config extends StatelyConfig = StatelyConfig>(
     entity: {
       listByType({ type }) {
         const meta = operations.listEntitiesByType;
-        return callClient(client, meta.method, meta.path, {
+        return callOperation(client, meta, {
           params: { path: { type } },
         });
       },
       get({ id, type }) {
         const meta = operations.getEntityById;
-        return callClient(client, meta.method, meta.path, {
+        return callOperation(client, meta, {
           params: { path: { id }, query: { type } },
         });
       },
@@ -103,12 +111,12 @@ export function createStatelyApi<Config extends StatelyConfig = StatelyConfig>(
   };
 }
 
-function callClient<Config extends StatelyConfig>(
+export function callOperation<Config extends StatelyConfig>(
   client: Client<StatelySchemas<Config>['paths'] & {}>,
-  method: HttpMethod,
-  path: keyof StatelySchemas<Config>['paths'] & string,
+  meta: OperationMeta<Config>,
   options: any,
 ): Promise<any> {
+  const { method, path } = meta;
   const anyClient = client as Client<Record<string, any>>;
   switch (method) {
     case 'get':

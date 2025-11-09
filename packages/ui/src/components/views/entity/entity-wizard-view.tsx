@@ -1,14 +1,15 @@
 import type { StatelyConfig, StatelySchemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { useId } from 'react';
-import { ObjectWizard } from '../../fields/edit/object-wizard';
+import { ObjectWizardEdit } from '../../fields/edit/object-wizard';
 
-interface EntityWizardViewProps<Config extends StatelyConfig = StatelyConfig> {
-  schema: StatelySchemas<Config>['ObjectNode'];
-  value?: any;
-  onChange: (value: AnyRecord) => void;
+export interface EntityWizardViewProps<Config extends StatelyConfig = StatelyConfig> {
+  node: StatelySchemas<Config>['ObjectNode'];
+  value?: StatelySchemas<Config>['EntityData'];
+  onChange: (value: StatelySchemas<Config>['EntityData']) => void;
   onComplete?: () => void;
   isLoading?: boolean;
+  isRootEntity?: boolean;
 }
 
 /**
@@ -16,17 +17,23 @@ interface EntityWizardViewProps<Config extends StatelyConfig = StatelyConfig> {
  * Walks through each top-level field one at a time
  */
 export function EntityWizardView<Config extends StatelyConfig = StatelyConfig>({
-  schema,
+  node,
   value,
   onChange,
   onComplete,
   isLoading,
+  isRootEntity,
 }: EntityWizardViewProps<Config>) {
   const formId = useId();
+  // If the entity has a name property, ensure it's required if the entity is root
+  const newNode =
+    'name' in node.properties && isRootEntity
+      ? { ...node, required: [...node.required, 'name'] }
+      : node;
   return (
-    <ObjectWizard<Config>
+    <ObjectWizardEdit<Config>
       formId={formId}
-      node={schema}
+      node={newNode}
       value={value}
       onChange={onChange}
       onComplete={onComplete}

@@ -112,7 +112,7 @@ export function ViewLinkDialog<Config extends StatelyConfig = StatelyConfig>({
             <EntityDetailView
               entityType={entityType}
               entity={entityData}
-              schema={entitySchema.schema}
+              node={entitySchema.schema}
             />
           )}
         </ScrollArea>

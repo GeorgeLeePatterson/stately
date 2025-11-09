@@ -3,14 +3,14 @@ import { SINGLETON_ID } from '@stately/schema/helpers';
 import { Fragment, useMemo, useState } from 'react';
 import { SimpleLabel } from '@/components/base/simple-label';
 import { Separator } from '@/components/ui/separator';
-import { EntityProperty } from '@/components/views/entity/entity-property';
+import { EntityPropertyView } from '@/components/views/entity/entity-property-view';
 import { useStatelyUi } from '@/context';
 import { FieldView } from '../../fields/field-view';
 import { JsonView } from '../../fields/json-view';
 
-interface EntityDetailViewProps<Config extends StatelyConfig = StatelyConfig> {
+export interface EntityDetailViewProps<Config extends StatelyConfig = StatelyConfig> {
   entityType: StatelySchemas<Config>['StateEntry'];
-  schema: StatelySchemas<Config>['ObjectNode'];
+  node: StatelySchemas<Config>['ObjectNode'];
   entity: StatelySchemas<Config>['EntityData'];
   entityId?: string;
   disableJsonView?: boolean;
@@ -18,7 +18,7 @@ interface EntityDetailViewProps<Config extends StatelyConfig = StatelyConfig> {
 
 export function EntityDetailView<Config extends StatelyConfig = StatelyConfig>({
   entityType,
-  schema,
+  node,
   entity,
   entityId,
   disableJsonView,
@@ -26,11 +26,11 @@ export function EntityDetailView<Config extends StatelyConfig = StatelyConfig>({
   const { integration } = useStatelyUi();
   const [isJsonOpen, setIsJsonOpen] = useState(false);
 
-  const required = new Set(schema.required || []);
+  const required = new Set(node.required || []);
 
   const entityProperties = useMemo(
-    () => Object.entries(schema.properties).filter(([name, _]) => name !== 'name'),
-    [schema.properties],
+    () => Object.entries(node.properties).filter(([name, _]) => name !== 'name'),
+    [node.properties],
   );
 
   const sortedProperties = useMemo(
@@ -38,12 +38,12 @@ export function EntityDetailView<Config extends StatelyConfig = StatelyConfig>({
       integration.helpers.sortEntityProperties(
         entityProperties,
         entity,
-        new Set(schema.required || []),
+        new Set(node.required || []),
       ),
-    [entityProperties, entity, schema.required, integration.helpers.sortEntityProperties],
+    [entityProperties, entity, node.required, integration.helpers.sortEntityProperties],
   );
 
-  console.debug('EntityDetailView: ', { entityType, entity, schema });
+  console.debug('EntityDetailView: ', { entityType, entity, schema: node });
 
   return (
     <div className="space-y-4">
@@ -53,15 +53,15 @@ export function EntityDetailView<Config extends StatelyConfig = StatelyConfig>({
           <SimpleLabel>ID:</SimpleLabel> {entityId}
         </div>
       )}
-      {'name' in schema.properties && 'name' in entity && (
+      {'name' in node.properties && 'name' in entity && (
         <>
-          <EntityProperty
+          <EntityPropertyView
             fieldName={
               <span>
                 Name: <span className="italic">{entity?.name}</span>
               </span>
             }
-            schema={schema.properties.name}
+            node={node.properties.name}
             isRequired={true}
           />
           <Separator />
@@ -77,13 +77,13 @@ export function EntityDetailView<Config extends StatelyConfig = StatelyConfig>({
         .filter(([_, __, value]) => value !== undefined && value !== null)
         .map(([fieldName, fieldSchema, fieldValue], idx, arr) => (
           <Fragment key={fieldName}>
-            <EntityProperty
+            <EntityPropertyView
               fieldName={fieldName}
-              schema={fieldSchema}
+              node={fieldSchema}
               isRequired={required.has(fieldName)}
             >
               <FieldView node={fieldSchema} value={fieldValue} />
-            </EntityProperty>
+            </EntityPropertyView>
             {idx < arr.length - 1 && <Separator />}
           </Fragment>
         ))}

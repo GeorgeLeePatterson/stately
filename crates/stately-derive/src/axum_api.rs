@@ -165,7 +165,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         quote! {
             #[::utoipa::path(
                 put,
-                path = "",
+                path = "/",
                 tag = "entity",
                 request_body = Entity,
                 responses(
@@ -286,7 +286,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         quote! {
             #[::utoipa::path(
                 get,
-                path = "",
+                path = "/",
                 tag = "entity",
                 params(
                     ("name" = Option<String>, Query, description = "Identifier of entity, ie id or name"),

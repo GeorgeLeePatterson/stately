@@ -16,7 +16,7 @@ export interface EditFieldProps<
 > {
   formId: string;
   node: N;
-  value: V;
+  value?: V;
   onChange: (value: V) => void;
   label?: string;
   description?: string;
