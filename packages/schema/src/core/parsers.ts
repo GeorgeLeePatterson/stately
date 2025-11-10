@@ -45,16 +45,16 @@ export function buildStateEntryToSchema<Schemas extends { StateEntry: string }>(
 /**
  * Build StateEntry -> Parsed ObjectNode cache
  */
-export function buildEntitySchemaCache<Schemas extends { StateEntry: string; ObjectNode: any }>(
-  entityMappings: Array<{ stateEntry: Schemas['StateEntry']; schemaName: string }>,
-  generatedSchemas: Record<string, any>,
-): Record<Schemas['StateEntry'], Schemas['ObjectNode'] | null> {
+export function buildEntitySchemaCache<StateEntry extends string, ObjectNodeShape>(
+  entityMappings: Array<{ stateEntry: StateEntry; schemaName: string }>,
+  generatedSchemas: Record<string, ObjectNodeShape>,
+): Record<StateEntry, ObjectNodeShape | null> {
   return Object.fromEntries(
     entityMappings.map(({ stateEntry, schemaName }) => [
       stateEntry,
       generatedSchemas[schemaName] || null,
     ]),
-  ) as Record<Schemas['StateEntry'], Schemas['ObjectNode'] | null>;
+  ) as Record<StateEntry, ObjectNodeShape | null>;
 }
 
 /**

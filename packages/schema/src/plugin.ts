@@ -1,4 +1,9 @@
-import type { StatelySchemas as BaseSchemas, SchemaNodeMap, StatelyConfig } from './schema.js';
+import type {
+  StatelySchemas as BaseSchemas,
+  SchemaAnyNode,
+  SchemaNodeMap,
+  StatelyConfig,
+} from './schema.js';
 import type { Stately } from './stately.js';
 
 // schema/plugin.ts
@@ -36,7 +41,7 @@ export interface ValidationOptions {
 export interface SchemaValidateArgs<Config extends StatelyConfig = StatelyConfig> {
   path: string;
   data: any;
-  schema: BaseSchemas<Config, SchemaNodeMap, any>['AnyNode'];
+  schema: SchemaAnyNode<BaseSchemas<Config, SchemaNodeMap, any>>;
   options?: ValidationOptions;
   runtime: Stately<Config, AnyRecord, AnyRecord>;
 }

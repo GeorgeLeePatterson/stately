@@ -31,24 +31,25 @@
  * - No threading generics through the codebase
  * - Types "just work" like calling a function
  *
+ * Views exposed on the resulting `Schemas` type:
+ * - `Schemas['Generated']` mirrors the literal OpenAPI/codegen output.
+ * - `Schemas['Plugin']` aggregates every node contributed by core + installed augments.
+ *   Use this when authoring a plugin so you always have the canonical AST contracts.
+ *
  * Usage:
  * ```typescript
- * type MySchemas = StatelySchemas<{
- *   components: components['schemas'];
- *   nodes: typeof PARSED_SCHEMAS;
- * }>;
+ * type MySchemas = Schemas<typeof components>;
  *
- * // Use ALL concrete types - no generics needed!
- * type StateEntry = MySchemas['StateEntry'];   // From components
- * type Entity = MySchemas['Entity'];           // From components
- * type LinkNode = MySchemas['LinkNode'];       // Has StateEntry baked in
- * type RecursiveRef = MySchemas['RecursiveRefNode']; // Has NodeNames baked in
+ * // Generated view = user-specific OpenAPI/codegen output
+ * const pipelineNode = MySchemas['Generated'].Nodes.Pipeline;
+ * // Plugin view = canonical nodes contributed by augments (core, files, etc.)
+ * const linkNode = MySchemas['Plugin'].Nodes.link;
  * ```
  */
 
 import type { OpenAPIV3_1 } from 'openapi-types';
-import type { CoreSchemaAugment, CoreStatelyConfig } from './core/augment.js';
-import { createCorePlugin } from './core/plugin.js';
+import { createCorePlugin } from './core/index.js';
+import type { CoreSchemaAugment, CoreStatelyConfig } from './core/index.js';
 import type {
   StatelySchemas,
   NodesFromConfig,
@@ -97,3 +98,15 @@ export function stately<Config extends CoreStatelyConfig, Utils extends AnyRecor
 }
 
 export { createStately };
+export type {
+  SchemaAugment,
+  SchemaAugmentNodes,
+  SchemaAnyNode,
+  SchemaNodeMap,
+  SchemaNodeOfType,
+  SchemaPluginAnyNode,
+  SchemaPluginNodeNames,
+  SchemaPluginNodeOfType,
+  SchemaPluginNodeType,
+  NodesFromConfig,
+} from './schema.js';

@@ -11,11 +11,15 @@ import type {
   BaseNode,
   NodesFromConfig,
   SchemaAugmentNodes,
+  SchemaGeneratedNodeNames,
+  SchemaNodeType,
   SchemaPluginAnyNode,
   SchemaPluginNodeOfType,
   SchemaPluginNodeType,
   SchemaPluginNodes,
   SchemaNodeOfType,
+  SchemaAnyNode,
+  SchemaGeneratedNodes,
 } from '../src/schema.js';
 import type { CoreSchemaAugment, CoreStatelyConfig } from '../src/core/augment.js';
 import {
@@ -179,9 +183,12 @@ type TestEntityId = ValidSchemas['EntityId'];
 // Expected: string
 
 // ✅ Should extract NodeNames correctly
-type TestSchemaNames = ValidSchemas['NodeNames'];
+type TestSchemaNames = SchemaGeneratedNodeNames<ValidSchemas>;
 const SchemaName: TestSchemaNames = 'Pipeline';
 // Expected: 'Pipeline' | 'SourceConfig' | 'SinkConfig'
+type InvalidSchemaNameCheck = AssertTrue<
+  ExpectNotAssignable<'InvalidSchema', TestSchemaNames>
+>;
 
 // ----
 // Ad-hoc tests
@@ -193,13 +200,11 @@ const XXX: XX = primitiveStringNode;
 
 type Y = ValidSchemas['Plugin']['NodeTypes'];
 const YY: Y = CoreNodeType.Primitive;
-// @ts-expect-error
-const YYY: Y = 'not-right';
+type InvalidPluginNodeTypeCheck = AssertTrue<ExpectNotAssignable<'not-right', Y>>;
 
 type Z = ValidSchemas['Plugin']['NodeNames'];
 const ZZ: Z = CoreNodeType.Primitive;
-// @ts-expect-error
-const ZZZ: Z = 'not-right';
+type InvalidPluginNodeNameCheckLegacy = AssertTrue<ExpectNotAssignable<'not-right', Z>>;
 // ----
 
 type PluginNodeNames = ValidSchemas['Plugin']['NodeNames'];
@@ -210,7 +215,8 @@ type InvalidPluginNodeNameCheck = AssertTrue<
 
 
 // ✅ Should work in LinkNode with valid StateEntry value
-const validLink: ValidSchemas['LinkNode'] = {
+type ValidLinkNode = SchemaPluginNodeOfType<ValidSchemas, 'link'>;
+const validLink: ValidLinkNode = {
   nodeType: 'link',
   targetType: 'pipeline', // ✅ Valid StateEntry value
   inlineSchema: {
@@ -221,7 +227,7 @@ const validLink: ValidSchemas['LinkNode'] = {
 };
 
 // ✅ Should work in MapNode with valid StateEntry value
-const validMap: ValidSchemas['MapNode'] = {
+const validMap: SchemaPluginNodeOfType<ValidSchemas, 'map'> = {
   nodeType: 'map',
   keyPattern: 'source_config', // ✅ Valid StateEntry value (optional, so string works too)
   valueSchema: {
@@ -231,24 +237,16 @@ const validMap: ValidSchemas['MapNode'] = {
 };
 
 // ✅ Should work in RecursiveRefNode with valid schema name
-const validRef: ValidSchemas['RecursiveRefNode'] = {
-  nodeType: 'recursiveRef',
-  refName: 'Pipeline', // ✅ Valid schema name
-};
-
 // ============================================================================
 // Test 2: Invalid Values - Should produce compile errors
 // ============================================================================
 
 // ❌ Invalid StateEntry value in LinkNode
 type InvalidLinkTargetCheck = AssertTrue<
-  ExpectNotAssignable<'invalid_type', ValidSchemas['LinkNode']['targetType']>
+  ExpectNotAssignable<'invalid_type', ValidLinkNode['targetType']>
 >;
 
 // ❌ Invalid schema name in RecursiveRefNode
-type InvalidRefNameCheck = AssertTrue<
-  ExpectNotAssignable<'InvalidSchema', ValidSchemas['RecursiveRefNode']['refName']>
->;
 
 // ============================================================================
 // Test 3: Real-world usage pattern
@@ -353,34 +351,34 @@ type MyStateEntry = MySchemas['StateEntry'];
 type MyEntity = MySchemas['Entity'];
 type MyEntityData = MySchemas['EntityData'];
 type MyEntityId = MySchemas['EntityId'];
-type MySchemaNames = MySchemas['NodeNames'];
+type MySchemaNames = SchemaGeneratedNodeNames<MySchemas>;
 
 // ✅ All valid StateEntry values work in LinkNode
-const userLink: MySchemas['LinkNode'] = {
+const userLink: SchemaPluginNodeOfType<MySchemas, 'link'> = {
   nodeType: 'link',
   targetType: 'user', // ✅
   inlineSchema: { nodeType: 'object', properties: {}, required: [] },
 };
 
-const postLink: MySchemas['LinkNode'] = {
+const postLink: SchemaPluginNodeOfType<MySchemas, 'link'> = {
   nodeType: 'link',
   targetType: 'post', // ✅
   inlineSchema: { nodeType: 'object', properties: {}, required: [] },
 };
 
-const commentLink: MySchemas['LinkNode'] = {
+const commentLink: SchemaPluginNodeOfType<MySchemas, 'link'> = {
   nodeType: 'link',
   targetType: 'comment', // ✅
   inlineSchema: { nodeType: 'object', properties: {}, required: [] },
 };
 
 // ✅ All valid schema names work in RecursiveRefNode
-const userRef: MySchemas['RecursiveRefNode'] = {
+const userRef: SchemaPluginNodeOfType<MySchemas, 'recursiveRef'> = {
   nodeType: 'recursiveRef',
   refName: 'User', // ✅
 };
 
-const postMetadataRef: MySchemas['RecursiveRefNode'] = {
+const postMetadataRef: SchemaPluginNodeOfType<MySchemas, 'recursiveRef'> = {
   nodeType: 'recursiveRef',
   refName: 'PostMetadata', // ✅
 };
@@ -400,25 +398,25 @@ type PostData = Extract<MySchemas['Entity'], { type: 'post' }> extends { data: i
 // Test 4: Verify all node types are concrete (no generics needed)
 // ============================================================================
 
-// ✅ All node types should be usable without generic parameters
-type TestPrimitiveNode = MySchemas['PrimitiveNode'];
-type TestEnumNode = MySchemas['EnumNode'];
-type TestObjectNode = MySchemas['ObjectNode'];
-type TestArrayNode = MySchemas['ArrayNode'];
-type TestMapNode = MySchemas['MapNode'];
-type TestTupleNode = MySchemas['TupleNode'];
-type TestTaggedUnionNode = MySchemas['TaggedUnionNode'];
-type TestUntaggedEnumNode = MySchemas['UntaggedEnumNode'];
-type TestLinkNode = MySchemas['LinkNode'];
-type TestNullableNode = MySchemas['NullableNode'];
-type TestRecursiveRefNode = MySchemas['RecursiveRefNode'];
+// ✅ All canonical node types should be usable without generic parameters
+type TestPrimitiveNode = SchemaPluginNodeOfType<MySchemas, 'primitive'>;
+type TestEnumNode = SchemaPluginNodeOfType<MySchemas, 'enum'>;
+type TestObjectNode = SchemaPluginNodeOfType<MySchemas, 'object'>;
+type TestArrayNode = SchemaPluginNodeOfType<MySchemas, 'array'>;
+type TestMapNode = SchemaPluginNodeOfType<MySchemas, 'map'>;
+type TestTupleNode = SchemaPluginNodeOfType<MySchemas, 'tuple'>;
+type TestTaggedUnionNode = SchemaPluginNodeOfType<MySchemas, 'taggedUnion'>;
+type TestUntaggedEnumNode = SchemaPluginNodeOfType<MySchemas, 'untaggedEnum'>;
+type TestLinkNode = SchemaPluginNodeOfType<MySchemas, 'link'>;
+type TestNullableNode = SchemaPluginNodeOfType<MySchemas, 'nullable'>;
+type TestRecursiveRefNode = SchemaPluginNodeOfType<MySchemas, 'recursiveRef'>;
 // (legacy nodes like RelativePathNode/AnySchemaNode removed during schema refactor)
 
 // ============================================================================
 // Test 5: Complex nested structures
 // ============================================================================
 
-const complexNode: MySchemas['ObjectNode'] = {
+const complexNode: SchemaPluginNodeOfType<MySchemas, 'object'> = {
   nodeType: 'object',
   properties: {
     id: {
@@ -453,9 +451,9 @@ const complexNode: MySchemas['ObjectNode'] = {
 // Test 6: Node union + discriminant enforcement (strict nodes)
 // ============================================================================
 
-type StrictAnyNode = StrictSchemas['AnyNode'];
+type StrictAnyNode = SchemaAnyNode<StrictSchemas>;
 
-type StrictNodeKeys = keyof StrictSchemas['Nodes'];
+type StrictNodeKeys = keyof SchemaGeneratedNodes<StrictSchemas>;
 const strictBaseKey: StrictNodeKeys = 'PrimitiveOnly';
 type InvalidStrictKeyCheck = AssertTrue<ExpectNotAssignable<'nonexistent', StrictNodeKeys>>;
 
@@ -476,12 +474,12 @@ const registryPrimitiveNode: StrictSchemas['Plugin']['Nodes']['primitive'] = {
 };
 
 type InvalidStrictNodeCheck = AssertTrue<
-  ExpectNotAssignable<'nonexistent', StrictSchemas['NodeTypes']>
+  ExpectNotAssignable<'nonexistent', SchemaNodeType<StrictSchemas>>
 >;
 
-const strictNodeType: StrictSchemas['NodeTypes'] = 'primitive';
+const strictNodeType: SchemaNodeType<StrictSchemas> = 'primitive';
 type InvalidStrictNodeTypeCheck = AssertTrue<
-  ExpectNotAssignable<'nonexistent', StrictSchemas['NodeTypes']>
+  ExpectNotAssignable<'nonexistent', SchemaNodeType<StrictSchemas>>
 >;
 
 // ============================================================================

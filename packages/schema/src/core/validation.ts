@@ -4,11 +4,17 @@
  * Validation functions for Stately schemas
  */
 
-import type { Schemas } from '../index.js';
+import type { SchemaAnyNode, Schemas } from '../index.js';
 import type { ValidationError, ValidationOptions, ValidationResult } from '../plugin.js';
 import type { AnyRecord, EmptyRecord, Stately } from '../stately.js';
 import type { CoreStatelyConfig } from './augment.js';
-import { CoreNodeType } from './nodes.js';
+import { CoreNodeType, type ObjectNodeRaw } from './nodes.js';
+
+type AnySchemaNode<Config extends CoreStatelyConfig> = SchemaAnyNode<Schemas<Config>>;
+type ObjectNodeOf<Config extends CoreStatelyConfig> = ObjectNodeRaw<
+  Config['components']['schemas']['StateEntry'],
+  keyof Config['nodes'] & string
+>;
 
 export type ValidatorCallback = (value: unknown, schema: unknown) => boolean;
 
@@ -53,7 +59,7 @@ export function validateNode<
 }: {
   path: string;
   data: any;
-  schema: Schemas<Config>['AnyNode'];
+  schema: AnySchemaNode<Config>;
   options?: ValidationOptions;
   integration?: Stately<Config, IExt, SExt>;
 }): ValidationResult {
@@ -92,7 +98,7 @@ export function validateNode<
       result = validateObject<Config, IExt, SExt>(
         path,
         data,
-        schema as Schemas<Config>['ObjectNode'],
+        schema as ObjectNodeOf<Config>,
         nextOptions,
         integration,
       );
@@ -105,7 +111,7 @@ export function validateNode<
         result = validateNode<Config, IExt, SExt>({
           path,
           data,
-          schema: (schema as any).innerSchema as Schemas<Config>['AnyNode'],
+        schema: (schema as any).innerSchema as AnySchemaNode<Config>,
           options,
           integration,
         });
@@ -141,7 +147,7 @@ export function validateNode<
       result = validateNode<Config, IExt, SExt>({
         path: `${path}.${variant}`,
         data: variantData,
-        schema: variantSchema.schema as Schemas<Config>['AnyNode'],
+        schema: variantSchema.schema as AnySchemaNode<Config>,
         options: nextOptions,
         integration,
       });
@@ -162,7 +168,7 @@ export function validateNode<
         const itemResult = validateNode<Config, IExt, SExt>({
           path: `${path}[${i}]`,
           data: (data as any)[i],
-          schema: (schema as any).items as Schemas<Config>['AnyNode'],
+          schema: (schema as any).items as AnySchemaNode<Config>,
           options: nextOptions,
           integration,
         });
@@ -214,7 +220,7 @@ export function validateNode<
       result = validateObject<Config, IExt, SExt>(
         path,
         data as Record<string, any>,
-        variant.schema as Schemas<Config>['ObjectNode'],
+        variant.schema as ObjectNodeOf<Config>,
         nextOptions,
         integration,
       );
@@ -232,7 +238,7 @@ export function validateNode<
         const itemResult = validateNode<Config, IExt, SExt>({
           path: `${path}.${key}`,
           data: value,
-          schema: (schema as any).valueSchema as Schemas<Config>['AnyNode'],
+          schema: (schema as any).valueSchema as AnySchemaNode<Config>,
           options: nextOptions,
           integration,
         });
@@ -261,7 +267,7 @@ export function validateObject<
 >(
   path: string,
   data: Record<string, any>,
-  schema: Schemas<Config>['ObjectNode'],
+  schema: ObjectNodeOf<Config>,
   options: ValidationOptions = {},
   integration?: Stately<Config, IExt, SExt>,
 ): ValidationResult {
@@ -286,7 +292,7 @@ export function validateObject<
       path,
       propertyName,
       fieldValue,
-      propertySchema as Schemas<Config>['AnyNode'],
+      propertySchema as AnySchemaNode<Config>,
       fieldRequired,
       options,
       integration,
@@ -311,7 +317,7 @@ export function validateObjectField<
   parentPath: string,
   fieldName: string,
   fieldValue: any,
-  fieldSchema: Schemas<Config>['AnyNode'],
+  fieldSchema: AnySchemaNode<Config>,
   isRequired: boolean,
   options: ValidationOptions = {},
   integration?: Stately<Config, IExt, SExt>,

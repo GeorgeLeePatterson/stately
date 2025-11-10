@@ -1,4 +1,4 @@
-import type { SchemaAugment , StatelyConfig } from '../schema.js';
+import type { SchemaAugment, StatelyConfig } from '../schema.js';
 import type {
   ArrayNodeRaw,
   CoreNodeType,
@@ -37,42 +37,6 @@ type CoreSchemaExtras<Config extends CoreStatelyConfig> = {
   EntityData: Config['components']['schemas']['Entity']['data'];
   EntityId: Config['components']['schemas']['EntityId'];
   Summary: Config['components']['schemas']['Summary'];
-  CanonicalNodes: CoreNodeMap<Config>;
-  PrimitiveNode: PrimitiveNode;
-  EnumNode: EnumNode;
-  ObjectNode: ObjectNodeRaw<
-    Config['components']['schemas']['StateEntry'],
-    keyof Config['nodes'] & string
-  >;
-  ArrayNode: ArrayNodeRaw<
-    Config['components']['schemas']['StateEntry'],
-    keyof Config['nodes'] & string
-  >;
-  MapNode: MapNodeRaw<
-    Config['components']['schemas']['StateEntry'],
-    keyof Config['nodes'] & string
-  >;
-  TupleNode: TupleNodeRaw<
-    Config['components']['schemas']['StateEntry'],
-    keyof Config['nodes'] & string
-  >;
-  TaggedUnionNode: TaggedUnionNodeRaw<
-    Config['components']['schemas']['StateEntry'],
-    keyof Config['nodes'] & string
-  >;
-  UntaggedEnumNode: UntaggedEnumNodeRaw<
-    Config['components']['schemas']['StateEntry'],
-    keyof Config['nodes'] & string
-  >;
-  LinkNode: LinkNodeRaw<
-    Config['components']['schemas']['StateEntry'],
-    keyof Config['nodes'] & string
-  >;
-  NullableNode: NullableNodeRaw<
-    Config['components']['schemas']['StateEntry'],
-    keyof Config['nodes'] & string
-  >;
-  RecursiveRefNode: RecursiveRefNodeRaw<keyof Config['nodes'] & string>;
 };
 
 type StateEntryType<Config extends CoreStatelyConfig> = Config['components']['schemas']['StateEntry'] extends string
@@ -97,23 +61,3 @@ export type CoreSchemaAugment<Config extends CoreStatelyConfig> = SchemaAugment<
   CoreNodeMap<Config>,
   CoreSchemaExtras<Config>
 >;
-
-// export type CoreUtils<Config extends StatelyConfig> = {
-//   isPrimitive: (schema: Schemas<Config>['AnyNode']) => boolean;
-//   extractNodeType: (schema: Schemas<Config>['AnyNode']) => Schemas<Config>['AnyNode']['nodeType'];
-//   isEntityValid: (
-//     entity: Schemas<Config>['EntityData'] | null | undefined,
-//     schema: Schemas<Config>['ObjectNode'] | undefined,
-//   ) => boolean;
-//   sortEntityProperties: (
-//     properties: Array<[string, Schemas<Config>['AnyNode']]>,
-//     value: any,
-//     required: Set<string>,
-//   ) => Array<[string, Schemas<Config>['AnyNode']]>;
-//   toTitleCase: (value: string) => string;
-//   toKebabCase: (value: string) => string;
-//   toSpaceCase: (value: string) => string;
-//   generateFieldLabel: (fieldName: string) => string;
-//   isSingletonId: (id: string) => boolean;
-//   getDefaultValue: (node: Schemas<Config>['AnyNode']) => any;
-// };

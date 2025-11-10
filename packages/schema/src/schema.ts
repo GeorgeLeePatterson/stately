@@ -1,5 +1,13 @@
 import type { OpenAPIV3_1 } from 'openapi-types';
 
+/**
+ * NOTE: These types are the *internal* building blocks for the public API that
+ * lives in `src/index.ts`. Consumers and plugin authors should import from
+ * `@stately/schema` rather than referencing this module directly. Keeping the
+ * internals in one place makes it easier to reason about how the Generated/Plugin
+ * views are assembled while still presenting a clean surface at the package root.
+ */
+
 /** Small utility aliases */
 export type EmptyRecord = Record<never, never>;
 export type AnyRecord = Record<string, unknown>;
@@ -30,7 +38,10 @@ export interface StatelyConfig<
 export type SchemaNodeMap = Record<string, BaseNode>;
 
 /**
- * Schema augment contributed by a plugin. Registers node shapes and optional extra fields.
+ * Schema augment contributed by a plugin. Each augment registers the canonical
+ * node map it provides plus any additional helper types it wants to merge into
+ * the final `Schemas` surface. Plugin authors only need to supply the node map;
+ * everything else will be wired into the `Plugin` view automatically.
  */
 export type SchemaAugment<
   Nodes = SchemaNodeMap,
@@ -73,10 +84,6 @@ type NormalizeNodes<N> = [StringKeys<N>] extends [never]
       [K in StringKeys<N>]: N[K] extends BaseNode ? N[K] : BaseNode;
     };
 
-type HasLiteralKeys<T> = [LiteralNodeKeys<T>] extends [never]
-  ? false
-  : true;
-
 type NodeValues<N> = [LiteralNodeKeys<N>] extends [never] ? BaseNode : N[LiteralNodeKeys<N>];
 
 type NodeTypeUnion<N> = NodeValues<N> extends { nodeType: infer T }
@@ -86,6 +93,9 @@ type NodeTypeUnion<N> = NodeValues<N> extends { nodeType: infer T }
 type CanonicalNodeMap<Augments extends readonly SchemaAugment<any, any>[]> =
   MergeAugmentNodes<Augments>;
 
+/**
+ * Derived view of the user-generated OpenAPI/codegen nodes.
+ */
 type GeneratedShape<Nodes> = {
   Nodes: Nodes;
   AnyNode: NodeValues<Nodes>;
@@ -93,6 +103,9 @@ type GeneratedShape<Nodes> = {
   NodeTypes: NodeTypeUnion<Nodes>;
 };
 
+/**
+ * Derived view of the canonical plugin nodes registered via augments.
+ */
 type PluginShape<PluginNodes> = {
   Nodes: PluginNodes;
   AnyNode: NodeValues<PluginNodes>;
@@ -116,18 +129,6 @@ export type StatelySchemas<
   Generated: GeneratedShape<BaseNodes>;
   /** Plugin schema view (canonical) */
   Plugin: PluginShape<PluginNodeMap>;
-  /** Generated schema node map (user-specific) */
-  Nodes: BaseNodes;
-  /** Canonical plugin node definitions */
-  PluginNodes: PluginNodeMap;
-  /** Convenience mirrors */
-  GeneratedNodes: GeneratedShape<BaseNodes>['Nodes'];
-  GeneratedAnyNode: GeneratedShape<BaseNodes>['AnyNode'];
-  GeneratedNodeNames: GeneratedShape<BaseNodes>['NodeNames'];
-  GeneratedNodeTypes: GeneratedShape<BaseNodes>['NodeTypes'];
-  PluginAnyNode: PluginShape<PluginNodeMap>['AnyNode'];
-  PluginNodeNames: PluginShape<PluginNodeMap>['NodeNames'];
-  PluginNodeTypes: PluginShape<PluginNodeMap>['NodeTypes'];
   /** Raw OpenAPI components */
   components: Config['components'];
   /** Convenience alias for component schemas */
@@ -136,33 +137,29 @@ export type StatelySchemas<
   paths: Config['paths'];
   /** Generated schema node map */
   nodes: BaseNodes;
-  /** Schema name union */
-  NodeNames: HasLiteralKeys<BaseNodes> extends true
-    ? LiteralNodeKeys<BaseNodes>
-    : [LiteralNodeKeys<MergeAugmentNodes<Augments>>] extends [never]
-        ? string
-        : LiteralNodeKeys<MergeAugmentNodes<Augments>>;
-  /** Union of every node type */
-  AnyNode: HasLiteralKeys<BaseNodes> extends true
-    ? NodeValues<BaseNodes>
-    : NodeValues<PluginNodeMap>;
-  /** Union of nodeType literals */
-  NodeTypes: HasLiteralKeys<BaseNodes> extends true
-    ? NodeTypeUnion<BaseNodes>
-    : NodeTypeUnion<PluginNodeMap>;
 } & MergeAugmentExtras<Augments>;
 
-export type SchemaAnyNode<Schema> = Schema extends { AnyNode: infer T }
+export type SchemaAnyNode<Schema> = Schema extends { Generated: { AnyNode: infer T } }
   ? [T] extends [never]
       ? BaseNode
       : T
   : BaseNode;
-export type SchemaNodeType<Schema> = Schema extends { NodeTypes: infer Types }
+export type SchemaNodeType<Schema> = Schema extends { Generated: { NodeTypes: infer Types } }
   ? [Types] extends [never]
       ? string
       : Extract<Types, string>
   : string;
-export type NodesOf<Schema extends { Nodes: unknown }> = Schema['Nodes'];
+export type SchemaGeneratedNodes<Schema> = Schema extends { Generated: { Nodes: infer N } }
+  ? N
+  : SchemaNodeMap;
+export type NodesOf<Schema> = SchemaGeneratedNodes<Schema>;
+export type SchemaGeneratedNodeNames<Schema> = Schema extends {
+  Generated: { NodeNames: infer Names };
+}
+  ? Names extends string
+      ? Names
+      : string
+  : string;
 export type SchemaPluginNodes<Schema> = Schema extends { Plugin: { Nodes: infer P } }
   ? P
   : SchemaNodeMap;

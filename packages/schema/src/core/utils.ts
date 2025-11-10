@@ -4,11 +4,16 @@
  * Helper utilities for working with Stately schemas
  */
 
-import type { Schemas } from '../index.js';
+import type { SchemaAnyNode, Schemas } from '../index.js';
 import type { CoreStatelyConfig } from './augment.js';
-import { CoreNodeType } from './nodes.js';
+import { CoreNodeType, type ObjectNodeRaw } from './nodes.js';
 
 type CoreNodeName = (typeof CoreNodeType)[keyof typeof CoreNodeType];
+type ObjectNodeSchema<Config extends CoreStatelyConfig> = ObjectNodeRaw<
+  Config['components']['schemas']['StateEntry'],
+  keyof Config['nodes'] & string
+>;
+type AnySchemaNode<Config extends CoreStatelyConfig> = SchemaAnyNode<Schemas<Config>>;
 
 /**
  * String utilities
@@ -51,7 +56,7 @@ export function isSingletonId(id: string): boolean {
  */
 
 export function isPrimitive<Config extends CoreStatelyConfig>(
-  schema: Schemas<Config>['AnyNode'],
+  schema: AnySchemaNode<Config>,
 ): boolean {
   return (
     schema.nodeType === CoreNodeType.Primitive ||
@@ -61,7 +66,7 @@ export function isPrimitive<Config extends CoreStatelyConfig>(
 }
 
 export function extractNodeType<Config extends CoreStatelyConfig>(
-  schema: Schemas<Config>['AnyNode'],
+  schema: AnySchemaNode<Config>,
 ): CoreNodeName {
   switch (schema.nodeType) {
     case CoreNodeType.Nullable:
@@ -98,7 +103,7 @@ function validateObjectBasic(obj: any, schema: any): boolean {
 
 export function isEntityValid<Config extends CoreStatelyConfig>(
   entity: Schemas<Config>['EntityData'] | null | undefined,
-  schema: Schemas<Config>['ObjectNode'] | undefined,
+  schema: ObjectNodeSchema<Config> | undefined,
 ): boolean {
   if (!entity || !schema) return false;
   if (typeof entity !== 'object') return false;
@@ -114,10 +119,10 @@ export function isEntityValid<Config extends CoreStatelyConfig>(
  */
 
 export function sortEntityProperties<Config extends CoreStatelyConfig>(
-  properties: Array<[string, Schemas<Config>['AnyNode']]>,
+  properties: Array<[string, AnySchemaNode<Config>]>,
   value: any,
   required: Set<string>,
-): Array<[string, Schemas<Config>['AnyNode']]> {
+): Array<[string, AnySchemaNode<Config>]> {
   return properties.sort(([nameA, nodeA], [nameB, nodeB]) => {
     const isRequiredA = required.has(nameA);
     const isRequiredB = required.has(nameB);
@@ -143,7 +148,7 @@ export function sortEntityProperties<Config extends CoreStatelyConfig>(
  */
 
 export function getDefaultValue<Config extends CoreStatelyConfig>(
-  node: Schemas<Config>['AnyNode'],
+  node: AnySchemaNode<Config>,
 ): any {
   switch (node.nodeType) {
     case CoreNodeType.Primitive:
@@ -175,7 +180,7 @@ export function getDefaultValue<Config extends CoreStatelyConfig>(
       const requiredFields = new Set((node as any).required || []);
       for (const [name, propNode] of Object.entries((node as any).properties)) {
         if (requiredFields.has(name)) {
-          obj[name] = getDefaultValue(propNode as Schemas<Config>['AnyNode']);
+          obj[name] = getDefaultValue(propNode as AnySchemaNode<Config>);
         }
       }
       return obj;
