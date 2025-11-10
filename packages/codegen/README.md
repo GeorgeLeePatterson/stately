@@ -14,20 +14,37 @@ pnpm add -D @stately/codegen
 
 ```bash
 # Generate schemas from OpenAPI spec
-npx stately-codegen ./openapi.json --output ./src/generated
+npx stately-codegen ./openapi.json ./src/generated-schemas.ts
 
-# Or via package.json script
-{
-  "scripts": {
-    "codegen": "stately-codegen ./openapi.json"
-  }
-}
+# With plugins
+npx stately-codegen ./openapi.json ./src/generated-schemas.ts ./stately.codegen.config.ts
 ```
 
-## What it Generates
+Example `stately.codegen.config.ts`:
 
-- **api.ts** - OpenAPI TypeScript types (via `openapi-typescript`)
-- **schemas.ts** - Parsed schema definitions for UI components
+```ts
+import type { CodegenPlugin } from '@stately/codegen';
+
+const relativePathPlugin: CodegenPlugin = {
+  name: 'relative-path',
+  match(schema) {
+    return schema?.format === 'relativePath';
+  },
+  transform(schema, ctx) {
+    const inner = ctx.parseSchema({ type: 'string' }, ctx.schemaName);
+    return inner
+      ? {
+          nodeType: 'relativePath',
+          inner,
+        }
+      : null;
+  },
+};
+
+export default [relativePathPlugin];
+```
+
+`@stately/codegen` always includes the core plugin, so custom plugins only need to handle additional node types. Plugins receive helpers to resolve `$ref`s and to recursively parse nested schemas.
 
 ## License
 
