@@ -6,31 +6,161 @@
  * Run: npx tsc --noEmit tests/type-enforcement.test.ts
  */
 
-import type { StatelySchemas } from '../src/index.js';
+import type { Schemas } from '../src/index.js';
+import type {
+  BaseNode,
+  NodesFromConfig,
+  SchemaAugmentNodes,
+  SchemaPluginAnyNode,
+  SchemaPluginNodeOfType,
+  SchemaPluginNodeType,
+  SchemaPluginNodes,
+  SchemaNodeOfType,
+} from '../src/schema.js';
+import type { CoreSchemaAugment, CoreStatelyConfig } from '../src/core/augment.js';
+import {
+  CoreNodeType,
+  PrimitiveType,
+  type ArrayNodeRaw,
+  type LinkNodeRaw,
+  type ObjectNodeRaw,
+  type PrimitiveNode,
+} from '../src/core/nodes.js';
+
+type AssertTrue<T extends true> = T;
+type ExpectNotAssignable<Needle, Haystack> = Needle extends Haystack ? false : true;
 
 // ============================================================================
 // Test 1: Valid Schema - Factory extracts and distributes correctly
 // ============================================================================
 
-interface ValidComponents {
+type EmptyPaths = Record<string, never>;
+
+type ValidComponentSchemas = {
   StateEntry: 'pipeline' | 'source_config' | 'sink_config';
   Entity:
     | { type: 'pipeline'; data: { name: string; steps: string[] } }
     | { type: 'source_config'; data: { name: string; driver: string } }
     | { type: 'sink_config'; data: { name: string; destination: string } };
   EntityId: string;
-}
+  Summary: Record<string, unknown>;
+};
 
-interface ValidNodes {
-  Pipeline: any;
-  SourceConfig: any;
-  SinkConfig: any;
-}
+type ValidEntityKinds = ValidComponentSchemas['StateEntry'];
+type ValidSchemaNames = 'Pipeline' | 'SourceConfig' | 'SinkConfig';
 
-type ValidSchemas = StatelySchemas<{
-  components: ValidComponents;
-  nodes: ValidNodes;
-}>;
+const primitiveStringNode: PrimitiveNode = {
+  nodeType: CoreNodeType.Primitive,
+  primitiveType: PrimitiveType.String,
+};
+
+const pipelineStepsNode: ArrayNodeRaw<ValidEntityKinds, ValidSchemaNames> = {
+  nodeType: CoreNodeType.Array,
+  items: primitiveStringNode,
+};
+
+const sourceInlineSchema: ObjectNodeRaw<ValidEntityKinds, ValidSchemaNames> = {
+  nodeType: CoreNodeType.Object,
+  properties: {
+    id: primitiveStringNode,
+    driver: primitiveStringNode,
+  },
+  required: ['id', 'driver'],
+};
+
+const pipelineOwnerLink: LinkNodeRaw<ValidEntityKinds, ValidSchemaNames> = {
+  nodeType: CoreNodeType.Link,
+  targetType: 'source_config',
+  inlineSchema: sourceInlineSchema,
+};
+
+const pipelineNode: ObjectNodeRaw<ValidEntityKinds, ValidSchemaNames> = {
+  nodeType: CoreNodeType.Object,
+  properties: {
+    id: primitiveStringNode,
+    name: primitiveStringNode,
+    steps: pipelineStepsNode,
+    owner: pipelineOwnerLink,
+  },
+  required: ['id', 'name'],
+};
+
+const sourceConfigNode: ObjectNodeRaw<ValidEntityKinds, ValidSchemaNames> = {
+  nodeType: CoreNodeType.Object,
+  properties: {
+    id: primitiveStringNode,
+    name: primitiveStringNode,
+    driver: primitiveStringNode,
+  },
+  required: ['id', 'name'],
+};
+
+const sinkConfigNode: ObjectNodeRaw<ValidEntityKinds, ValidSchemaNames> = {
+  nodeType: CoreNodeType.Object,
+  properties: {
+    id: primitiveStringNode,
+    name: primitiveStringNode,
+    destination: primitiveStringNode,
+  },
+  required: ['id', 'name'],
+};
+
+type ValidNodes = {
+  Pipeline: typeof pipelineNode;
+  SourceConfig: typeof sourceConfigNode;
+  SinkConfig: typeof sinkConfigNode;
+};
+
+type CoreAugmentNodeKeys = keyof CoreSchemaAugment<ValidConfig>['nodes'];
+const coreAugmentPrimitiveKey: CoreAugmentNodeKeys = CoreNodeType.Primitive;
+type CoreAugmentKeyGuard = AssertTrue<ExpectNotAssignable<'PrimitiveOnly', CoreAugmentNodeKeys>>;
+
+type ValidComponents = {
+  schemas: CoreStatelyConfig['components']['schemas'] & ValidComponentSchemas;
+};
+
+type ValidConfig = CoreStatelyConfig<ValidComponents, EmptyPaths, ValidNodes>;
+type ValidSchemas = Schemas<ValidConfig, []>;
+
+type ValidPluginNodes = SchemaPluginNodes<ValidSchemas>;
+type PluginPrimitiveNode = ValidPluginNodes['primitive'];
+const canonicalPrimitiveNode: PluginPrimitiveNode = primitiveStringNode;
+
+type ValidPluginAnyNode = SchemaPluginAnyNode<ValidSchemas>;
+const anyCanonicalNode: ValidPluginAnyNode = primitiveStringNode;
+
+type ValidPluginNodeType = SchemaPluginNodeType<ValidSchemas>;
+type CanonicalNodeTypeCheck = AssertTrue<ExpectNotAssignable<'foo', ValidPluginNodeType>>;
+
+type ValidObjectNode = SchemaNodeOfType<ValidSchemas, 'object'>;
+const objectNodeExample: ValidObjectNode = pipelineNode;
+
+type StrictNodes = {
+  PrimitiveOnly: PrimitiveNode;
+};
+
+type StrictConfig = CoreStatelyConfig<ValidComponents, EmptyPaths, StrictNodes>;
+
+type StrictSchemas = Schemas<StrictConfig, []>;
+
+type StrictPluginAnyNode = SchemaPluginAnyNode<StrictSchemas>;
+const strictCanonicalPrimitive: StrictPluginAnyNode = primitiveStringNode;
+
+type StrictPrimitiveNode = SchemaPluginNodeOfType<StrictSchemas, 'primitive'>;
+const strictPluginPrimitive: StrictPrimitiveNode = primitiveStringNode;
+
+
+type StrictConfigNodeKeys = keyof NodesFromConfig<StrictConfig>;
+const strictConfigNodeKey: StrictConfigNodeKeys = 'PrimitiveOnly';
+type StrictConfigInvalidKey = AssertTrue<ExpectNotAssignable<'nonexistent', StrictConfigNodeKeys>>;
+
+type StrictConfigNodes = StrictConfig['nodes'];
+const strictConfigNodesValue: StrictConfigNodes = {
+  PrimitiveOnly: { nodeType: CoreNodeType.Primitive, primitiveType: PrimitiveType.String },
+};
+type StrictConfigExtraKeyCheck = AssertTrue<
+  ExpectNotAssignable<'Extra', keyof StrictConfigNodes>
+>;
 
 // ✅ Should extract StateEntry correctly
 type TestStateEntry = ValidSchemas['StateEntry'];
@@ -50,7 +180,34 @@ type TestEntityId = ValidSchemas['EntityId'];
 
 // ✅ Should extract NodeNames correctly
 type TestSchemaNames = ValidSchemas['NodeNames'];
+const SchemaName: TestSchemaNames = 'Pipeline';
 // Expected: 'Pipeline' | 'SourceConfig' | 'SinkConfig'
+
+// ----
+// Ad-hoc tests
+type X = ValidSchemas['Plugin']['AnyNode'];
+const XX: X = primitiveStringNode;
+
+type XX = ValidSchemas['Plugin']['Nodes'][typeof CoreNodeType.Primitive];
+const XXX: XX = primitiveStringNode;
+
+type Y = ValidSchemas['Plugin']['NodeTypes'];
+const YY: Y = CoreNodeType.Primitive;
+// @ts-expect-error
+const YYY: Y = 'not-right';
+
+type Z = ValidSchemas['Plugin']['NodeNames'];
+const ZZ: Z = CoreNodeType.Primitive;
+// @ts-expect-error
+const ZZZ: Z = 'not-right';
+// ----
+
+type PluginNodeNames = ValidSchemas['Plugin']['NodeNames'];
+const pluginNodeName: PluginNodeNames = 'primitive';
+type InvalidPluginNodeNameCheck = AssertTrue<
+  ExpectNotAssignable<'not-correct', PluginNodeNames>
+>;
+
 
 // ✅ Should work in LinkNode with valid StateEntry value
 const validLink: ValidSchemas['LinkNode'] = {
@@ -84,51 +241,112 @@ const validRef: ValidSchemas['RecursiveRefNode'] = {
 // ============================================================================
 
 // ❌ Invalid StateEntry value in LinkNode
-const invalidLink: ValidSchemas['LinkNode'] = {
-  nodeType: 'link',
-  // @ts-expect-error - 'invalid_type' is not in StateEntry
-  targetType: 'invalid_type', // ❌ Error expected
-  inlineSchema: {
-    nodeType: 'object',
-    properties: {},
-    required: [],
-  },
-};
+type InvalidLinkTargetCheck = AssertTrue<
+  ExpectNotAssignable<'invalid_type', ValidSchemas['LinkNode']['targetType']>
+>;
 
 // ❌ Invalid schema name in RecursiveRefNode
-const invalidRef: ValidSchemas['RecursiveRefNode'] = {
-  nodeType: 'recursiveRef',
-  // @ts-expect-error - 'InvalidSchema' is not in NodeNames
-  refName: 'InvalidSchema', // ❌ Error expected
-};
+type InvalidRefNameCheck = AssertTrue<
+  ExpectNotAssignable<'InvalidSchema', ValidSchemas['RecursiveRefNode']['refName']>
+>;
 
 // ============================================================================
 // Test 3: Real-world usage pattern
 // ============================================================================
 
 // Simulate what user would do with openapi-typescript generated types
-interface SimulatedComponents {
+type SimulatedComponentSchemas = {
   StateEntry: 'user' | 'post' | 'comment';
   Entity:
     | { type: 'user'; data: { id: string; name: string } }
     | { type: 'post'; data: { id: string; title: string; author_id: string } }
     | { type: 'comment'; data: { id: string; text: string; post_id: string } };
   EntityId: string;
+  Summary: Record<string, unknown>;
   // ... other schemas ...
-}
+};
 
-interface SimulatedNodes {
-  User: any;
-  Post: any;
-  Comment: any;
-  UserProfile: any;
-  PostMetadata: any;
-}
+type SimulatedEntityKinds = SimulatedComponentSchemas['StateEntry'];
+type SimulatedSchemaNames = 'User' | 'Post' | 'Comment' | 'UserProfile' | 'PostMetadata';
 
-type MySchemas = StatelySchemas<{
-  components: SimulatedComponents;
-  nodes: SimulatedNodes;
-}>;
+const simulatedUserNode: ObjectNodeRaw<SimulatedEntityKinds, SimulatedSchemaNames> = {
+  nodeType: CoreNodeType.Object,
+  properties: {
+    id: primitiveStringNode,
+    name: primitiveStringNode,
+  },
+  required: ['id', 'name'],
+};
+
+const userProfileNode: ObjectNodeRaw<SimulatedEntityKinds, SimulatedSchemaNames> = {
+  nodeType: CoreNodeType.Object,
+  properties: {
+    id: primitiveStringNode,
+    bio: primitiveStringNode,
+  },
+  required: ['id'],
+};
+
+const postAuthorLink: LinkNodeRaw<SimulatedEntityKinds, SimulatedSchemaNames> = {
+  nodeType: CoreNodeType.Link,
+  targetType: 'user',
+  inlineSchema: simulatedUserNode,
+};
+
+const simulatedPostNode: ObjectNodeRaw<SimulatedEntityKinds, SimulatedSchemaNames> = {
+  nodeType: CoreNodeType.Object,
+  properties: {
+    id: primitiveStringNode,
+    title: primitiveStringNode,
+    author: postAuthorLink,
+  },
+  required: ['id', 'title', 'author'],
+};
+
+const simulatedTagsArray: ArrayNodeRaw<SimulatedEntityKinds, SimulatedSchemaNames> = {
+  nodeType: CoreNodeType.Array,
+  items: primitiveStringNode,
+};
+
+const postMetadataNode: ObjectNodeRaw<SimulatedEntityKinds, SimulatedSchemaNames> = {
+  nodeType: CoreNodeType.Object,
+  properties: {
+    id: primitiveStringNode,
+    tags: simulatedTagsArray,
+  },
+  required: ['id'],
+};
+
+const commentPostLink: LinkNodeRaw<SimulatedEntityKinds, SimulatedSchemaNames> = {
+  nodeType: CoreNodeType.Link,
+  targetType: 'post',
+  inlineSchema: simulatedPostNode,
+};
+
+const simulatedCommentNode: ObjectNodeRaw<SimulatedEntityKinds, SimulatedSchemaNames> = {
+  nodeType: CoreNodeType.Object,
+  properties: {
+    id: primitiveStringNode,
+    text: primitiveStringNode,
+    post: commentPostLink,
+  },
+  required: ['id', 'text', 'post'],
+};
+
+type SimulatedNodes = {
+  User: typeof simulatedUserNode;
+  Post: typeof simulatedPostNode;
+  Comment: typeof simulatedCommentNode;
+  UserProfile: typeof userProfileNode;
+  PostMetadata: typeof postMetadataNode;
+};
+
+type SimulatedComponents = {
+  schemas: CoreStatelyConfig['components']['schemas'] & SimulatedComponentSchemas;
+};
+
+type SimulatedConfig = CoreStatelyConfig<SimulatedComponents, EmptyPaths, SimulatedNodes>;
+type MySchemas = Schemas<SimulatedConfig, []>;
 
 // ✅ All extracted types are concrete and usable
 type MyStateEntry = MySchemas['StateEntry'];
@@ -194,26 +412,7 @@ type TestUntaggedEnumNode = MySchemas['UntaggedEnumNode'];
 type TestLinkNode = MySchemas['LinkNode'];
 type TestNullableNode = MySchemas['NullableNode'];
 type TestRecursiveRefNode = MySchemas['RecursiveRefNode'];
-type TestRelativePathNode = MySchemas['RelativePathNode'];
-type TestAnySchemaNode = MySchemas['AnySchemaNode'];
-
-// ✅ Can use AnySchemaNode in function signatures
-function processNode(node: MySchemas['AnySchemaNode']): void {
-  switch (node.nodeType) {
-    case 'primitive':
-      // node is PrimitiveNode
-      console.log(node.primitiveType);
-      break;
-    case 'link':
-      // node is LinkNode with concrete targetType
-      console.log(node.targetType); // Type: 'user' | 'post' | 'comment'
-      break;
-    case 'recursiveRef':
-      // node is RecursiveRefNode with concrete refName
-      console.log(node.refName); // Type: 'User' | 'Post' | 'Comment' | 'UserProfile' | 'PostMetadata'
-      break;
-  }
-}
+// (legacy nodes like RelativePathNode/AnySchemaNode removed during schema refactor)
 
 // ============================================================================
 // Test 5: Complex nested structures
@@ -251,6 +450,41 @@ const complexNode: MySchemas['ObjectNode'] = {
 };
 
 // ============================================================================
+// Test 6: Node union + discriminant enforcement (strict nodes)
+// ============================================================================
+
+type StrictAnyNode = StrictSchemas['AnyNode'];
+
+type StrictNodeKeys = keyof StrictSchemas['Nodes'];
+const strictBaseKey: StrictNodeKeys = 'PrimitiveOnly';
+type InvalidStrictKeyCheck = AssertTrue<ExpectNotAssignable<'nonexistent', StrictNodeKeys>>;
+
+type StrictRegistryKeys = keyof StrictSchemas['Plugin']['Nodes'];
+const strictCoreKey: StrictRegistryKeys = 'primitive';
+type InvalidRegistryKeyCheck = AssertTrue<
+  ExpectNotAssignable<'nonexistent', StrictRegistryKeys>
+>;
+
+const strictPrimitiveNode: StrictAnyNode = {
+  nodeType: 'primitive',
+  primitiveType: 'string',
+};
+
+const registryPrimitiveNode: StrictSchemas['Plugin']['Nodes']['primitive'] = {
+  nodeType: CoreNodeType.Primitive,
+  primitiveType: PrimitiveType.String,
+};
+
+type InvalidStrictNodeCheck = AssertTrue<
+  ExpectNotAssignable<'nonexistent', StrictSchemas['NodeTypes']>
+>;
+
+const strictNodeType: StrictSchemas['NodeTypes'] = 'primitive';
+type InvalidStrictNodeTypeCheck = AssertTrue<
+  ExpectNotAssignable<'nonexistent', StrictSchemas['NodeTypes']>
+>;
+
+// ============================================================================
 // Export test results
 // ============================================================================
 
@@ -285,8 +519,6 @@ export type TestResults = {
   linkNode: TestLinkNode;
   nullableNode: TestNullableNode;
   recursiveRefNode: TestRecursiveRefNode;
-  relativePathNode: TestRelativePathNode;
-  anySchemaNode: TestAnySchemaNode;
 };
 
 // If this file compiles with only the expected @ts-expect-error lines,

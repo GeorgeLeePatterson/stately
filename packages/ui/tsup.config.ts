@@ -3,11 +3,12 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
-    'components/base/index': 'src/components/base/index.ts',
-    'components/fields/index': 'src/components/fields/index.ts',
-    'components/views/index': 'src/components/views/index.ts',
-    'hooks/index': 'src/hooks/index.ts',
-    'context/index': 'src/context/index.ts',
+    'core/components/base/index': 'src/core/components/base/index.ts',
+    'core/components/fields/index': 'src/core/components/fields/index.ts',
+    'core/components/dialogs/index': 'src/core/components/dialogs/index.ts',
+    'core/components/views/index': 'src/core/components/views/index.ts',
+    'core/hooks/index': 'src/core/hooks/index.ts',
+    'core/context/index': 'src/core/context/index.ts',
   },
   format: ['esm'],
   dts: true,

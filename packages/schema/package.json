@@ -11,9 +11,13 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./helpers": {
-      "types": "./dist/helpers.d.ts",
-      "import": "./dist/helpers.js"
+    "./core/utils": {
+      "types": "./dist/core/utils.d.ts",
+      "import": "./dist/core/utils.js"
+    },
+    "./core/validation": {
+      "types": "./dist/core/validation.d.ts",
+      "import": "./dist/core/validation.js"
     }
   },
   "files": [

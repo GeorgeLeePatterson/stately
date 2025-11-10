@@ -100,3 +100,18 @@ This keeps us focused on **solving the extensibility problem** without getting b
 3. Create minimal base component
 4. Test the plugin pattern works
 5. Later: xeo4 can provide enhanced file features as an override
+
+
+
+---
+
+## 1. Runtime Buckets
+
+Each runtime object has two *kinds* of buckets:
+
+| Type     | Purpose                                                                 |
+|----------|-------------------------------------------------------------------------|
+| **data** | Immutable facts derived from OpenAPI / generation (maps, nodes, etc.)   |
+| **plugins** | Ordered list of plugin descriptors (core first, user last). Each plugin contributes `registry` entries and optional payload (`pluginExports`). |
+
+A plugin descriptor looks like:

@@ -1,12 +1,13 @@
-import type { StatelyConfig, StatelySchemas } from '@stately/schema';
-import type { EditFieldProps, ViewFieldProps } from './components/fields';
-import type { ComponentsEntry, KeyGrammar } from './plugin';
+import type { ComponentType } from 'react';
+import type { CoreSchemas } from '@/core';
+import type { EditFieldProps, ViewFieldProps } from '@/core/components/fields';
+import { makeRegistryKey } from './plugin.js';
 import type { ComponentRegistry } from './runtime';
 
-export function getComponent<Config extends StatelyConfig = StatelyConfig>(
+export function getComponent<Schema extends CoreSchemas = CoreSchemas>(
   registry: ComponentRegistry,
   key: string,
-): ComponentsEntry<Config>[KeyGrammar] | undefined {
+): ComponentType<any> | undefined {
   const comp = registry.get(key);
   if (!comp) {
     console.error(`Component not found for key: ${key}`);
@@ -15,52 +16,52 @@ export function getComponent<Config extends StatelyConfig = StatelyConfig>(
   return comp;
 }
 
-export function getComponentByPath<Config extends StatelyConfig = StatelyConfig>(
+export function getComponentByPath<Schema extends CoreSchemas = CoreSchemas>(
   registry: ComponentRegistry,
   node: string,
   path: string[],
-): ComponentsEntry<Config>[KeyGrammar] | undefined {
-  return getComponent<Config>(registry, [node, ...path].join(':'));
+): ComponentType<any> | undefined {
+  return getComponent<Schema>(registry, [node, ...path].join('::'));
 }
 
 export function getEditComponent<
-  Config extends StatelyConfig = StatelyConfig,
-  N extends StatelySchemas<Config>['AnySchemaNode'] = StatelySchemas<Config>['AnySchemaNode'],
+  Schema extends CoreSchemas = CoreSchemas,
+  N extends Schema['AnyNode'] = Schema['AnyNode'],
   V = unknown,
 >(
   registry: ComponentRegistry,
   node: string,
-): React.ComponentType<EditFieldProps<Config, N, V>> | undefined {
-  return getComponent<Config>(registry, `${node}:edit`) as React.ComponentType<
-    EditFieldProps<Config, N, V>
+): ComponentType<EditFieldProps<Schema, N, V>> | undefined {
+  return getComponent<Schema>(registry, makeRegistryKey(node, 'edit')) as ComponentType<
+    EditFieldProps<Schema, N, V>
   >;
 }
 
-export function getViewComponent<Config extends StatelyConfig = StatelyConfig>(
+export function getViewComponent<Schema extends CoreSchemas = CoreSchemas>(
   registry: ComponentRegistry,
   node: string,
-): React.ComponentType<ViewFieldProps<Config>> | undefined {
-  return getComponent<Config>(registry, `${node}:view`) as React.ComponentType<
-    ViewFieldProps<Config>
+): ComponentType<ViewFieldProps<Schema>> | undefined {
+  return getComponent<Schema>(registry, makeRegistryKey(node, 'view')) as ComponentType<
+    ViewFieldProps<Schema>
   >;
 }
 
-export function getEditTransformer<Config extends StatelyConfig = StatelyConfig>(
-  registry: ComponentRegistry,
-  node: string,
-  discriminator: string,
-): React.ComponentType<ViewFieldProps<Config>> | undefined {
-  return getComponent<Config>(registry, `${node}:edit:${discriminator}`) as React.ComponentType<
-    ViewFieldProps<Config>
-  >;
-}
-
-export function getViewTransformer<Config extends StatelyConfig = StatelyConfig>(
+export function getEditTransformer<Schema extends CoreSchemas = CoreSchemas>(
   registry: ComponentRegistry,
   node: string,
   discriminator: string,
-): ComponentsEntry<Config>[KeyGrammar] | undefined {
-  return getComponent<Config>(registry, `${node}:view:${discriminator}`) as React.ComponentType<
-    ViewFieldProps<Config>
+): ComponentType<ViewFieldProps<Schema>> | undefined {
+  return getComponent<Schema>(registry, makeRegistryKey(node, 'edit', discriminator)) as ComponentType<
+    ViewFieldProps<Schema>
+  >;
+}
+
+export function getViewTransformer<Schema extends CoreSchemas = CoreSchemas>(
+  registry: ComponentRegistry,
+  node: string,
+  discriminator: string,
+): ComponentType<ViewFieldProps<Schema>> | undefined {
+  return getComponent<Schema>(registry, makeRegistryKey(node, 'view', discriminator)) as ComponentType<
+    ViewFieldProps<Schema>
   >;
 }

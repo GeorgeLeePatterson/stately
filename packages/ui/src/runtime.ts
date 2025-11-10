@@ -1,186 +1,214 @@
 /**
- * @stately/ui - Core UI Integration
- *
- * Ergonomic factory function for creating React context + hooks
+ * @stately/ui - Core UI integration runtime
  */
 
-import type { Stately, StatelyConfig, StatelySchemas } from '@stately/schema';
+import type { Stately, StatelyConfig } from '@stately/schema';
 import { NodeType } from '@stately/schema';
-import type { AnyRecord, EmptyRecord } from '@stately/schema/helpers';
 import type { Client } from 'openapi-fetch';
-import * as editFields from '@/components/fields/edit';
-import * as viewFields from '@/components/fields/view';
-import * as linkFields from '@/components/views/link';
-import * as helpers from '@/lib/helpers';
-import type { StatelyApi, StatelyOperations } from '@/lib/operations';
+import type { ComponentType } from 'react';
+import * as editFields from '@/core/components/fields/edit';
+import * as viewFields from '@/core/components/fields/view';
+import * as linkFields from '@/core/components/views/link';
+import * as helpers from '@/core/lib/helpers';
+import type { AnyRecord, EmptyRecord } from '@/core/types';
+import type { CorePaths } from '@/core';
+import type { StatelyApi, StatelyOperations } from '@/core/lib/operations';
 import {
   buildOperationIndex,
   buildStatelyOperations,
   createStatelyApi,
   type OperationIndex,
-} from '@/lib/operations';
-import type { ComponentsEntry, ValidateUiPlugin } from './plugin.js';
+} from '@/core/lib/operations';
+import { makeRegistryKey } from './plugin.js';
 
-/**
- * Component registry - flat string key structure
- *
- * Keys follow the pattern: 'nodeType:edit' | 'nodeType:view' | 'nodeType:edit:discriminator'
- *
- * Examples:
- *   - 'primitive:edit' -> PrimitiveField component
- *   - 'primitive:view' -> PrimitiveFieldView component
- *   - 'primitive:edit:string' -> Prop transformer function for string primitives
- */
-export type ComponentRegistry = Map<string, any>;
+export type ComponentRegistry = Map<string, ComponentType<any>>;
+export type TransformerRegistry = Map<string, (value: any) => any>;
+export type FunctionRegistry = Map<string, (...args: any[]) => any>;
 
-export type StatelyRuntime<
-  TConfig extends StatelyConfig,
-  IExt extends AnyRecord,
-  UExt extends AnyRecord,
-> = {
-  integration: Stately<TConfig, IExt>;
-  client: Client<StatelySchemas<TConfig>['paths'] & {}>;
+export interface UiRegistry {
+  components: ComponentRegistry;
+  transformers: TransformerRegistry;
+  functions: FunctionRegistry;
+}
+
+export interface HttpBundle<TConfig extends StatelyConfig> {
   operationIndex: OperationIndex<TConfig>;
   operations: StatelyOperations<TConfig>;
   api: StatelyApi<TConfig>;
-  componentRegistry: ComponentRegistry;
-  helpers: typeof helpers;
-  extensions: UExt;
-};
-
-/**
- * This is the minimal shape your library components can always rely on.
- * It’s already concrete, using StatelyConfig/StatelySchemas<StatelyConfig>.
- */
-export type StatelyCoreRuntime = StatelyRuntime<StatelyConfig, AnyRecord, AnyRecord>;
-
-/**
- * Registry that consumers can augment.
- */
-export interface StatelyUi {
-  Core: StatelyCoreRuntime; // default
+  extensions: Record<string, unknown>;
 }
 
-/** The core type minimal runtime type */
+export interface StatelyUiPluginDescriptor<
+  TConfig extends StatelyConfig = StatelyConfig,
+  Exports extends AnyRecord = EmptyRecord,
+> {
+  name: string;
+  exports?: Exports;
+  api?: HttpBundle<TConfig>;
+}
+
+export interface StatelyRuntime<
+  TConfig extends StatelyConfig,
+  IExt extends AnyRecord,
+  PExt extends AnyRecord,
+> {
+  schema: Stately<TConfig, IExt>;
+  client: Client<CorePaths<TConfig> & {}>;
+  http: HttpBundle<TConfig>;
+  registry: UiRegistry;
+  helpers: typeof helpers & { getNodeTypeIcon: (node: NodeType) => ComponentType<any> };
+  exports: PExt;
+  plugins: {
+    core: StatelyUiPluginDescriptor<TConfig>;
+    installed: StatelyUiPluginDescriptor<TConfig>[];
+    all(): StatelyUiPluginDescriptor<TConfig>[];
+  };
+}
+
+export type StatelyCoreRuntime = StatelyRuntime<StatelyConfig, AnyRecord, AnyRecord>;
+
+export interface StatelyUi {
+  Core: StatelyCoreRuntime;
+}
+
 export type StatelyCore = StatelyUi['Core'];
+
+export type StatelyUiRuntime<
+  TConfig extends StatelyConfig,
+  IExt extends AnyRecord,
+  PExt extends AnyRecord,
+> = StatelyRuntime<TConfig, IExt, PExt>;
+
+export type StatelyUiPluginFactory<
+  TConfig extends StatelyConfig,
+  Runtime extends StatelyRuntime<TConfig, AnyRecord, AnyRecord>,
+  Exports extends AnyRecord = EmptyRecord,
+> = (runtime: Runtime) => StatelyUiPluginDescriptor<TConfig, Exports>;
 
 type Builder<
   TConfig extends StatelyConfig,
   IExt extends AnyRecord,
-  UExt extends AnyRecord,
-> = StatelyRuntime<TConfig, IExt, UExt> & {
-  withPlugin<C extends Partial<ComponentsEntry<TConfig>>, E extends AnyRecord = EmptyRecord>(
-    plugin: ValidateUiPlugin<TConfig, C, E>,
-  ): Builder<TConfig, IExt, UExt & E>;
+  PExt extends AnyRecord,
+> = StatelyRuntime<TConfig, IExt, PExt> & {
+  withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
+    plugin: StatelyUiPluginFactory<TConfig, StatelyRuntime<TConfig, IExt, PExt>, PluginExt>,
+  ): Builder<TConfig, IExt, PExt & PluginExt>;
 };
 
-/**
- * Create a StatelyUI integration with React context, provider, and hooks
- *
- * @param integration - The Stately schema integration
- * @param client - OpenAPI client for data fetching/mutations
- * @returns Object with StatelyUiProvider, useStatelyUi hook, and direct access to core objects
- *
- * @example
- * ```typescript
- * const core = createStatelyUi(integration, client).withPlugin(myPlugin);
- *
- * function App() {
- *   return (
- *     <StatelyUiProvider value={core}>
- *       <MyComponent />
- *     </StatelyUiProvider>
- *   );
- * }
- * ```
- */
 export function statelyUi<TConfig extends StatelyConfig, IExt extends AnyRecord = EmptyRecord>(
   integration: Stately<TConfig, IExt>,
-  client: Client<StatelySchemas<TConfig>['paths'] & {}>,
+  client: Client<CorePaths<TConfig> & {}>,
 ) {
-  const componentRegistry: ComponentRegistry = new Map();
+  const registry: UiRegistry = {
+    components: new Map(),
+    transformers: new Map(),
+    functions: new Map(),
+  };
 
-  // Pre-register base field components
-  componentRegistry.set(`${NodeType.Array}:edit`, editFields.ArrayEdit);
-  componentRegistry.set(`${NodeType.Array}:view`, viewFields.ArrayView);
+  registerCoreComponents(registry.components);
 
-  componentRegistry.set(`${NodeType.Enum}:edit`, editFields.EnumEdit);
-  componentRegistry.set(`${NodeType.Enum}:view`, viewFields.PrimitiveView);
+  const operationIndex = buildOperationIndex<TConfig>(integration.data.paths as CorePaths<TConfig>);
+  const operations = buildStatelyOperations<TConfig>(operationIndex);
+  const api = createStatelyApi<TConfig>(client, operations);
+  const http: HttpBundle<TConfig> = { operationIndex, operations, api, extensions: {} };
 
-  componentRegistry.set(`${NodeType.Map}:edit`, editFields.MapEdit);
-  componentRegistry.set(`${NodeType.Map}:view`, viewFields.MapView);
+  const corePlugin: StatelyUiPluginDescriptor<TConfig> = { name: 'stately:ui-core', api: http };
 
-  componentRegistry.set(`${NodeType.Nullable}:edit`, editFields.NullableEdit);
-  componentRegistry.set(`${NodeType.Nullable}:view`, viewFields.NullableView);
+  const installed: StatelyUiPluginDescriptor<TConfig>[] = [];
+  const pluginList = () => [...installed, corePlugin];
 
-  componentRegistry.set(`${NodeType.Object}:edit`, editFields.ObjectEdit);
-  componentRegistry.set(`${NodeType.Object}:view`, viewFields.ObjectView);
+  const baseState: StatelyRuntime<TConfig, IExt, EmptyRecord> = {
+    schema: integration,
+    client,
+    http,
+    registry,
+    helpers: helpers as typeof helpers & {
+      getNodeTypeIcon: (node: NodeType) => ComponentType<any>;
+    },
+    exports: {} as EmptyRecord,
+    plugins: { core: corePlugin, installed, all: pluginList },
+  };
 
-  componentRegistry.set(`${NodeType.Primitive}:edit`, editFields.PrimitiveEdit);
-  componentRegistry.set(`${NodeType.Primitive}:view`, viewFields.PrimitiveView);
-
-  componentRegistry.set(`${NodeType.RecursiveRef}:edit`, editFields.RecursiveRefEdit);
-  componentRegistry.set(`${NodeType.RecursiveRef}:view`, viewFields.RecursiveRefView);
-
-  componentRegistry.set(`${NodeType.Tuple}:edit`, editFields.TupleEdit);
-  componentRegistry.set(`${NodeType.Tuple}:view`, viewFields.TupleView);
-
-  componentRegistry.set(`${NodeType.TaggedUnion}:edit`, editFields.TaggedUnionEdit);
-  componentRegistry.set(`${NodeType.TaggedUnion}:view`, viewFields.TaggedUnionView);
-
-  componentRegistry.set(`${NodeType.UntaggedEnum}:edit`, editFields.UntaggedEnumEdit);
-  componentRegistry.set(`${NodeType.UntaggedEnum}:view`, viewFields.UntaggedEnumView);
-
-  componentRegistry.set(`${NodeType.Link}:edit`, linkFields.LinkEdit);
-  componentRegistry.set(`${NodeType.Link}:view`, linkFields.LinkView);
-
-  function makeBuilder<UExt extends AnyRecord>(
-    state: StatelyRuntime<TConfig, IExt, UExt>,
-  ): Builder<TConfig, IExt, UExt> {
+  function decorateHelpers<PExt extends AnyRecord>(
+    state: StatelyRuntime<TConfig, IExt, PExt>,
+  ): StatelyRuntime<TConfig, IExt, PExt> {
     return {
       ...state,
-      helpers: { ...state.helpers, getNodeTypeIcon: icon => helpers.getNodeTypeIcon(icon, state) },
-      withPlugin<C extends Partial<ComponentsEntry<TConfig>>, E extends AnyRecord = EmptyRecord>(
-        plugin: ValidateUiPlugin<TConfig, C, E>,
-      ): Builder<TConfig, IExt, UExt & E> {
-        // mutate the shared registry (intentional)
-        for (const [key, value] of Object.entries(plugin.components)) {
-          if (value) {
-            componentRegistry.set(key, value);
-          }
-        }
-
-        const next: StatelyRuntime<TConfig, IExt, UExt & E> = {
-          ...state,
-          extensions: { ...state.extensions, ...(plugin.extensions || {}) } as UExt & E,
-        };
-
-        // Recurse
-        return makeBuilder(next);
+      helpers: {
+        ...helpers,
+        getNodeTypeIcon: (icon: NodeType) => helpers.getNodeTypeIcon(icon, state),
       },
     };
   }
 
-  const operationIndex = buildOperationIndex<TConfig>(integration.paths);
-  const operations = buildStatelyOperations<TConfig>(operationIndex);
-  const api = createStatelyApi<TConfig>(client, operations);
+  function makeBuilder<PExt extends AnyRecord>(
+    state: StatelyRuntime<TConfig, IExt, PExt>,
+  ): Builder<TConfig, IExt, PExt> {
+    const current = decorateHelpers(state);
 
-  const initial: StatelyRuntime<TConfig, IExt, EmptyRecord> = {
-    integration,
-    client,
-    operationIndex,
-    operations,
-    api,
-    componentRegistry,
-    helpers,
-    extensions: {} as EmptyRecord,
-  };
+    return {
+      ...current,
+      withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
+        plugin: StatelyUiPluginFactory<TConfig, StatelyRuntime<TConfig, IExt, PExt>, PluginExt>,
+      ): Builder<TConfig, IExt, PExt & PluginExt> {
+        const descriptor = plugin(current);
+        if (!descriptor || !descriptor.name) {
+          throw new Error('UI plugin is invalid or is missing a name');
+        }
 
-  return makeBuilder(initial);
+        installed.push(descriptor as StatelyUiPluginDescriptor<TConfig>);
+
+        const nextState: StatelyRuntime<TConfig, IExt, PExt & PluginExt> = {
+          ...current,
+          exports: { ...current.exports, ...(descriptor.exports || ({} as PluginExt)) } as PExt &
+            PluginExt,
+        };
+
+        return makeBuilder(nextState);
+      },
+    };
+  }
+
+  return makeBuilder(baseState);
 }
 
 export type StatelyUiBuilder<
   TConfig extends StatelyConfig,
   IExt extends AnyRecord = EmptyRecord,
-  UExt extends AnyRecord = EmptyRecord,
-> = Builder<TConfig, IExt, UExt>;
+  PExt extends AnyRecord = EmptyRecord,
+> = Builder<TConfig, IExt, PExt>;
+
+function registerCoreComponents(registry: ComponentRegistry) {
+  registry.set(makeRegistryKey(NodeType.Array, 'edit'), editFields.ArrayEdit);
+  registry.set(makeRegistryKey(NodeType.Array, 'view'), viewFields.ArrayView);
+
+  registry.set(makeRegistryKey(NodeType.Enum, 'edit'), editFields.EnumEdit);
+  registry.set(makeRegistryKey(NodeType.Enum, 'view'), viewFields.PrimitiveView);
+
+  registry.set(makeRegistryKey(NodeType.Map, 'edit'), editFields.MapEdit);
+  registry.set(makeRegistryKey(NodeType.Map, 'view'), viewFields.MapView);
+
+  registry.set(makeRegistryKey(NodeType.Nullable, 'edit'), editFields.NullableEdit);
+  registry.set(makeRegistryKey(NodeType.Nullable, 'view'), viewFields.NullableView);
+
+  registry.set(makeRegistryKey(NodeType.Object, 'edit'), editFields.ObjectEdit);
+  registry.set(makeRegistryKey(NodeType.Object, 'view'), viewFields.ObjectView);
+
+  registry.set(makeRegistryKey(NodeType.Primitive, 'edit'), editFields.PrimitiveEdit);
+  registry.set(makeRegistryKey(NodeType.Primitive, 'view'), viewFields.PrimitiveView);
+
+  registry.set(makeRegistryKey(NodeType.RecursiveRef, 'edit'), editFields.RecursiveRefEdit);
+  registry.set(makeRegistryKey(NodeType.RecursiveRef, 'view'), viewFields.RecursiveRefView);
+
+  registry.set(makeRegistryKey(NodeType.Tuple, 'edit'), editFields.TupleEdit);
+  registry.set(makeRegistryKey(NodeType.Tuple, 'view'), viewFields.TupleView);
+
+  registry.set(makeRegistryKey(NodeType.TaggedUnion, 'edit'), editFields.TaggedUnionEdit);
+  registry.set(makeRegistryKey(NodeType.TaggedUnion, 'view'), viewFields.TaggedUnionView);
+
+  registry.set(makeRegistryKey(NodeType.UntaggedEnum, 'edit'), editFields.UntaggedEnumEdit);
+  registry.set(makeRegistryKey(NodeType.UntaggedEnum, 'view'), viewFields.UntaggedEnumView);
+
+  registry.set(makeRegistryKey(NodeType.Link, 'edit'), linkFields.LinkEdit);
+  registry.set(makeRegistryKey(NodeType.Link, 'view'), linkFields.LinkView);
+}

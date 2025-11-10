@@ -27,6 +27,7 @@ export { useFileView } from './hooks/use-file-view.js';
 
 export { filesCodegenPlugin } from './codegen.js';
 export { useFilesApi } from './lib/files-api.js';
-export { createFilesUiPlugin, filesUiPlugin } from './ui-plugin.js';
+export { createFilesPlugin, filesPlugin } from './plugin.js';
+export type { FilesPluginOptions } from './plugin.js';
 
 export const VERSION = '0.1.0';

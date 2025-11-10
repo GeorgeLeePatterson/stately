@@ -17,22 +17,17 @@ openapi = ["dep:utoipa"]
 axum = ["openapi", "dep:axum", "dep:tokio", "dep:tower-http"]
 
 [dependencies]
-hashbrown = { version = "0.16", features = [
-    "allocator-api2",
-    "default",
-    "inline-more",
-    "serde",
-] }
-serde = { version = "1", features = ["derive", "std", "rc"] }
-serde_json = "1"
-thiserror = "2"
-uuid = { version = "1", features = ["v7", "serde"] }
+hashbrown.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+uuid.workspace = true
 
 # Optional
-axum = { version = "0.8", optional = true }
+axum = { workspace = true, optional = true }
 tokio = { version = "1", features = ["sync"], optional = true }
 tower-http = { version = "0.6", features = ["compression-gzip"], optional = true }
-utoipa = { version = "5", features = ["macros", "uuid", "rc_schema"], optional = true }
+utoipa = { workspace = true, optional = true }
 
 stately-derive = { path = "../stately-derive", version = "0.3.0" }
 

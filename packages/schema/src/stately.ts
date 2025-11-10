@@ -1,262 +1,151 @@
-/**
- * @stately/schema - Core Stately Integration
- *
- * The main entry point for creating a Stately integration.
- * Refactored to support plugin system.
- */
-
-import type { AnyRecord, EmptyRecord } from './helpers.js';
-import * as helpers from './helpers.js';
-import type { StatelyConfig, StatelySchemas } from './index.js';
-import * as parsers from './parsers.js';
-import type { BaseSchemaNode, StatelySchemaPlugin, ValidatePlugin } from './plugin.js';
-import * as validation from './validation.js';
-
-export type { BaseSchemaNode, StatelySchemaPlugin } from './plugin.js';
-// Re-export types
-export type {
-  ValidationError,
-  ValidationOptions,
+import type { OpenAPIV3_1 } from 'openapi-types';
+import type { StatelyConfig } from './schema.js';
+import type {
+  SchemaPluginDescriptor,
+  SchemaPluginFactory,
+  SchemaValidateArgs,
+  SchemaValidateHook,
   ValidationResult,
-} from './validation.js';
+} from './plugin.js';
 
-/**
- * Core Stately runtime
- * - Config: the user's concrete config
- * - IExt: integration-time helpers injected at construction (fixed)
- * - SExt: schema-plugin extensions accumulated via .withPlugin (grows)
- */
+export type EmptyRecord = Record<never, never>;
+export type AnyRecord = Record<string, unknown>;
+
+export interface SchemaRegistry {
+  utils: Map<string, (...args: any[]) => unknown>;
+}
+
+export type SchemaData<Config extends StatelyConfig> = {
+  document: OpenAPIV3_1.Document;
+  components: Config['components'];
+  paths: Config['paths'];
+  nodes: Config['nodes'];
+} & Record<string, unknown>;
+
+// TODO: Docs
 export interface Stately<
   Config extends StatelyConfig,
-  IExt extends AnyRecord = EmptyRecord,
-  SExt extends AnyRecord = EmptyRecord,
+  Utils extends AnyRecord = EmptyRecord,
+  Exports extends AnyRecord = EmptyRecord,
 > {
-  // ===== Data (Raw Inputs) =====
-  /** OpenAPI component schemas */
-  schemas: StatelySchemas<Config>['components'];
-  /** OpenAPI paths */
-  paths: StatelySchemas<Config>['paths'];
-  /** Generated schema nodes (PARSED_SCHEMAS) */
-  nodes: StatelySchemas<Config>['nodes'];
-
-  /** Entity mappings from Entity oneOf */
-  entityMappings: Array<{ stateEntry: StatelySchemas<Config>['StateEntry']; schemaName: string }>;
-  /** StateEntry -> Schema name */
-  stateEntryToSchema: Record<StatelySchemas<Config>['StateEntry'], string>;
-  /** StateEntry -> Parsed ObjectNode */
-  entitySchemaCache: Record<
-    StatelySchemas<Config>['StateEntry'],
-    StatelySchemas<Config>['ObjectNode'] | null
-  >;
-  /** URL string -> StateEntry */
-  urlToStateEntry: Record<string, StatelySchemas<Config>['StateEntry']>;
-  /** StateEntry -> URL string */
-  stateEntryToUrl: Record<StatelySchemas<Config>['StateEntry'], string>;
-  /** StateEntry -> Display name */
-  entityDisplayNames: Record<StatelySchemas<Config>['StateEntry'], string>;
-
-  // ===== Helpers (Utility Functions) =====
-  helpers: {
-    /** Check if schema is a primitive type */
-    isPrimitive: (schema: StatelySchemas<Config>['AnySchemaNode']) => boolean;
-    /** Extract node type from schema */
-    extractNodeType: (
-      schema: StatelySchemas<Config>['AnySchemaNode'],
-    ) => StatelySchemas<Config>['AnySchemaNode']['nodeType'];
-    /** Validate entity data against schema */
-    isEntityValid: (
-      entity: StatelySchemas<Config>['EntityData'] | null | undefined,
-      schema: StatelySchemas<Config>['ObjectNode'] | undefined,
-    ) => boolean;
-    /** Sort entity properties for display */
-    sortEntityProperties: (
-      properties: Array<[string, StatelySchemas<Config>['AnySchemaNode']]>,
-      value: any,
-      required: Set<string>,
-    ) => Array<[string, StatelySchemas<Config>['AnySchemaNode']]>;
-    /** Convert snake_case to Title Case */
-    toTitleCase: (str: string) => string;
-    /** Convert snake_case to kebab-case */
-    toKebabCase: (str: string) => string;
-    /** Convert snake_case/kebab-case to space case */
-    toSpaceCase: (str: string) => string;
-    /** Generate human-readable label from field name */
-    generateFieldLabel: (fieldName: string) => string;
-    /** Check if ID is singleton (all zeros UUID) */
-    isSingletonId: (id: string) => boolean;
-    /** Get default value for schema node */
-    getDefaultValue: (node: StatelySchemas<Config>['AnySchemaNode']) => any;
-  } & IExt;
-
-  // ===== Schema plugin extensions (accumulated) =====
-  extensions: SExt;
-
-  // ===== Validate (Validation Functions) =====
-  validate: {
-    /** Validate data against schema */
-    schema: (
-      path: string,
-      data: any,
-      schema: StatelySchemas<Config>['AnySchemaNode'],
-      options?: validation.ValidationOptions,
-    ) => validation.ValidationResult;
-
-    /** Validate object against ObjectNode schema */
-    object: (
-      path: string,
-      data: Record<string, any>,
-      schema: StatelySchemas<Config>['ObjectNode'],
-      options?: validation.ValidationOptions,
-    ) => validation.ValidationResult;
-
-    /** Validate single object field */
-    field: (
-      path: string,
-      fieldName: string,
-      fieldValue: any,
-      fieldSchema: StatelySchemas<Config>['AnySchemaNode'],
-      isRequired: boolean,
-      options?: validation.ValidationOptions,
-    ) => validation.ValidationResult;
-
-    /** Create validation cache key */
-    cacheKey: (path: string, data: any) => string;
-    /** Clear validation cache */
-    clearCache: () => void;
+  data: SchemaData<Config>;
+  registry: SchemaRegistry;
+  utils: Utils;
+  exports: Exports;
+  plugins: {
+    installed: SchemaPluginDescriptor<Config>[];
+    all(): SchemaPluginDescriptor<Config>[];
   };
+  validate: (args: SchemaValidateArgs<Config>) => ValidationResult;
 }
 
-/**
- * Stately builder - supports plugin registration
- */
 export interface StatelyBuilder<
   Config extends StatelyConfig,
-  IExt extends AnyRecord,
-  SExt extends AnyRecord,
-> extends Stately<Config, IExt, SExt> {
-  /**
-   * Register a schema plugin
-   *
-   * Plugins declare node types (must extend BaseSchemaNode) and can add:
-   * - Validators for custom node types
-   * - Helper functions
-   * - Any schema-related functionality
-   *
-   * TypeScript will error if the plugin's node types aren't in your schemas.
-   */
-  withPlugin<Nodes extends Record<string, BaseSchemaNode>, E extends AnyRecord = EmptyRecord>(
-    plugin: ValidatePlugin<Config, StatelySchemaPlugin<Nodes, E>>,
-  ): StatelyBuilder<Config, IExt, SExt & E>;
+  Utils extends AnyRecord,
+  Exports extends AnyRecord,
+> extends Stately<Config, Utils, Exports> {
+  withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
+    plugin: SchemaPluginFactory<Config, Stately<Config, Utils, Exports>, PluginExt>,
+  ): StatelyBuilder<Config, Utils, Exports & PluginExt>;
 }
 
-/**
- * Create a Stately integration from OpenAPI spec and generated schemas
- *
- * @param openapi - OpenAPI document containing Entity schema
- * @param generatedSchemas - Generated schema nodes (OpenAPI generated nodes, `codegen`)
- * @param injectedHelpers - optional integration-time helpers (IExt)
- * @returns Stately builder with .withPlugin() support
- */
-export function stately<Config extends StatelyConfig, IExt extends AnyRecord = EmptyRecord>(
-  openapi: parsers.OpenAPIDocument,
-  generatedSchemas: Config['nodes'],
-  injectedHelpers?: IExt,
-): StatelyBuilder<Config, IExt, EmptyRecord> {
-  type Schemas = StatelySchemas<Config>;
-
-  // Parse entity mappings
-  const entityMappings = parsers.parseEntityMappings<Schemas>(openapi);
-  const stateEntryToSchema = parsers.buildStateEntryToSchema<Schemas>(entityMappings);
-  const entitySchemaCache = parsers.buildEntitySchemaCache<Schemas>(
-    entityMappings,
-    generatedSchemas,
-  );
-  const urlToStateEntry = parsers.buildUrlToStateEntry<Schemas>(entityMappings);
-  const stateEntryToUrl = parsers.buildStateEntryToUrl<Schemas>(entityMappings);
-  const entityDisplayNames = parsers.buildEntityDisplayNames<Schemas>(entityMappings);
-
-  // Concretize helper signatures to Schemas (wrap the generic helpers)
-  const concreteHelpers = {
-    isPrimitive: (schema: Schemas['AnySchemaNode']) => helpers.isPrimitive<Config>(schema),
-    extractNodeType: (schema: Schemas['AnySchemaNode']) => helpers.extractNodeType<Config>(schema),
-    isEntityValid: (
-      entity: Schemas['EntityData'] | null | undefined,
-      schema: Schemas['ObjectNode'] | undefined,
-    ) => helpers.isEntityValid<Config>(entity, schema),
-    sortEntityProperties: (
-      properties: Array<[string, Schemas['AnySchemaNode']]>,
-      value: any,
-      required: Set<string>,
-    ) => helpers.sortEntityProperties<Config>(properties, value, required),
-    toTitleCase: helpers.toTitleCase,
-    toKebabCase: helpers.toKebabCase,
-    toSpaceCase: helpers.toSpaceCase,
-    generateFieldLabel: helpers.generateFieldLabel,
-    isSingletonId: helpers.isSingletonId,
-    getDefaultValue: (node: Schemas['AnySchemaNode']) => helpers.getDefaultValue<Config>(node),
-    ...(injectedHelpers as IExt),
-  } as const;
-
-  // Base runtime
-  const base = {
-    schemas: openapi.components?.schemas as Schemas['components'],
-    paths: openapi.paths as Schemas['paths'],
-    nodes: generatedSchemas,
-    entityMappings,
-    stateEntryToSchema,
-    entitySchemaCache,
-    urlToStateEntry,
-    stateEntryToUrl,
-    entityDisplayNames,
-    helpers: concreteHelpers,
-    validate: {
-      schema: validation.validateSchema,
-      object: validation.validateObject,
-      field: validation.validateObjectField,
-      cacheKey: validation.createValidationCacheKey,
-      clearCache: validation.clearValidationCache,
-    },
+export function createStately<
+  Config extends StatelyConfig,
+  Utils extends AnyRecord = EmptyRecord,
+>(
+  openapi: OpenAPIV3_1.Document,
+  generatedNodes: Config['nodes'],
+  injectedUtils?: Utils,
+): StatelyBuilder<Config, Utils, EmptyRecord> {
+  const data: SchemaData<Config> = {
+    document: openapi,
+    components: (openapi.components || {}) as Config['components'],
+    paths: (openapi.paths || {}) as Config['paths'],
+    nodes: generatedNodes,
   };
 
-  // Builder factory ensures SExt widens correctly
-  function makeBuilder<SExt extends AnyRecord>(
-    state: Stately<Config, IExt, SExt>,
-  ): StatelyBuilder<Config, IExt, SExt> {
-    return {
+  const registry = createSchemaRegistry();
+  const baseUtils = (injectedUtils || ({} as Utils));
+  registerUtils(registry, baseUtils);
+
+  const installedPlugins: SchemaPluginDescriptor<Config>[] = [];
+  const listPlugins = () => [...installedPlugins];
+
+  const baseState: Stately<Config, Utils, EmptyRecord> = {
+    data,
+    registry,
+    utils: baseUtils,
+    exports: {} as EmptyRecord,
+    plugins: { installed: installedPlugins, all: listPlugins },
+    validate: undefined as unknown as (args: SchemaValidateArgs<Config>) => ValidationResult,
+  };
+
+  return makeBuilder(baseState);
+
+  function makeBuilder<Ext extends AnyRecord>(
+    state: Stately<Config, Utils, Ext>,
+  ): StatelyBuilder<Config, Utils, Ext> {
+    const current: Stately<Config, Utils, Ext> = {
       ...state,
+      validate: args => runValidationPipeline(state, args),
+    };
 
-      validate: {
-        ...state.validate,
-        schema: (path, data, schema, options) =>
-          validation.validateSchema<Config, IExt, SExt>(path, data, schema, options, state),
-        object: (path, data, schema, options) =>
-          validation.validateObject<Config, IExt, SExt>(path, data, schema, options, state),
-        field: (path, fieldName, fieldValue, fieldSchema, isRequired, options) =>
-          validation.validateObjectField<Config, IExt, SExt>(
-            path,
-            fieldName,
-            fieldValue,
-            fieldSchema,
-            isRequired,
-            options,
-            state,
-          ),
-      },
+    return {
+      ...current,
+      withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
+        plugin: SchemaPluginFactory<Config, Stately<Config, Utils, Ext>, PluginExt>,
+      ): StatelyBuilder<Config, Utils, Ext & PluginExt> {
+        const descriptor = plugin(current);
+        if (!descriptor || !descriptor.name) {
+          throw new Error('Schema plugin must return a descriptor with a name');
+        }
 
-      withPlugin<Nodes extends Record<string, BaseSchemaNode>, E extends AnyRecord = EmptyRecord>(
-        plugin: ValidatePlugin<Config, StatelySchemaPlugin<Nodes, E>>,
-      ): StatelyBuilder<Config, IExt, SExt & E> {
-        const next: Stately<Config, IExt, SExt & E> = {
-          ...state,
-          // helpers remain fixed (base + IExt)
-          extensions: { ...state.extensions, ...(plugin.extensions || {}) } as SExt & E,
+        installedPlugins.push(descriptor as SchemaPluginDescriptor<Config>);
+
+        const nextState: Stately<Config, Utils, Ext & PluginExt> = {
+          ...current,
+          exports: { ...current.exports, ...(descriptor.exports || ({} as PluginExt)) } as Ext &
+            PluginExt,
         };
-        return makeBuilder(next);
+
+        return makeBuilder(nextState);
       },
     };
   }
+}
 
-  const initial: Stately<Config, IExt, EmptyRecord> = { ...base, extensions: {} as EmptyRecord };
+function createSchemaRegistry(): SchemaRegistry {
+  return { utils: new Map() };
+}
 
-  return makeBuilder(initial);
+function registerUtils(registry: SchemaRegistry, utils: AnyRecord) {
+  Object.entries(utils).forEach(([key, value]) => {
+    if (typeof value === 'function') {
+      registry.utils.set(key, value as (...args: any[]) => unknown);
+    }
+  });
+}
+
+function runValidationPipeline<
+  Config extends StatelyConfig,
+  Utils extends AnyRecord,
+  Exports extends AnyRecord,
+>(state: Stately<Config, Utils, Exports>, args: SchemaValidateArgs<Config>): ValidationResult {
+  const hooks = state.plugins
+    .all()
+    .map(plugin => plugin.validate)
+    .filter((hook): hook is SchemaValidateHook<Config> => Boolean(hook));
+
+  if (hooks.length === 0) {
+    throw new Error('No schema validators registered. Apply at least one plugin before using validate().');
+  }
+
+  for (const hook of hooks) {
+    const result = hook({ ...args, runtime: state });
+    if (result) {
+      return result;
+    }
+  }
+
+  return { valid: true, errors: [] };
 }

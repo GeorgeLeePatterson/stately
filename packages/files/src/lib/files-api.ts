@@ -21,10 +21,9 @@ export interface FilesApiOptions {
 }
 
 export function useFilesApi(options?: FilesApiOptions) {
-  const { client, operationIndex, extensions } = useStatelyUi();
-  const pluginOperations = (extensions as any)?.files?.operationIds as
-    | Partial<FilesApiOperationIds>
-    | undefined;
+  const { client, http } = useStatelyUi();
+  const operationIndex = http.operationIndex;
+  const pluginOperations = (http.extensions?.files as { operationIds?: Partial<FilesApiOperationIds> } | undefined)?.operationIds;
 
   const operationIds = {
     ...DEFAULT_OPERATION_IDS,
@@ -74,7 +73,12 @@ export function useFilesApi(options?: FilesApiOptions) {
     },
     key: {
       list: (path?: string) => ['stately-files', listMeta?.operationId ?? 'list', path ?? 'data'],
-      versions: (path?: string) => ['stately-files', listMeta?.operationId ?? 'list', '__versions__', path ?? ''],
+      versions: (path?: string) => [
+        'stately-files',
+        listMeta?.operationId ?? 'list',
+        '__versions__',
+        path ?? '',
+      ],
     },
   };
 }

@@ -1,0 +1,26 @@
+[package]
+name = "stately-files"
+description = "File upload and relative path management for stately"
+keywords = ["configuration", "uploads", "openapi", "api", "files"]
+categories.workspace = true
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+
+[dependencies]
+shellexpand = "3"
+
+axum = { workspace = true, features = ["http2", "macros", "multipart"]  }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["full"] }
+uuid.workspace = true
+utoipa.workspace = true
+
+[lints]
+workspace = true

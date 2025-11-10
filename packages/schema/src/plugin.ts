@@ -1,36 +1,79 @@
+import type { StatelySchemas as BaseSchemas, SchemaNodeMap, StatelyConfig } from './schema.js';
+import type { Stately } from './stately.js';
+
 // schema/plugin.ts
 /**
  * @stately/schema - Plugin System
  *
- * Defines the plugin interface for extending Stately schemas
+ * Defines the plugin interfaces + helper types for extending Stately schemas.
  */
 
-import type { StatelyConfig, StatelySchemas } from './index.js';
+type AnyRecord = Record<string, unknown>;
+type EmptyRecord = Record<never, never>;
 
-/**
- * Base node interface that all node types must extend
- */
-export interface BaseSchemaNode {
-  nodeType: string;
-  description?: string;
+export interface ValidationError {
+  path: string;
+  message: string;
+  value?: any;
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  errors: ValidationError[];
+}
+
+export interface ValidationOptions {
+  depth?: number;
+  warnDepth?: number;
+  maxDepth?: number;
+  debug?: boolean;
+  onDepthWarning?: (path: string, depth: number) => void;
 }
 
 /**
- * Schema plugin interface
+ * Validation hook context passed to plugins.
  */
-export interface StatelySchemaPlugin<
-  Nodes extends Record<string, BaseSchemaNode>,
-  Extensions = Record<string, any>,
+export interface SchemaValidateArgs<Config extends StatelyConfig = StatelyConfig> {
+  path: string;
+  data: any;
+  schema: BaseSchemas<Config, SchemaNodeMap, any>['AnyNode'];
+  options?: ValidationOptions;
+  runtime: Stately<Config, AnyRecord, AnyRecord>;
+}
+
+/**
+ * Validation hook signature used by schema plugins.
+ */
+export type SchemaValidateHook<Config extends StatelyConfig = StatelyConfig> = (
+  args: SchemaValidateArgs<Config>,
+) => ValidationResult | undefined;
+
+/**
+ * Schema plugin descriptor returned by plugin factory functions.
+ */
+export interface SchemaPluginDescriptor<
+  Config extends StatelyConfig = StatelyConfig,
+  Exports extends AnyRecord = EmptyRecord,
 > {
-  nodes: Nodes;
-  extensions: Extensions;
+  name: string;
+  exports?: Exports;
+  api?: Record<string, unknown>;
+  validate?: SchemaValidateHook<Config>;
 }
 
 /**
- * Type helper: Verify plugin node types exist in schemas
- * Ties the check to the caller's Config (not a generic Schemas).
+ * Backwards-compatible alias for schema plugin descriptors.
  */
-export type ValidatePlugin<
+export type StatelySchemaPlugin<
+  Config extends StatelyConfig = StatelyConfig,
+  Exports extends AnyRecord = EmptyRecord,
+> = SchemaPluginDescriptor<Config, Exports>;
+
+/**
+ * Runtime plugin factory signature.
+ */
+export type SchemaPluginFactory<
   Config extends StatelyConfig,
-  Plugin extends StatelySchemaPlugin<any, any>,
-> = keyof Plugin['nodes'] extends keyof StatelySchemas<Config>['nodes'] ? Plugin : never;
+  Runtime extends Stately<Config, AnyRecord, AnyRecord> = Stately<Config, AnyRecord, AnyRecord>,
+  Exports extends AnyRecord = EmptyRecord,
+> = (runtime: Runtime) => SchemaPluginDescriptor<Config, Exports>;

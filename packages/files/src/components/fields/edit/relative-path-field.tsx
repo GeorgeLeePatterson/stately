@@ -1,4 +1,4 @@
-import { Editor } from '@stately/ui';
+import { Editor } from '@stately/ui/core/views';
 import { ExternalLink, FilePlus2, FileSearch2, FileText } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';

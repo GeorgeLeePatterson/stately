@@ -1,86 +1,35 @@
 /**
- * @stately/ui - Plugin System
- *
- * Defines the plugin interface for extending Stately UI
+ * @stately/ui - Registry grammar helpers
  */
 
 import type { NodeType, StatelyConfig } from '@stately/schema';
-import type { AnyRecord, EmptyRecord } from '@stately/schema/helpers';
-import type { EditFieldProps, ViewFieldProps } from './components/fields/types';
+import type { ComponentType } from 'react';
+import type { EditFieldProps, ViewFieldProps } from './core/components/fields/types';
 
 export type CoreNode = `${(typeof NodeType)[keyof typeof NodeType]}`;
-
-// Build the base "nodeType" union from your const
-export type Mode = 'edit' | 'view';
-
-// `${node}:${mode}` OR `${node}:edit:${discriminator}`
-export type KeyGrammar =
-  | `${string}:${Mode}`
-  | `${string}:edit:${string}`
-  | `${string}:view:${string}`;
-
-// Helper type for core registry keys
+export type RegistryMode = 'edit' | 'view';
+export type RegistryKey = `${string}::${RegistryMode}` | `${string}::${RegistryMode}::${string}`;
 export type CoreRegistryKey =
-  | `${CoreNode}:${Mode}`
-  | `${CoreNode}:edit:${string}`
-  | `${CoreNode}:view:${string}`;
+  | `${CoreNode}::${RegistryMode}`
+  | `${CoreNode}::${RegistryMode}::${string}`;
 
-/**
- * Component registry entry
- * Maps a nodeType to its edit and view components
- */
-export type NodeTypeComponents<C extends StatelyConfig = StatelyConfig> =
-  | React.ComponentType<EditFieldProps<C>>
-  | React.ComponentType<ViewFieldProps<C>>;
+export type NodeTypeComponent<C extends StatelyConfig = StatelyConfig> =
+  | ComponentType<EditFieldProps<C>>
+  | ComponentType<ViewFieldProps<C>>;
 
-export type ComponentsEntry<C extends StatelyConfig = StatelyConfig> = Record<
-  KeyGrammar,
-  NodeTypeComponents<C>
->;
-
-/**
- * UI plugin interface
- *
- * Plugins register UI components for their node types and can add:
- * - Field components (edit/view)
- * - Custom hooks
- * - Additional UI functionality
- */
-export interface StatelyUiPlugin<
-  TConfig extends StatelyConfig,
-  Components extends Partial<ComponentsEntry<TConfig>> = EmptyRecord,
-  Extensions extends AnyRecord = EmptyRecord,
-> {
-  /**
-   * Component registry: nodeType -> { edit, view }
-   */
-  components: Components;
-  /**
-   * Additional functionality provided by this plugin
-   * (hooks, utilities, etc.)
-   */
-  extensions: Extensions;
+export function makeRegistryKey(
+  node: string,
+  mode: RegistryMode,
+  discriminator?: string,
+): RegistryKey {
+  return discriminator ? `${node}::${mode}::${discriminator}` : `${node}::${mode}`;
 }
 
-// Utility to test if K is assignable to RegistryKey (distributively)
-export type KeysConformToGrammar<K> = [K] extends [never]
-  ? true
-  : K extends string
-    ? K extends KeyGrammar
-      ? true
-      : false
-    : false;
-
-/**
- * Type helper: Verify plugin components match node types in integration
- * Returns never if validation fails, causing a TypeScript error
- */
-export type ValidateUiPlugin<
-  TConfig extends StatelyConfig,
-  Components extends Partial<ComponentsEntry<TConfig>> = EmptyRecord,
-  Extensions extends AnyRecord = EmptyRecord,
-> = KeysConformToGrammar<
-  keyof StatelyUiPlugin<TConfig, Components, Extensions>['components']
-> extends true
-  ? StatelyUiPlugin<TConfig, Components, Extensions>
-  : never;
+export function splitRegistryKey(key: RegistryKey): {
+  node: string;
+  mode: RegistryMode;
+  discriminator?: string;
+} {
+  const [node, mode, discriminator] = key.split('::');
+  return { node, mode: mode as RegistryMode, discriminator };
+}

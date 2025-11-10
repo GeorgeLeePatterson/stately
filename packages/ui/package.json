@@ -7,21 +7,33 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./base": {
-      "types": "./dist/components/base/index.d.ts",
-      "import": "./dist/components/base/index.js"
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
     },
-    "./fields": {
-      "types": "./dist/components/fields/index.d.ts",
-      "import": "./dist/components/fields/index.js"
+    "./core/base": {
+      "types": "./dist/core/components/base/index.d.ts",
+      "import": "./dist/core/components/base/index.js"
     },
-    "./hooks": {
-      "types": "./dist/hooks/index.d.ts",
-      "import": "./dist/hooks/index.js"
+    "./core/fields": {
+      "types": "./dist/core/components/fields/index.d.ts",
+      "import": "./dist/core/components/fields/index.js"
     },
-    "./context": {
-      "types": "./dist/context/index.d.ts",
-      "import": "./dist/context/index.js"
+    "./core/dialogs": {
+      "types": "./dist/core/components/dialogs/index.d.ts",
+      "import": "./dist/core/components/dialogs/index.js"
+    },
+    "./core/views": {
+      "types": "./dist/core/components/views/index.d.ts",
+      "import": "./dist/core/components/views/index.js"
+    },
+    "./core/hooks": {
+      "types": "./dist/core/hooks/index.d.ts",
+      "import": "./dist/core/hooks/index.js"
+    },
+    "./core/context": {
+      "types": "./dist/core/context/index.d.ts",
+      "import": "./dist/core/context/index.js"
     }
   },
   "files": [

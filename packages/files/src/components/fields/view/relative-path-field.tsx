@@ -1,6 +1,4 @@
-// import { Explain } from '@/components/base/explain';
-// import { NotSet } from '@/components/base/not-set';
-import { Explain, NotSet } from '@stately/ui/base';
+import { Explain, NotSet } from '@stately/ui/core/components/base';
 import { Database, ExternalLink, FolderOpen, HardDrive, HardDriveUpload } from 'lucide-react';
 import { FileBrowserDialog } from '@/components/dialogs/file-browser-dialog';
 import { RELATIVE_PATH_MODES } from '../edit/relative-path-field';
