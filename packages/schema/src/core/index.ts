@@ -6,11 +6,10 @@
  * node helpers that plugin authors might want to reuse. Import everything from
  * here instead of reaching directly into ./augment or ./plugin.
  */
-import { PrimitiveType } from './nodes.js';
 import { createCorePlugin } from './plugin.js';
 
 export type { CoreSchemaAugment, CoreStatelyConfig } from './augment.js';
-export { createCorePlugin, PrimitiveType };
+export { createCorePlugin };
 export type {
   ArrayNodeRaw,
   EnumNode,

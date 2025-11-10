@@ -11,6 +11,30 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.js"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "import": "./dist/schema.js"
+    },
+    "./stately": {
+      "types": "./dist/stately.d.ts",
+      "import": "./dist/stately.js"
+    },
+    "./core/augment": {
+      "types": "./dist/core/augment.d.ts",
+      "import": "./dist/core/augment.js"
+    },
+    "./core/nodes": {
+      "types": "./dist/core/nodes.d.ts",
+      "import": "./dist/core/nodes.js"
+    },
+    "./core/plugin": {
+      "types": "./dist/core/plugin.d.ts",
+      "import": "./dist/core/plugin.js"
+    },
     "./core/utils": {
       "types": "./dist/core/utils.d.ts",
       "import": "./dist/core/utils.js"
