@@ -43,7 +43,6 @@ export interface SchemaValidateArgs<Config extends StatelyConfig = StatelyConfig
   data: any;
   schema: SchemaAnyNode<BaseSchemas<Config, SchemaNodeMap, any>>;
   options?: ValidationOptions;
-  runtime: Stately<Config, AnyRecord, AnyRecord>;
 }
 
 /**

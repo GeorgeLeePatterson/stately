@@ -17,8 +17,10 @@
  * CORE SCHEMA INTERFACE - Type-Level Factory
  * =============================================================================
  *
- * StatelySchemas is a TYPE-LEVEL FACTORY that takes RAW inputs and returns
- * a namespace of CONCRETE types. It acts as a DISTRIBUTOR:
+ * StatelySchemas is a TYPE-LEVEL FACTORY that takes RAW inputs and returns a namespace of CONCRETE
+ * types.
+ *
+ * It acts as a DISTRIBUTOR:
  * 1. Takes raw components['schemas'] and PARSED_SCHEMAS
  * 2. Extracts what it needs (StateEntry, Entity, etc.)
  * 3. Distributes those to internal node types
@@ -59,11 +61,13 @@ import type {
 import type { AnyRecord, EmptyRecord } from './stately.js';
 import { createStately } from './stately.js';
 
+/* Internal type for ensuring proper augmentation order */
 type AugmentChain<
   Config extends CoreStatelyConfig,
   Extras extends readonly SchemaAugment<any, any>[],
 > = readonly [CoreSchemaAugment<Config>, ...Extras];
 
+/* Internal type for maintaining type fidelity across plugin instantiations  */
 type PluginNodeMap<
   Config extends CoreStatelyConfig,
   Extras extends readonly SchemaAugment<any, any>[],
@@ -72,7 +76,6 @@ type PluginNodeMap<
 /**
  * Stately plugin types integration - Main API
  */
-
 export type Schemas<
   Config extends CoreStatelyConfig = CoreStatelyConfig,
   Augments extends readonly SchemaAugment<any, any>[] = [],
@@ -85,8 +88,11 @@ export type Schemas<
 
 /**
  * Stately plugin functionality integration - Main API
+ *
+ * This function is the way to generate the object needed for working with stately across a UI.
+ * This particular implementation automatically seeds the core schema plugin and can be used to
+ * augment additional plugins if needed.
  */
-
 export function stately<Config extends CoreStatelyConfig, Utils extends AnyRecord = EmptyRecord>(
   openapi: OpenAPIV3_1.Document,
   generatedNodes: Config['nodes'],
@@ -97,6 +103,10 @@ export function stately<Config extends CoreStatelyConfig, Utils extends AnyRecor
   );
 }
 
+
+/**
+ * Various helper types and low-level tools. Prefer the main APIs where possible.
+ */
 export { createStately };
 export type {
   SchemaAugment,

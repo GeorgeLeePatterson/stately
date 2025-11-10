@@ -1,3 +1,13 @@
+/**
+ * Stately runtime
+ *
+ * Lightweight builder that wires OpenAPI-derived schema data into a runtime
+ * instance, applies plugins, and exposes helper utilities. The runtime keeps a
+ * snapshot of the user-generated OpenAPI document (`data`) plus a registry of
+ * helper utilities contributed by plugins. Schema plugins can mutate `runtime.data`,
+ * append helpers via `runtime.utils`, and register validation hooks.
+ */
+
 import type { OpenAPIV3_1 } from 'openapi-types';
 import type { StatelyConfig } from './schema.js';
 import type {
@@ -15,6 +25,10 @@ export interface SchemaRegistry {
   utils: Map<string, (...args: any[]) => unknown>;
 }
 
+/**
+ * Snapshot of the user-generated OpenAPI artifacts. This mirrors the "Generated"
+ * view in StatelySchemas.
+ */
 export type SchemaData<Config extends StatelyConfig> = {
   document: OpenAPIV3_1.Document;
   components: Config['components'];
@@ -22,7 +36,6 @@ export type SchemaData<Config extends StatelyConfig> = {
   nodes: Config['nodes'];
 } & Record<string, unknown>;
 
-// TODO: Docs
 export interface Stately<
   Config extends StatelyConfig,
   Utils extends AnyRecord = EmptyRecord,
@@ -68,7 +81,7 @@ export function createStately<
   const baseUtils = (injectedUtils || ({} as Utils));
   registerUtils(registry, baseUtils);
 
-  const installedPlugins: SchemaPluginDescriptor<Config>[] = [];
+  const installedPlugins: SchemaPluginDescriptor<Config, AnyRecord>[] = [];
   const listPlugins = () => [...installedPlugins];
 
   const baseState: Stately<Config, Utils, EmptyRecord> = {
@@ -100,7 +113,7 @@ export function createStately<
           throw new Error('Schema plugin must return a descriptor with a name');
         }
 
-        installedPlugins.push(descriptor as SchemaPluginDescriptor<Config>);
+        installedPlugins.push(descriptor as SchemaPluginDescriptor<Config, AnyRecord>);
 
         const nextState: Stately<Config, Utils, Ext & PluginExt> = {
           ...current,
@@ -121,6 +134,11 @@ function createSchemaRegistry(): SchemaRegistry {
 function registerUtils(registry: SchemaRegistry, utils: AnyRecord) {
   Object.entries(utils).forEach(([key, value]) => {
     if (typeof value === 'function') {
+      /**
+       * Helpers live both on runtime.utils (direct access) and registry.utils
+       * (string-based lookup). We intentionally keep both to support dynamic
+       * resolver patterns elsewhere in the system.
+       */
       registry.utils.set(key, value as (...args: any[]) => unknown);
     }
   });
@@ -141,7 +159,7 @@ function runValidationPipeline<
   }
 
   for (const hook of hooks) {
-    const result = hook({ ...args, runtime: state });
+    const result = hook(args);
     if (result) {
       return result;
     }

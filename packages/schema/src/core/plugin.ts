@@ -37,16 +37,11 @@ export function createCorePlugin<
       toSpaceCase: utils.toSpaceCase,
       generateFieldLabel: utils.generateFieldLabel,
       isSingletonId: utils.isSingletonId,
-      isPrimitive: (schema: unknown) => utils.isPrimitive<Config>(schema as any),
-      extractNodeType: (schema: unknown) => utils.extractNodeType<Config>(schema as any),
-      isEntityValid: (entity: unknown, schema: unknown) =>
-        utils.isEntityValid<Config>(entity as any, schema as any),
-      sortEntityProperties: (
-        properties: Array<[string, unknown]>,
-        value: any,
-        required: Set<string>,
-      ) => utils.sortEntityProperties<Config>(properties as any, value, required),
-      getDefaultValue: (node: unknown) => utils.getDefaultValue<Config>(node as any),
+      isPrimitive: utils.isPrimitive<Config>,
+      extractNodeType: utils.extractNodeType<Config>,
+      isEntityValid: utils.isEntityValid<Config>,
+      sortEntityProperties: utils.sortEntityProperties<Config>,
+      getDefaultValue: utils.getDefaultValue<Config>,
     } as AnyRecord;
 
     runtime.utils = { ...(runtime.utils as AnyRecord), ...helperBundle } as typeof runtime.utils;
