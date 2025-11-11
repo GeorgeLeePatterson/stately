@@ -1,10 +1,6 @@
-import type {
-  StatelySchemas as BaseSchemas,
-  SchemaAnyNode,
-  SchemaNodeMap,
-  StatelyConfig,
-} from './schema.js';
+import type { StatelyConfig } from './schema.js';
 import type { Stately } from './stately.js';
+import { SchemaValidateHook } from './validation.js';
 
 // schema/plugin.ts
 /**
@@ -16,44 +12,8 @@ import type { Stately } from './stately.js';
 type AnyRecord = Record<string, unknown>;
 type EmptyRecord = Record<never, never>;
 
-export interface ValidationError {
-  path: string;
-  message: string;
-  value?: any;
-}
-
-export interface ValidationResult {
-  valid: boolean;
-  errors: ValidationError[];
-}
-
-export interface ValidationOptions {
-  depth?: number;
-  warnDepth?: number;
-  maxDepth?: number;
-  debug?: boolean;
-  onDepthWarning?: (path: string, depth: number) => void;
-}
-
 /**
- * Validation hook context passed to plugins.
- */
-export interface SchemaValidateArgs<Config extends StatelyConfig = StatelyConfig> {
-  path: string;
-  data: any;
-  schema: SchemaAnyNode<BaseSchemas<Config, SchemaNodeMap, any>>;
-  options?: ValidationOptions;
-}
-
-/**
- * Validation hook signature used by schema plugins.
- */
-export type SchemaValidateHook<Config extends StatelyConfig = StatelyConfig> = (
-  args: SchemaValidateArgs<Config>,
-) => ValidationResult | undefined;
-
-/**
- * Schema plugin descriptor returned by plugin factory functions.
+ * Schema plugin descriptor installed by plugin factory functions.
  */
 export interface SchemaPluginDescriptor<
   Config extends StatelyConfig = StatelyConfig,
@@ -66,18 +26,11 @@ export interface SchemaPluginDescriptor<
 }
 
 /**
- * Backwards-compatible alias for schema plugin descriptors.
- */
-export type StatelySchemaPlugin<
-  Config extends StatelyConfig = StatelyConfig,
-  Exports extends AnyRecord = EmptyRecord,
-> = SchemaPluginDescriptor<Config, Exports>;
-
-/**
  * Runtime plugin factory signature.
  */
 export type SchemaPluginFactory<
   Config extends StatelyConfig,
-  Runtime extends Stately<Config, AnyRecord, AnyRecord> = Stately<Config, AnyRecord, AnyRecord>,
-  Exports extends AnyRecord = EmptyRecord,
-> = (runtime: Runtime) => SchemaPluginDescriptor<Config, Exports>;
+  Utils extends AnyRecord = AnyRecord,
+  Exports extends AnyRecord = AnyRecord,
+  PluginExt extends AnyRecord = EmptyRecord,
+> = (runtime: Stately<Config, Utils, Exports>) => Stately<Config, Utils, Exports & PluginExt>;

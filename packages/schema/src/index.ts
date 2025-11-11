@@ -104,7 +104,7 @@ export function stately<Config extends CoreStatelyConfig, Utils extends AnyRecor
   injectedUtils?: Utils,
 ) {
   return createStately<Config, Utils>(openapi, generatedNodes, injectedUtils).withPlugin(
-    createCorePlugin<Config>(),
+    createCorePlugin<Config, Utils, EmptyRecord>(),
   );
 }
 

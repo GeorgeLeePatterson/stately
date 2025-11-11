@@ -5,7 +5,7 @@
  */
 
 import type { SchemaAnyNode, Schemas } from '../index.js';
-import type { ValidationError, ValidationOptions, ValidationResult } from '../plugin.js';
+import type { ValidationError, ValidationOptions, ValidationResult } from '../validation.js';
 import type { AnyRecord, EmptyRecord, Stately } from '../stately.js';
 import type { CoreStatelyConfig } from './augment.js';
 import { CoreNodeType, type ObjectNodeRaw } from './nodes.js';
