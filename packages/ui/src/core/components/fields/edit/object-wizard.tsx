@@ -1,4 +1,4 @@
-import { NodeType } from '@stately/schema';
+import { CoreNodeType } from '@stately/schema/core/nodes';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Fragment, useCallback, useState } from 'react';
 import { useStatelyUi } from '@/context';
@@ -66,15 +66,14 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
   const isLastStep = currentStep === fields.length - 1;
   const progress = ((currentStep + 1) / fields.length) * 100;
 
-  const isNullableNode = propNode.nodeType === NodeType.Nullable;
+  const isNullableNode = propNode.nodeType === CoreNodeType.Nullable;
   const isNullable = !isRequired || isNullableNode;
 
   // Check if current field is valid (for required fields)
   const fieldValidationResult = schema.validate({
     path: `${label ? label : ''}[ObjectNode][property]`,
-    data: fieldValue,
+    ValidateArgs: fieldValue,
     schema: propNode,
-    runtime: schema as any,
   });
   const isCurrentFieldValid = isNullable || fieldValidationResult.valid;
 

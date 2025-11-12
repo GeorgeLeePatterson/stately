@@ -1,4 +1,4 @@
-import { NodeType } from '@stately/schema';
+import { CoreNodeType } from '@stately/schema/core/nodes';
 import { Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { useStatelyUi } from '@/context';
@@ -51,11 +51,11 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
   }, [value, isDirty]);
 
   // Check if this is a primitive array for compact rendering
-  const isPrimitiveArray = itemNode.nodeType === NodeType.Primitive;
+  const isPrimitiveArray = itemNode.nodeType === CoreNodeType.Primitive;
 
   // Get item label for Link types
   const getItemLabel = (index: number, item: any) => {
-    if (itemNode.nodeType === NodeType.Link) {
+    if (itemNode.nodeType === CoreNodeType.Link) {
       const targetName = schema.data.entityDisplayNames?.[itemNode.targetType] || 'Item';
 
       // If this is a reference mode Link, show the ref name

@@ -39,9 +39,8 @@ export const useObjectField = ({
 
   const objectValidation = schema.validate({
     path: `${label ? label : ''}[ObjectNode]`,
-    data: formData,
+    ValidateArgs: formData,
     schema: node,
-    runtime: schema as any,
   });
   const isValid = objectValidation.valid;
 

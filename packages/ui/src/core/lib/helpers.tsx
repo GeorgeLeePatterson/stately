@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
-import { NodeType, type StatelyConfig } from '@stately/schema';
+import type { StatelyConfig } from '@stately/schema';
+import { CoreNodeType } from '@stately/schema/core/nodes';
 import type { AnyRecord, EmptyRecord } from '@/core/types';
 import { Braces, Brackets, Cog, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
 import { getComponentByPath } from '@/registry';
@@ -9,7 +10,7 @@ export function getNodeTypeIcon<
   Config extends StatelyConfig,
   IExt extends AnyRecord = EmptyRecord,
   SExt extends AnyRecord = EmptyRecord,
->(nodeType: NodeType, integration?: StatelyRuntime<Config, IExt, SExt>) {
+>(nodeType: string, integration?: StatelyRuntime<Config, IExt, SExt>) {
   const components = integration?.registry?.components;
 
   // Look up an icon component for this nodeType
@@ -22,20 +23,20 @@ export function getNodeTypeIcon<
   }
 
   switch (nodeType) {
-    case NodeType.Object:
+    case CoreNodeType.Object:
       return Braces;
-    case NodeType.Tuple:
-    case NodeType.Array:
+    case CoreNodeType.Tuple:
+    case CoreNodeType.Array:
       return Brackets;
-    case NodeType.Primitive:
+    case CoreNodeType.Primitive:
       return TextCursorInput;
-    case NodeType.Map:
+    case CoreNodeType.Map:
       return SendToBack;
-    case NodeType.Enum:
-    case NodeType.TaggedUnion:
-    case NodeType.UntaggedEnum:
+    case CoreNodeType.Enum:
+    case CoreNodeType.TaggedUnion:
+    case CoreNodeType.UntaggedEnum:
       return Shapes;
-    case NodeType.Link:
+    case CoreNodeType.Link:
       return Cog;
     default:
       return Cog;

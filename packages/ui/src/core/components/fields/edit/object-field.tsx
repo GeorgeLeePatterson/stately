@@ -1,4 +1,4 @@
-import { NodeType } from '@stately/schema';
+import { CoreNodeType } from '@stately/schema/core/nodes';
 import { FormInput, WandSparkles } from 'lucide-react';
 import { Fragment, useId } from 'react';
 import { useStatelyUi } from '@/context';
@@ -117,13 +117,13 @@ function ObjectForm<Schema extends CoreSchemas = CoreSchemas>({
 
             // If the value is not set, then wrap in nullable
             let propSchema = propNode;
-            const isNullable = propNode.nodeType === NodeType.Nullable;
+            const isNullable = propNode.nodeType === CoreNodeType.Nullable;
             const wrapNullable = !isRequired && !isNullable;
             if (wrapNullable) {
-              propSchema = { nodeType: NodeType.Nullable, innerSchema: propNode };
+              propSchema = { nodeType: CoreNodeType.Nullable, innerSchema: propNode };
             }
 
-            const isWrappedNullable = propSchema.nodeType === NodeType.Nullable;
+            const isWrappedNullable = propSchema.nodeType === CoreNodeType.Nullable;
             const fieldFormId = `field-${propLabel || 'label'}-${formId}`;
 
             return (

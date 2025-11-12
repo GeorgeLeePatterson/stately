@@ -29,18 +29,15 @@ export function EntityDetailView<Schema extends CoreSchemas = CoreSchemas>({
 
   const required = new Set(node.required || []);
 
-  const entityProperties = useMemo(
+  const entityProperties = useMemo<Array<[string, Schema['AnyNode']]>>(
     () =>
       Object.entries(node.properties)
         .filter(([name]) => name !== 'name')
-        .map(([name, schemaNode]) => [name, schemaNode as Schema['AnyNode']]) as Array<[
-        string,
-        Schema['AnyNode'],
-      ]>,
+        .map(([name, schemaNode]) => [name, schemaNode as Schema['AnyNode']]),
     [node.properties],
   );
 
-  const sortedProperties = useMemo(
+  const sortedProperties = useMemo<Array<[string, Schema['AnyNode']]>>(
     () =>
       schema.utils.sortEntityProperties(
         entityProperties,
@@ -76,20 +73,26 @@ export function EntityDetailView<Schema extends CoreSchemas = CoreSchemas>({
       )}
       {/* Render all fields using schema */}
       {sortedProperties
-        .map(([fieldName, fieldSchema]) => {
-          const fieldValue = entity[fieldName as keyof typeof entity] as unknown;
-          // Skip undefined/null values
-          return [fieldName, fieldSchema, fieldValue] as const;
-        })
-        .filter(([_, __, value]) => value !== undefined && value !== null)
-        .map(([fieldName, fieldSchema, fieldValue], idx, arr) => (
-          <Fragment key={fieldName}>
+        .map(
+          ([fieldName, fieldSchema]): {
+            fieldName: string;
+            fieldSchema: Schema['AnyNode'];
+            fieldValue: unknown;
+          } => ({
+            fieldName,
+            fieldSchema,
+            fieldValue: entity[fieldName as keyof typeof entity] as unknown,
+          }),
+        )
+        .filter(property => property.fieldValue !== undefined && property.fieldValue !== null)
+        .map((property, idx, arr) => (
+          <Fragment key={property.fieldName}>
             <EntityPropertyView
-              fieldName={fieldName}
-              node={fieldSchema}
-              isRequired={required.has(fieldName)}
+              fieldName={property.fieldName}
+              node={property.fieldSchema}
+              isRequired={required.has(property.fieldName)}
             >
-              <FieldView node={fieldSchema} value={fieldValue} />
+              <FieldView node={property.fieldSchema} value={property.fieldValue} />
             </EntityPropertyView>
             {idx < arr.length - 1 && <Separator />}
           </Fragment>

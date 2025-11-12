@@ -3,12 +3,8 @@
  */
 
 import type { Stately, StatelyConfig } from '@stately/schema';
-import { NodeType } from '@stately/schema';
 import type { Client } from 'openapi-fetch';
 import type { ComponentType } from 'react';
-import * as editFields from '@/core/components/fields/edit';
-import * as viewFields from '@/core/components/fields/view';
-import * as linkFields from '@/core/components/views/link';
 import * as helpers from '@/core/lib/helpers';
 import type { AnyRecord, EmptyRecord } from '@/core/types';
 import type { CorePaths } from '@/core';
@@ -19,7 +15,6 @@ import {
   createStatelyApi,
   type OperationIndex,
 } from '@/core/lib/operations';
-import { makeRegistryKey } from './plugin.js';
 
 export type ComponentRegistry = Map<string, ComponentType<any>>;
 export type TransformerRegistry = Map<string, (value: any) => any>;
@@ -56,10 +51,9 @@ export interface StatelyRuntime<
   client: Client<CorePaths<TConfig> & {}>;
   http: HttpBundle<TConfig>;
   registry: UiRegistry;
-  helpers: typeof helpers & { getNodeTypeIcon: (node: NodeType) => ComponentType<any> };
+  helpers: typeof helpers & { getNodeTypeIcon: (node: string) => ComponentType<any> };
   exports: PExt;
   plugins: {
-    core: StatelyUiPluginDescriptor<TConfig>;
     installed: StatelyUiPluginDescriptor<TConfig>[];
     all(): StatelyUiPluginDescriptor<TConfig>[];
   };
@@ -81,9 +75,10 @@ export type StatelyUiRuntime<
 
 export type StatelyUiPluginFactory<
   TConfig extends StatelyConfig,
-  Runtime extends StatelyRuntime<TConfig, AnyRecord, AnyRecord>,
-  Exports extends AnyRecord = EmptyRecord,
-> = (runtime: Runtime) => StatelyUiPluginDescriptor<TConfig, Exports>;
+  IExt extends AnyRecord,
+  PExt extends AnyRecord,
+  PluginExt extends AnyRecord = EmptyRecord,
+> = (runtime: StatelyRuntime<TConfig, IExt, PExt>) => StatelyRuntime<TConfig, IExt, PExt & PluginExt>;
 
 type Builder<
   TConfig extends StatelyConfig,
@@ -91,7 +86,7 @@ type Builder<
   PExt extends AnyRecord,
 > = StatelyRuntime<TConfig, IExt, PExt> & {
   withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
-    plugin: StatelyUiPluginFactory<TConfig, StatelyRuntime<TConfig, IExt, PExt>, PluginExt>,
+    plugin: StatelyUiPluginFactory<TConfig, IExt, PExt, PluginExt>,
   ): Builder<TConfig, IExt, PExt & PluginExt>;
 };
 
@@ -105,17 +100,13 @@ export function statelyUi<TConfig extends StatelyConfig, IExt extends AnyRecord 
     functions: new Map(),
   };
 
-  registerCoreComponents(registry.components);
-
   const operationIndex = buildOperationIndex<TConfig>(integration.data.paths as CorePaths<TConfig>);
   const operations = buildStatelyOperations<TConfig>(operationIndex);
   const api = createStatelyApi<TConfig>(client, operations);
   const http: HttpBundle<TConfig> = { operationIndex, operations, api, extensions: {} };
 
-  const corePlugin: StatelyUiPluginDescriptor<TConfig> = { name: 'stately:ui-core', api: http };
-
   const installed: StatelyUiPluginDescriptor<TConfig>[] = [];
-  const pluginList = () => [...installed, corePlugin];
+  const pluginList = () => [...installed];
 
   const baseState: StatelyRuntime<TConfig, IExt, EmptyRecord> = {
     schema: integration,
@@ -123,10 +114,10 @@ export function statelyUi<TConfig extends StatelyConfig, IExt extends AnyRecord 
     http,
     registry,
     helpers: helpers as typeof helpers & {
-      getNodeTypeIcon: (node: NodeType) => ComponentType<any>;
+      getNodeTypeIcon: (node: string) => ComponentType<any>;
     },
     exports: {} as EmptyRecord,
-    plugins: { core: corePlugin, installed, all: pluginList },
+    plugins: { installed, all: pluginList },
   };
 
   function decorateHelpers<PExt extends AnyRecord>(
@@ -136,7 +127,7 @@ export function statelyUi<TConfig extends StatelyConfig, IExt extends AnyRecord 
       ...state,
       helpers: {
         ...helpers,
-        getNodeTypeIcon: (icon: NodeType) => helpers.getNodeTypeIcon(icon, state),
+        getNodeTypeIcon: (icon: string) => helpers.getNodeTypeIcon(icon, state),
       },
     };
   }
@@ -149,21 +140,9 @@ export function statelyUi<TConfig extends StatelyConfig, IExt extends AnyRecord 
     return {
       ...current,
       withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
-        plugin: StatelyUiPluginFactory<TConfig, StatelyRuntime<TConfig, IExt, PExt>, PluginExt>,
+        plugin: StatelyUiPluginFactory<TConfig, IExt, PExt, PluginExt>,
       ): Builder<TConfig, IExt, PExt & PluginExt> {
-        const descriptor = plugin(current);
-        if (!descriptor || !descriptor.name) {
-          throw new Error('UI plugin is invalid or is missing a name');
-        }
-
-        installed.push(descriptor as StatelyUiPluginDescriptor<TConfig>);
-
-        const nextState: StatelyRuntime<TConfig, IExt, PExt & PluginExt> = {
-          ...current,
-          exports: { ...current.exports, ...(descriptor.exports || ({} as PluginExt)) } as PExt &
-            PluginExt,
-        };
-
+        const nextState = plugin(current);
         return makeBuilder(nextState);
       },
     };
@@ -178,37 +157,22 @@ export type StatelyUiBuilder<
   PExt extends AnyRecord = EmptyRecord,
 > = Builder<TConfig, IExt, PExt>;
 
-function registerCoreComponents(registry: ComponentRegistry) {
-  registry.set(makeRegistryKey(NodeType.Array, 'edit'), editFields.ArrayEdit);
-  registry.set(makeRegistryKey(NodeType.Array, 'view'), viewFields.ArrayView);
+export function registerUiPlugin<
+  TConfig extends StatelyConfig,
+  IExt extends AnyRecord,
+  PExt extends AnyRecord,
+  PluginExt extends AnyRecord = EmptyRecord,
+>(
+  runtime: StatelyRuntime<TConfig, IExt, PExt>,
+  descriptor: StatelyUiPluginDescriptor<TConfig, PluginExt>,
+): StatelyRuntime<TConfig, IExt, PExt & PluginExt> {
+  runtime.plugins.installed.push(descriptor as StatelyUiPluginDescriptor<TConfig>);
 
-  registry.set(makeRegistryKey(NodeType.Enum, 'edit'), editFields.EnumEdit);
-  registry.set(makeRegistryKey(NodeType.Enum, 'view'), viewFields.PrimitiveView);
+  const exportsPatch = (descriptor.exports || ({} as PluginExt)) as PluginExt;
+  runtime.exports = {
+    ...(runtime.exports as AnyRecord),
+    ...exportsPatch,
+  } as PExt & PluginExt;
 
-  registry.set(makeRegistryKey(NodeType.Map, 'edit'), editFields.MapEdit);
-  registry.set(makeRegistryKey(NodeType.Map, 'view'), viewFields.MapView);
-
-  registry.set(makeRegistryKey(NodeType.Nullable, 'edit'), editFields.NullableEdit);
-  registry.set(makeRegistryKey(NodeType.Nullable, 'view'), viewFields.NullableView);
-
-  registry.set(makeRegistryKey(NodeType.Object, 'edit'), editFields.ObjectEdit);
-  registry.set(makeRegistryKey(NodeType.Object, 'view'), viewFields.ObjectView);
-
-  registry.set(makeRegistryKey(NodeType.Primitive, 'edit'), editFields.PrimitiveEdit);
-  registry.set(makeRegistryKey(NodeType.Primitive, 'view'), viewFields.PrimitiveView);
-
-  registry.set(makeRegistryKey(NodeType.RecursiveRef, 'edit'), editFields.RecursiveRefEdit);
-  registry.set(makeRegistryKey(NodeType.RecursiveRef, 'view'), viewFields.RecursiveRefView);
-
-  registry.set(makeRegistryKey(NodeType.Tuple, 'edit'), editFields.TupleEdit);
-  registry.set(makeRegistryKey(NodeType.Tuple, 'view'), viewFields.TupleView);
-
-  registry.set(makeRegistryKey(NodeType.TaggedUnion, 'edit'), editFields.TaggedUnionEdit);
-  registry.set(makeRegistryKey(NodeType.TaggedUnion, 'view'), viewFields.TaggedUnionView);
-
-  registry.set(makeRegistryKey(NodeType.UntaggedEnum, 'edit'), editFields.UntaggedEnumEdit);
-  registry.set(makeRegistryKey(NodeType.UntaggedEnum, 'view'), viewFields.UntaggedEnumView);
-
-  registry.set(makeRegistryKey(NodeType.Link, 'edit'), linkFields.LinkEdit);
-  registry.set(makeRegistryKey(NodeType.Link, 'view'), linkFields.LinkView);
+  return runtime as StatelyRuntime<TConfig, IExt, PExt & PluginExt>;
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Note } from '@/core/components/base/note';
+import { Note } from '@/base/components/base/note';
 import type { CoreSchemas, CoreStateEntry } from '@/core';
 import { useEntityData } from './use-entity-data';
 

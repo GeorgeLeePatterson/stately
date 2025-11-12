@@ -1,8 +1,32 @@
 import type { ComponentType } from 'react';
 import type { CoreSchemas } from '@/core';
 import type { EditFieldProps, ViewFieldProps } from '@/core/components/fields';
-import { makeRegistryKey } from './plugin.js';
 import type { ComponentRegistry } from './runtime';
+import { StatelyConfig } from '@stately/schema/schema';
+
+export type RegistryMode = 'edit' | 'view';
+export type RegistryKey = `${string}::${RegistryMode}` | `${string}::${RegistryMode}::${string}`;
+
+export type NodeTypeComponent<C extends StatelyConfig = StatelyConfig> =
+  | ComponentType<EditFieldProps<C>>
+  | ComponentType<ViewFieldProps<C>>;
+
+export function makeRegistryKey(
+  node: string,
+  mode: RegistryMode,
+  discriminator?: string,
+): RegistryKey {
+  return discriminator ? `${node}::${mode}::${discriminator}` : `${node}::${mode}`;
+}
+
+export function splitRegistryKey(key: RegistryKey): {
+  node: string;
+  mode: RegistryMode;
+  discriminator?: string;
+} {
+  const [node, mode, discriminator] = key.split('::');
+  return { node, mode: mode as RegistryMode, discriminator };
+}
 
 export function getComponent<Schema extends CoreSchemas = CoreSchemas>(
   registry: ComponentRegistry,

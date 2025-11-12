@@ -1,24 +1,65 @@
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 
-/**
- * Merge class names
- */
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
-export function toKebabCase(str: string): string {
-  return str.replace(/_/g, '-');
-}
-
-export function toTitleCase(str: string): string {
-  return str
+export function generateFieldLabel(fieldName: string): string {
+  return fieldName
     .split('_')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
 
-export function toSpaceCase(str: string): string {
-  return str.replace(/[-_]/g, ' ');
+/**
+ * Default value generation
+ */
+
+export function getDefaultValue<Config extends CoreStatelyConfig>(
+  node: AnySchemaNode<Config>,
+): any {
+  switch (node.nodeType) {
+    case CoreNodeType.Primitive:
+      switch ((node as any).primitiveType) {
+        case 'string':
+          return '';
+        case 'number':
+        case 'integer':
+          return 0;
+        case 'boolean':
+          return false;
+      }
+      break;
+
+    case CoreNodeType.Enum:
+      return (node as any).values[0] || '';
+
+    case CoreNodeType.Array:
+      return [];
+
+    case CoreNodeType.Map:
+      return {};
+
+    case CoreNodeType.Tuple:
+      return (node as any).items.map(getDefaultValue);
+
+    case CoreNodeType.Object: {
+      const obj: any = {};
+      const requiredFields = new Set((node as any).required || []);
+      for (const [name, propNode] of Object.entries((node as any).properties)) {
+        if (requiredFields.has(name)) {
+          obj[name] = getDefaultValue(propNode as AnySchemaNode<Config>);
+        }
+      }
+      return obj;
+    }
+
+    case CoreNodeType.Link:
+      return '';
+
+    case CoreNodeType.TaggedUnion:
+    case CoreNodeType.UntaggedEnum:
+      return null;
+
+    case CoreNodeType.Nullable:
+      return null;
+  }
+
+  return null;
 }

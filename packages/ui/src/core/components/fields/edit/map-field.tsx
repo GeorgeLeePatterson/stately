@@ -1,4 +1,4 @@
-import { NodeType } from '@stately/schema';
+import { CoreNodeType } from '@stately/schema/core/nodes';
 import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useCallback, useId, useState } from 'react';
 import { Button } from '@/core/components/ui/button';
@@ -315,7 +315,7 @@ function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
     <FieldSet className="min-w-0" disabled={!hasKey}>
       <Field>
         {/* Primitive value */}
-        {schema.nodeType === NodeType.Primitive ? (
+        {schema.nodeType === CoreNodeType.Primitive ? (
           <div className="grid w-full gap-4">
             <InputGroup>
               {/* Textarea */}

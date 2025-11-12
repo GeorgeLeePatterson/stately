@@ -1,4 +1,3 @@
-import { DEFAULT_LANGUAGES, Editor, SupportedLanguage } from './editor';
-
-export type { EditorProps } from './editor';
-export { Editor, SupportedLanguage, DEFAULT_LANGUAGES };
+import * as entity from './entity';
+import * as link from './link';
+export { entity, link };
