@@ -1,10 +1,14 @@
-import type { AnyRecord } from '@/core/types';
-import { useCallback, useEffect, useState } from 'react';
-import { useStatelyUi } from '@/context';
+import type { AnyRecord } from "@/core/types";
+import { useCallback, useEffect, useState } from "react";
+import { useStatelyUi } from "@/context";
 
 type UseObjectFieldResult = {
   formData: Record<string, any>;
-  handleFieldChange: (fieldName: string, isNullable: boolean, newValue: any) => void;
+  handleFieldChange: (
+    fieldName: string,
+    isNullable: boolean,
+    newValue: any,
+  ) => void;
   handleSave: () => void;
   handleCancel: () => void;
   fields: Array<[string, any]>;
@@ -29,16 +33,20 @@ export const useObjectField = ({
 
   const required = new Set<string>(node?.required || []);
   const mergedFields = (node as any).merged
-    ? [['Additional', (node as any).merged] as [string, any]]
+    ? [["Additional", (node as any).merged] as [string, any]]
     : [];
   const baseValueFields = Object.entries(node.properties).filter(
-    ([fieldName]) => fieldName !== 'id',
+    ([fieldName]) => fieldName !== "id",
   );
   const valueFields = [...baseValueFields, ...mergedFields];
-  const fields = schema.utils.sortEntityProperties(valueFields, value, required);
+  const fields = schema.utils.sortEntityProperties(
+    valueFields,
+    value,
+    required,
+  );
 
   const objectValidation = schema.validate({
-    path: `${label ? label : ''}[ObjectNode]`,
+    path: `${label ? label : ""}[ObjectNode]`,
     ValidateArgs: formData,
     schema: node,
   });
@@ -58,14 +66,17 @@ export const useObjectField = ({
     setIsDirty(false);
   }, [formData, isValid, onSave]);
 
-  const handleFieldChange = useCallback((fieldName: string, isNullable: boolean, newValue: any) => {
-    if ((isNullable && newValue === null) || newValue === undefined) {
-      setFormData(({ [fieldName]: _, ...d }) => d);
-    } else {
-      setFormData(d => ({ ...d, [fieldName]: newValue }));
-    }
-    setIsDirty(true);
-  }, []);
+  const handleFieldChange = useCallback(
+    (fieldName: string, isNullable: boolean, newValue: any) => {
+      if ((isNullable && newValue === null) || newValue === undefined) {
+        setFormData(({ [fieldName]: _, ...d }) => d);
+      } else {
+        setFormData((d) => ({ ...d, [fieldName]: newValue }));
+      }
+      setIsDirty(true);
+    },
+    [],
+  );
 
   const handleCancel = useCallback(() => {
     setFormData(value ?? {});

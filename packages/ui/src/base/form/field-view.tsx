@@ -4,19 +4,21 @@
  * Uses flat component registry lookup: 'nodeType::view'
  */
 
-import { useStatelyUi } from '@/context';
-import { getViewComponent } from '@/registry';
+import { useStatelyUi } from "@/context";
+import { getViewComponent } from "@/registry";
 
 export interface ViewFieldProps<
   Schema extends CoreSchemas = CoreSchemas,
-  N extends Schema['AnyNode'] = Schema['AnyNode'],
+  N extends Schema["AnyNode"] = Schema["AnyNode"],
   V = unknown,
 > {
   node: N;
   value: V;
 }
 
-export function FieldView<Schema extends CoreSchemas = CoreSchemas>(props: ViewFieldProps<Schema>) {
+export function FieldView<Schema extends CoreSchemas = CoreSchemas>(
+  props: ViewFieldProps<Schema>,
+) {
   const { node, value } = props;
   const { registry } = useStatelyUi();
 

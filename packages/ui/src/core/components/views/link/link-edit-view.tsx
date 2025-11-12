@@ -1,29 +1,35 @@
-import { SINGLETON_ID } from '@/core/types';
-import { useQuery } from '@tanstack/react-query';
-import { useCallback, useMemo, useState } from 'react';
-import { useStatelyUi } from '@/context';
-import type { EditFieldProps } from '@/core/components/fields';
-import { Button } from '@/core/components/ui/button';
-import { ButtonGroup } from '@/core/components/ui/button-group';
-import { FieldGroup, FieldSet } from '@/core/components/ui/field';
-import type { CoreEntity, CoreLinkNode, CoreSchemas, CoreStateEntry } from '@/core';
-import { useEditEntityData } from '@/core/hooks/use-edit-entity-data';
-import { LinkInlineEdit } from './link-inline-edit-view';
-import { LinkRefEdit } from './link-ref-edit-view';
+import { SINGLETON_ID } from "@/core/types";
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo, useState } from "react";
+import { useStatelyUi } from "@/context";
+import type { EditFieldProps } from "@/core/components/fields";
+import { Button } from "@/core/components/ui/button";
+import { ButtonGroup } from "@/core/components/ui/button-group";
+import { FieldGroup, FieldSet } from "@/core/components/ui/field";
+import type {
+  CoreEntity,
+  CoreLinkNode,
+  CoreSchemas,
+  CoreStateEntry,
+} from "@/core";
+import { useEditEntityData } from "@/core/hooks/use-edit-entity-data";
+import { LinkInlineEdit } from "./link-inline-edit-view";
+import { LinkRefEdit } from "./link-ref-edit-view";
 
 // Type helpers for Link editing
 export type LinkFor<Schema extends CoreSchemas = CoreSchemas> =
   | { entity_type: CoreStateEntry<Schema>; ref: string }
   | {
       entity_type: CoreStateEntry<Schema>;
-      inline: CoreEntity<Schema>['data'];
+      inline: CoreEntity<Schema>["data"];
     };
 
-export type LinkEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
-  Schema,
-  CoreLinkNode<Schema>,
-  LinkFor<Schema> | null | undefined
->;
+export type LinkEditProps<Schema extends CoreSchemas = CoreSchemas> =
+  EditFieldProps<
+    Schema,
+    CoreLinkNode<Schema>,
+    LinkFor<Schema> | null | undefined
+  >;
 
 /**
  * Component for editing Link<T> fields
@@ -40,8 +46,8 @@ export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
   const targetType = node.targetType;
 
   // Mode state - undefined until entities are fetched
-  const [mode, setMode] = useState<'ref' | 'inline'>(
-    (!!value && ('inline' in value ? 'inline' : 'ref')) || 'ref',
+  const [mode, setMode] = useState<"ref" | "inline">(
+    (!!value && ("inline" in value ? "inline" : "ref")) || "ref",
   );
 
   // Fetch entities to determine what ref modes are available
@@ -51,7 +57,7 @@ export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
     error,
     refetch,
   } = useQuery({
-    queryKey: ['entity-list', targetType],
+    queryKey: ["entity-list", targetType],
     queryFn: async () => {
       const { data, error } = await api.entity.listByType({ type: targetType });
       if (error) throw new Error(`Failed to fetch ${targetType} entities`);
@@ -71,12 +77,15 @@ export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
   const hasEntities = availableEntities.length > 0;
 
   const enableToggle = !isLoading && hasEntities;
-  const effectiveMode = !isLoading && !hasEntities ? 'inline' : mode;
+  const effectiveMode = !isLoading && !hasEntities ? "inline" : mode;
 
   const inlineData = useMemo(
     () =>
       editData
-        ? ({ entity_type: editData.entity.type, inline: editData.entity.data } as LinkFor<Schema>)
+        ? ({
+            entity_type: editData.entity.type,
+            inline: editData.entity.data,
+          } as LinkFor<Schema>)
         : value,
     [value, editData],
   );
@@ -85,7 +94,7 @@ export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
     (ref: string) => {
       if (!ref) return;
       setEditEntity(ref);
-      setMode('inline');
+      setMode("inline");
     },
     [setEditEntity],
   );
@@ -110,21 +119,24 @@ export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
   if (error) {
     return (
       <div className="space-y-2 bg-muted/60 rounded-sm p-3">
-        <div className="text-sm text-destructive">Error loading entities: {error.message}</div>
+        <div className="text-sm text-destructive">
+          Error loading entities: {error.message}
+        </div>
       </div>
     );
   }
 
-  const isDefault = availableEntities.length === 1 && availableEntities[0].id === SINGLETON_ID;
+  const isDefault =
+    availableEntities.length === 1 && availableEntities[0].id === SINGLETON_ID;
 
   const modeToggle = enableToggle ? (
     <div className="flex justify-end">
       <ButtonGroup>
         <Button
           type="button"
-          variant={mode === 'ref' ? 'default' : 'outline'}
+          variant={mode === "ref" ? "default" : "outline"}
           size="sm"
-          onClick={() => setMode('ref')}
+          onClick={() => setMode("ref")}
           className="cursor-pointer"
           disabled={isLoading}
         >
@@ -132,9 +144,9 @@ export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
         </Button>
         <Button
           type="button"
-          variant={mode === 'inline' ? 'default' : 'outline'}
+          variant={mode === "inline" ? "default" : "outline"}
           size="sm"
-          onClick={() => setMode('inline')}
+          onClick={() => setMode("inline")}
           className="cursor-pointer"
           disabled={isLoading}
         >
@@ -151,7 +163,7 @@ export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
           {editNote}
 
           {/* Render active mode component */}
-          {effectiveMode === 'ref' ? (
+          {effectiveMode === "ref" ? (
             <LinkRefEdit
               isReadOnly={isDefault}
               targetType={targetType}

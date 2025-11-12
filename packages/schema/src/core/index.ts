@@ -6,22 +6,24 @@
  * node helpers that plugin authors might want to reuse. Import everything from
  * here instead of reaching directly into ./augment or ./plugin.
  */
-import { createCorePlugin } from './plugin.js';
+import { createCorePlugin } from "./plugin.js";
 
-export type { CoreSchemaAugment, CoreStatelyConfig } from './augment.js';
+export type { CoreSchemaAugment, CoreStatelyConfig } from "./augment.js";
 export { createCorePlugin };
 export type {
-  ArrayNodeRaw,
+  ArrayNode,
+  CoreNodeMap,
+  CoreNodeUnion,
   EnumNode,
-  LinkNodeRaw,
-  MapNodeRaw,
-  NullableNodeRaw,
-  ObjectNodeRaw,
+  LinkNode,
+  MapNode,
+  NullableNode,
+  ObjectNode,
   PrimitiveNode,
-  RecursiveRefNodeRaw,
-  TaggedUnionNodeRaw,
+  RecursiveRefNode,
+  TaggedUnionNode,
   TCoreNodeType,
   TPrimitiveType,
-  TupleNodeRaw,
-  UntaggedEnumNodeRaw,
-} from './nodes.js';
+  TupleNode,
+  UntaggedEnumNode,
+} from "./nodes.js";

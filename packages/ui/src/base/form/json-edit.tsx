@@ -1,10 +1,10 @@
-import { Save, X } from 'lucide-react';
-import { useCallback, useId, useMemo, useState } from 'react';
-import { Label } from '@/base/ui/label';
-import { cn } from '@/base/lib/utils';
-import { Note } from '../components/note';
-import { Button } from '../ui/button';
-import { Editor } from '../views/editor';
+import { Save, X } from "lucide-react";
+import { useCallback, useId, useMemo, useState } from "react";
+import { Label } from "@/base/ui/label";
+import { cn } from "@/base/lib/utils";
+import { Note } from "../components/note";
+import { Button } from "../ui/button";
+import { Editor } from "../views/editor";
 
 type JsonStatus = { valid: boolean; error?: string; msg?: string };
 
@@ -17,10 +17,16 @@ interface JsonEditViewProps {
 /**
  * Component for editing entity configuration as raw JSON
  */
-export function JsonEdit({ value, onSave, label = 'Configuration (JSON)' }: JsonEditViewProps) {
+export function JsonEdit({
+  value,
+  onSave,
+  label = "Configuration (JSON)",
+}: JsonEditViewProps) {
   const formId = useId();
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [json, setJson] = useState<string>(JSON.stringify(value || {}, null, 2));
+  const [json, setJson] = useState<string>(
+    JSON.stringify(value || {}, null, 2),
+  );
 
   const handleJsonForm = useCallback((val: string) => {
     setJson(val);
@@ -28,32 +34,35 @@ export function JsonEdit({ value, onSave, label = 'Configuration (JSON)' }: Json
       JSON.parse(val);
       setIsDirty(true);
     } catch (error) {
-      console.error('Invalid JSON syntax', error);
+      console.error("Invalid JSON syntax", error);
     }
   }, []);
 
   const status: JsonStatus = useMemo(() => {
     if (!json) {
-      return { valid: false, msg: 'Enter valid JSON' };
+      return { valid: false, msg: "Enter valid JSON" };
     }
 
     try {
       JSON.parse(json);
-      return { valid: true, msg: 'Valid JSON' };
+      return { valid: true, msg: "Valid JSON" };
     } catch (error) {
-      const msg = 'Invalid JSON syntax';
+      const msg = "Invalid JSON syntax";
       const errMsg = error
-        ? typeof error === 'object' && 'message' in error
+        ? typeof error === "object" && "message" in error
           ? error.message
           : error
-        : '';
+        : "";
       return { valid: false, msg: `${msg}: ${errMsg}` };
     }
   }, [json]);
 
   return (
     <div className="space-y-4 p-3">
-      <Note mode={status.valid ? 'success' : 'error'} message={status.error || status.msg || ''} />
+      <Note
+        mode={status.valid ? "success" : "error"}
+        message={status.error || status.msg || ""}
+      />
 
       <div className="space-y-2">
         <Label htmlFor="config-json">{label}</Label>
@@ -62,7 +71,7 @@ export function JsonEdit({ value, onSave, label = 'Configuration (JSON)' }: Json
           content={json}
           onContent={handleJsonForm}
           placeholder="Enter JSON configuration here"
-          supportedLanguages={['json']}
+          supportedLanguages={["json"]}
         />
       </div>
 
@@ -76,8 +85,10 @@ export function JsonEdit({ value, onSave, label = 'Configuration (JSON)' }: Json
         disabled={!status.valid || !isDirty}
         size="sm"
         className={cn(
-          'cursor-pointer',
-          isDirty && status.valid && 'animate-[save-glow_2s_ease-in-out_infinite]',
+          "cursor-pointer",
+          isDirty &&
+            status.valid &&
+            "animate-[save-glow_2s_ease-in-out_infinite]",
         )}
       >
         <Save className="w-4 h-4 mr-2" />

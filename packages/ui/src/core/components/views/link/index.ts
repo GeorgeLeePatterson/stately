@@ -1,15 +1,22 @@
-import { LinkView } from './link-detail-view';
-import { LinkEdit } from './link-edit-view';
-import { LinkInlineEdit } from './link-inline-edit-view';
-import { LinkRefEdit } from './link-ref-edit-view';
-import { LinkInlineView } from './link-inline-view';
-import { LinkRefView } from './link-ref-view';
+import { LinkView } from "./link-detail-view";
+import { LinkEdit } from "./link-edit-view";
+import { LinkInlineEdit } from "./link-inline-edit-view";
+import { LinkRefEdit } from "./link-ref-edit-view";
+import { LinkInlineView } from "./link-inline-view";
+import { LinkRefView } from "./link-ref-view";
 
-export type { LinkFor } from './link-edit-view';
-export type { LinkViewProps } from './link-detail-view';
-export type { LinkEditProps } from './link-edit-view';
-export type { LinkInlineEditProps } from './link-inline-edit-view';
-export type { LinkRefEditProps } from './link-ref-edit-view';
-export type { LinkInlineViewProps } from './link-inline-view';
-export type { LinkRefViewProps } from './link-ref-view';
-export { LinkEdit, LinkView, LinkRefEdit, LinkInlineEdit, LinkInlineView, LinkRefView };
+export type { LinkFor } from "./link-edit-view";
+export type { LinkViewProps } from "./link-detail-view";
+export type { LinkEditProps } from "./link-edit-view";
+export type { LinkInlineEditProps } from "./link-inline-edit-view";
+export type { LinkRefEditProps } from "./link-ref-edit-view";
+export type { LinkInlineViewProps } from "./link-inline-view";
+export type { LinkRefViewProps } from "./link-ref-view";
+export {
+  LinkEdit,
+  LinkView,
+  LinkRefEdit,
+  LinkInlineEdit,
+  LinkInlineView,
+  LinkRefView,
+};

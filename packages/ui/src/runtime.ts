@@ -2,19 +2,19 @@
  * @stately/ui - Core UI integration runtime
  */
 
-import type { Stately, StatelyConfig } from '@stately/schema';
-import type { Client } from 'openapi-fetch';
-import type { ComponentType } from 'react';
-import * as helpers from '@/core/lib/helpers';
-import type { AnyRecord, EmptyRecord } from '@/core/types';
-import type { CorePaths } from '@/core';
-import type { StatelyApi, StatelyOperations } from '@/core/lib/operations';
+import type { Stately, StatelyConfig } from "@stately/schema";
+import type { Client } from "openapi-fetch";
+import type { ComponentType } from "react";
+import * as helpers from "@/core/lib/helpers";
+import type { AnyRecord, EmptyRecord } from "@/core/types";
+import type { CorePaths } from "@/core";
+import type { StatelyApi, StatelyOperations } from "@/core/lib/operations";
 import {
   buildOperationIndex,
   buildStatelyOperations,
   createStatelyApi,
   type OperationIndex,
-} from '@/core/lib/operations';
+} from "@/core/lib/operations";
 
 export type ComponentRegistry = Map<string, ComponentType<any>>;
 export type TransformerRegistry = Map<string, (value: any) => any>;
@@ -51,7 +51,9 @@ export interface StatelyRuntime<
   client: Client<CorePaths<TConfig> & {}>;
   http: HttpBundle<TConfig>;
   registry: UiRegistry;
-  helpers: typeof helpers & { getNodeTypeIcon: (node: string) => ComponentType<any> };
+  helpers: typeof helpers & {
+    getNodeTypeIcon: (node: string) => ComponentType<any>;
+  };
   exports: PExt;
   plugins: {
     installed: StatelyUiPluginDescriptor<TConfig>[];
@@ -59,13 +61,17 @@ export interface StatelyRuntime<
   };
 }
 
-export type StatelyCoreRuntime = StatelyRuntime<StatelyConfig, AnyRecord, AnyRecord>;
+export type StatelyCoreRuntime = StatelyRuntime<
+  StatelyConfig,
+  AnyRecord,
+  AnyRecord
+>;
 
 export interface StatelyUi {
   Core: StatelyCoreRuntime;
 }
 
-export type StatelyCore = StatelyUi['Core'];
+export type StatelyCore = StatelyUi["Core"];
 
 export type StatelyUiRuntime<
   TConfig extends StatelyConfig,
@@ -78,7 +84,9 @@ export type StatelyUiPluginFactory<
   IExt extends AnyRecord,
   PExt extends AnyRecord,
   PluginExt extends AnyRecord = EmptyRecord,
-> = (runtime: StatelyRuntime<TConfig, IExt, PExt>) => StatelyRuntime<TConfig, IExt, PExt & PluginExt>;
+> = (
+  runtime: StatelyRuntime<TConfig, IExt, PExt>,
+) => StatelyRuntime<TConfig, IExt, PExt & PluginExt>;
 
 type Builder<
   TConfig extends StatelyConfig,
@@ -90,7 +98,10 @@ type Builder<
   ): Builder<TConfig, IExt, PExt & PluginExt>;
 };
 
-export function statelyUi<TConfig extends StatelyConfig, IExt extends AnyRecord = EmptyRecord>(
+export function statelyUi<
+  TConfig extends StatelyConfig,
+  IExt extends AnyRecord = EmptyRecord,
+>(
   integration: Stately<TConfig, IExt>,
   client: Client<CorePaths<TConfig> & {}>,
 ) {
@@ -100,10 +111,17 @@ export function statelyUi<TConfig extends StatelyConfig, IExt extends AnyRecord 
     functions: new Map(),
   };
 
-  const operationIndex = buildOperationIndex<TConfig>(integration.data.paths as CorePaths<TConfig>);
+  const operationIndex = buildOperationIndex<TConfig>(
+    integration.data.paths as CorePaths<TConfig>,
+  );
   const operations = buildStatelyOperations<TConfig>(operationIndex);
   const api = createStatelyApi<TConfig>(client, operations);
-  const http: HttpBundle<TConfig> = { operationIndex, operations, api, extensions: {} };
+  const http: HttpBundle<TConfig> = {
+    operationIndex,
+    operations,
+    api,
+    extensions: {},
+  };
 
   const installed: StatelyUiPluginDescriptor<TConfig>[] = [];
   const pluginList = () => [...installed];
@@ -166,7 +184,9 @@ export function registerUiPlugin<
   runtime: StatelyRuntime<TConfig, IExt, PExt>,
   descriptor: StatelyUiPluginDescriptor<TConfig, PluginExt>,
 ): StatelyRuntime<TConfig, IExt, PExt & PluginExt> {
-  runtime.plugins.installed.push(descriptor as StatelyUiPluginDescriptor<TConfig>);
+  runtime.plugins.installed.push(
+    descriptor as StatelyUiPluginDescriptor<TConfig>,
+  );
 
   const exportsPatch = (descriptor.exports || ({} as PluginExt)) as PluginExt;
   runtime.exports = {

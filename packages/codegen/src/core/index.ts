@@ -1,1 +1,1 @@
-export { createCoreCodegenPlugin } from './plugin.js';
+export { createCoreCodegenPlugin } from "./plugin.js";

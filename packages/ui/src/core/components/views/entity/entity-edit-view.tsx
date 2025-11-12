@@ -1,18 +1,23 @@
-import type { AnyRecord } from '@/core/types';
-import { FileJson, FormInput, WandSparkles } from 'lucide-react';
-import { useState } from 'react';
-import type { CoreObjectNode, CoreSchemas } from '@/core';
-import { FieldGroup } from '@/core/components/ui/field';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/components/ui/tabs';
-import { JsonEdit } from '../../fields/json-edit';
-import { JsonView } from '../../fields/json-view';
-import { EntityFormEdit } from './entity-form-edit';
-import { EntityWizardView } from './entity-wizard-view';
+import type { AnyRecord } from "@/core/types";
+import { FileJson, FormInput, WandSparkles } from "lucide-react";
+import { useState } from "react";
+import type { CoreObjectNode, CoreSchemas } from "@/core";
+import { FieldGroup } from "@/core/components/ui/field";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/core/components/ui/tabs";
+import { JsonEdit } from "../../fields/json-edit";
+import { JsonView } from "../../fields/json-view";
+import { EntityFormEdit } from "./entity-form-edit";
+import { EntityWizardView } from "./entity-wizard-view";
 
 export enum EditMode {
-  FORM = 'Form',
-  JSON = 'JSON',
-  WIZARD = 'Wizard',
+  FORM = "Form",
+  JSON = "JSON",
+  WIZARD = "Wizard",
 }
 
 export interface EntityEditViewProps<Schema extends CoreSchemas = CoreSchemas> {
@@ -68,7 +73,11 @@ export function EntityEditView<Schema extends CoreSchemas = CoreSchemas>({
           />
           {/*View json configuration*/}
           {!!value && Object.keys(value).length > 0 && (
-            <JsonView data={value} isOpen={debugOpen} setIsOpen={setDebugOpen} />
+            <JsonView
+              data={value}
+              isOpen={debugOpen}
+              setIsOpen={setDebugOpen}
+            />
           )}
         </div>
       </TabsContent>

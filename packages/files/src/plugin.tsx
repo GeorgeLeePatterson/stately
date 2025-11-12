@@ -1,9 +1,17 @@
-import { makeRegistryKey, type StatelyUiPluginFactory } from '@stately/ui';
-import { type ComponentType, type ReactNode, useMemo, useState } from 'react';
-import type { FilesApiOperationIds } from './lib/files-api.js';
-import { FilesNodeType } from './schema.js';
+import {
+  makeRegistryKey,
+  registerUiPlugin,
+  type StatelyUiPluginFactory,
+} from "@stately/ui";
+import { type ComponentType, type ReactNode, useMemo, useState } from "react";
+import type { FilesApiOperationIds } from "./lib/files-api.js";
+import { FilesNodeType } from "./schema.js";
 
-type RelativePathValue = string | { dir?: string; path?: string } | null | undefined;
+type RelativePathValue =
+  | string
+  | { dir?: string; path?: string }
+  | null
+  | undefined;
 
 type PrimitiveStringTransformerProps = {
   formId: string;
@@ -13,13 +21,20 @@ type PrimitiveStringTransformerProps = {
   stately?: {
     mode?: string;
     setMode?: (mode: string) => void;
-    modes?: Array<{ value: string; icon: ComponentType<any>; label: string; description: string }>;
+    modes?: Array<{
+      value: string;
+      icon: ComponentType<any>;
+      label: string;
+      description: string;
+    }>;
     component?: ReactNode;
     after?: ReactNode;
   };
 };
 
-const RelativePathModeIcon = () => <span className="text-xs font-semibold">RP</span>;
+const RelativePathModeIcon = () => (
+  <span className="text-xs font-semibold">RP</span>
+);
 
 const RelativePathEdit = ({
   formId,
@@ -32,8 +47,10 @@ const RelativePathEdit = ({
   onChange: (value: RelativePathValue) => void;
   placeholder?: string;
 }) => {
-  const [useObject, setUseObject] = useState(typeof value === 'object' && value !== null);
-  const resolved = typeof value === 'string' || !value ? value : value.path;
+  const [useObject, setUseObject] = useState(
+    typeof value === "object" && value !== null,
+  );
+  const resolved = typeof value === "string" || !value ? value : value.path;
 
   return (
     <div className="flex w-full flex-col gap-2">
@@ -43,10 +60,14 @@ const RelativePathEdit = ({
           <input
             type="checkbox"
             checked={useObject}
-            onChange={event => {
+            onChange={(event) => {
               setUseObject(event.target.checked);
-              if (!event.target.checked && typeof value === 'object' && value !== null) {
-                onChange(value.path ?? '');
+              if (
+                !event.target.checked &&
+                typeof value === "object" &&
+                value !== null
+              ) {
+                onChange(value.path ?? "");
               }
             }}
           />
@@ -58,11 +79,14 @@ const RelativePathEdit = ({
           <select
             aria-label="Directory"
             className="rounded border px-2 py-1 text-sm"
-            value={(value && typeof value === 'object' && value.dir) || 'data'}
-            onChange={event =>
+            value={(value && typeof value === "object" && value.dir) || "data"}
+            onChange={(event) =>
               onChange({
                 dir: event.target.value,
-                path: typeof value === 'object' ? (value?.path ?? '') : (resolved ?? ''),
+                path:
+                  typeof value === "object"
+                    ? (value?.path ?? "")
+                    : (resolved ?? ""),
               })
             }
           >
@@ -75,12 +99,12 @@ const RelativePathEdit = ({
         <input
           id={`${formId}-relative-path`}
           className="flex-1 rounded border px-2 py-1 text-sm"
-          placeholder={placeholder || 'data/pipelines/config.json'}
-          value={resolved ?? ''}
-          onChange={event => {
+          placeholder={placeholder || "data/pipelines/config.json"}
+          value={resolved ?? ""}
+          onChange={(event) => {
             if (useObject) {
               onChange({
-                dir: (typeof value === 'object' && value?.dir) || 'data',
+                dir: (typeof value === "object" && value?.dir) || "data",
                 path: event.target.value,
               });
             } else {
@@ -95,10 +119,10 @@ const RelativePathEdit = ({
 
 const RelativePathView = ({ value }: { value: RelativePathValue }) => {
   const display = useMemo(() => {
-    if (!value) return '—';
-    if (typeof value === 'string') return value;
-    const dir = value.dir ? `${value.dir}:` : '';
-    return `${dir}${value.path ?? ''}`;
+    if (!value) return "—";
+    if (typeof value === "string") return value;
+    const dir = value.dir ? `${value.dir}:` : "";
+    return `${dir}${value.path ?? ""}`;
   }, [value]);
 
   return <code className="text-xs font-mono break-all">{display}</code>;
@@ -107,16 +131,18 @@ const RelativePathView = ({ value }: { value: RelativePathValue }) => {
 const primitiveStringTransformer = (props: PrimitiveStringTransformerProps) => {
   const stately = props.stately ?? {};
   const nextModes = stately.modes ?? [];
-  const alreadyRegistered = nextModes.some(mode => mode.value === 'relative-path');
+  const alreadyRegistered = nextModes.some(
+    (mode) => mode.value === "relative-path",
+  );
   const modes = alreadyRegistered
     ? nextModes
     : [
         ...nextModes,
         {
-          value: 'relative-path',
+          value: "relative-path",
           icon: RelativePathModeIcon,
-          label: 'Relative Path',
-          description: 'Reference files managed by the runtime',
+          label: "Relative Path",
+          description: "Reference files managed by the runtime",
         },
       ];
 
@@ -124,7 +150,7 @@ const primitiveStringTransformer = (props: PrimitiveStringTransformerProps) => {
     ...stately,
     modes,
     component:
-      stately.mode === 'relative-path' ? (
+      stately.mode === "relative-path" ? (
         <RelativePathEdit
           formId={props.formId}
           value={props.value}
@@ -147,26 +173,32 @@ export function createFilesPlugin(
   options?: FilesPluginOptions,
 ): StatelyUiPluginFactory<any, any> {
   const operationIds: FilesApiOperationIds = {
-    list: options?.operationIds?.list ?? 'list',
-    save: options?.operationIds?.save ?? 'save',
-    upload: options?.operationIds?.upload ?? 'upload',
+    list: options?.operationIds?.list ?? "list",
+    save: options?.operationIds?.save ?? "save",
+    upload: options?.operationIds?.upload ?? "upload",
   };
 
-  return runtime => {
+  return (runtime) => {
     const { registry, http } = runtime;
 
-    registry.components.set(makeRegistryKey(FilesNodeType.RelativePath, 'edit'), RelativePathEdit);
-    registry.components.set(makeRegistryKey(FilesNodeType.RelativePath, 'view'), RelativePathView);
+    registry.components.set(
+      makeRegistryKey(FilesNodeType.RelativePath, "edit"),
+      RelativePathEdit,
+    );
+    registry.components.set(
+      makeRegistryKey(FilesNodeType.RelativePath, "view"),
+      RelativePathView,
+    );
     registry.transformers.set(
-      makeRegistryKey('primitive', 'edit', 'string'),
+      makeRegistryKey("primitive", "edit", "string"),
       primitiveStringTransformer,
     );
 
     http.extensions.files = { operationIds };
 
-    return {
-      name: '@stately/files/ui',
-    };
+    return registerUiPlugin(runtime, {
+      name: "@stately/files/ui",
+    });
   };
 }
 

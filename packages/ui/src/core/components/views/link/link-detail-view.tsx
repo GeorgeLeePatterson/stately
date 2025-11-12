@@ -1,17 +1,14 @@
-import { useStatelyUi } from '@/context';
-import type { ViewFieldProps } from '@/core/components/fields';
-import { Skeleton } from '@/core/components/ui/skeleton';
-import type { CoreLinkNode, CoreSchemas } from '@/core';
-import { useEntityData } from '@/core/hooks/use-entity-data';
-import type { LinkFor } from './link-edit-view';
-import { LinkInlineView } from './link-inline-view';
-import { LinkRefView } from './link-ref-view';
+import { useStatelyUi } from "@/context";
+import type { ViewFieldProps } from "@/core/components/fields";
+import { Skeleton } from "@/core/components/ui/skeleton";
+import type { CoreLinkNode, CoreSchemas } from "@/core";
+import { useEntityData } from "@/core/hooks/use-entity-data";
+import type { LinkFor } from "./link-edit-view";
+import { LinkInlineView } from "./link-inline-view";
+import { LinkRefView } from "./link-ref-view";
 
-export type LinkViewProps<Schema extends CoreSchemas = CoreSchemas> = ViewFieldProps<
-  Schema,
-  CoreLinkNode<Schema>,
-  LinkFor<Schema>
->;
+export type LinkViewProps<Schema extends CoreSchemas = CoreSchemas> =
+  ViewFieldProps<Schema, CoreLinkNode<Schema>, LinkFor<Schema>>;
 
 export function LinkView<Schema extends CoreSchemas = CoreSchemas>({
   value,
@@ -24,7 +21,7 @@ export function LinkView<Schema extends CoreSchemas = CoreSchemas>({
   const entityType = node?.targetType;
   const stateEntry = entityType || value?.entity_type;
 
-  const identifier = value && 'ref' in value ? value.ref : undefined;
+  const identifier = value && "ref" in value ? value.ref : undefined;
 
   const { data, isLoading } = useEntityData<Schema>({
     entity: stateEntry,
@@ -32,13 +29,15 @@ export function LinkView<Schema extends CoreSchemas = CoreSchemas>({
     disabled: !identifier,
   });
 
-  if (!value || typeof value !== 'object') {
-    console.warn('LinkView: value must be an object with entity_type and ref/inline');
+  if (!value || typeof value !== "object") {
+    console.warn(
+      "LinkView: value must be an object with entity_type and ref/inline",
+    );
     return null;
   }
 
   if (!stateEntry) {
-    console.warn('LinkView: entity_type is required');
+    console.warn("LinkView: entity_type is required");
     return null;
   }
 
@@ -54,25 +53,29 @@ export function LinkView<Schema extends CoreSchemas = CoreSchemas>({
   }
 
   // Render as a reference with a link
-  if ('ref' in value) {
+  if ("ref" in value) {
     const entity = data?.entity?.data;
     return (
-          <LinkRefView
-            name={entity && 'name' in entity ? entity?.name : undefined}
-            urlType={urlType}
-            value={value}
-            schema={inlineSchema}
-          />
+      <LinkRefView
+        name={entity && "name" in entity ? entity?.name : undefined}
+        urlType={urlType}
+        value={value}
+        schema={inlineSchema}
+      />
     );
   }
 
   // Render inline configuration
-  if ('inline' in value) {
+  if ("inline" in value) {
     return (
-      <LinkInlineView targetType={value.entity_type} node={inlineSchema} value={value.inline} />
+      <LinkInlineView
+        targetType={value.entity_type}
+        node={inlineSchema}
+        value={value.inline}
+      />
     );
   }
 
-  console.warn('LinkView: value must have either ref or inline field');
+  console.warn("LinkView: value must have either ref or inline field");
   return null;
 }

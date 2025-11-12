@@ -1,7 +1,13 @@
-import { Explain, NotSet } from '@stately/ui/core/components/base';
-import { Database, ExternalLink, FolderOpen, HardDrive, HardDriveUpload } from 'lucide-react';
-import { FileBrowserDialog } from '@/components/dialogs/file-browser-dialog';
-import { RELATIVE_PATH_MODES } from '../edit/relative-path-field';
+import { Explain, NotSet } from "@stately/ui/core/components/base";
+import {
+  Database,
+  ExternalLink,
+  FolderOpen,
+  HardDrive,
+  HardDriveUpload,
+} from "lucide-react";
+import { FileBrowserDialog } from "@/components/dialogs/file-browser-dialog";
+import { RELATIVE_PATH_MODES } from "../edit/relative-path-field";
 
 export function RelativePathFieldView({ value }: { value: any }) {
   if (!value) {
@@ -9,8 +15,9 @@ export function RelativePathFieldView({ value }: { value: any }) {
   }
 
   // Check if it's a managed path (object with dir/path) or external (string)
-  const isManaged = typeof value === 'object' && 'dir' in value && 'path' in value;
-  const isExternal = typeof value === 'string';
+  const isManaged =
+    typeof value === "object" && "dir" in value && "path" in value;
+  const isExternal = typeof value === "string";
 
   const makeLabel = (
     Icon: React.ReactNode,
@@ -29,7 +36,9 @@ export function RelativePathFieldView({ value }: { value: any }) {
             {prefix ? (
               <span className="flex flex-nowrap items-center gap-1 whitespace-nowrap">
                 {Icon}
-                <span className="hidden @md:inline text-xs text-muted-foreground">{prefix}</span>
+                <span className="hidden @md:inline text-xs text-muted-foreground">
+                  {prefix}
+                </span>
               </span>
             ) : (
               Icon
@@ -45,9 +54,11 @@ export function RelativePathFieldView({ value }: { value: any }) {
   };
 
   if (isExternal) {
-    const ExtIcon = RELATIVE_PATH_MODES.find(n => n.value === 'external')?.icon ?? ExternalLink;
+    const ExtIcon =
+      RELATIVE_PATH_MODES.find((n) => n.value === "external")?.icon ??
+      ExternalLink;
     const extIcon = <ExtIcon className="h-3 w-3 text-muted-foreground" />;
-    return makeLabel(extIcon, value, `Full path: ${value}`, 'External');
+    return makeLabel(extIcon, value, `Full path: ${value}`, "External");
   }
 
   if (!isManaged) {
@@ -58,33 +69,35 @@ export function RelativePathFieldView({ value }: { value: any }) {
 
   // Choose icon based on directory
   const Icon =
-    pathValue.dir === 'cache'
+    pathValue.dir === "cache"
       ? HardDrive
-      : pathValue.dir === 'data'
+      : pathValue.dir === "data"
         ? Database
-        : pathValue.dir === 'upload'
+        : pathValue.dir === "upload"
           ? HardDriveUpload
           : FolderOpen;
 
   // Format display text
   const dirLabel =
-    pathValue.dir === 'cache'
-      ? 'cache'
-      : pathValue.dir === 'data'
-        ? 'data'
-        : pathValue.dir === 'upload'
-          ? 'upload'
-          : 'path';
+    pathValue.dir === "cache"
+      ? "cache"
+      : pathValue.dir === "data"
+        ? "data"
+        : pathValue.dir === "upload"
+          ? "upload"
+          : "path";
 
   return makeLabel(
     <Icon className="h-3 w-3 text-muted-foreground" />,
     pathValue.path,
     pathValue.path,
     dirLabel,
-    pathValue.dir === 'upload' ? (
+    pathValue.dir === "upload" ? (
       <FileBrowserDialog
         initialPath={
-          pathValue.path.includes('/') ? pathValue.path.split('/').slice(0, -1).join('/') : ''
+          pathValue.path.includes("/")
+            ? pathValue.path.split("/").slice(0, -1).join("/")
+            : ""
         }
       />
     ) : null,

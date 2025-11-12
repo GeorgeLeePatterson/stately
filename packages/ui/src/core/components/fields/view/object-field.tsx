@@ -1,17 +1,14 @@
-import type { CoreObjectNode, CoreSchemas } from '@/core';
-import type { AnyRecord } from '@/core/types';
-import { useStatelyUi } from '@/context';
-import { DescriptionLabel } from '@/core/components/base/description';
-import { NotSet } from '@/core/components/base/not-set';
-import { SimpleLabel } from '@/core/components/base/simple-label';
-import { FieldView } from '../field-view';
-import type { ViewFieldProps } from '../types';
+import type { CoreObjectNode, CoreSchemas } from "@/core";
+import type { AnyRecord } from "@/core/types";
+import { useStatelyUi } from "@/context";
+import { DescriptionLabel } from "@/core/components/base/description";
+import { NotSet } from "@/core/components/base/not-set";
+import { SimpleLabel } from "@/core/components/base/simple-label";
+import { FieldView } from "../field-view";
+import type { ViewFieldProps } from "../types";
 
-export type ObjectViewProps<Schema extends CoreSchemas = CoreSchemas> = ViewFieldProps<
-  Schema,
-  CoreObjectNode<Schema>,
-  any
->;
+export type ObjectViewProps<Schema extends CoreSchemas = CoreSchemas> =
+  ViewFieldProps<Schema, CoreObjectNode<Schema>, any>;
 
 export function ObjectView<Schema extends CoreSchemas = CoreSchemas>({
   value,
@@ -24,18 +21,21 @@ export function ObjectView<Schema extends CoreSchemas = CoreSchemas>({
   return (
     <div className="flex-1 border-l-2 border-primary/30 rounded-xs pl-4 py-3 space-y-4">
       {Object.entries(node.properties).map(([propName, propSchema]) => {
-        const typedSchema = propSchema as Schema['AnyNode'];
+        const typedSchema = propSchema as Schema["AnyNode"];
         const propValue = objValue[propName];
         const valueDefined = propValue !== undefined && propValue !== null;
         const label = `${schema.utils.generateFieldLabel(propName)}:`;
         const description = typedSchema.description;
-        const singleLine = !valueDefined || schema.utils.isPrimitive(typedSchema);
+        const singleLine =
+          !valueDefined || schema.utils.isPrimitive(typedSchema);
         const valueDisplay = valueDefined ? (
           <FieldView node={typedSchema} value={propValue} />
         ) : (
           <NotSet />
         );
-        const wrappingClass = singleLine ? 'items-center' : 'flex-col space-y-2';
+        const wrappingClass = singleLine
+          ? "items-center"
+          : "flex-col space-y-2";
 
         return (
           <div key={propName} className={`flex flex-1 gap-2 ${wrappingClass}`}>
@@ -43,10 +43,14 @@ export function ObjectView<Schema extends CoreSchemas = CoreSchemas>({
               {label && (
                 <SimpleLabel>
                   {label}
-                  {required.has(propName) && <span className="text-destructive ml-1">*</span>}
+                  {required.has(propName) && (
+                    <span className="text-destructive ml-1">*</span>
+                  )}
                 </SimpleLabel>
               )}
-              {description && !singleLine && <DescriptionLabel>{description}</DescriptionLabel>}
+              {description && !singleLine && (
+                <DescriptionLabel>{description}</DescriptionLabel>
+              )}
             </div>
             <div className="flex-1">{valueDisplay}</div>
           </div>

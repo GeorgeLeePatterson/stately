@@ -1,13 +1,14 @@
-import { ArrowLeft, ChevronRight, History } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useFileView } from '@/hooks/use-file-view';
-import type { FileInfo } from '@/types/file';
-import { FileView } from './file-explorer';
+import { ArrowLeft, ChevronRight, History } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useFileView } from "@/hooks/use-file-view";
+import type { FileInfo } from "@/types/file";
+import { FileView } from "./file-explorer";
 
 const formatTimestamp = (value?: number | string | null, withTime = false) => {
   if (value === undefined || value === null) return null;
-  const date = typeof value === 'number' ? new Date(value * 1000) : new Date(value);
+  const date =
+    typeof value === "number" ? new Date(value * 1000) : new Date(value);
   if (Number.isNaN(date.getTime())) return null;
   return withTime ? date.toLocaleString() : date.toLocaleDateString();
 };
@@ -51,7 +52,7 @@ export function FileManager({ initialPath }: FileManagerProps) {
   const files = queryResults.data?.files || [];
 
   // Get breadcrumb parts
-  const breadcrumbs = currentPath ? currentPath.split('/') : [];
+  const breadcrumbs = currentPath ? currentPath.split("/") : [];
 
   return (
     <div className="flex flex-col h-full min-h-full flex-1">
@@ -61,7 +62,7 @@ export function FileManager({ initialPath }: FileManagerProps) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setCurrentPath('')}
+            onClick={() => setCurrentPath("")}
             className="h-6 px-2 text-xs"
           >
             /
@@ -77,7 +78,7 @@ export function FileManager({ initialPath }: FileManagerProps) {
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  const newPath = breadcrumbs.slice(0, index + 1).join('/');
+                  const newPath = breadcrumbs.slice(0, index + 1).join("/");
                   setCurrentPath(newPath);
                 }}
                 className="h-6 px-2"
@@ -99,11 +100,18 @@ export function FileManager({ initialPath }: FileManagerProps) {
           onSelectEntry={handleEntryClick}
           navigateUp={navigateUp}
           isLoading={isLoading}
-          className={selectedEntry && selectedEntry.type !== 'directory' ? 'hidden sm:block' : ''}
+          className={
+            selectedEntry && selectedEntry.type !== "directory"
+              ? "hidden sm:block"
+              : ""
+          }
         >
           {/* Details panel - only show when a file or versioned file is selected */}
-          {selectedEntry && selectedEntry.type !== 'directory' && (
-            <FileDetailsPanel entry={selectedEntry} onClose={() => setSelectedEntry(null)} />
+          {selectedEntry && selectedEntry.type !== "directory" && (
+            <FileDetailsPanel
+              entry={selectedEntry}
+              onClose={() => setSelectedEntry(null)}
+            />
           )}
         </FileView>
       </div>
@@ -111,8 +119,14 @@ export function FileManager({ initialPath }: FileManagerProps) {
   );
 }
 
-function FileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClose: () => void }) {
-  if (entry.type === 'versioned_file') {
+function FileDetailsPanel({
+  entry,
+  onClose,
+}: {
+  entry: FileInfo;
+  onClose: () => void;
+}) {
+  if (entry.type === "versioned_file") {
     return <VersionedFileDetailsPanel entry={entry} onClose={onClose} />;
   }
 
@@ -120,7 +134,12 @@ function FileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClose: () => 
     <div className="w-full sm:w-96 p-4 border-l sm:border-l border-t sm:border-t-0">
       <div className="space-y-4">
         {/* Back button for mobile */}
-        <Button variant="ghost" size="sm" onClick={onClose} className="sm:hidden mb-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="sm:hidden mb-2"
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to files
         </Button>
@@ -133,7 +152,9 @@ function FileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClose: () => 
           <div className="flex justify-between">
             <span className="text-muted-foreground">Size:</span>
             <span className="font-mono">
-              {typeof entry.size === 'number' ? `${(entry.size / 1024).toFixed(2)} KB` : '—'}
+              {typeof entry.size === "number"
+                ? `${(entry.size / 1024).toFixed(2)} KB`
+                : "—"}
             </span>
           </div>
           {(() => {
@@ -160,7 +181,13 @@ function FileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClose: () => 
   );
 }
 
-function VersionedFileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClose: () => void }) {
+function VersionedFileDetailsPanel({
+  entry,
+  onClose,
+}: {
+  entry: FileInfo;
+  onClose: () => void;
+}) {
   const versions = entry.versions || [];
   const latestVersion = versions[0]; // Versions are sorted newest first
 
@@ -168,7 +195,12 @@ function VersionedFileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClos
     <div className="w-full sm:w-96 p-4 border-l sm:border-l border-t sm:border-t-0">
       <div className="space-y-4">
         {/* Back button for mobile */}
-        <Button variant="ghost" size="sm" onClick={onClose} className="sm:hidden mb-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="sm:hidden mb-2"
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to files
         </Button>
@@ -185,9 +217,9 @@ function VersionedFileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClos
           <div className="flex justify-between">
             <span className="text-muted-foreground">Latest version:</span>
             <span className="font-mono">
-              {typeof latestVersion?.size === 'number'
+              {typeof latestVersion?.size === "number"
                 ? `${(latestVersion.size / 1024).toFixed(2)} KB`
-                : 'N/A'}
+                : "N/A"}
             </span>
           </div>
           {(() => {
@@ -225,9 +257,14 @@ function VersionedFileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClos
                   className="flex flex-col items-start justify-between p-2 gap-1 rounded hover:bg-muted/50 text-xs"
                 >
                   <div className="flex-1 flex flex-row w-full min-w-0 items-center justify-between">
-                    <div className="font-medium">v{versions.length - index}</div>
+                    <div className="font-medium">
+                      v{versions.length - index}
+                    </div>
                     {(() => {
-                      const created = formatTimestamp(version.created ?? version.created_at, true);
+                      const created = formatTimestamp(
+                        version.created ?? version.created_at,
+                        true,
+                      );
                       return created ? (
                         <span className="text-muted-foreground">{created}</span>
                       ) : null;
@@ -235,12 +272,12 @@ function VersionedFileDetailsPanel({ entry, onClose }: { entry: FileInfo; onClos
                   </div>
                   <div className="flex-1 w-full flex flex-row items-center justify-between">
                     <div className="text-muted-foreground font-mono truncate text-[10px]">
-                      {version.uuid ?? version.id ?? 'unknown'}
+                      {version.uuid ?? version.id ?? "unknown"}
                     </div>
                     <span className="text-muted-foreground">
-                      {typeof version.size === 'number'
+                      {typeof version.size === "number"
                         ? `${(version.size / 1024).toFixed(1)}kb`
-                        : 'N/A'}
+                        : "N/A"}
                     </span>
                   </div>
                 </div>

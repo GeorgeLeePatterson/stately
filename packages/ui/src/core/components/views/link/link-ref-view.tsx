@@ -1,15 +1,15 @@
-import { ExternalLink } from 'lucide-react';
-import type { CoreObjectNode, CoreSchemas, CoreStateEntry } from '@/core';
-import { Button } from '@/core/components/ui/button';
+import { ExternalLink } from "lucide-react";
+import type { CoreObjectNode, CoreSchemas, CoreStateEntry } from "@/core";
+import { Button } from "@/core/components/ui/button";
 import {
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemTitle,
-} from '@/core/components/ui/item';
-import { ViewLinkControl } from '@/core/context/link-explore-context';
-import { cn } from '@/core/lib/utils';
+} from "@/core/components/ui/item";
+import { ViewLinkControl } from "@/core/context/link-explore-context";
+import { cn } from "@/core/lib/utils";
 
 export interface LinkRefViewProps<Schema extends CoreSchemas = CoreSchemas> {
   label?: React.ReactNode;
@@ -31,15 +31,22 @@ export function LinkRefView<Schema extends CoreSchemas = CoreSchemas>({
   return (
     <>
       <Item
-        className={cn('flex-1 bg-muted', isRequired && !value?.ref ? 'border-red-500' : '')}
+        className={cn(
+          "flex-1 bg-muted",
+          isRequired && !value?.ref ? "border-red-500" : "",
+        )}
         size="sm"
       >
         <ItemContent>
           <ItemTitle>
-            Name:{' '}
+            Name:{" "}
             {name ||
               value.ref ||
-              (isRequired ? <span className="text-red-500">Invalid, missing ref</span> : 'Unknown')}
+              (isRequired ? (
+                <span className="text-red-500">Invalid, missing ref</span>
+              ) : (
+                "Unknown"
+              ))}
           </ItemTitle>
           {label && <ItemDescription>{label} Configuration</ItemDescription>}
         </ItemContent>
@@ -60,7 +67,11 @@ export function LinkRefView<Schema extends CoreSchemas = CoreSchemas>({
               className="rounded-full cursor-pointer"
               asChild
             >
-              <a href={`/entities/${urlType}/${value.ref}`} target="_blank" rel="noreferrer">
+              <a
+                href={`/entities/${urlType}/${value.ref}`}
+                target="_blank"
+                rel="noreferrer"
+              >
                 <ExternalLink className="w-4 h-4" />
               </a>
             </Button>

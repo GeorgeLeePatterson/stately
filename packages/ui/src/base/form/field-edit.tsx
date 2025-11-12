@@ -5,12 +5,12 @@
  * All base components are pre-registered in statelyUi()
  */
 
-import { useStatelyUi } from '@/context';
-import { getEditComponent } from '@/registry';
+import { useStatelyUi } from "@/context";
+import { getEditComponent } from "@/registry";
 
 export interface EditFieldProps<
   Schema extends CoreSchemas = CoreSchemas,
-  N extends Schema['AnyNode'] = Schema['AnyNode'],
+  N extends Schema["AnyNode"] = Schema["AnyNode"],
   V = unknown,
 > {
   formId: string;
@@ -26,15 +26,22 @@ export interface EditFieldProps<
 
 export function FieldEdit<
   Schema extends CoreSchemas = CoreSchemas,
-  N extends Schema['AnyNode'] = Schema['AnyNode'],
+  N extends Schema["AnyNode"] = Schema["AnyNode"],
   V = unknown,
 >(props: EditFieldProps<Schema, N, V>) {
   const { node } = props;
   const { registry } = useStatelyUi();
-  const Edit = getEditComponent<Schema, N, V>(registry.components, node.nodeType);
+  const Edit = getEditComponent<Schema, N, V>(
+    registry.components,
+    node.nodeType,
+  );
 
   if (!Edit) {
-    return <div className="text-destructive text-sm">Unknown node type: {node.nodeType}</div>;
+    return (
+      <div className="text-destructive text-sm">
+        Unknown node type: {node.nodeType}
+      </div>
+    );
   }
 
   return <Edit {...props} />;

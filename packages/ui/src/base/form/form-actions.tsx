@@ -1,7 +1,7 @@
-import { Save, X } from 'lucide-react';
-import { Explain } from '../components/explain';
-import { GlowingSave } from '../components/glowing-save';
-import { Button } from '../ui/button';
+import { Save, X } from "lucide-react";
+import { Explain } from "../components/explain";
+import { GlowingSave } from "../components/glowing-save";
+import { Button } from "../ui/button";
 
 export function FormActions({
   isDirty,
@@ -30,12 +30,17 @@ export function FormActions({
               className="cursor-pointer"
             >
               <Save className="w-4 h-4 mr-2" />
-              {isPending ? 'Saving...' : 'Save'}
+              {isPending ? "Saving..." : "Save"}
             </Button>
           </span>
         </Explain>
       )}
-      <Button variant="outline" onClick={onCancel} disabled={isPending} className="cursor-pointer">
+      <Button
+        variant="outline"
+        onClick={onCancel}
+        disabled={isPending}
+        className="cursor-pointer"
+      >
         <X className="w-4 h-4 mr-2" />
         Cancel
       </Button>

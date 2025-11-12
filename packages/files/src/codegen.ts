@@ -1,11 +1,11 @@
-import type { CodegenPlugin, CodegenPluginContext } from '@stately/codegen';
-import { FilesNodeType } from './schema.js';
+import type { CodegenPlugin, CodegenPluginContext } from "@stately/codegen";
+import { FilesNodeType } from "./schema.js";
 
-const REQUIRED_DIRS = ['cache', 'data', 'upload', 'config'];
+const REQUIRED_DIRS = ["cache", "data", "upload", "config"];
 
 const deref = (schema: any, pluginCtx: CodegenPluginContext) => {
   if (!schema) return null;
-  return schema.$ref ? pluginCtx.resolveRef(schema.$ref) ?? null : schema;
+  return schema.$ref ? (pluginCtx.resolveRef(schema.$ref) ?? null) : schema;
 };
 
 const hasDirPathShape = (schema: any) => {
@@ -18,8 +18,8 @@ const hasDirPathShape = (schema: any) => {
     dir.enum.length > 0 &&
     path &&
     Array.isArray(schema.required) &&
-    schema.required.includes('dir') &&
-    schema.required.includes('path')
+    schema.required.includes("dir") &&
+    schema.required.includes("path")
   );
 };
 
@@ -27,7 +27,7 @@ const extractDirValues = (variants: any[]): string[] =>
   variants
     .map((variant: any) => {
       const value = variant?.properties?.dir?.enum?.[0];
-      return typeof value === 'string' ? value.toLowerCase() : '';
+      return typeof value === "string" ? value.toLowerCase() : "";
     })
     .filter(Boolean);
 
@@ -40,28 +40,40 @@ const isRelativePathObject = (schema: any, ctx: CodegenPluginContext) => {
   if (variants.length !== 4) return false;
   if (!variants.every(hasDirPathShape)) return false;
   const dirValues = extractDirValues(variants);
-  return REQUIRED_DIRS.every(dir => dirValues.includes(dir));
+  return REQUIRED_DIRS.every((dir) => dirValues.includes(dir));
 };
 
 const isUserDefinedPathUnion = (schema: any, ctx: CodegenPluginContext) => {
   const resolved = deref(schema, ctx);
   if (!resolved?.oneOf || resolved.oneOf.length !== 2) return false;
-  const variants = resolved.oneOf.map((variant: any) => deref(variant, ctx)).filter(Boolean);
+  const variants = resolved.oneOf
+    .map((variant: any) => deref(variant, ctx))
+    .filter(Boolean);
   if (variants.length !== 2) return false;
-  const hasStringVariant = variants.some((variant: any) => variant?.type === 'string');
-  const relativeVariant = variants.find((variant: any) => isRelativePathObject(variant, ctx));
+  const hasStringVariant = variants.some(
+    (variant: any) => variant?.type === "string",
+  );
+  const relativeVariant = variants.find((variant: any) =>
+    isRelativePathObject(variant, ctx),
+  );
   return Boolean(hasStringVariant && relativeVariant);
 };
 
 export const filesCodegenPlugin: CodegenPlugin = {
-  name: 'stately-files-relative-path',
-  description: 'Detects RelativePath nodes emitted by @stately/files',
+  name: "stately-files-relative-path",
+  description: "Detects RelativePath nodes emitted by @stately/files",
   match(schema) {
     return Boolean(schema?.oneOf);
   },
   transform(schema, ctx) {
-    if (isRelativePathObject(schema, ctx) || isUserDefinedPathUnion(schema, ctx)) {
-      return { nodeType: FilesNodeType.RelativePath, description: schema?.description };
+    if (
+      isRelativePathObject(schema, ctx) ||
+      isUserDefinedPathUnion(schema, ctx)
+    ) {
+      return {
+        nodeType: FilesNodeType.RelativePath,
+        description: schema?.description,
+      };
     }
     return null;
   },

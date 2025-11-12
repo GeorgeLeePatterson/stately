@@ -1,7 +1,12 @@
-import { useCallback } from 'react';
-import type { CoreObjectNode, CoreSchemas, CoreStateEntry, CoreSummary } from '@/core';
-import { EntitySelectEdit } from '../entity/entity-select-edit';
-import type { LinkFor } from './link-edit-view';
+import { useCallback } from "react";
+import type {
+  CoreObjectNode,
+  CoreSchemas,
+  CoreStateEntry,
+  CoreSummary,
+} from "@/core";
+import { EntitySelectEdit } from "../entity/entity-select-edit";
+import type { LinkFor } from "./link-edit-view";
 
 export interface LinkRefEditProps<Schema extends CoreSchemas = CoreSchemas> {
   /** Whether the form is readonly */
@@ -47,12 +52,15 @@ export function LinkRefEdit<Schema extends CoreSchemas = CoreSchemas>({
   after,
   onEditAsInline,
 }: LinkRefEditProps<Schema>) {
-  const ref = value && 'ref' in value ? value.ref : isReadOnly ? 'default' : '';
+  const ref = value && "ref" in value ? value.ref : isReadOnly ? "default" : "";
 
   // Handle selection change
   const handleChange = useCallback(
     (selectedRef: string | null) => {
-      onChange({ entity_type: targetType, ref: selectedRef } as LinkFor<Schema>);
+      onChange({
+        entity_type: targetType,
+        ref: selectedRef,
+      } as LinkFor<Schema>);
     },
     [targetType, onChange],
   );

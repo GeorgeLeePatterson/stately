@@ -1,10 +1,8 @@
-
-
 export function generateFieldLabel(fieldName: string): string {
   return fieldName
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 /**
@@ -17,18 +15,18 @@ export function getDefaultValue<Config extends CoreStatelyConfig>(
   switch (node.nodeType) {
     case CoreNodeType.Primitive:
       switch ((node as any).primitiveType) {
-        case 'string':
-          return '';
-        case 'number':
-        case 'integer':
+        case "string":
+          return "";
+        case "number":
+        case "integer":
           return 0;
-        case 'boolean':
+        case "boolean":
           return false;
       }
       break;
 
     case CoreNodeType.Enum:
-      return (node as any).values[0] || '';
+      return (node as any).values[0] || "";
 
     case CoreNodeType.Array:
       return [];
@@ -51,7 +49,7 @@ export function getDefaultValue<Config extends CoreStatelyConfig>(
     }
 
     case CoreNodeType.Link:
-      return '';
+      return "";
 
     case CoreNodeType.TaggedUnion:
     case CoreNodeType.UntaggedEnum:

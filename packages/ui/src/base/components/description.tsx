@@ -1,4 +1,4 @@
-import type { BlockquoteHTMLAttributes } from 'react';
+import type { BlockquoteHTMLAttributes } from "react";
 
 export function DescriptionLabel({
   children,
@@ -8,11 +8,11 @@ export function DescriptionLabel({
     <span
       {...rest}
       className={[
-        'min-w-0 leading-none',
-        'overflow-y-visible',
-        'text-xs italic font-medium text-muted-foreground',
-        rest.className || '',
-      ].join(' ')}
+        "min-w-0 leading-none",
+        "overflow-y-visible",
+        "text-xs italic font-medium text-muted-foreground",
+        rest.className || "",
+      ].join(" ")}
     >
       {children}
     </span>

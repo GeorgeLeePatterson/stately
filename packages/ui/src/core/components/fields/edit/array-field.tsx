@@ -1,21 +1,18 @@
-import { CoreNodeType } from '@stately/schema/core/nodes';
-import { Plus, Trash2 } from 'lucide-react';
-import { useCallback, useEffect, useId, useState } from 'react';
-import { useStatelyUi } from '@/context';
-import { ArrayIndex } from '@/core/components/base/array';
-import { Button } from '@/core/components/ui/button';
-import { Field, FieldSet } from '@/core/components/ui/field';
-import { cn } from '@/core/lib/utils';
-import type { CoreArrayNode, CoreSchemas } from '@/core';
-import { GlowingSave } from '../../base/glowing-save';
-import { FieldEdit } from '../field-edit';
-import type { EditFieldProps } from '../types';
+import { CoreNodeType } from "@stately/schema/core/nodes";
+import { Plus, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useId, useState } from "react";
+import { useStatelyUi } from "@/context";
+import { ArrayIndex } from "@/core/components/base/array";
+import { Button } from "@/core/components/ui/button";
+import { Field, FieldSet } from "@/core/components/ui/field";
+import { cn } from "@/core/lib/utils";
+import type { CoreArrayNode, CoreSchemas } from "@/core";
+import { GlowingSave } from "../../base/glowing-save";
+import { FieldEdit } from "../field-edit";
+import type { EditFieldProps } from "../types";
 
-export type ArrayEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
-  Schema,
-  CoreArrayNode<Schema>,
-  unknown[]
->;
+export type ArrayEditProps<Schema extends CoreSchemas = CoreSchemas> =
+  EditFieldProps<Schema, CoreArrayNode<Schema>, unknown[]>;
 
 /**
  * Array field component - handles Vec<T> in Rust
@@ -56,7 +53,8 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
   // Get item label for Link types
   const getItemLabel = (index: number, item: any) => {
     if (itemNode.nodeType === CoreNodeType.Link) {
-      const targetName = schema.data.entityDisplayNames?.[itemNode.targetType] || 'Item';
+      const targetName =
+        schema.data.entityDisplayNames?.[itemNode.targetType] || "Item";
 
       // If this is a reference mode Link, show the ref name
       if (item?.ref) {
@@ -70,7 +68,8 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
   };
 
   // Validate array - just check presence if required (items validate themselves)
-  const isValid = !isRequired || (Array.isArray(formData) && formData.length > 0);
+  const isValid =
+    !isRequired || (Array.isArray(formData) && formData.length > 0);
 
   // Handle save - notify parent with current formData
   const handleSave = useCallback(() => {
@@ -86,7 +85,9 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
   };
 
   const handleRemove = (index: number) => {
-    setFormData((prev: any[]) => prev.filter((_: any, i: number) => i !== index));
+    setFormData((prev: any[]) =>
+      prev.filter((_: any, i: number) => i !== index),
+    );
     setIsDirty(true);
   };
 
@@ -124,7 +125,7 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
                       formId={`${arrayFormId}-${index}`}
                       node={node}
                       value={item}
-                      onChange={newValue => handleChange(index, newValue)}
+                      onChange={(newValue) => handleChange(index, newValue)}
                     />
                   </div>
 
@@ -136,8 +137,8 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
                       variant="secondary"
                       onClick={() => handleRemove(index)}
                       className={cn(
-                        'text-destructive cursor-pointer',
-                        'hover:text-destructive hover:bg-destructive/10',
+                        "text-destructive cursor-pointer",
+                        "hover:text-destructive hover:bg-destructive/10",
                       )}
                     >
                       <Trash2 />
@@ -164,8 +165,8 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
                     formId={`${arrayFormId}-${index}`}
                     node={node}
                     value={item}
-                    onChange={newValue => handleChange(index, newValue)}
-                    label={''}
+                    onChange={(newValue) => handleChange(index, newValue)}
+                    label={""}
                     isWizard={isWizard}
                   />
                 </Field>
@@ -194,7 +195,7 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
         <GlowingSave
           mode="edit"
           size="sm"
-          label={label ? `${label} Array` : 'Array'}
+          label={label ? `${label} Array` : "Array"}
           isDisabled={!isValid}
           onSave={handleSave}
           onCancel={() => {

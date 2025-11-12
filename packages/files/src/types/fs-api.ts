@@ -1,4 +1,4 @@
-import type { FileInfo } from './file';
+import type { FileInfo } from "./file";
 
 export interface FileListResponse {
   files: FileInfo[];

@@ -1,7 +1,11 @@
-import { ChevronDown, ChevronRight } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
-import { Item, ItemActions, ItemContent } from '../ui/item';
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { Button } from "../ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "../ui/collapsible";
+import { Item, ItemActions, ItemContent } from "../ui/item";
 
 export function JsonView({
   data,
@@ -19,7 +23,11 @@ export function JsonView({
           <ItemContent>Full JSON Configuration</ItemContent>
           <ItemActions>
             <Button type="button" variant="ghost" size="sm">
-              {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              {isOpen ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
             </Button>
           </ItemActions>
         </Item>

@@ -1,6 +1,9 @@
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from "react";
 
-export function Empty({ children, className }: PropsWithChildren<{ className?: string }>) {
+export function Empty({
+  children,
+  className,
+}: PropsWithChildren<{ className?: string }>) {
   return <div className={className}>{children}</div>;
 }
 

@@ -1,13 +1,11 @@
-import type { CoreSchemas, CoreUntaggedEnumNode } from '@/core';
-import { FieldItem } from '@/core/components/base/array';
-import { SimpleLabel } from '@/core/components/base/simple-label';
-import { FieldView } from '../field-view';
-import type { ViewFieldProps } from '../types';
+import type { CoreSchemas, CoreUntaggedEnumNode } from "@/core";
+import { FieldItem } from "@/core/components/base/array";
+import { SimpleLabel } from "@/core/components/base/simple-label";
+import { FieldView } from "../field-view";
+import type { ViewFieldProps } from "../types";
 
-export type UntaggedEnumViewProps<Schema extends CoreSchemas = CoreSchemas> = ViewFieldProps<
-  Schema,
-  CoreUntaggedEnumNode<Schema>
->;
+export type UntaggedEnumViewProps<Schema extends CoreSchemas = CoreSchemas> =
+  ViewFieldProps<Schema, CoreUntaggedEnumNode<Schema>>;
 
 export function UntaggedEnumView<Schema extends CoreSchemas = CoreSchemas>({
   value,
@@ -33,7 +31,13 @@ export function UntaggedEnumView<Schema extends CoreSchemas = CoreSchemas>({
   // Extract the inner value for this variant
   const innerValue = unionValue[activeVariant.tag];
 
-  return <EnumFieldView tag={activeVariant.tag} node={activeVariant.schema} value={innerValue} />;
+  return (
+    <EnumFieldView
+      tag={activeVariant.tag}
+      node={activeVariant.schema}
+      value={innerValue}
+    />
+  );
 }
 
 export function EnumFieldView<Schema extends CoreSchemas = CoreSchemas>({
@@ -42,7 +46,7 @@ export function EnumFieldView<Schema extends CoreSchemas = CoreSchemas>({
   value,
 }: {
   tag: string;
-  node: Schema['AnyNode'];
+  node: Schema["AnyNode"];
   value: unknown;
 }) {
   return (

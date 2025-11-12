@@ -1,15 +1,15 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Upload as UploadIcon } from 'lucide-react';
-import { useCallback, useId } from 'react';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { useFileView } from '@/hooks/use-file-view';
-import { useFilesApi } from '@/lib/files-api';
-import type { FileInfo } from '@/types/file';
-import { FileView } from './file-explorer';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader2, Upload as UploadIcon } from "lucide-react";
+import { useCallback, useId } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { useFileView } from "@/hooks/use-file-view";
+import { useFilesApi } from "@/lib/files-api";
+import type { FileInfo } from "@/types/file";
+import { FileView } from "./file-explorer";
 
 interface FileSelectorProps {
-  mode: 'browse' | 'upload';
+  mode: "browse" | "upload";
   onSelect: (path: string) => void;
   onClose?: () => void;
 }
@@ -29,15 +29,21 @@ export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
   const onSelectFile = useCallback(
     (file: FileInfo, currentPath?: string) => {
       const fullPath = currentPath ? `${currentPath}/${file.name}` : file.name;
-      console.debug('Selected file entry: ', { fullPath, currentPath, file });
+      console.debug("Selected file entry: ", { fullPath, currentPath, file });
       onSelect(fullPath);
     },
     [onSelect],
   );
 
-  const { queryResults, currentPath, selectedEntry, handleEntryClick, navigateUp } = useFileView({
+  const {
+    queryResults,
+    currentPath,
+    selectedEntry,
+    handleEntryClick,
+    navigateUp,
+  } = useFileView({
     onSelectFile,
-    isDisabled: mode !== 'browse',
+    isDisabled: mode !== "browse",
   });
 
   const isLoading = queryResults.isLoading;
@@ -47,25 +53,27 @@ export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
       const { data, error } = await filesApi.upload({ body: formData });
-      if (!data || error) throw new Error('Upload failed');
+      if (!data || error) throw new Error("Upload failed");
       return data;
     },
-    onSuccess: data => {
-      toast.success('File uploaded successfully');
-      queryClient.invalidateQueries({ queryKey: filesApi.key.list(currentPath) });
+    onSuccess: (data) => {
+      toast.success("File uploaded successfully");
+      queryClient.invalidateQueries({
+        queryKey: filesApi.key.list(currentPath),
+      });
       onSelect(data.path);
       onClose?.();
     },
-    onError: error => {
-      console.error('File upload error:', error);
-      toast.error('Failed to upload file');
+    onError: (error) => {
+      console.error("File upload error:", error);
+      toast.error("Failed to upload file");
     },
   });
 
   // Browse mode - file list only
-  if (mode === 'browse') {
+  if (mode === "browse") {
     return (
       <FileView
         files={files}
@@ -86,13 +94,15 @@ export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
         <UploadIcon className="h-8 w-8 mx-auto text-muted-foreground" />
         <div className="space-y-1">
           <p className="text-sm font-medium">Upload a file</p>
-          <p className="text-xs text-muted-foreground">Select a file from your computer</p>
+          <p className="text-xs text-muted-foreground">
+            Select a file from your computer
+          </p>
         </div>
         <input
           id={`file-upload-${formId}`}
           type="file"
           className="hidden"
-          onChange={e => {
+          onChange={(e) => {
             const file = e.target.files?.[0];
             if (file) uploadMutation.mutate(file);
           }}
@@ -100,7 +110,9 @@ export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
         />
         <Button
           size="sm"
-          onClick={() => document.getElementById(`file-upload-${formId}`)?.click()}
+          onClick={() =>
+            document.getElementById(`file-upload-${formId}`)?.click()
+          }
           disabled={uploadMutation.isPending}
         >
           {uploadMutation.isPending ? (
@@ -109,7 +121,7 @@ export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
               Uploading...
             </>
           ) : (
-            'Choose File'
+            "Choose File"
           )}
         </Button>
       </div>

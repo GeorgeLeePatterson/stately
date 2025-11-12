@@ -1,11 +1,13 @@
-import { useId } from 'react';
-import type { CoreEntity, CoreObjectNode, CoreSchemas } from '@/core';
-import { ObjectWizardEdit } from '../../fields/edit/object-wizard';
+import { useId } from "react";
+import type { CoreEntity, CoreObjectNode, CoreSchemas } from "@/core";
+import { ObjectWizardEdit } from "../../fields/edit/object-wizard";
 
-export interface EntityWizardViewProps<Schema extends CoreSchemas = CoreSchemas> {
+export interface EntityWizardViewProps<
+  Schema extends CoreSchemas = CoreSchemas,
+> {
   node: CoreObjectNode<Schema>;
-  value?: CoreEntity<Schema>['data'];
-  onChange: (value: CoreEntity<Schema>['data']) => void;
+  value?: CoreEntity<Schema>["data"];
+  onChange: (value: CoreEntity<Schema>["data"]) => void;
   onComplete?: () => void;
   isLoading?: boolean;
   isRootEntity?: boolean;
@@ -26,8 +28,8 @@ export function EntityWizardView<Schema extends CoreSchemas = CoreSchemas>({
   const formId = useId();
   // If the entity has a name property, ensure it's required if the entity is root
   const newNode =
-    'name' in node.properties && isRootEntity
-      ? { ...node, required: [...node.required, 'name'] }
+    "name" in node.properties && isRootEntity
+      ? { ...node, required: [...node.required, "name"] }
       : node;
   return (
     <ObjectWizardEdit<Schema>

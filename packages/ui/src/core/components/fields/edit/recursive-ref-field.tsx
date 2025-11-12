@@ -1,12 +1,10 @@
-import type { CoreRecursiveRefNode, CoreSchemas } from '@/core';
-import { useStatelyUi } from '@/context';
-import { FieldEdit } from '../field-edit';
-import type { EditFieldProps } from '../types';
+import type { CoreRecursiveRefNode, CoreSchemas } from "@/core";
+import { useStatelyUi } from "@/context";
+import { FieldEdit } from "../field-edit";
+import type { EditFieldProps } from "../types";
 
-export type RecursiveRefEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
-  Schema,
-  CoreRecursiveRefNode<Schema>
->;
+export type RecursiveRefEditProps<Schema extends CoreSchemas = CoreSchemas> =
+  EditFieldProps<Schema, CoreRecursiveRefNode<Schema>>;
 
 export function RecursiveRefEdit<Schema extends CoreSchemas = CoreSchemas>(
   props: RecursiveRefEditProps<Schema>,

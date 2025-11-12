@@ -1,4 +1,4 @@
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export function Explain({
   children,

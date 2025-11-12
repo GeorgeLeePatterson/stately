@@ -1,15 +1,21 @@
-import { ChevronRight } from 'lucide-react';
-import { Fragment } from 'react';
-import { useStatelyUi } from '@/context';
-import { useEntityData } from '@/core/hooks/use-entity-data';
-import { useEntitySchema } from '@/core/hooks/use-entity-schema';
-import type { CoreObjectNode, CoreSchemas, CoreStateEntry } from '@/core';
-import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
-import { ScrollArea } from '../ui/scroll-area';
-import { Separator } from '../ui/separator';
-import { Skeleton } from '../ui/skeleton';
-import { EntityDetailView } from '../views/entity/entity-detail-view';
+import { ChevronRight } from "lucide-react";
+import { Fragment } from "react";
+import { useStatelyUi } from "@/context";
+import { useEntityData } from "@/core/hooks/use-entity-data";
+import { useEntitySchema } from "@/core/hooks/use-entity-schema";
+import type { CoreObjectNode, CoreSchemas, CoreStateEntry } from "@/core";
+import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import { ScrollArea } from "../ui/scroll-area";
+import { Separator } from "../ui/separator";
+import { Skeleton } from "../ui/skeleton";
+import { EntityDetailView } from "../views/entity/entity-detail-view";
 
 export interface LinkEntityProps<Schema extends CoreSchemas = CoreSchemas> {
   entityName: string;
@@ -64,7 +70,9 @@ export function ViewLinkDialog<Schema extends CoreSchemas = CoreSchemas>({
             </span>
             <span className="truncate">{entityName}</span>
           </DialogTitle>
-          <DialogDescription>Navigate around referenced configuration</DialogDescription>
+          <DialogDescription>
+            Navigate around referenced configuration
+          </DialogDescription>
         </DialogHeader>
 
         {/* Breadcrumb Navigation */}
@@ -73,7 +81,9 @@ export function ViewLinkDialog<Schema extends CoreSchemas = CoreSchemas>({
             <div className="flex items-center gap-1 text-sm overflow-x-auto pb-2">
               {breadcrumbs.map((crumb, idx) => (
                 <Fragment key={`${crumb.entityName}-${idx}`}>
-                  {idx > 0 && <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />}
+                  {idx > 0 && (
+                    <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                  )}
                   <Button
                     type="button"
                     variant="ghost"
@@ -82,7 +92,9 @@ export function ViewLinkDialog<Schema extends CoreSchemas = CoreSchemas>({
                     disabled={idx === breadcrumbs.length - 1}
                     className="shrink-0 cursor-pointer"
                   >
-                    <span className="truncate max-w-[150px]">{crumb.entityType}</span>
+                    <span className="truncate max-w-[150px]">
+                      {crumb.entityType}
+                    </span>
                   </Button>
                 </Fragment>
               ))}
@@ -102,15 +114,19 @@ export function ViewLinkDialog<Schema extends CoreSchemas = CoreSchemas>({
             // Entity fetch error
             <div className="text-center py-8">
               <p className="text-destructive mb-2">Error loading entity</p>
-              <p className="text-sm text-muted-foreground">{queryError.message}</p>
+              <p className="text-sm text-muted-foreground">
+                {queryError.message}
+              </p>
             </div>
           ) : !entityData ? (
             // No entity type
-            <p className="text-muted-foreground text-center py-8">Entity not found</p>
+            <p className="text-muted-foreground text-center py-8">
+              Entity not found
+            </p>
           ) : !entitySchema.node ? (
             // Entity schema error
             <div className="text-center py-8 text-destructive">
-              {entitySchema.error || 'No entity found'}
+              {entitySchema.error || "No entity found"}
             </div>
           ) : (
             <EntityDetailView

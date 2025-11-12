@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '../ui/alert-dialog';
+} from "../ui/alert-dialog";
 
 export interface RemoveDialogProps {
   name: string;
@@ -16,14 +16,20 @@ export interface RemoveDialogProps {
   setOpen: (open: boolean) => void;
 }
 
-export function RemoveDialog({ name, onRemove, open, setOpen }: RemoveDialogProps) {
+export function RemoveDialog({
+  name,
+  onRemove,
+  open,
+  setOpen,
+}: RemoveDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the {name}. This action cannot be undone.
+            This will permanently delete the {name}. This action cannot be
+            undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

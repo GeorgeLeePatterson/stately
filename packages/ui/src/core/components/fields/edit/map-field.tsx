@@ -1,9 +1,21 @@
-import { CoreNodeType } from '@stately/schema/core/nodes';
-import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Trash2, X } from 'lucide-react';
-import { useCallback, useId, useState } from 'react';
-import { Button } from '@/core/components/ui/button';
-import { Card, CardContent } from '@/core/components/ui/card';
-import { Field, FieldLegend, FieldSeparator, FieldSet } from '@/core/components/ui/field';
+import { CoreNodeType } from "@stately/schema/core/nodes";
+import {
+  ChevronsDownUp,
+  ChevronsUpDown,
+  Pencil,
+  Plus,
+  Trash2,
+  X,
+} from "lucide-react";
+import { useCallback, useId, useState } from "react";
+import { Button } from "@/core/components/ui/button";
+import { Card, CardContent } from "@/core/components/ui/card";
+import {
+  Field,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+} from "@/core/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
@@ -11,18 +23,18 @@ import {
   InputGroupInput,
   InputGroupText,
   InputGroupTextarea,
-} from '@/core/components/ui/input-group';
-import { Item, ItemContent, ItemGroup } from '@/core/components/ui/item';
-import { Separator } from '@/core/components/ui/separator';
-import { useViewMore } from '@/core/hooks/use-view-more';
-import { cn } from '@/core/lib/utils';
-import type { CoreMapNode, CoreSchemas } from '@/core';
-import type { AnyRecord } from '@/core/types';
-import { GlowingSave } from '../../base/glowing-save';
-import { FieldEdit } from '../field-edit';
-import { FieldView } from '../field-view';
-import type { EditFieldProps } from '../types';
-import { KeyValue } from '../view/map-field';
+} from "@/core/components/ui/input-group";
+import { Item, ItemContent, ItemGroup } from "@/core/components/ui/item";
+import { Separator } from "@/core/components/ui/separator";
+import { useViewMore } from "@/core/hooks/use-view-more";
+import { cn } from "@/core/lib/utils";
+import type { CoreMapNode, CoreSchemas } from "@/core";
+import type { AnyRecord } from "@/core/types";
+import { GlowingSave } from "../../base/glowing-save";
+import { FieldEdit } from "../field-edit";
+import { FieldView } from "../field-view";
+import type { EditFieldProps } from "../types";
+import { KeyValue } from "../view/map-field";
 
 const generateSaveLabels = (
   label?: string,
@@ -30,29 +42,37 @@ const generateSaveLabels = (
   value?: any,
   isEditDirty?: boolean,
 ): { edit: string; save: string; saveAll: string } => {
-  const newVariables = Object.keys(formData || {}).filter(k => !value || !(k in value));
+  const newVariables = Object.keys(formData || {}).filter(
+    (k) => !value || !(k in value),
+  );
   const hasNewVariable = newVariables.length > 0;
   const hasNewVariables = newVariables.length > 1;
   const pluralize = (hasNewVariable && isEditDirty) || hasNewVariables;
 
-  const saveFormLabel = label ? `New ${label} Variable` : 'New Variable';
-  const editFormLabel = label ? `Edited ${label} Variable` : 'Edited Variable';
+  const saveFormLabel = label ? `New ${label} Variable` : "New Variable";
+  const editFormLabel = label ? `Edited ${label} Variable` : "Edited Variable";
 
-  let saveLabelPrefix = '';
+  let saveLabelPrefix = "";
   if (!!formData && !!value && (hasNewVariable || isEditDirty)) {
-    saveLabelPrefix = hasNewVariable && !isEditDirty ? 'New ' : !hasNewVariable ? 'Edited ' : '';
+    saveLabelPrefix =
+      hasNewVariable && !isEditDirty
+        ? "New "
+        : !hasNewVariable
+          ? "Edited "
+          : "";
   }
   const saveAllFormLabel = label
-    ? `${saveLabelPrefix}${label} Variable${pluralize ? 's' : ''}`
-    : `${saveLabelPrefix}Variable${pluralize ? 's' : ''}`;
-  return { edit: editFormLabel, save: saveFormLabel, saveAll: saveAllFormLabel };
+    ? `${saveLabelPrefix}${label} Variable${pluralize ? "s" : ""}`
+    : `${saveLabelPrefix}Variable${pluralize ? "s" : ""}`;
+  return {
+    edit: editFormLabel,
+    save: saveFormLabel,
+    saveAll: saveAllFormLabel,
+  };
 };
 
-export type MapEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
-  Schema,
-  CoreMapNode<Schema>,
-  AnyRecord
->;
+export type MapEditProps<Schema extends CoreSchemas = CoreSchemas> =
+  EditFieldProps<Schema, CoreMapNode<Schema>, AnyRecord>;
 
 /**
  * Map/Dictionary field component - handles HashMap<String, T> in Rust
@@ -86,7 +106,8 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
   const saveLabels = generateSaveLabels(label, formData, value, isEditDirty);
 
   const newKeys =
-    formData && Object.keys(formData).filter(k => !Object.keys(value || {}).includes(k));
+    formData &&
+    Object.keys(formData).filter((k) => !Object.keys(value || {}).includes(k));
 
   // Handle save
   const handleSave = useCallback(() => {
@@ -99,9 +120,9 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
   const onAddEdit = useCallback(
     (valueToAdd: any) => {
       if (!editKey) return;
-      setFormData(prev => ({ ...prev, [editKey]: valueToAdd }));
-      setEditKey('');
-      setEditValue('');
+      setFormData((prev) => ({ ...prev, [editKey]: valueToAdd }));
+      setEditKey("");
+      setEditValue("");
       setIsDirty(true);
       setIsEditDirty(true);
     },
@@ -111,9 +132,9 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
   const onAddNew = useCallback(
     (valueToAdd: any) => {
       if (!newKey) return;
-      setFormData(prev => ({ ...prev, [newKey]: valueToAdd }));
-      setNewKey('');
-      setNewValue('');
+      setFormData((prev) => ({ ...prev, [newKey]: valueToAdd }));
+      setNewKey("");
+      setNewValue("");
       setIsDirty(true);
     },
     [newKey],
@@ -121,9 +142,9 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
 
   const onRemove = (key: string) => {
     if (key === editKey) {
-      setEditKey('');
+      setEditKey("");
     }
-    setFormData(prev => {
+    setFormData((prev) => {
       const { [key]: _, ...rest } = prev;
       return rest;
     });
@@ -136,7 +157,11 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
     <>
       <div
         id={parentFormId}
-        className={cn('flex flex-col gap-2', 'border-l-3 border-l-border border-dotted ', 'pl-3')}
+        className={cn(
+          "flex flex-col gap-2",
+          "border-l-3 border-l-border border-dotted ",
+          "pl-3",
+        )}
       >
         {/*View Existing Items*/}
         {Object.entries(formData).length === 0 ? (
@@ -153,7 +178,7 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
             <ItemGroup className="space-y-3 min-w-0 flex-1">
               {existingView.map(([key, itemValue]) => (
                 <KeyValue
-                  key={`${key}-${key === editKey ? String(editValue) : ''}`}
+                  key={`${key}-${key === editKey ? String(editValue) : ""}`}
                   active={newKeys.includes(key)}
                   itemKey={key}
                   open={key === editKey}
@@ -220,18 +245,18 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
               <Item size="sm" variant="muted" className="p-1">
                 <ItemContent
                   className={cn(
-                    'flex flex-nowrap flex-1 justify-center w-full',
-                    'text-xs font-mono',
+                    "flex flex-nowrap flex-1 justify-center w-full",
+                    "text-xs font-mono",
                   )}
                 >
                   <Button
                     type="button"
                     variant="link"
-                    onClick={() => setViewMore(v => !v)}
+                    onClick={() => setViewMore((v) => !v)}
                     className="cursor-pointer font-mono text-sm"
                   >
                     {viewMore ? <ChevronsDownUp /> : <ChevronsUpDown />}
-                    View {viewMore ? 'Less' : 'More'}
+                    View {viewMore ? "Less" : "More"}
                   </Button>
                 </ItemContent>
               </Item>
@@ -250,8 +275,8 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
               <InputGroupInput
                 id={`input-${formId}`}
                 placeholder="New key..."
-                value={newKey || ''}
-                onChange={e => setNewKey(e.target.value)}
+                value={newKey || ""}
+                onChange={(e) => setNewKey(e.target.value)}
               />
             </InputGroup>
           </Field>
@@ -265,7 +290,7 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
             hasKey={!!newKey}
             newValue={newValue}
             setNewValue={setNewValue}
-            handleAdd={val => onAddNew(val ?? newValue)}
+            handleAdd={(val) => onAddNew(val ?? newValue)}
             isWizard={isWizard}
           />
         </div>
@@ -302,7 +327,7 @@ function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
   isWizard,
 }: {
   formId: string;
-  schema: Schema['AnyNode'];
+  schema: Schema["AnyNode"];
   label?: string;
   hasKey?: boolean;
   newValue?: any;
@@ -323,9 +348,9 @@ function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
                 id={`text-area-${formId}`}
                 placeholder="Value..."
                 value={newValue}
-                onChange={e => setNewValue(e.target.value)}
-                onKeyDown={e => {
-                  if (!isDisabled && e.key === 'Enter' && e.shiftKey) {
+                onChange={(e) => setNewValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (!isDisabled && e.key === "Enter" && e.shiftKey) {
                     e.preventDefault();
                     handleAdd(newValue);
                   }
@@ -335,12 +360,12 @@ function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
               {/* Add button */}
               <InputGroupAddon align="block-end">
                 <InputGroupText className="text-xs text-muted-foreground italic">
-                  {hasKey ? 'Create a new key value pair' : 'Set the key first'}
+                  {hasKey ? "Create a new key value pair" : "Set the key first"}
                 </InputGroupText>
                 <InputGroupButton
                   size="xs"
                   className="ml-auto cursor-pointer"
-                  variant={isDisabled || !hasKey ? 'ghost' : 'default'}
+                  variant={isDisabled || !hasKey ? "ghost" : "default"}
                   disabled={isDisabled}
                   onClick={() => handleAdd(newValue)}
                 >
@@ -354,24 +379,30 @@ function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
           <div className="flex flex-col border-border border rounded-md">
             <div
               className={cn(
-                'py-2 px-3 flex justify-between items-center',
-                'text-sm',
-                'rounded-t-md',
-                hasKey ? 'text-accent-foreground bg-muted' : 'text-muted-foreground bg-accent',
+                "py-2 px-3 flex justify-between items-center",
+                "text-sm",
+                "rounded-t-md",
+                hasKey
+                  ? "text-accent-foreground bg-muted"
+                  : "text-muted-foreground bg-accent",
               )}
             >
               <span>Value... </span>
-              {!hasKey && <span className="text-xs italic">(Set the key first)</span>}
+              {!hasKey && (
+                <span className="text-xs italic">(Set the key first)</span>
+              )}
             </div>
             {schema.description && (
-              <div className="bg-muted text-xs italic p-2">{schema.description}</div>
+              <div className="bg-muted text-xs italic p-2">
+                {schema.description}
+              </div>
             )}
             <div className="p-2 flex-1 w-full min-w-0">
               <FieldEdit
                 formId={formId}
                 label={label}
                 node={schema}
-                onChange={val => {
+                onChange={(val) => {
                   setNewValue(val);
                   handleAdd(val);
                 }}

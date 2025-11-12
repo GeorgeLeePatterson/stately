@@ -1,21 +1,21 @@
-import { useQuery } from '@tanstack/react-query';
-import { FileSearch, MoreVertical, Upload, X } from 'lucide-react';
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { ButtonGroup } from '@/components/ui/button-group';
+import { useQuery } from "@tanstack/react-query";
+import { FileSearch, MoreVertical, Upload, X } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from '@/components/ui/input-group';
+} from "@/components/ui/input-group";
 import {
   Menubar,
   MenubarContent,
@@ -23,13 +23,13 @@ import {
   MenubarMenu,
   MenubarSeparator,
   MenubarTrigger,
-} from '@/components/ui/menubar';
-import { Skeleton } from '@/components/ui/skeleton';
-import { FileSelector } from '@/components/views/file-selector';
-import { useFilesApi } from '@/lib/files-api';
+} from "@/components/ui/menubar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { FileSelector } from "@/components/views/file-selector";
+import { useFilesApi } from "@/lib/files-api";
 
 interface VersionedDataValue {
-  dir: 'upload';
+  dir: "upload";
   path: string;
 }
 
@@ -39,7 +39,10 @@ interface VersionedDataFieldProps {
   onChange: (value: VersionedDataValue | null) => void;
 }
 
-export function VersionedDataField({ value, onChange }: VersionedDataFieldProps) {
+export function VersionedDataField({
+  value,
+  onChange,
+}: VersionedDataFieldProps) {
   const filesApi = useFilesApi();
   const [showBrowseSelector, setShowBrowseSelector] = useState(false);
   const [showUploadSelector, setShowUploadSelector] = useState(false);
@@ -53,9 +56,11 @@ export function VersionedDataField({ value, onChange }: VersionedDataFieldProps)
     queryKey: filesApi.key.versions(filename ?? undefined),
     queryFn: async () => {
       if (!filename) return null;
-      const { data, error } = await filesApi.list({ path: `${filename}/__versions__` });
+      const { data, error } = await filesApi.list({
+        path: `${filename}/__versions__`,
+      });
       if (error || !data) {
-        throw new Error('Failed to load file versions');
+        throw new Error("Failed to load file versions");
       }
       return data;
     },
@@ -65,18 +70,18 @@ export function VersionedDataField({ value, onChange }: VersionedDataFieldProps)
   const versions = versionsData?.files || [];
 
   const handleBrowseSelect = (path: string) => {
-    onChange({ dir: 'upload', path });
+    onChange({ dir: "upload", path });
     setShowBrowseSelector(false);
   };
 
   const handleUploadSelect = (path: string) => {
-    onChange({ dir: 'upload', path });
+    onChange({ dir: "upload", path });
     setShowUploadSelector(false);
   };
 
   const handleRemove = () => {
     onChange(null);
-    toast.success('File removed');
+    toast.success("File removed");
   };
 
   // When file is selected
@@ -86,8 +91,8 @@ export function VersionedDataField({ value, onChange }: VersionedDataFieldProps)
         <InputGroup className="bg-background">
           <InputGroupInput
             type="text"
-            value={filename || ''}
-            placeholder={'Select a file to upload...'}
+            value={filename || ""}
+            placeholder={"Select a file to upload..."}
             className="min-w-0 flex-1 bg-transparent resize-y max-h-64 min-h-1 px-3 py-1"
             readOnly
           />
@@ -96,7 +101,8 @@ export function VersionedDataField({ value, onChange }: VersionedDataFieldProps)
               <Skeleton className="h-3 w-20" />
             ) : versions.length > 0 ? (
               <div className="text-xs text-muted-foreground">
-                {versions.length} {versions.length === 1 ? 'version' : 'versions'}
+                {versions.length}{" "}
+                {versions.length === 1 ? "version" : "versions"}
               </div>
             ) : null}
           </InputGroupAddon>
@@ -122,7 +128,10 @@ export function VersionedDataField({ value, onChange }: VersionedDataFieldProps)
                     Upload New
                   </MenubarItem>
                   <MenubarSeparator />
-                  <MenubarItem onClick={handleRemove} className="text-destructive">
+                  <MenubarItem
+                    onClick={handleRemove}
+                    className="text-destructive"
+                  >
                     <X className="h-4 w-4 mr-2" />
                     Clear
                   </MenubarItem>
@@ -138,7 +147,9 @@ export function VersionedDataField({ value, onChange }: VersionedDataFieldProps)
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Browse Existing Files</DialogTitle>
-            <DialogDescription>Select an existing file to use</DialogDescription>
+            <DialogDescription>
+              Select an existing file to use
+            </DialogDescription>
           </DialogHeader>
           <div className="flex justify-center p-2">
             <FileSelector

@@ -1,4 +1,6 @@
-import type { BaseNode } from '../schema.js';
+import type { DefineNodeMap } from "../plugin.js";
+import type { BaseNode } from "../nodes.js";
+import type { CoreSchemaTypes, CoreStatelyConfig } from "./augment.js";
 
 /**
  * =============================================================================
@@ -6,21 +8,28 @@ import type { BaseNode } from '../schema.js';
  * =============================================================================
  */
 
+type SchemaTypes<Config extends CoreStatelyConfig = CoreStatelyConfig> =
+  CoreSchemaTypes<Config>;
+type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> =
+  SchemaTypes<Config>["StateEntry"];
+type NodeKey<Config extends CoreStatelyConfig = CoreStatelyConfig> =
+  keyof Config["nodes"];
+
 /**
  * Node types (AST representation of OpenAPI schemas)
  */
 export const CoreNodeType = {
-  Primitive: 'primitive',
-  Enum: 'enum',
-  Object: 'object',
-  Array: 'array',
-  Map: 'map',
-  Tuple: 'tuple',
-  TaggedUnion: 'taggedUnion',
-  UntaggedEnum: 'untaggedEnum',
-  Link: 'link',
-  Nullable: 'nullable',
-  RecursiveRef: 'recursiveRef',
+  Primitive: "primitive",
+  Enum: "enum",
+  Object: "object",
+  Array: "array",
+  Map: "map",
+  Tuple: "tuple",
+  TaggedUnion: "taggedUnion",
+  UntaggedEnum: "untaggedEnum",
+  Link: "link",
+  Nullable: "nullable",
+  RecursiveRef: "recursiveRef",
 } as const;
 
 export type TCoreNodeType = (typeof CoreNodeType)[keyof typeof CoreNodeType];
@@ -29,11 +38,11 @@ export type TCoreNodeType = (typeof CoreNodeType)[keyof typeof CoreNodeType];
  * Primitive data types
  */
 export const PrimitiveType = {
-  String: 'string',
-  Number: 'number',
-  Integer: 'integer',
-  Boolean: 'boolean',
-  Path: 'path',
+  String: "string",
+  Number: "number",
+  Integer: "integer",
+  Boolean: "boolean",
+  Path: "path",
 } as const;
 
 export type TPrimitiveType = (typeof PrimitiveType)[keyof typeof PrimitiveType];
@@ -45,22 +54,6 @@ export type TPrimitiveType = (typeof PrimitiveType)[keyof typeof PrimitiveType];
  * These are the raw, generic-free node definitions. Users don't interact with
  * these directly - they get concrete versions through StatelySchemas factory.
  */
-
-/**
- * Forward declaration for AnyNode union
- */
-export type AnyCoreNode<EntityType extends string, SchemaName extends string> =
-  | PrimitiveNode
-  | EnumNode
-  | ObjectNodeRaw<EntityType, SchemaName>
-  | ArrayNodeRaw<EntityType, SchemaName>
-  | MapNodeRaw<EntityType, SchemaName>
-  | TupleNodeRaw<EntityType, SchemaName>
-  | TaggedUnionNodeRaw<EntityType, SchemaName>
-  | UntaggedEnumNodeRaw<EntityType, SchemaName>
-  | LinkNodeRaw<EntityType, SchemaName>
-  | NullableNodeRaw<EntityType, SchemaName>
-  | RecursiveRefNodeRaw<SchemaName>;
 
 /**
  * Primitive types: string, number, integer, boolean (no generics needed)
@@ -84,85 +77,112 @@ export interface EnumNode extends BaseNode {
 /**
  * Object: struct with named properties
  */
-export interface ObjectNodeRaw<EntityType extends string, SchemaName extends string>
-  extends BaseNode {
+export interface ObjectNode<
+  Config extends CoreStatelyConfig = CoreStatelyConfig,
+> extends BaseNode {
   nodeType: typeof CoreNodeType.Object;
-  properties: Readonly<Record<string, AnyCoreNode<EntityType, SchemaName>>>;
+  properties: Readonly<Record<string, CoreNodeUnion<Config>>>;
   required: readonly string[];
-  merged?: TaggedUnionNodeRaw<EntityType, SchemaName> | UntaggedEnumNodeRaw<EntityType, SchemaName>;
+  merged?: TaggedUnionNode<Config> | UntaggedEnumNode<Config>;
 }
 
 /**
  * Array: Vec<T> in Rust
  */
-export interface ArrayNodeRaw<EntityType extends string, SchemaName extends string>
+export interface ArrayNode<Config extends CoreStatelyConfig = CoreStatelyConfig>
   extends BaseNode {
   nodeType: typeof CoreNodeType.Array;
-  items: AnyCoreNode<EntityType, SchemaName>;
+  items: CoreNodeUnion<Config>;
 }
 
 /**
  * Map/Dictionary: HashMap<String, T> in Rust
  */
-export interface MapNodeRaw<EntityType extends string, SchemaName extends string> extends BaseNode {
+export interface MapNode<Config extends CoreStatelyConfig = CoreStatelyConfig>
+  extends BaseNode {
   nodeType: typeof CoreNodeType.Map;
-  valueSchema: AnyCoreNode<EntityType, SchemaName>;
+  valueSchema: CoreNodeUnion<Config>;
   keyPattern?: string;
 }
 
 /**
  * Tuple: Fixed-length heterogeneous array
  */
-export interface TupleNodeRaw<EntityType extends string, SchemaName extends string>
+export interface TupleNode<Config extends CoreStatelyConfig = CoreStatelyConfig>
   extends BaseNode {
   nodeType: typeof CoreNodeType.Tuple;
-  items: readonly AnyCoreNode<EntityType, SchemaName>[];
+  items: readonly CoreNodeUnion<Config>[];
 }
 
 /**
  * Tagged Union: Rust enum with explicit discriminator
  */
-export interface TaggedUnionNodeRaw<EntityType extends string, SchemaName extends string>
-  extends BaseNode {
+export interface TaggedUnionNode<
+  Config extends CoreStatelyConfig = CoreStatelyConfig,
+  Discriminator extends string = string,
+> extends BaseNode {
   nodeType: typeof CoreNodeType.TaggedUnion;
-  discriminator: string;
-  variants: ReadonlyArray<{ tag: string; schema: ObjectNodeRaw<EntityType, SchemaName> }>;
+  discriminator: Discriminator;
+  variants: ReadonlyArray<{ tag: string; schema: ObjectNode<Config> }>;
 }
 
 /**
  * Untagged Enum: Rust enum with inferred discriminator
  */
-export interface UntaggedEnumNodeRaw<EntityType extends string, SchemaName extends string>
-  extends BaseNode {
+export interface UntaggedEnumNode<
+  Config extends CoreStatelyConfig = CoreStatelyConfig,
+> extends BaseNode {
   nodeType: typeof CoreNodeType.UntaggedEnum;
-  variants: ReadonlyArray<{ tag: string; schema: AnyCoreNode<EntityType, SchemaName> }>;
+  variants: ReadonlyArray<{ tag: string; schema: CoreNodeUnion<Config> }>;
 }
 
 /**
  * Link<T>: Either an EntityId string OR inline entity data
  * Generic over EntityType to preserve the discriminator type
  */
-export interface LinkNodeRaw<EntityType extends string, SchemaName extends string>
+export interface LinkNode<Config extends CoreStatelyConfig = CoreStatelyConfig>
   extends BaseNode {
   nodeType: typeof CoreNodeType.Link;
-  targetType: EntityType;
-  inlineSchema: ObjectNodeRaw<EntityType, SchemaName>;
+  targetType: StateEntry<Config>;
+  inlineSchema: ObjectNode<Config>;
 }
 
 /**
  * Nullable: Option<T> in Rust
  */
-export interface NullableNodeRaw<EntityType extends string, SchemaName extends string>
-  extends BaseNode {
+export interface NullableNode<
+  Config extends CoreStatelyConfig = CoreStatelyConfig,
+> extends BaseNode {
   nodeType: typeof CoreNodeType.Nullable;
-  innerSchema: Exclude<AnyCoreNode<EntityType, SchemaName>, NullableNodeRaw<EntityType, SchemaName>>;
+  innerSchema: Exclude<CoreNodeUnion<Config>, NullableNode<Config>>;
 }
 
 /**
  * RecursiveRef: Reference to another schema (breaks circular references)
  * Generic over SchemaName to enable type-safe indexing
  */
-export interface RecursiveRefNodeRaw<SchemaName extends string> extends BaseNode {
+export interface RecursiveRefNode<
+  Config extends CoreStatelyConfig = CoreStatelyConfig,
+> extends BaseNode {
   nodeType: typeof CoreNodeType.RecursiveRef;
-  refName: SchemaName;
+  refName: NodeKey<Config>;
 }
+
+export type CoreNodeMap<Config extends CoreStatelyConfig = CoreStatelyConfig> =
+  DefineNodeMap<{
+    [CoreNodeType.Primitive]: PrimitiveNode;
+    [CoreNodeType.Enum]: EnumNode;
+    [CoreNodeType.Object]: ObjectNode<Config>;
+    [CoreNodeType.Array]: ArrayNode<Config>;
+    [CoreNodeType.Map]: MapNode<Config>;
+    [CoreNodeType.Tuple]: TupleNode<Config>;
+    [CoreNodeType.TaggedUnion]: TaggedUnionNode<Config>;
+    [CoreNodeType.UntaggedEnum]: UntaggedEnumNode<Config>;
+    [CoreNodeType.Link]: LinkNode<Config>;
+    [CoreNodeType.Nullable]: NullableNode<Config>;
+    [CoreNodeType.RecursiveRef]: RecursiveRefNode<Config>;
+  }>;
+
+export type CoreNodeUnion<
+  Config extends CoreStatelyConfig = CoreStatelyConfig,
+> = CoreNodeMap<Config>[keyof CoreNodeMap<Config>];

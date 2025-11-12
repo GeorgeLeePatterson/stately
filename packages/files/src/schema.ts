@@ -8,7 +8,7 @@
  * Node type for relative paths
  */
 export const FilesNodeType = {
-  RelativePath: 'relativePath',
+  RelativePath: "relativePath",
 } as const;
 
 export type FilesNodeType = (typeof FilesNodeType)[keyof typeof FilesNodeType];

@@ -1,7 +1,7 @@
-import type { AnyRecord } from './stately.js';
-import { SchemaAnyNode, SchemaNodeMap, StatelyConfig, StatelySchemas } from './schema.js';
-import type { Stately } from './stately.js';
-
+import { StatelyConfig } from "./generated.js";
+import { PluginNodeUnion } from "./plugin.js";
+import { StatelySchemas } from "./schema.js";
+import type { Stately } from "./stately.js";
 
 export interface ValidationError {
   path: string;
@@ -25,32 +25,41 @@ export interface ValidationOptions {
 /**
  * Validation hook context passed to plugins.
  */
-export interface SchemaValidateArgs<Config extends StatelyConfig = StatelyConfig> {
+export interface ValidateArgs<
+  S extends StatelySchemas<StatelyConfig, any> = StatelySchemas<
+    StatelyConfig,
+    any
+  >,
+  Node = PluginNodeUnion<S>,
+> {
   path: string;
   data: any;
-  schema: SchemaAnyNode<StatelySchemas<Config, SchemaNodeMap, any>>;
+  schema: Node;
   options?: ValidationOptions;
 }
 
 /**
  * Validation hook signature used by schema plugins.
  */
-export type SchemaValidateHook<Config extends StatelyConfig = StatelyConfig> = (
-  args: SchemaValidateArgs<Config>,
-) => ValidationResult | undefined;
+export type ValidateHook<
+  Schema extends StatelySchemas<StatelyConfig, any> = StatelySchemas<
+    StatelyConfig,
+    any
+  >,
+> = (args: ValidateArgs<Schema>) => ValidationResult | undefined;
 
-export function runValidationPipeline<
-  Config extends StatelyConfig,
-  Utils extends AnyRecord,
-  Exports extends AnyRecord,
->(state: Stately<Config, Utils, Exports>, args: SchemaValidateArgs<Config>): ValidationResult {
-  const hooks = state.plugins
-    .all()
-    .map(plugin => plugin.validate)
-    .filter((hook): hook is SchemaValidateHook<Config> => Boolean(hook));
+export function runValidationPipeline<Schemas extends StatelySchemas<any, any>>(
+  state: Stately<Schemas>,
+  args: ValidateArgs<Schemas>,
+): ValidationResult {
+  const hooks = Object.values(state.plugins as Record<string, any>)
+    .map((plugin) => plugin?.["validate"])
+    .filter((hook): hook is ValidateHook<Schemas> => Boolean(hook));
 
   if (hooks.length === 0) {
-    throw new Error('No schema validators registered. Apply at least one plugin before using validate().');
+    throw new Error(
+      "No schema validators registered. Apply at least one plugin before using validate().",
+    );
   }
 
   for (const hook of hooks) {

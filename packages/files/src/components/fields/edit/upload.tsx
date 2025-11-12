@@ -1,10 +1,14 @@
-import { useMutation } from '@tanstack/react-query';
-import { Upload as UploadIcon } from 'lucide-react';
-import { useRef } from 'react';
-import { toast } from 'sonner';
-import { InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
-import { Spinner } from '@/components/ui/spinner';
-import { useFilesApi } from '@/lib/files-api';
+import { useMutation } from "@tanstack/react-query";
+import { Upload as UploadIcon } from "lucide-react";
+import { useRef } from "react";
+import { toast } from "sonner";
+import {
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
+import { useFilesApi } from "@/lib/files-api";
 
 interface UploadFieldProps {
   formId: string;
@@ -26,19 +30,19 @@ export function UploadField({
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
       const { data, error } = await filesApi.upload({ body: formData });
-      if (!data || error) throw new Error('Upload failed');
+      if (!data || error) throw new Error("Upload failed");
       return data;
     },
-    onSuccess: data => {
+    onSuccess: (data) => {
       // Store managed path object
-      onChange({ dir: 'data', path: data.path });
-      toast.success('File uploaded successfully');
+      onChange({ dir: "data", path: data.path });
+      toast.success("File uploaded successfully");
     },
-    onError: error => {
-      console.error('File upload error:', error);
-      toast.error('Failed to upload file');
+    onError: (error) => {
+      console.error("File upload error:", error);
+      toast.error("Failed to upload file");
     },
   });
   return (
@@ -47,11 +51,11 @@ export function UploadField({
         id={formId}
         type="text"
         value={
-          typeof value === 'object' && value?.path
+          typeof value === "object" && value?.path
             ? value.path
-            : typeof value === 'string'
+            : typeof value === "string"
               ? value
-              : ''
+              : ""
         }
         readOnly
         placeholder={placeholder}
@@ -80,7 +84,7 @@ export function UploadField({
         ref={fileInputRef}
         id={`${formId}-file`}
         type="file"
-        onChange={e => {
+        onChange={(e) => {
           const file = e.target.files?.[0];
           if (file) uploadMutation.mutate(file);
         }}

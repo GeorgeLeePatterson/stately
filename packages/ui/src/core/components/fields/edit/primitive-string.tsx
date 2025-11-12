@@ -1,9 +1,13 @@
-import type { CorePrimitiveNode, CoreSchemas } from '@/core';
-import { FileText, Link as LinkIcon, Type } from 'lucide-react';
-import { useState } from 'react';
-import { useStatelyUi } from '@/context';
-import { ButtonGroup } from '@/core/components/ui/button-group';
-import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/core/components/ui/input-group';
+import type { CorePrimitiveNode, CoreSchemas } from "@/core";
+import { FileText, Link as LinkIcon, Type } from "lucide-react";
+import { useState } from "react";
+import { useStatelyUi } from "@/context";
+import { ButtonGroup } from "@/core/components/ui/button-group";
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupTextarea,
+} from "@/core/components/ui/input-group";
 import {
   Select,
   SelectContent,
@@ -11,22 +15,28 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-} from '@/core/components/ui/select';
-import { Editor } from '@/core/components/views/editor';
-import type { EditFieldProps } from '../types';
+} from "@/core/components/ui/select";
+import { Editor } from "@/core/components/views/editor";
+import type { EditFieldProps } from "../types";
 
 /// Core string input modes available by default
 const CORE_STRING_MODES = [
-  { value: 'text', icon: Type, label: 'Text', description: 'Plain text' },
-  { value: 'url', icon: LinkIcon, label: 'URL', description: 'Web address' },
-  { value: 'editor', icon: FileText, label: 'Editor', description: 'Multi-line text' },
+  { value: "text", icon: Type, label: "Text", description: "Plain text" },
+  { value: "url", icon: LinkIcon, label: "URL", description: "Web address" },
+  {
+    value: "editor",
+    icon: FileText,
+    label: "Editor",
+    description: "Multi-line text",
+  },
 ];
 
-export type PrimitiveStringEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
-  Schema,
-  CorePrimitiveNode<Schema>,
-  string | number | null | undefined
->;
+export type PrimitiveStringEditProps<Schema extends CoreSchemas = CoreSchemas> =
+  EditFieldProps<
+    Schema,
+    CorePrimitiveNode<Schema>,
+    string | number | null | undefined
+  >;
 
 /**
  * PrimitiveStringField - Extensible string field component
@@ -71,7 +81,7 @@ export function PrimitiveStringEdit<Schema extends CoreSchemas = CoreSchemas>({
   placeholder,
 }: PrimitiveStringEditProps<Schema>) {
   const { registry } = useStatelyUi();
-  const [mode, setMode] = useState<string>('text');
+  const [mode, setMode] = useState<string>("text");
 
   // Initial props + state
   let propsAndState = {
@@ -90,13 +100,13 @@ export function PrimitiveStringEdit<Schema extends CoreSchemas = CoreSchemas>({
   };
 
   // Look up prop transformer for 'primitive::edit::string'
-  const propTransformer = registry.transformers.get('primitive::edit::string');
-  if (typeof propTransformer === 'function') {
+  const propTransformer = registry.transformers.get("primitive::edit::string");
+  if (typeof propTransformer === "function") {
     try {
       const transformed = propTransformer(propsAndState);
       if (transformed) propsAndState = transformed;
     } catch (e) {
-      console.warn('PrimitiveStringField prop transformer failed:', e);
+      console.warn("PrimitiveStringField prop transformer failed:", e);
     }
   }
 
@@ -107,21 +117,24 @@ export function PrimitiveStringEdit<Schema extends CoreSchemas = CoreSchemas>({
   const customComponent = stately?.component;
   const afterDropdown = stately?.after;
 
-  const currentModeConfig = allModes.find(m => m.value === currentMode);
+  const currentModeConfig = allModes.find((m) => m.value === currentMode);
   const Icon = currentModeConfig?.icon ?? Type;
 
   return (
     <ButtonGroup className="flex-1 min-w-0 w-full">
       {/* Mode selector dropdown */}
       <ButtonGroup>
-        <Select value={currentMode} onValueChange={v => setMode(v)}>
-          <SelectTrigger id={`select-${formId}`} className="w-auto min-w-12 gap-1.5 bg-background">
+        <Select value={currentMode} onValueChange={(v) => setMode(v)}>
+          <SelectTrigger
+            id={`select-${formId}`}
+            className="w-auto min-w-12 gap-1.5 bg-background"
+          >
             <Icon />
           </SelectTrigger>
           <SelectContent className="min-w-40">
             <SelectGroup>
               <SelectLabel>Text Entry</SelectLabel>
-              {allModes.map(modeConfig => {
+              {allModes.map((modeConfig) => {
                 const ModeIcon = modeConfig.icon;
                 return (
                   <SelectItem key={modeConfig.value} value={modeConfig.value}>
@@ -147,36 +160,42 @@ export function PrimitiveStringEdit<Schema extends CoreSchemas = CoreSchemas>({
           customComponent
         ) : (
           <>
-            {currentMode === 'editor' && (
+            {currentMode === "editor" && (
               <Editor
                 formId={formId}
-                content={value ? (typeof value === 'string' ? value : String(value)) : ''}
+                content={
+                  value
+                    ? typeof value === "string"
+                      ? value
+                      : String(value)
+                    : ""
+                }
                 onContent={onChange}
-                placeholder={placeholder || 'Type or paste content here...'}
+                placeholder={placeholder || "Type or paste content here..."}
               />
             )}
 
-            {currentMode === 'text' && (
+            {currentMode === "text" && (
               <InputGroup className="flex-1 min-h-min bg-background">
                 <InputGroupTextarea
                   id={formId}
-                  value={value || ''}
-                  onChange={e => onChange(e.target.value)}
-                  placeholder={`${placeholder || 'Enter value'}...`}
+                  value={value || ""}
+                  onChange={(e) => onChange(e.target.value)}
+                  placeholder={`${placeholder || "Enter value"}...`}
                   className="min-w-0 flex-1 bg-background resize-y max-h-64 min-h-1 px-3 py-1"
                   rows={1}
                 />
               </InputGroup>
             )}
 
-            {currentMode === 'url' && (
+            {currentMode === "url" && (
               <InputGroup className="flex-1 min-h-min bg-background">
                 <InputGroupInput
                   id={formId}
                   type="url"
-                  value={value || ''}
-                  onChange={e => onChange(e.target.value)}
-                  placeholder={`${placeholder || 'https://example.com'}...`}
+                  value={value || ""}
+                  onChange={(e) => onChange(e.target.value)}
+                  placeholder={`${placeholder || "https://example.com"}...`}
                   className="bg-background rounded-md"
                 />
               </InputGroup>

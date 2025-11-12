@@ -4,24 +4,17 @@
  * Validation functions for Stately schemas
  */
 
-import type { SchemaAnyNode, Schemas } from '../index.js';
-import type { ValidationError, ValidationOptions, ValidationResult } from '../validation.js';
-import type { AnyRecord, EmptyRecord, Stately } from '../stately.js';
-import type { CoreStatelyConfig } from './augment.js';
-import { CoreNodeType, type ObjectNodeRaw } from './nodes.js';
-
-type AnySchemaNode<Config extends CoreStatelyConfig> = SchemaAnyNode<Schemas<Config>>;
-type ObjectNodeOf<Config extends CoreStatelyConfig> = ObjectNodeRaw<
-  Config['components']['schemas']['StateEntry'],
-  keyof Config['nodes'] & string
->;
+import type { SchemaConfig, Schemas } from "../index.js";
+import type {
+  ValidateArgs,
+  ValidationError,
+  ValidationOptions,
+  ValidationResult,
+} from "../validation.js";
+import { CoreNodeType } from "./nodes.js";
+import type { CoreNodeUnion, ObjectNode } from "./nodes.js";
 
 export type ValidatorCallback = (value: unknown, schema: unknown) => boolean;
-
-/**
- * Validation error detail
- */
-// types now imported from plugin
 
 /**
  * Validation cache for memoization
@@ -32,7 +25,10 @@ const validationCache = new Map<string, ValidationResult>();
  * Create a validation cache key
  */
 export function createValidationCacheKey(path: string, data: any): string {
-  const dataKey = typeof data === 'object' && data !== null ? JSON.stringify(data) : String(data);
+  const dataKey =
+    typeof data === "object" && data !== null
+      ? JSON.stringify(data)
+      : String(data);
   return `${path}:${dataKey}`;
 }
 
@@ -46,32 +42,31 @@ export function clearValidationCache(): void {
 /**
  * Validate data against a schema node
  */
-export function validateNode<
-  Config extends CoreStatelyConfig,
-  IExt extends AnyRecord = EmptyRecord,
-  SExt extends AnyRecord = EmptyRecord,
->({
+export function validateNode({
   path,
   data,
-  schema,
+  schema: rawSchema,
   options = {},
-  integration,
-}: {
-  path: string;
-  data: any;
-  schema: AnySchemaNode<Config>;
-  options?: ValidationOptions;
-  integration?: Stately<Config, IExt, SExt>;
-}): ValidationResult {
+}: ValidateArgs<Schemas>): ValidationResult {
+  const schema = rawSchema as CoreNodeUnion<SchemaConfig<Schemas>>;
   // Check cache first
   const cacheKey = createValidationCacheKey(path, data);
   const cached = validationCache.get(cacheKey);
   if (cached) return cached;
 
-  const { depth = 0, warnDepth = 15, maxDepth = 20, debug = false, onDepthWarning } = options;
+  const {
+    depth = 0,
+    warnDepth = 15,
+    maxDepth = 20,
+    debug = false,
+    onDepthWarning,
+  } = options;
 
   if (debug) {
-    console.debug(`[Validation] ${path} at depth ${depth}`, { data, nodeType: schema.nodeType });
+    console.debug(`[Validation] ${path} at depth ${depth}`, {
+      data,
+      nodeType: schema.nodeType,
+    });
   }
 
   // Check depth limits
@@ -95,31 +90,29 @@ export function validateNode<
 
   switch (schema.nodeType) {
     case CoreNodeType.Object:
-      result = validateObject<Config, IExt, SExt>(
+      result = validateObject({
         path,
         data,
-        schema as ObjectNodeOf<Config>,
-        nextOptions,
-        integration,
-      );
+        schema,
+        options: nextOptions,
+      });
       break;
 
     case CoreNodeType.Nullable:
       if (data === null || data === undefined) {
         result = { valid: true, errors: [] };
       } else {
-        result = validateNode<Config, IExt, SExt>({
+        result = validateNode({
           path,
           data,
-        schema: (schema as any).innerSchema as AnySchemaNode<Config>,
+          schema: schema.innerSchema,
           options,
-          integration,
         });
       }
       break;
 
     case CoreNodeType.UntaggedEnum: {
-      if (!data || typeof data !== 'object' || Object.keys(data).length === 0) {
+      if (!data || typeof data !== "object" || Object.keys(data).length === 0) {
         result = { valid: true, errors: [] };
         break;
       }
@@ -128,28 +121,41 @@ export function validateNode<
       if (!variant) {
         result = {
           valid: false,
-          errors: [{ path, message: 'Untagged enum must have exactly one variant', value: data }],
+          errors: [
+            {
+              path,
+              message: "Untagged enum must have exactly one variant",
+              value: data,
+            },
+          ],
         };
         break;
       }
 
       const variantData = (data as any)[variant];
-      const variantSchema = (schema as any).variants.find((v: any) => v.tag === variant);
+      const variantSchema = (schema as any).variants.find(
+        (v: any) => v.tag === variant,
+      );
 
       if (!variantSchema) {
         result = {
           valid: false,
-          errors: [{ path, message: `Unknown variant '${variant}' in untagged enum`, value: data }],
+          errors: [
+            {
+              path,
+              message: `Unknown variant '${variant}' in untagged enum`,
+              value: data,
+            },
+          ],
         };
         break;
       }
 
-      result = validateNode<Config, IExt, SExt>({
+      result = validateNode({
         path: `${path}.${variant}`,
         data: variantData,
-        schema: variantSchema.schema as AnySchemaNode<Config>,
+        schema: variantSchema.schema,
         options: nextOptions,
-        integration,
       });
       break;
     }
@@ -159,18 +165,20 @@ export function validateNode<
         result =
           data === null || data === undefined
             ? { valid: true, errors: [] }
-            : { valid: false, errors: [{ path, message: 'Expected an array', value: data }] };
+            : {
+                valid: false,
+                errors: [{ path, message: "Expected an array", value: data }],
+              };
         break;
       }
 
       const errors: ValidationError[] = [];
       for (let i = 0; i < data.length; i++) {
-        const itemResult = validateNode<Config, IExt, SExt>({
+        const itemResult = validateNode({
           path: `${path}[${i}]`,
           data: (data as any)[i],
-          schema: (schema as any).items as AnySchemaNode<Config>,
+          schema: schema.items,
           options: nextOptions,
-          integration,
         });
         if (!itemResult.valid) errors.push(...itemResult.errors);
       }
@@ -180,7 +188,7 @@ export function validateNode<
     }
 
     case CoreNodeType.TaggedUnion: {
-      if (!data || typeof data !== 'object') {
+      if (!data || typeof data !== "object") {
         result = { valid: true, errors: [] };
         break;
       }
@@ -217,30 +225,28 @@ export function validateNode<
         break;
       }
 
-      result = validateObject<Config, IExt, SExt>(
+      result = validateObject({
         path,
-        data as Record<string, any>,
-        variant.schema as ObjectNodeOf<Config>,
-        nextOptions,
-        integration,
-      );
+        data,
+        schema: variant.schema,
+        options: nextOptions,
+      });
       break;
     }
 
     case CoreNodeType.Map: {
-      if (!data || typeof data !== 'object') {
+      if (!data || typeof data !== "object") {
         result = { valid: true, errors: [] };
         break;
       }
 
       const mapErrors: ValidationError[] = [];
       for (const [key, value] of Object.entries(data as Record<string, any>)) {
-        const itemResult = validateNode<Config, IExt, SExt>({
+        const itemResult = validateNode({
           path: `${path}.${key}`,
           data: value,
-          schema: (schema as any).valueSchema as AnySchemaNode<Config>,
+          schema: schema.valueSchema,
           options: nextOptions,
-          integration,
         });
         if (!itemResult.valid) mapErrors.push(...itemResult.errors);
       }
@@ -257,45 +263,52 @@ export function validateNode<
   return result;
 }
 
+// TODO: Remove
+// type ValidateFieldArgs<
+//   S extends Schemas = Schemas,
+//   N = AnyCoreNode<SchemaConfig<S>>
+// > = Omit<ValidateArgs<S>, 'schema'> & { schema: N };
+
 /**
  * Validate an object against an ObjectNode schema
  */
-export function validateObject<
-  Config extends CoreStatelyConfig,
-  IExt extends Record<string, unknown> = Record<string, never>,
-  SExt extends Record<string, unknown> = Record<string, never>,
->(
-  path: string,
-  data: Record<string, any>,
-  schema: ObjectNodeOf<Config>,
-  options: ValidationOptions = {},
-  integration?: Stately<Config, IExt, SExt>,
+export function validateObject(
+  args: Omit<ValidateArgs<Schemas>, "schema"> & {
+    schema: ObjectNode<SchemaConfig<Schemas>>;
+  },
 ): ValidationResult {
-  const { debug = false } = options;
+  const { path, data, schema, options } = args;
+  const { debug = false } = options || {};
 
   if (debug) {
     console.debug(`[Validation] Object at ${path}`, { data, schema });
   }
 
-  if (!data || typeof data !== 'object') {
-    return { valid: false, errors: [{ path, message: 'Expected an object', value: data }] };
+  if (!data || typeof data !== "object") {
+    return {
+      valid: false,
+      errors: [{ path, message: "Expected an object", value: data }],
+    };
   }
 
   const required = new Set((schema as any).required || []);
   const errors: ValidationError[] = [];
 
-  for (const [propertyName, propertySchema] of Object.entries((schema as any).properties)) {
+  for (const [propertyName, propertySchema] of Object.entries(
+    schema.properties,
+  )) {
     const fieldRequired = required.has(propertyName);
-    const fieldValue = (data as any)[propertyName];
+    const fieldValue = data[propertyName];
 
-    const fieldResult = validateObjectField<Config, IExt, SExt>(
-      path,
+    const fieldResult = validateObjectField(
       propertyName,
-      fieldValue,
-      propertySchema as AnySchemaNode<Config>,
+      {
+        path,
+        data: fieldValue,
+        schema: propertySchema,
+        options,
+      },
       fieldRequired,
-      options,
-      integration,
     );
 
     if (!fieldResult.valid) {
@@ -306,33 +319,37 @@ export function validateObject<
   return { valid: errors.length === 0, errors };
 }
 
+// path: string;
+// data: any;
+// schema: plugin node union for S;
+// options?: ValidationOptions;
+
 /**
  * Validate a single object field
  */
-export function validateObjectField<
-  Config extends CoreStatelyConfig,
-  IExt extends Record<string, unknown> = Record<string, never>,
-  SExt extends Record<string, unknown> = Record<string, never>,
->(
-  parentPath: string,
-  fieldName: string,
-  fieldValue: any,
-  fieldSchema: AnySchemaNode<Config>,
+export function validateObjectField(
+  name: string,
+  args: ValidateArgs<Schemas>,
   isRequired: boolean,
-  options: ValidationOptions = {},
-  integration?: Stately<Config, IExt, SExt>,
 ): ValidationResult {
-  const fieldPath = parentPath ? `${parentPath}.${fieldName}` : fieldName;
-
-  const isMissing = fieldValue === null || fieldValue === undefined;
+  const { path: parentPath, data, schema } = args;
+  const fieldPath = parentPath ? `${parentPath}.${name}` : name;
+  const isMissing = data === null || data === undefined;
 
   if (isRequired) {
     // For primitives, empty string is invalid
-    if (fieldSchema.nodeType === CoreNodeType.Primitive && (isMissing || fieldValue === '')) {
+    if (
+      schema.nodeType === CoreNodeType.Primitive &&
+      (isMissing || data === "")
+    ) {
       return {
         valid: false,
         errors: [
-          { path: fieldPath, message: `Field '${fieldName}' is required`, value: fieldValue },
+          {
+            path: fieldPath,
+            message: `Field '${name}' is required`,
+            value: data,
+          },
         ],
       };
     }
@@ -340,39 +357,39 @@ export function validateObjectField<
     // For other types, missing or empty object is invalid
     if (
       isMissing ||
-      (typeof fieldValue === 'object' &&
-        !Array.isArray(fieldValue) &&
-        Object.keys(fieldValue as object).length === 0)
+      (typeof data === "object" &&
+        !Array.isArray(data) &&
+        Object.keys(data as object).length === 0)
     ) {
       return {
         valid: false,
         errors: [
-          { path: fieldPath, message: `Field '${fieldName}' is required`, value: fieldValue },
+          {
+            path: fieldPath,
+            message: `Field '${name}' is required`,
+            value: data,
+          },
         ],
       };
     }
 
     // Arrays: empty array is valid, missing array is invalid
-    if (fieldSchema.nodeType === CoreNodeType.Array && isMissing) {
+    if (schema.nodeType === CoreNodeType.Array && isMissing) {
       return {
         valid: false,
         errors: [
-          { path: fieldPath, message: `Field '${fieldName}' is required`, value: fieldValue },
+          {
+            path: fieldPath,
+            message: `Field '${name}' is required`,
+            value: data,
+          },
         ],
       };
     }
-  } else {
     // Optional field - if not present, it's valid
-    if (isMissing) {
-      return { valid: true, errors: [] };
-    }
+  } else if (isMissing) {
+    return { valid: true, errors: [] };
   }
 
-  return validateNode<Config, IExt, SExt>({
-    path: fieldPath,
-    data: fieldValue,
-    schema: fieldSchema,
-    options,
-    integration,
-  });
+  return validateNode(args);
 }

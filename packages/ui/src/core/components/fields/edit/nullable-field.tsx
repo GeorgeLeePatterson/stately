@@ -1,23 +1,21 @@
-import type { CoreNullableNode, CoreSchemas } from '@/core';
-import { useId, useState } from 'react';
-import { DescriptionLabel } from '@/core/components/base/description';
-import { Checkbox } from '@/core/components/ui/checkbox';
-import { Field, FieldContent, FieldLabel } from '@/core/components/ui/field';
-import { FieldEdit } from '../field-edit';
-import type { EditFieldProps } from '../types';
+import type { CoreNullableNode, CoreSchemas } from "@/core";
+import { useId, useState } from "react";
+import { DescriptionLabel } from "@/core/components/base/description";
+import { Checkbox } from "@/core/components/ui/checkbox";
+import { Field, FieldContent, FieldLabel } from "@/core/components/ui/field";
+import { FieldEdit } from "../field-edit";
+import type { EditFieldProps } from "../types";
 
 function isValueNulled(value?: any) {
   return (
     value === null ||
     value === undefined ||
-    (typeof value === 'object' && Object.keys(value).length === 0)
+    (typeof value === "object" && Object.keys(value).length === 0)
   );
 }
 
-export type NullableEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
-  Schema,
-  CoreNullableNode<Schema>
->;
+export type NullableEditProps<Schema extends CoreSchemas = CoreSchemas> =
+  EditFieldProps<Schema, CoreNullableNode<Schema>>;
 
 /**
  * Nullable field component - handles Option<T> in Rust
@@ -50,7 +48,11 @@ export function NullableEdit<Schema extends CoreSchemas = CoreSchemas>({
   return (
     <div className="p-4 border rounded-md space-y-3">
       <Field orientation="horizontal" className="flex space-x-2">
-        <Checkbox id={formId} checked={isIncluded} onCheckedChange={handleToggle} />
+        <Checkbox
+          id={formId}
+          checked={isIncluded}
+          onCheckedChange={handleToggle}
+        />
         <FieldContent>
           <FieldLabel
             htmlFor={`nullable-${label}`}
@@ -62,7 +64,9 @@ export function NullableEdit<Schema extends CoreSchemas = CoreSchemas>({
             </span>
           </FieldLabel>
           {(node.description || description) && (
-            <DescriptionLabel>{node.description || description}</DescriptionLabel>
+            <DescriptionLabel>
+              {node.description || description}
+            </DescriptionLabel>
           )}
         </FieldContent>
       </Field>

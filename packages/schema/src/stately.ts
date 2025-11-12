@@ -8,116 +8,78 @@
  * append helpers via `runtime.utils`, and register validation hooks.
  */
 
-import type { OpenAPIV3_1 } from 'openapi-types';
-import type { StatelyConfig } from './schema.js';
-import type {
-  SchemaPluginDescriptor,
-  SchemaPluginFactory,
-} from './plugin.js';
+import type { OpenAPIV3_1 } from "openapi-types";
+import type { StatelyConfig } from "./generated.js";
 import {
   runValidationPipeline,
-  SchemaValidateArgs,
-  ValidationResult,
-} from './validation.js';
-
-export type EmptyRecord = Record<never, never>;
-export type AnyRecord = Record<string, unknown>;
+  ValidateHook,
+  type ValidateArgs,
+  type ValidationResult,
+} from "./validation.js";
+import { StatelySchemaConfig, StatelySchemas } from "./schema.js";
 
 export interface SchemaRegistry {
   utils: Map<string, (...args: any[]) => unknown>;
 }
 
 /**
- * Snapshot of the user-generated OpenAPI artifacts. This mirrors the "Generated"
- * view in StatelySchemas.
+ * Schema plugin descriptor installed by plugin factory functions.
  */
-export type SchemaData<Config extends StatelyConfig> = {
-  document: OpenAPIV3_1.Document;
-  components: Config['components'];
-  paths: Config['paths'];
-  nodes: Config['nodes'];
-} & Record<string, unknown>;
-
-export interface Stately<
-  Config extends StatelyConfig,
-  Utils extends AnyRecord = EmptyRecord,
-  Exports extends AnyRecord = EmptyRecord,
+export interface PluginDescriptor<
+  S extends StatelySchemas<StatelyConfig, any>,
 > {
-  data: SchemaData<Config>;
-  registry: SchemaRegistry;
-  utils: Utils;
-  exports: Exports;
-  plugins: {
-    installed: SchemaPluginDescriptor<Config, Exports>[];
-    all(): SchemaPluginDescriptor<Config, Exports>[];
+  validate?: ValidateHook<S>;
+}
+
+/**
+ * Runtime plugin factory signature.
+ */
+export type PluginFactory<S extends StatelySchemas<StatelyConfig, any>> = (
+  runtime: Stately<S>,
+) => Stately<S>;
+
+export interface Stately<S extends StatelySchemas<any, any>> {
+  schema: {
+    document: OpenAPIV3_1.Document;
+    components: StatelySchemaConfig<S>["components"];
+    paths: StatelySchemaConfig<S>["paths"];
+    nodes: StatelySchemaConfig<S>["nodes"];
   };
-  validate: (args: SchemaValidateArgs<Config>) => ValidationResult;
+  types: S["types"];
+  data: S["data"];
+  plugins: S["utils"];
+  validate: (args: ValidateArgs<S>) => ValidationResult;
 }
 
-export interface StatelyBuilder<
-  Config extends StatelyConfig,
-  Utils extends AnyRecord,
-  Exports extends AnyRecord,
-> extends Stately<Config, Utils, Exports> {
-  withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
-    plugin: SchemaPluginFactory<Config, Utils, Exports, PluginExt>,
-  ): StatelyBuilder<Config, Utils, Exports & PluginExt>;
+export interface StatelyBuilder<S extends StatelySchemas<any, any>>
+  extends Stately<S> {
+  withPlugin(plugin: PluginFactory<S>): StatelyBuilder<S>;
 }
 
-export function createStately<
-  Config extends StatelyConfig,
-  Utils extends AnyRecord = EmptyRecord,
->(
+export function createStately<S extends StatelySchemas<any, any>>(
   openapi: OpenAPIV3_1.Document,
-  generatedNodes: Config['nodes'],
-  injectedUtils?: Utils,
-): StatelyBuilder<Config, Utils, EmptyRecord> {
+  generatedNodes: StatelySchemaConfig<S>["nodes"],
+): StatelyBuilder<S> {
+  const baseState: Stately<S> = {
+    schema: {
+      document: openapi,
+      components: openapi.components || ({} as S["config"]["components"]),
+      paths: openapi.paths || ({} as S["config"]["paths"]),
+      nodes: generatedNodes,
+    },
+    types: {} as S["types"],
+    data: {} as S["data"],
+    plugins: {} as S["utils"],
+    validate: (args) => runValidationPipeline(baseState, args),
+  };
 
-  function makeBuilder<Ext extends AnyRecord>(
-    state: Stately<Config, Utils, Ext>,
-  ): StatelyBuilder<Config, Utils, Ext> {
+  return (function makeBuilder(state: Stately<S>): StatelyBuilder<S> {
     return {
       ...state,
-      validate: args => runValidationPipeline({ ...state }, args),
-      withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
-        plugin: SchemaPluginFactory<Config, Utils, Ext, PluginExt>,
-      ): StatelyBuilder<Config, Utils, Ext & PluginExt> {
+      validate: (args) => runValidationPipeline({ ...state }, args),
+      withPlugin(plugin: PluginFactory<S>): StatelyBuilder<S> {
         return makeBuilder(plugin({ ...state }));
       },
     };
-  }
-
-  const data: SchemaData<Config> = {
-    document: openapi,
-    components: (openapi.components || {}) as Config['components'],
-    paths: (openapi.paths || {}) as Config['paths'],
-    nodes: generatedNodes,
-  };
-
-  const registry = { utils: new Map() };
-  const utils = (injectedUtils || ({} as Utils));
-
-  Object.entries(utils).forEach(([key, value]) => {
-    if (typeof value === 'function') {
-      /**
-       * Helpers live both on runtime.utils (direct access) and registry.utils
-       * (string-based lookup). Intentionally keep both to support dynamic
-       * resolver patterns elsewhere in the system.
-       */
-      registry.utils.set(key, value as (...args: any[]) => unknown);
-    }
-  });
-
-  const installedPlugins: SchemaPluginDescriptor<Config, AnyRecord>[] = [];
-
-  const baseState: Stately<Config, Utils, EmptyRecord> = {
-    data,
-    registry,
-    utils,
-    exports: {} as EmptyRecord,
-    plugins: { installed: installedPlugins, all: () => [...installedPlugins] },
-    validate: args => runValidationPipeline(baseState, args),
-  };
-
-  return makeBuilder(baseState);
+  })(baseState);
 }

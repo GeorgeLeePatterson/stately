@@ -1,15 +1,12 @@
-import type { CoreArrayNode, CoreSchemas } from '@/core';
-import { useId } from 'react';
-import { ArrayIndex } from '@/core/components/base/array';
-import { Item, ItemContent, ItemGroup } from '@/core/components/ui/item';
-import { FieldView } from '../field-view';
-import type { ViewFieldProps } from '../types';
+import type { CoreArrayNode, CoreSchemas } from "@/core";
+import { useId } from "react";
+import { ArrayIndex } from "@/core/components/base/array";
+import { Item, ItemContent, ItemGroup } from "@/core/components/ui/item";
+import { FieldView } from "../field-view";
+import type { ViewFieldProps } from "../types";
 
-export type ArrayViewProps<Schema extends CoreSchemas = CoreSchemas> = ViewFieldProps<
-  Schema,
-  CoreArrayNode<Schema>,
-  unknown[]
->;
+export type ArrayViewProps<Schema extends CoreSchemas = CoreSchemas> =
+  ViewFieldProps<Schema, CoreArrayNode<Schema>, unknown[]>;
 
 export function ArrayView<Schema extends CoreSchemas = CoreSchemas>({
   value,
@@ -19,7 +16,7 @@ export function ArrayView<Schema extends CoreSchemas = CoreSchemas>({
   const keyPrefix = `${node.nodeType}-${node.items.nodeType}-array-${formId}`;
   const arrValue = Array.isArray(value)
     ? value
-    : typeof value === 'object'
+    : typeof value === "object"
       ? Object.entries(value)
       : [value];
 
@@ -31,7 +28,7 @@ export function ArrayView<Schema extends CoreSchemas = CoreSchemas>({
             // biome-ignore lint/suspicious/noArrayIndexKey: ""
             key={`${keyPrefix}-${index}`}
             size="sm"
-            className={['p-0', 'min-w-0 flex-1'].join(' ')}
+            className={["p-0", "min-w-0 flex-1"].join(" ")}
           >
             <ArrayIndex index={index + 1} />
             <ItemContent>

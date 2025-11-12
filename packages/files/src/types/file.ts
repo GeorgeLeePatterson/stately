@@ -1,4 +1,4 @@
-export type FileEntryType = 'file' | 'directory' | 'versioned_file';
+export type FileEntryType = "file" | "directory" | "versioned_file";
 
 export interface FileInfo {
   name: string;

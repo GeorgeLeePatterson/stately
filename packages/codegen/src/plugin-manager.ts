@@ -1,6 +1,6 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { pathToFileURL } from "node:url";
 
 export type SerializedNode = any;
 
@@ -14,7 +14,10 @@ export interface CodegenPlugin {
   name: string;
   description?: string;
   match?: (schema: any, ctx: CodegenPluginContext) => boolean;
-  transform: (schema: any, ctx: CodegenPluginContext) => SerializedNode | null | undefined;
+  transform: (
+    schema: any,
+    ctx: CodegenPluginContext,
+  ) => SerializedNode | null | undefined;
 }
 
 let activePlugins: CodegenPlugin[] = [];
@@ -27,7 +30,9 @@ export function getCodegenPlugins(): CodegenPlugin[] {
   return activePlugins;
 }
 
-export async function loadPluginsFromConfig(configPath?: string): Promise<CodegenPlugin[]> {
+export async function loadPluginsFromConfig(
+  configPath?: string,
+): Promise<CodegenPlugin[]> {
   if (!configPath) return [];
   const resolved = path.resolve(process.cwd(), configPath);
   if (!fs.existsSync(resolved)) {
@@ -44,11 +49,11 @@ export async function loadPluginsFromConfig(configPath?: string): Promise<Codege
     );
     const plugins = candidates.filter(isCodegenPlugin);
     if (!plugins.length) {
-      console.warn('[stately-codegen] No plugins exported from config');
+      console.warn("[stately-codegen] No plugins exported from config");
     }
     return plugins;
   } catch (error) {
-    console.error('[stately-codegen] Failed to load plugin config:', error);
+    console.error("[stately-codegen] Failed to load plugin config:", error);
     return [];
   }
 }
@@ -63,9 +68,9 @@ function normalizeCandidate(value: unknown): CodegenPlugin[] {
 
 function isCodegenPlugin(candidate: unknown): candidate is CodegenPlugin {
   return (
-    typeof candidate === 'object' &&
+    typeof candidate === "object" &&
     candidate !== null &&
-    typeof (candidate as CodegenPlugin).name === 'string' &&
-    typeof (candidate as CodegenPlugin).transform === 'function'
+    typeof (candidate as CodegenPlugin).name === "string" &&
+    typeof (candidate as CodegenPlugin).transform === "function"
   );
 }

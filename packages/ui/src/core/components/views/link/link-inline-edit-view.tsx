@@ -1,9 +1,14 @@
-import { useStatelyUi } from '@/context';
-import { FieldLegend } from '@/core/components/ui/field';
-import type { AnyRecord } from '@/core/types';
-import type { CoreEntity, CoreObjectNode, CoreSchemas, CoreStateEntry } from '@/core';
-import { EditMode, EntityEditView } from '../entity/entity-edit-view';
-import type { LinkFor } from './link-edit-view';
+import { useStatelyUi } from "@/context";
+import { FieldLegend } from "@/core/components/ui/field";
+import type { AnyRecord } from "@/core/types";
+import type {
+  CoreEntity,
+  CoreObjectNode,
+  CoreSchemas,
+  CoreStateEntry,
+} from "@/core";
+import { EditMode, EntityEditView } from "../entity/entity-edit-view";
+import type { LinkFor } from "./link-edit-view";
 
 export interface LinkInlineEditProps<Schema extends CoreSchemas = CoreSchemas> {
   /** The entity type being configured inline */
@@ -38,8 +43,10 @@ export function LinkInlineEdit<Schema extends CoreSchemas = CoreSchemas>({
   isWizard,
 }: LinkInlineEditProps<Schema>) {
   const { schema } = useStatelyUi();
-  const entityValue: CoreEntity<Schema>['data'] =
-    value && 'inline' in value ? value.inline : ({} as CoreEntity<Schema>['data']);
+  const entityValue: CoreEntity<Schema>["data"] =
+    value && "inline" in value
+      ? value.inline
+      : ({} as CoreEntity<Schema>["data"]);
 
   // Handle changes: wrap the entity back up
   const handleChange = (entity: AnyRecord) => {
@@ -51,11 +58,17 @@ export function LinkInlineEdit<Schema extends CoreSchemas = CoreSchemas>({
   return (
     <>
       <FieldLegend className="flex justify-between flex-1 w-full">
-        <div className="text-sm font-medium">Inline {entityDisplayName} Configuration</div>
+        <div className="text-sm font-medium">
+          Inline {entityDisplayName} Configuration
+        </div>
         {after}
       </FieldLegend>
 
-      <div className={'flex flex-col min-h-0 border-l-4 border-primary/20 pl-3 space-y-3'}>
+      <div
+        className={
+          "flex flex-col min-h-0 border-l-4 border-primary/20 pl-3 space-y-3"
+        }
+      >
         <EntityEditView
           node={node}
           value={entityValue}

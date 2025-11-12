@@ -11,6 +11,18 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./generated": {
+      "types": "./dist/generated.d.ts",
+      "import": "./dist/generated.js"
+    },
+    "./helpers": {
+      "types": "./dist/helpers.d.ts",
+      "import": "./dist/helpers.js"
+    },
+    "./nodes": {
+      "types": "./dist/nodes.d.ts",
+      "import": "./dist/nodes.js"
+    },
     "./plugin": {
       "types": "./dist/plugin.d.ts",
       "import": "./dist/plugin.js"

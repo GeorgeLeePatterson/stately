@@ -10,20 +10,23 @@
  * @param fallback - Default message if no specific error can be extracted
  * @returns A user-friendly error message
  */
-export function getApiErrorMessage(error: unknown, fallback = 'An error occurred'): string {
+export function getApiErrorMessage(
+  error: unknown,
+  fallback = "An error occurred",
+): string {
   if (!error) {
     return fallback;
   }
 
   // If error is a string, return it directly
-  if (typeof error === 'string') {
+  if (typeof error === "string") {
     return error;
   }
 
   // If error has a message property (most API responses)
-  if (typeof error === 'object' && error !== null && 'message' in error) {
+  if (typeof error === "object" && error !== null && "message" in error) {
     const message = (error as { message: unknown }).message;
-    if (typeof message === 'string' && message.length > 0) {
+    if (typeof message === "string" && message.length > 0) {
       return message;
     }
   }
@@ -31,7 +34,7 @@ export function getApiErrorMessage(error: unknown, fallback = 'An error occurred
   // Try to stringify the error object
   try {
     const stringified = JSON.stringify(error);
-    if (stringified !== '{}' && stringified !== 'null') {
+    if (stringified !== "{}" && stringified !== "null") {
       return stringified;
     }
   } catch {

@@ -1,7 +1,17 @@
-import { Eye } from 'lucide-react';
-import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react';
-import { type LinkEntityProps, ViewLinkDialog } from '@/core/components/dialogs/view-configure-dialog';
-import { Button } from '@/core/components/ui/button';
+import { Eye } from "lucide-react";
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+import {
+  type LinkEntityProps,
+  ViewLinkDialog,
+} from "@/core/components/dialogs/view-configure-dialog";
+import { Button } from "@/core/components/ui/button";
 
 export function ViewLinkControl(props: LinkEntityProps) {
   const { openLinkExplorer } = useLinkExplorer();
@@ -26,16 +36,21 @@ interface LinkExplorerContextValue {
   breadcrumbs: LinkEntityProps[];
 }
 
-const LinkExplorerContext = createContext<LinkExplorerContextValue | null>(null);
+const LinkExplorerContext = createContext<LinkExplorerContextValue | null>(
+  null,
+);
 
 export function LinkExplorerProvider({ children }: { children: ReactNode }) {
   const [entityStack, setEntityStack] = useState<LinkEntityProps[]>([]);
 
   const openLinkExplorer = useCallback((info: LinkEntityProps) => {
-    setEntityStack(prev => {
+    setEntityStack((prev) => {
       const current = prev[prev.length - 1];
       // Avoid pushing duplicate
-      if (current?.entityType === info.entityType && current?.entityName === info.entityName) {
+      if (
+        current?.entityType === info.entityType &&
+        current?.entityName === info.entityName
+      ) {
         return prev;
       }
       return [...prev, info];
@@ -43,11 +58,11 @@ export function LinkExplorerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const closeLinkExplorer = useCallback(() => {
-    setEntityStack(prev => (prev.length > 1 ? prev.slice(0, -1) : []));
+    setEntityStack((prev) => (prev.length > 1 ? prev.slice(0, -1) : []));
   }, []);
 
   const navigateToIndex = useCallback((index: number) => {
-    setEntityStack(prev => prev.slice(0, index + 1));
+    setEntityStack((prev) => prev.slice(0, index + 1));
   }, []);
 
   const onOpenChange = useCallback((open: boolean) => {
@@ -62,7 +77,12 @@ export function LinkExplorerProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ openLinkExplorer, closeLinkExplorer, navigateToIndex, breadcrumbs: entityStack }),
+    () => ({
+      openLinkExplorer,
+      closeLinkExplorer,
+      navigateToIndex,
+      breadcrumbs: entityStack,
+    }),
     [openLinkExplorer, closeLinkExplorer, navigateToIndex, entityStack],
   );
 
@@ -85,7 +105,7 @@ export function LinkExplorerProvider({ children }: { children: ReactNode }) {
 export function useLinkExplorer() {
   const context = useContext(LinkExplorerContext);
   if (!context) {
-    throw new Error('useLinkExplorer must be used within LinkExplorerProvider');
+    throw new Error("useLinkExplorer must be used within LinkExplorerProvider");
   }
   return context;
 }
