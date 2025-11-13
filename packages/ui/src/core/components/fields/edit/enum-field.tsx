@@ -8,10 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/core/components/ui/select";
-import type { EditFieldProps } from "../types";
+import type { EditFieldProps } from "@/base/form/field-edit";
+import { useCoreStatelyUi } from "@/core/context";
 
 export type EnumEditProps<Schema extends CoreSchemas = CoreSchemas> =
-  EditFieldProps<Schema, CoreEnumNode<Schema>, string>;
+  EditFieldProps<Schema, CoreEnumNode, string>;
 
 /**
  * Enum field component - handles string enums with fixed set of values
@@ -24,7 +25,7 @@ export function EnumEdit<Schema extends CoreSchemas = CoreSchemas>({
   onChange,
   placeholder,
 }: EnumEditProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { plugins } = useCoreStatelyUi();
 
   return (
     <Field>
@@ -41,7 +42,7 @@ export function EnumEdit<Schema extends CoreSchemas = CoreSchemas>({
         <SelectContent>
           {node.values.map((option: string) => (
             <SelectItem key={option} value={option}>
-              {schema.utils.generateFieldLabel(option)}
+              {plugins.core.utils?.generateFieldLabel(option)}
             </SelectItem>
           ))}
         </SelectContent>

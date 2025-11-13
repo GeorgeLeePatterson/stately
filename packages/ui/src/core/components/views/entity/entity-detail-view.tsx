@@ -9,10 +9,10 @@ import type {
   CoreSchemas,
   CoreStateEntry,
 } from "@/core";
-import { SINGLETON_ID } from "@/core/types";
-import type { AnyRecord } from "@/core/types";
-import { FieldView } from "../../fields/field-view";
-import { JsonView } from "../../fields/json-view";
+import { useCoreStatelyUi } from "@/core/context";
+import { SINGLETON_ID } from "@stately/schema/core/utils";
+import { FieldView } from "@/base/form/field-view";
+import { JsonView } from "@/base/form/json-view";
 
 export interface EntityDetailViewProps<
   Schema extends CoreSchemas = CoreSchemas,
@@ -31,31 +31,31 @@ export function EntityDetailView<Schema extends CoreSchemas = CoreSchemas>({
   entityId,
   disableJsonView,
 }: EntityDetailViewProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema } = useCoreStatelyUi();
   const [isJsonOpen, setIsJsonOpen] = useState(false);
 
   const required = new Set(node.required || []);
 
-  const entityProperties = useMemo<Array<[string, Schema["AnyNode"]]>>(
+  const entityProperties = useMemo<Array<[string, Schema['plugin']["AnyNode"]]>>(
     () =>
       Object.entries(node.properties)
         .filter(([name]) => name !== "name")
-        .map(([name, schemaNode]) => [name, schemaNode as Schema["AnyNode"]]),
+        .map(([name, schemaNode]) => [name, schemaNode as Schema['plugin']["AnyNode"]]),
     [node.properties],
   );
 
-  const sortedProperties = useMemo<Array<[string, Schema["AnyNode"]]>>(
+  const sortedProperties = useMemo<Array<[string, Schema['plugin']["AnyNode"]]>>(
     () =>
-      schema.utils.sortEntityProperties(
+      schema.plugins.core.sortEntityProperties(
         entityProperties,
-        entity as AnyRecord,
+        entity,
         new Set<string>(node.required || []),
       ),
     [
       entityProperties,
       entity,
       node.required,
-      schema.utils.sortEntityProperties,
+      schema.plugins.core.sortEntityProperties,
     ],
   );
 
@@ -88,7 +88,7 @@ export function EntityDetailView<Schema extends CoreSchemas = CoreSchemas>({
         .map(
           ([fieldName, fieldSchema]): {
             fieldName: string;
-            fieldSchema: Schema["AnyNode"];
+            fieldSchema: Schema['plugin']["AnyNode"];
             fieldValue: unknown;
           } => ({
             fieldName,

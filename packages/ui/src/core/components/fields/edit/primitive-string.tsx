@@ -16,8 +16,8 @@ import {
   SelectLabel,
   SelectTrigger,
 } from "@/core/components/ui/select";
-import { Editor } from "@/core/components/views/editor";
-import type { EditFieldProps } from "../types";
+import type { EditFieldProps } from "@/base/form/field-edit";
+import { Editor } from "@/base/components/editor";
 
 /// Core string input modes available by default
 const CORE_STRING_MODES = [
@@ -34,7 +34,7 @@ const CORE_STRING_MODES = [
 export type PrimitiveStringEditProps<Schema extends CoreSchemas = CoreSchemas> =
   EditFieldProps<
     Schema,
-    CorePrimitiveNode<Schema>,
+    CorePrimitiveNode,
     string | number | null | undefined
   >;
 

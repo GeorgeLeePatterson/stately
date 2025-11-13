@@ -54,27 +54,23 @@
  * ```
  */
 
-import type { OpenAPIV3_1 } from "openapi-types";
-import type { CoreSchemaAugment, CoreStatelyConfig } from "./core/index.js";
-import { createCorePlugin } from "./core/index.js";
-import type { StatelySchemas } from "./schema.js";
-import { createStately } from "./stately.js";
-import { SchemaAugment } from "./plugin.js";
-import type * as GeneratedTypes from "./generated.js";
-import type * as PluginTypes from "./plugin.js";
-
-// Export plugin author helpers
-export {
-  DefineNodeMap,
-  DefineTypes,
-  DefineData,
-  DefineUtils,
-} from "./plugin.js";
-export {
+import type { OpenAPIV3_1 } from 'openapi-types';
+import type { CoreSchemaAugment, CoreStatelyConfig } from './core/index.js';
+import { createCorePlugin } from './core/index.js';
+import type * as GeneratedTypes from './generated.js';
+import {
   DefineComponents,
-  DefinePaths,
   DefineGeneratedNodes,
-} from "./generated.js";
+  DefinePaths,
+  DefineStatelyConfig,
+} from './generated.js';
+import type * as PluginTypes from './plugin.js';
+import type { SchemaAugment } from './plugin.js';
+
+// Export plugin-author helpers
+import type { StatelySchemas } from './schema.js';
+import { createStately } from './stately.js';
+export { DefineComponents, DefineGeneratedNodes, DefinePaths, DefineStatelyConfig };
 
 /**
  * Stately plugin types integration - Main API
@@ -86,23 +82,19 @@ export type Schemas<
 
 // Type helper
 // export type SchemaConfig<S> = S extends StatelySchemas<infer Config, any> ? Config : never;
-export type SchemaConfig<S> =
-  S extends Schemas<infer Config, any> ? Config : never;
+export type SchemaConfig<S> = S extends Schemas<infer Config, any> ? Config : never;
 
 /**
  * Type helpers for referencing generated node information
  */
 export type GeneratedNodes<C extends CoreStatelyConfig = CoreStatelyConfig> =
   GeneratedTypes.GeneratedNodes<C>;
-export type GeneratedNodeUnion<
-  C extends CoreStatelyConfig = CoreStatelyConfig,
-> = GeneratedTypes.GeneratedNodeUnion<C>;
-export type GeneratedNodeNames<
-  C extends CoreStatelyConfig = CoreStatelyConfig,
-> = GeneratedTypes.GeneratedNodeNames<C>;
-export type GeneratedNodeTypes<
-  C extends CoreStatelyConfig = CoreStatelyConfig,
-> = GeneratedTypes.GeneratedNodeTypes<C>;
+export type GeneratedNodeUnion<C extends CoreStatelyConfig = CoreStatelyConfig> =
+  GeneratedTypes.GeneratedNodeUnion<C>;
+export type GeneratedNodeNames<C extends CoreStatelyConfig = CoreStatelyConfig> =
+  GeneratedTypes.GeneratedNodeNames<C>;
+export type GeneratedNodeTypes<C extends CoreStatelyConfig = CoreStatelyConfig> =
+  GeneratedTypes.GeneratedNodeTypes<C>;
 
 /**
  * Type helpers for referencing plugin node information
@@ -133,10 +125,7 @@ export type PluginNodeTypes<S extends StatelySchemas<any, any> = Schemas> =
  * }
  * ```
  */
-export function isNodeOfType<
-  S extends StatelySchemas<any, any>,
-  Type extends PluginNodeTypes<S>,
->(
+export function isNodeOfType<S extends StatelySchemas<any, any>, Type extends PluginNodeTypes<S>>(
   schema: PluginNodeUnion<S>,
   nodeType: Type,
 ): schema is Extract<PluginNodeUnion<S>, { nodeType: Type }> {
@@ -152,7 +141,7 @@ export function isNodeOfType<
  */
 export function stately<S extends Schemas<any, any> = Schemas>(
   openapi: OpenAPIV3_1.Document,
-  nodes: SchemaConfig<S>["nodes"],
+  nodes: SchemaConfig<S>['nodes'],
 ) {
   return createStately<S>(openapi, nodes).withPlugin(createCorePlugin<S>());
 }

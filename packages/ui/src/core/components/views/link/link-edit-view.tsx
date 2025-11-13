@@ -1,8 +1,6 @@
-import { SINGLETON_ID } from "@/core/types";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 import { useStatelyUi } from "@/context";
-import type { EditFieldProps } from "@/core/components/fields";
 import { Button } from "@/core/components/ui/button";
 import { ButtonGroup } from "@/core/components/ui/button-group";
 import { FieldGroup, FieldSet } from "@/core/components/ui/field";
@@ -11,10 +9,14 @@ import type {
   CoreLinkNode,
   CoreSchemas,
   CoreStateEntry,
+  CoreStatelyRuntime,
 } from "@/core";
 import { useEditEntityData } from "@/core/hooks/use-edit-entity-data";
 import { LinkInlineEdit } from "./link-inline-edit-view";
 import { LinkRefEdit } from "./link-ref-edit-view";
+import { EditFieldProps } from "@/base/form/field-edit";
+import { useCoreStatelyUi } from "@/core/context";
+import { SINGLETON_ID } from "@stately/schema/core/utils";
 
 // Type helpers for Link editing
 export type LinkFor<Schema extends CoreSchemas = CoreSchemas> =
@@ -41,8 +43,8 @@ export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
   onChange,
   isWizard,
 }: LinkEditProps<Schema>) {
-  const { http } = useStatelyUi();
-  const { api } = http;
+  const { schema, plugins }= useCoreStatelyUi();
+  const coreApi = plugins.core?.api;
   const targetType = node.targetType;
 
   // Mode state - undefined until entities are fetched
@@ -59,7 +61,13 @@ export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
   } = useQuery({
     queryKey: ["entity-list", targetType],
     queryFn: async () => {
-      const { data, error } = await api.entity.listByType({ type: targetType });
+      if (!coreApi) {
+        throw new Error("Core entity API is unavailable.");
+      }
+      const { data, error } = await coreApi.call(
+        coreApi.operations.listEntitiesByType,
+        { params: { query: { entity_type: targetType } } }
+      );
       if (error) throw new Error(`Failed to fetch ${targetType} entities`);
       return data;
     },

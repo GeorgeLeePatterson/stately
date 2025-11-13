@@ -1,18 +1,21 @@
-import { CoreNodeType } from "@stately/schema/core/nodes";
-import { Plus, Trash2 } from "lucide-react";
-import { useCallback, useEffect, useId, useState } from "react";
-import { useStatelyUi } from "@/context";
-import { ArrayIndex } from "@/core/components/base/array";
-import { Button } from "@/core/components/ui/button";
-import { Field, FieldSet } from "@/core/components/ui/field";
-import { cn } from "@/core/lib/utils";
-import type { CoreArrayNode, CoreSchemas } from "@/core";
-import { GlowingSave } from "../../base/glowing-save";
-import { FieldEdit } from "../field-edit";
-import type { EditFieldProps } from "../types";
+import { CoreNodeType } from '@stately/schema/core/nodes';
+import { Plus, Trash2 } from 'lucide-react';
+import { useCallback, useEffect, useId, useState } from 'react';
+import { GlowingSave } from '@/base/components/glowing-save';
+import type { EditFieldProps } from '@/base/form/field-edit';
+import { FieldEdit } from '@/base/form/field-edit';
+import type { CoreArrayNode, CoreSchemas } from '@/core';
+import { ArrayIndex } from '@/core/components/base/array';
+import { Button } from '@/core/components/ui/button';
+import { Field, FieldSet } from '@/core/components/ui/field';
+import { useCoreStatelyUi } from '@/core/context';
+import { cn } from '@/base/lib/utils';
 
-export type ArrayEditProps<Schema extends CoreSchemas = CoreSchemas> =
-  EditFieldProps<Schema, CoreArrayNode<Schema>, unknown[]>;
+export type ArrayEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
+  Schema,
+  CoreArrayNode<Schema>,
+  unknown[]
+>;
 
 /**
  * Array field component - handles Vec<T> in Rust
@@ -26,7 +29,7 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
   isRequired,
   isWizard,
 }: ArrayEditProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema, plugins } = useCoreStatelyUi();
 
   // Defensive: ensure value is actually an array
   const safeValue = Array.isArray(value) ? value : [];
@@ -53,8 +56,7 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
   // Get item label for Link types
   const getItemLabel = (index: number, item: any) => {
     if (itemNode.nodeType === CoreNodeType.Link) {
-      const targetName =
-        schema.data.entityDisplayNames?.[itemNode.targetType] || "Item";
+      const targetName = schema.data.entityDisplayNames?.[itemNode.targetType] || 'Item';
 
       // If this is a reference mode Link, show the ref name
       if (item?.ref) {
@@ -68,8 +70,7 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
   };
 
   // Validate array - just check presence if required (items validate themselves)
-  const isValid =
-    !isRequired || (Array.isArray(formData) && formData.length > 0);
+  const isValid = !isRequired || (Array.isArray(formData) && formData.length > 0);
 
   // Handle save - notify parent with current formData
   const handleSave = useCallback(() => {
@@ -79,15 +80,13 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
   }, [formData, onChange, isValid]);
 
   const handleAdd = () => {
-    const defaultValue = schema.utils.getDefaultValue(node);
+    const defaultValue = plugins.core.utils?.getDefaultValue(node);
     setFormData((prev: any[]) => [...prev, defaultValue]);
     setIsDirty(true);
   };
 
   const handleRemove = (index: number) => {
-    setFormData((prev: any[]) =>
-      prev.filter((_: any, i: number) => i !== index),
-    );
+    setFormData((prev: any[]) => prev.filter((_: any, i: number) => i !== index));
     setIsDirty(true);
   };
 
@@ -114,8 +113,8 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
             {formData.map((item: any, index: number) =>
               isPrimitiveArray ? (
                 <Field
-                  key={`${node.nodeType}-${itemNode.primitiveType}-${index}`}
                   className="min-w-0 flex-row flex gap-2"
+                  key={`${node.nodeType}-${itemNode.primitiveType}-${index}`}
                 >
                   <ArrayIndex index={index + 1} />
 
@@ -124,22 +123,22 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
                     <FieldEdit
                       formId={`${arrayFormId}-${index}`}
                       node={node}
+                      onChange={newValue => handleChange(index, newValue)}
                       value={item}
-                      onChange={(newValue) => handleChange(index, newValue)}
                     />
                   </div>
 
                   {/* Remove */}
                   <div className="max-w-8">
                     <Button
+                      className={cn(
+                        'text-destructive cursor-pointer',
+                        'hover:text-destructive hover:bg-destructive/10',
+                      )}
+                      onClick={() => handleRemove(index)}
                       size="icon-sm"
                       type="button"
                       variant="secondary"
-                      onClick={() => handleRemove(index)}
-                      className={cn(
-                        "text-destructive cursor-pointer",
-                        "hover:text-destructive hover:bg-destructive/10",
-                      )}
                     >
                       <Trash2 />
                     </Button>
@@ -150,11 +149,11 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
                   <div className="flex items-center justify-between px-3 pt-2">
                     <h6 className="text-sm">{getItemLabel(index, item)}</h6>
                     <Button
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => handleRemove(index)}
+                      size="sm"
                       type="button"
                       variant="outline"
-                      size="sm"
-                      onClick={() => handleRemove(index)}
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
                     >
                       <Trash2 className="w-8 h-8" /> Remove
                     </Button>
@@ -163,11 +162,11 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
                   {/*Field*/}
                   <FieldEdit
                     formId={`${arrayFormId}-${index}`}
-                    node={node}
-                    value={item}
-                    onChange={(newValue) => handleChange(index, newValue)}
-                    label={""}
                     isWizard={isWizard}
+                    label={''}
+                    node={node}
+                    onChange={newValue => handleChange(index, newValue)}
+                    value={item}
                   />
                 </Field>
               ),
@@ -179,11 +178,11 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
       {/* Add button */}
       <div className="flex items-center flex-1">
         <Button
+          className="h-8 flex-1 cursor-pointer"
+          onClick={handleAdd}
+          size="sm"
           type="button"
           variant="outline"
-          size="sm"
-          onClick={handleAdd}
-          className="h-8 flex-1 cursor-pointer"
         >
           <Plus className="w-4 h-4 mr-1" />
           Add New Item
@@ -193,15 +192,15 @@ export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
       {/* Save button */}
       {isDirty && (
         <GlowingSave
-          mode="edit"
-          size="sm"
-          label={label ? `${label} Array` : "Array"}
           isDisabled={!isValid}
-          onSave={handleSave}
+          label={label ? `${label} Array` : 'Array'}
+          mode="edit"
           onCancel={() => {
             setFormData(safeValue);
             setIsDirty(false);
           }}
+          onSave={handleSave}
+          size="sm"
         />
       )}
     </div>

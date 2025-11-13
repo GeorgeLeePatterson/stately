@@ -27,14 +27,14 @@ import {
 import { Item, ItemContent, ItemGroup } from "@/core/components/ui/item";
 import { Separator } from "@/core/components/ui/separator";
 import { useViewMore } from "@/core/hooks/use-view-more";
-import { cn } from "@/core/lib/utils";
-import type { CoreMapNode, CoreSchemas } from "@/core";
-import type { AnyRecord } from "@/core/types";
-import { GlowingSave } from "../../base/glowing-save";
-import { FieldEdit } from "../field-edit";
-import { FieldView } from "../field-view";
-import type { EditFieldProps } from "../types";
+import type { CoreMapNode, CoreNodeUnion, CoreSchemas } from "@/core";
+import { GlowingSave } from "@/base/components/glowing-save";
+import { FieldEdit } from "@/base/form/field-edit";
+import { FieldView } from "@/base/form/field-view";
+import type { EditFieldProps } from "@/base/form/field-edit";
 import { KeyValue } from "../view/map-field";
+import { AnyRecord } from "@stately/schema/helpers";
+import { cn } from "@/base/lib/utils";
 
 const generateSaveLabels = (
   label?: string,
@@ -228,7 +228,7 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
                     <ValueEdit
                       formId={formId}
                       label={saveLabels.edit}
-                      schema={node}
+                      node={node}
                       hasKey={true}
                       newValue={editValue}
                       setNewValue={setEditValue}
@@ -285,7 +285,7 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
           <ValueEdit<Schema>
             formId={formId}
             label={saveLabels.save}
-            schema={node}
+            node={node}
             isDisabled={!!editKey}
             hasKey={!!newKey}
             newValue={newValue}
@@ -317,7 +317,7 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
 
 function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
   formId,
-  schema,
+  node,
   label,
   hasKey,
   newValue,
@@ -327,7 +327,7 @@ function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
   isWizard,
 }: {
   formId: string;
-  schema: Schema["AnyNode"];
+  node: CoreNodeUnion<Schema>;
   label?: string;
   hasKey?: boolean;
   newValue?: any;
@@ -340,7 +340,7 @@ function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
     <FieldSet className="min-w-0" disabled={!hasKey}>
       <Field>
         {/* Primitive value */}
-        {schema.nodeType === CoreNodeType.Primitive ? (
+        {node.nodeType === CoreNodeType.Primitive ? (
           <div className="grid w-full gap-4">
             <InputGroup>
               {/* Textarea */}
@@ -392,16 +392,16 @@ function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
                 <span className="text-xs italic">(Set the key first)</span>
               )}
             </div>
-            {schema.description && (
+            {node.description && (
               <div className="bg-muted text-xs italic p-2">
-                {schema.description}
+                {node.description}
               </div>
             )}
             <div className="p-2 flex-1 w-full min-w-0">
               <FieldEdit
                 formId={formId}
                 label={label}
-                node={schema}
+                node={node}
                 onChange={(val) => {
                   setNewValue(val);
                   handleAdd(val);

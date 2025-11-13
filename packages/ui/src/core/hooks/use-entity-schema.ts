@@ -8,10 +8,11 @@ export function useEntitySchema<Schema extends CoreSchemas = CoreSchemas>(
   | { node: CoreObjectNode<Schema>; error?: never }
   | { error: string; node?: never } {
   const { schema } = useStatelyUi();
-  const cache = schema.data.entitySchemaCache as Record<
-    string,
-    CoreObjectNode<Schema> | undefined
-  >;
+  const cache =
+    (schema.data.entitySchemaCache as Record<
+      string,
+      CoreObjectNode<Schema> | undefined
+    >) || {};
   const node = entitySchema || cache[entityType];
 
   if (!node) {

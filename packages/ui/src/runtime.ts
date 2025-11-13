@@ -1,20 +1,8 @@
-/**
- * @stately/ui - Core UI integration runtime
- */
-
-import type { Stately, StatelyConfig } from "@stately/schema";
-import type { Client } from "openapi-fetch";
-import type { ComponentType } from "react";
-import * as helpers from "@/core/lib/helpers";
-import type { AnyRecord, EmptyRecord } from "@/core/types";
-import type { CorePaths } from "@/core";
-import type { StatelyApi, StatelyOperations } from "@/core/lib/operations";
-import {
-  buildOperationIndex,
-  buildStatelyOperations,
-  createStatelyApi,
-  type OperationIndex,
-} from "@/core/lib/operations";
+import type { Stately } from '@stately/schema/stately';
+import type { Client } from 'openapi-fetch';
+import type { ComponentType } from 'react';
+import type { AnyBaseSchemas, BaseSchemas } from './base';
+import type { AugmentPlugins, UiAugment } from './plugin';
 
 export type ComponentRegistry = Map<string, ComponentType<any>>;
 export type TransformerRegistry = Map<string, (value: any) => any>;
@@ -26,173 +14,119 @@ export interface UiRegistry {
   functions: FunctionRegistry;
 }
 
-export interface HttpBundle<TConfig extends StatelyConfig> {
-  operationIndex: OperationIndex<TConfig>;
-  operations: StatelyOperations<TConfig>;
-  api: StatelyApi<TConfig>;
-  extensions: Record<string, unknown>;
+export interface RuntimeUtils {
+  getNodeTypeIcon: (node: string) => ComponentType<any>;
 }
 
-export interface StatelyUiPluginDescriptor<
-  TConfig extends StatelyConfig = StatelyConfig,
-  Exports extends AnyRecord = EmptyRecord,
-> {
-  name: string;
-  exports?: Exports;
-  api?: HttpBundle<TConfig>;
-}
-
+/**
+ * Core StatelyRuntime type with augment-based plugin distribution.
+ *
+ * The Augments array drives type-safe plugin access via AugmentPlugins.
+ * Each augment's Name becomes a key in the plugins record with full intellisense.
+ */
 export interface StatelyRuntime<
-  TConfig extends StatelyConfig,
-  IExt extends AnyRecord,
-  PExt extends AnyRecord,
+  Schema extends AnyBaseSchemas,
+  Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
 > {
-  schema: Stately<TConfig, IExt>;
-  client: Client<CorePaths<TConfig> & {}>;
-  http: HttpBundle<TConfig>;
+  schema: Stately<Schema>;
+  client: Client<Schema['config']['paths']>;
   registry: UiRegistry;
-  helpers: typeof helpers & {
-    getNodeTypeIcon: (node: string) => ComponentType<any>;
-  };
-  exports: PExt;
-  plugins: {
-    installed: StatelyUiPluginDescriptor<TConfig>[];
-    all(): StatelyUiPluginDescriptor<TConfig>[];
-  };
+  utils: RuntimeUtils;
+  plugins: AugmentPlugins<Schema, Augments>;
 }
 
-export type StatelyCoreRuntime = StatelyRuntime<
-  StatelyConfig,
-  AnyRecord,
-  AnyRecord
->;
+export type StatelyBaseRuntime = StatelyRuntime<BaseSchemas, readonly []>;
 
-export interface StatelyUi {
-  Core: StatelyCoreRuntime;
-}
-
-export type StatelyCore = StatelyUi["Core"];
-
-export type StatelyUiRuntime<
-  TConfig extends StatelyConfig,
-  IExt extends AnyRecord,
-  PExt extends AnyRecord,
-> = StatelyRuntime<TConfig, IExt, PExt>;
-
+/**
+ * Plugin factory function signature.
+ * Takes runtime and returns runtime with SAME augments type.
+ * Augments are declared upfront; factories populate runtime data to match.
+ *
+ * Pattern matches @stately/schema's PluginFactory.
+ */
 export type StatelyUiPluginFactory<
-  TConfig extends StatelyConfig,
-  IExt extends AnyRecord,
-  PExt extends AnyRecord,
-  PluginExt extends AnyRecord = EmptyRecord,
-> = (
-  runtime: StatelyRuntime<TConfig, IExt, PExt>,
-) => StatelyRuntime<TConfig, IExt, PExt & PluginExt>;
+  Schema extends AnyBaseSchemas,
+  Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
+> = (runtime: StatelyRuntime<Schema, Augments>) => StatelyRuntime<Schema, Augments>;
 
-type Builder<
-  TConfig extends StatelyConfig,
-  IExt extends AnyRecord,
-  PExt extends AnyRecord,
-> = StatelyRuntime<TConfig, IExt, PExt> & {
-  withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
-    plugin: StatelyUiPluginFactory<TConfig, IExt, PExt, PluginExt>,
-  ): Builder<TConfig, IExt, PExt & PluginExt>;
-};
+const DefaultIcon: ComponentType<any> = () => null;
 
+function createRuntimeUtils<
+  Schema extends AnyBaseSchemas,
+  Augments extends readonly UiAugment<string, Schema, any, any>[],
+>(plugins: AugmentPlugins<Schema, Augments>): RuntimeUtils {
+  return {
+    getNodeTypeIcon(node: string): ComponentType<any> {
+      for (const plugin of Object.values(plugins)) {
+        const hook = plugin?.utils?.getNodeTypeIcon;
+        if (!hook) continue;
+        const icon = hook(node);
+        if (icon) {
+          return icon;
+        }
+      }
+      return DefaultIcon;
+    },
+  };
+}
+
+/**
+ * StatelyUiBuilder provides the withPlugin chaining API.
+ * Augments are declared upfront; withPlugin() populates runtime data.
+ */
+export interface StatelyUiBuilder<
+  Schema extends AnyBaseSchemas,
+  Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
+> extends StatelyRuntime<Schema, Augments> {
+  withPlugin(plugin: StatelyUiPluginFactory<Schema, Augments>): StatelyUiBuilder<Schema, Augments>;
+}
+
+/**
+ * Initialize StatelyUi builder with declared augments.
+ * Augments type parameter specifies expected plugins upfront.
+ *
+ * @example
+ * ```typescript
+ * statelyUi<MySchemas, readonly [CoreUiAugment<MySchemas>]>(schema, client)
+ *   .withPlugin(createCoreUiPlugin());
+ * ```
+ */
 export function statelyUi<
-  TConfig extends StatelyConfig,
-  IExt extends AnyRecord = EmptyRecord,
+  Schema extends AnyBaseSchemas,
+  Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
 >(
-  integration: Stately<TConfig, IExt>,
-  client: Client<CorePaths<TConfig> & {}>,
-) {
+  schema: Stately<Schema>,
+  client: Client<Schema['config']['paths']>,
+): StatelyUiBuilder<Schema, Augments> {
   const registry: UiRegistry = {
     components: new Map(),
-    transformers: new Map(),
     functions: new Map(),
+    transformers: new Map(),
   };
 
-  const operationIndex = buildOperationIndex<TConfig>(
-    integration.data.paths as CorePaths<TConfig>,
-  );
-  const operations = buildStatelyOperations<TConfig>(operationIndex);
-  const api = createStatelyApi<TConfig>(client, operations);
-  const http: HttpBundle<TConfig> = {
-    operationIndex,
-    operations,
-    api,
-    extensions: {},
-  };
+  const basePlugins = {} as AugmentPlugins<Schema, Augments>;
 
-  const installed: StatelyUiPluginDescriptor<TConfig>[] = [];
-  const pluginList = () => [...installed];
-
-  const baseState: StatelyRuntime<TConfig, IExt, EmptyRecord> = {
-    schema: integration,
+  const baseState: StatelyRuntime<Schema, Augments> = {
     client,
-    http,
+    plugins: basePlugins,
     registry,
-    helpers: helpers as typeof helpers & {
-      getNodeTypeIcon: (node: string) => ComponentType<any>;
-    },
-    exports: {} as EmptyRecord,
-    plugins: { installed, all: pluginList },
+    schema,
+    utils: createRuntimeUtils(basePlugins),
   };
 
-  function decorateHelpers<PExt extends AnyRecord>(
-    state: StatelyRuntime<TConfig, IExt, PExt>,
-  ): StatelyRuntime<TConfig, IExt, PExt> {
+  function makeBuilder(
+    state: StatelyRuntime<Schema, Augments>,
+  ): StatelyUiBuilder<Schema, Augments> {
     return {
       ...state,
-      helpers: {
-        ...helpers,
-        getNodeTypeIcon: (icon: string) => helpers.getNodeTypeIcon(icon, state),
-      },
-    };
-  }
-
-  function makeBuilder<PExt extends AnyRecord>(
-    state: StatelyRuntime<TConfig, IExt, PExt>,
-  ): Builder<TConfig, IExt, PExt> {
-    const current = decorateHelpers(state);
-
-    return {
-      ...current,
-      withPlugin<PluginExt extends AnyRecord = EmptyRecord>(
-        plugin: StatelyUiPluginFactory<TConfig, IExt, PExt, PluginExt>,
-      ): Builder<TConfig, IExt, PExt & PluginExt> {
-        const nextState = plugin(current);
-        return makeBuilder(nextState);
+      withPlugin(
+        plugin: StatelyUiPluginFactory<Schema, Augments>,
+      ): StatelyUiBuilder<Schema, Augments> {
+        const nextState = plugin(state);
+        return makeBuilder({ ...nextState, utils: createRuntimeUtils(nextState.plugins) });
       },
     };
   }
 
   return makeBuilder(baseState);
-}
-
-export type StatelyUiBuilder<
-  TConfig extends StatelyConfig,
-  IExt extends AnyRecord = EmptyRecord,
-  PExt extends AnyRecord = EmptyRecord,
-> = Builder<TConfig, IExt, PExt>;
-
-export function registerUiPlugin<
-  TConfig extends StatelyConfig,
-  IExt extends AnyRecord,
-  PExt extends AnyRecord,
-  PluginExt extends AnyRecord = EmptyRecord,
->(
-  runtime: StatelyRuntime<TConfig, IExt, PExt>,
-  descriptor: StatelyUiPluginDescriptor<TConfig, PluginExt>,
-): StatelyRuntime<TConfig, IExt, PExt & PluginExt> {
-  runtime.plugins.installed.push(
-    descriptor as StatelyUiPluginDescriptor<TConfig>,
-  );
-
-  const exportsPatch = (descriptor.exports || ({} as PluginExt)) as PluginExt;
-  runtime.exports = {
-    ...(runtime.exports as AnyRecord),
-    ...exportsPatch,
-  } as PExt & PluginExt;
-
-  return runtime as StatelyRuntime<TConfig, IExt, PExt & PluginExt>;
 }

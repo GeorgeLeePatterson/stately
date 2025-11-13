@@ -1,6 +1,7 @@
-import type { AnyRecord } from "@/core/types";
 import { useCallback, useEffect, useState } from "react";
 import { useStatelyUi } from "@/context";
+import { AnyRecord } from "@stately/schema/helpers";
+import { useCoreStatelyUi } from "../context";
 
 type UseObjectFieldResult = {
   formData: Record<string, any>;
@@ -27,7 +28,7 @@ export const useObjectField = ({
   value: any;
   onSave: (formData: AnyRecord) => void;
 }): UseObjectFieldResult => {
-  const { schema } = useStatelyUi();
+  const { schema } = useCoreStatelyUi();
   const [formData, setFormData] = useState<Record<string, any>>(value ?? {});
   const [isDirty, setIsDirty] = useState(false);
 
@@ -39,15 +40,15 @@ export const useObjectField = ({
     ([fieldName]) => fieldName !== "id",
   );
   const valueFields = [...baseValueFields, ...mergedFields];
-  const fields = schema.utils.sortEntityProperties(
+  const fields = schema.plugins.core.sortEntityProperties(
     valueFields,
     value,
     required,
   );
 
   const objectValidation = schema.validate({
-    path: `${label ? label : ""}[ObjectNode]`,
-    ValidateArgs: formData,
+    path: `${label ?? ""}[ObjectNode]`,
+    data: formData,
     schema: node,
   });
   const isValid = objectValidation.valid;

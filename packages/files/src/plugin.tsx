@@ -1,8 +1,8 @@
 import {
   makeRegistryKey,
-  registerUiPlugin,
   type StatelyUiPluginFactory,
 } from "@stately/ui";
+import type { StatelyUiPluginDescriptor } from "@stately/ui";
 import { type ComponentType, type ReactNode, useMemo, useState } from "react";
 import type { FilesApiOperationIds } from "./lib/files-api.js";
 import { FilesNodeType } from "./schema.js";
@@ -171,7 +171,7 @@ export interface FilesPluginOptions {
 
 export function createFilesPlugin(
   options?: FilesPluginOptions,
-): StatelyUiPluginFactory<any, any> {
+): StatelyUiPluginFactory<any> {
   const operationIds: FilesApiOperationIds = {
     list: options?.operationIds?.list ?? "list",
     save: options?.operationIds?.save ?? "save",
@@ -179,7 +179,7 @@ export function createFilesPlugin(
   };
 
   return (runtime) => {
-    const { registry, http } = runtime;
+    const { registry } = runtime;
 
     registry.components.set(
       makeRegistryKey(FilesNodeType.RelativePath, "edit"),
@@ -194,11 +194,25 @@ export function createFilesPlugin(
       primitiveStringTransformer,
     );
 
-    http.extensions.files = { operationIds };
-
-    return registerUiPlugin(runtime, {
+    const descriptor: StatelyUiPluginDescriptor<
+      any,
+      "@stately/files/ui"
+    > = {
       name: "@stately/files/ui",
-    });
+      utils: {
+        getFilesOperationIds: () => operationIds,
+      },
+    };
+
+    const nextPlugins = {
+      ...runtime.plugins,
+      [descriptor.name]: descriptor,
+    };
+
+    return {
+      ...runtime,
+      plugins: nextPlugins,
+    };
   };
 }
 

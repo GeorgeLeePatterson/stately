@@ -1,6 +1,5 @@
 import type { CoreSchemas, CoreTaggedUnionNode } from "@/core";
 import { useEffect, useState } from "react";
-import { useStatelyUi } from "@/context";
 import { DescriptionLabel } from "@/core/components/base/description";
 import { Card, CardContent } from "@/core/components/ui/card";
 import {
@@ -10,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/core/components/ui/select";
-import { FieldEdit } from "../field-edit";
-import type { EditFieldProps } from "../types";
+import { FieldEdit } from "@/base/form/field-edit";
+import type { EditFieldProps } from "@/base/form/field-edit";
+import { useCoreStatelyUi } from "@/core/context";
 
 export type TaggedUnionEditProps<Schema extends CoreSchemas = CoreSchemas> =
   EditFieldProps<Schema, CoreTaggedUnionNode<Schema>>;
@@ -35,7 +35,7 @@ export function TaggedUnionEdit<Schema extends CoreSchemas = CoreSchemas>({
   onChange,
   isWizard,
 }: TaggedUnionEditProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema, plugins } = useCoreStatelyUi();
   const discriminatorField = node.discriminator;
 
   // Local state for current data
@@ -66,10 +66,15 @@ export function TaggedUnionEdit<Schema extends CoreSchemas = CoreSchemas>({
     if (!variant) return;
 
     // Create new value with discriminator and default values for variant fields
-    const defaultVariantData = schema.utils.getDefaultValue(variant.schema);
+    const defaultVariantData = plugins.core.utils?.getDefaultValue(variant.schema);
 
     // Merge discriminator with variant data
-    const newValue = { [discriminatorField]: newTag, ...defaultVariantData };
+    const newValue = {
+      [discriminatorField]: newTag,
+      ...(typeof defaultVariantData === "object" && defaultVariantData !== null
+        ? defaultVariantData
+        : {}),
+    };
 
     setFormData(newValue);
     onChange(newValue);
@@ -84,7 +89,7 @@ export function TaggedUnionEdit<Schema extends CoreSchemas = CoreSchemas>({
   };
 
   const discriminatorLabel =
-    schema.utils.generateFieldLabel(discriminatorField);
+    plugins.core.utils?.generateFieldLabel(discriminatorField);
 
   return (
     <div className="space-y-3 min-w-0">
@@ -95,13 +100,13 @@ export function TaggedUnionEdit<Schema extends CoreSchemas = CoreSchemas>({
         >
           <SelectTrigger id={formId}>
             <SelectValue
-              placeholder={`Select ${discriminatorLabel.toLowerCase()}...`}
+            placeholder={`Select ${discriminatorLabel?.toLowerCase() || 'Variant'}...`}
             />
           </SelectTrigger>
           <SelectContent>
             {node.variants.map((variant: (typeof node.variants)[number]) => (
               <SelectItem key={variant.tag} value={variant.tag}>
-                {schema.utils.generateFieldLabel(variant.tag)}
+                {plugins.core.utils?.generateFieldLabel(variant.tag)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -129,7 +134,7 @@ export function TaggedUnionEdit<Schema extends CoreSchemas = CoreSchemas>({
                     <div key={fieldName}>
                       <FieldEdit
                         formId={fieldFormId}
-                        label={schema.utils.generateFieldLabel(fieldName)}
+                        label={plugins.core.utils?.generateFieldLabel(fieldName)}
                         node={fieldSchema}
                         value={fieldValue}
                         onChange={(newValue) =>

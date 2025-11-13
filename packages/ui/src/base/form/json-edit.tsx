@@ -2,9 +2,9 @@ import { Save, X } from "lucide-react";
 import { useCallback, useId, useMemo, useState } from "react";
 import { Label } from "@/base/ui/label";
 import { cn } from "@/base/lib/utils";
-import { Note } from "../components/note";
-import { Button } from "../ui/button";
-import { Editor } from "../views/editor";
+import { Note } from "@/base/components/note";
+import { Button } from "@/base/ui/button";
+import { Editor } from "@/base/components/editor";
 
 type JsonStatus = { valid: boolean; error?: string; msg?: string };
 

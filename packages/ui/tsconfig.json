@@ -16,7 +16,9 @@
     "declarationMap": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/core/components/base/*": ["./src/base/components/*"],
+      "@/core/components/ui/*": ["./src/base/ui/*"]
     }
   },
   "include": ["src"],

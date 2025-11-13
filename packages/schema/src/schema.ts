@@ -5,10 +5,10 @@
  * internals in one place makes it easier to reason about how the Generated/Plugin
  * views are assembled while still presenting a clean surface at the package root.
  */
-import { GeneratedNodeMap, StatelyConfig } from "./generated";
-import { AnyRecord, EmptyRecord, UnionToIntersection } from "./helpers";
-import { NodeInformation, NodeMap } from "./nodes";
-import { SchemaAugment } from "./plugin";
+import type { GeneratedNodeMap, StatelyConfig } from './generated';
+import type { AnyRecord, EmptyRecord, UnionToIntersection } from './helpers';
+import type { NodeInformation, NodeMap } from './nodes';
+import type { SchemaAugment } from './plugin';
 
 type AugmentPluginNodes<Augments> = Augments extends readonly SchemaAugment<
   any,
@@ -50,7 +50,7 @@ type AugmentPluginUtils<Augments> = (Augments extends readonly SchemaAugment<
   infer Utils
 >[]
   ? { [K in Name]: Utils }
-  : {}) &
+  : EmptyRecord) &
   Record<string, AnyRecord>;
 
 /**
@@ -73,5 +73,4 @@ export type StatelySchemas<
   utils: AugmentPluginUtils<Augments>;
 };
 
-export type StatelySchemaConfig<S> =
-  S extends StatelySchemas<infer Config, any> ? Config : never;
+export type StatelySchemaConfig<S> = S extends StatelySchemas<infer Config, any> ? Config : never;

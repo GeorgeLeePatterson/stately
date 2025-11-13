@@ -1,9 +1,9 @@
 import type { CoreSchemas, CoreTupleNode } from "@/core";
 import { useCallback, useState } from "react";
 import { FieldSet } from "@/core/components/ui/field";
-import { GlowingSave } from "../../base/glowing-save";
-import { FieldEdit } from "../field-edit";
-import type { EditFieldProps } from "../types";
+import { GlowingSave } from "@/base/components/glowing-save";
+import { FieldEdit } from "@/base/form/field-edit";
+import type { EditFieldProps } from "@/base/form/field-edit";
 
 export type TupleEditProps<Schema extends CoreSchemas = CoreSchemas> =
   EditFieldProps<Schema, CoreTupleNode<Schema>, unknown[]>;

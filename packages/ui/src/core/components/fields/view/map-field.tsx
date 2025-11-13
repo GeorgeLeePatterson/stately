@@ -1,5 +1,4 @@
 import type { CoreMapNode, CoreSchemas } from "@/core";
-import type { AnyRecord } from "@/core/types";
 import {
   ChevronDown,
   ChevronRight,
@@ -23,9 +22,10 @@ import {
   ItemTitle,
 } from "@/core/components/ui/item";
 import { useViewMore } from "@/core/hooks/use-view-more";
-import { cn } from "@/core/lib/utils";
-import { FieldView } from "../field-view";
-import type { ViewFieldProps } from "../types";
+import { FieldView } from "@/base/form/field-view";
+import type { ViewFieldProps } from "@/base/form/field-view";
+import { cn } from "@/base/lib/utils";
+import { AnyRecord } from "@stately/schema/helpers";
 
 export function KeyValue({
   active,

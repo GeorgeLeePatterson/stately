@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../ui/alert-dialog";
+} from "@/base/ui/alert-dialog";
 
 export interface RemoveDialogProps {
   name: string;

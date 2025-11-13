@@ -1,4 +1,3 @@
-import type { AnyRecord } from "@/core/types";
 import { FileJson, FormInput, WandSparkles } from "lucide-react";
 import { useState } from "react";
 import type { CoreObjectNode, CoreSchemas } from "@/core";
@@ -9,10 +8,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/core/components/ui/tabs";
-import { JsonEdit } from "../../fields/json-edit";
-import { JsonView } from "../../fields/json-view";
 import { EntityFormEdit } from "./entity-form-edit";
 import { EntityWizardView } from "./entity-wizard-view";
+import { AnyRecord } from "@stately/schema/helpers";
+import { JsonView } from "@/base/form/json-view";
+import { JsonEdit } from "@/base/form/json-edit";
 
 export enum EditMode {
   FORM = "Form",

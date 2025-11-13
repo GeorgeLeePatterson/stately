@@ -9,7 +9,7 @@ import {
   ItemTitle,
 } from "@/core/components/ui/item";
 import { ViewLinkControl } from "@/core/context/link-explore-context";
-import { cn } from "@/core/lib/utils";
+import { cn } from "@/base/lib/utils";
 
 export interface LinkRefViewProps<Schema extends CoreSchemas = CoreSchemas> {
   label?: React.ReactNode;

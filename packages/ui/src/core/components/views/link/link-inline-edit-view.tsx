@@ -1,6 +1,5 @@
 import { useStatelyUi } from "@/context";
 import { FieldLegend } from "@/core/components/ui/field";
-import type { AnyRecord } from "@/core/types";
 import type {
   CoreEntity,
   CoreObjectNode,
@@ -9,6 +8,8 @@ import type {
 } from "@/core";
 import { EditMode, EntityEditView } from "../entity/entity-edit-view";
 import type { LinkFor } from "./link-edit-view";
+import { AnyRecord } from "@stately/schema/helpers";
+import { useCoreStatelyUi } from "@/core/context";
 
 export interface LinkInlineEditProps<Schema extends CoreSchemas = CoreSchemas> {
   /** The entity type being configured inline */
@@ -42,7 +43,7 @@ export function LinkInlineEdit<Schema extends CoreSchemas = CoreSchemas>({
   after,
   isWizard,
 }: LinkInlineEditProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema } = useCoreStatelyUi();
   const entityValue: CoreEntity<Schema>["data"] =
     value && "inline" in value
       ? value.inline
@@ -53,7 +54,8 @@ export function LinkInlineEdit<Schema extends CoreSchemas = CoreSchemas>({
     onChange({ entity_type: targetType, inline: entity } as LinkFor<Schema>);
   };
 
-  const entityDisplayName = schema.data.entityDisplayNames[targetType];
+  const entityDisplayName =
+    schema.data.entityDisplayNames?.[targetType] ?? String(targetType);
 
   return (
     <>

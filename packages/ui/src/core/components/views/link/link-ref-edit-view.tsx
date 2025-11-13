@@ -16,7 +16,7 @@ export interface LinkRefEditProps<Schema extends CoreSchemas = CoreSchemas> {
   /** The entity type being referenced (e.g., "source_driver", "input") */
   targetType: CoreStateEntry<Schema>;
   /** List of entity refs */
-  availableEntities: Array<CoreSummary<Schema>>;
+  availableEntities: Array<CoreSummary>;
   /** Schema for the inline entity */
   node: CoreObjectNode<Schema>;
   /** Current value from parent (either ref or inline) */

@@ -4,18 +4,19 @@ import { useStatelyUi } from "@/context";
 import { useEntityData } from "@/core/hooks/use-entity-data";
 import { useEntitySchema } from "@/core/hooks/use-entity-schema";
 import type { CoreObjectNode, CoreSchemas, CoreStateEntry } from "@/core";
-import { Button } from "../ui/button";
+import { Button } from "@/base/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
-import { ScrollArea } from "../ui/scroll-area";
-import { Separator } from "../ui/separator";
-import { Skeleton } from "../ui/skeleton";
+} from "@/base/ui/dialog";
+import { ScrollArea } from "@/base/ui/scroll-area";
+import { Separator } from "@/base/ui/separator";
+import { Skeleton } from "@/base/ui/skeleton";
 import { EntityDetailView } from "../views/entity/entity-detail-view";
+import { useCoreStatelyUi } from "@/core/context";
 
 export interface LinkEntityProps<Schema extends CoreSchemas = CoreSchemas> {
   entityName: string;
@@ -43,8 +44,9 @@ export function ViewLinkDialog<Schema extends CoreSchemas = CoreSchemas>({
   breadcrumbs = [],
   onNavigateToBreadcrumb,
 }: ViewLinkDialogProps<Schema> & LinkEntityProps<Schema>) {
-  const { schema: stately } = useStatelyUi();
-  const entityDisplayName = stately.data.entityDisplayNames[entityType];
+  const { schema: statelySchema } = useCoreStatelyUi();
+  const entityDisplayName =
+    statelySchema.data.entityDisplayNames?.[entityType] ?? String(entityType);
   const entitySchema = useEntitySchema(entityType, schema);
 
   const {

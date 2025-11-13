@@ -3,8 +3,8 @@ import { useId, useState } from "react";
 import { DescriptionLabel } from "@/core/components/base/description";
 import { Checkbox } from "@/core/components/ui/checkbox";
 import { Field, FieldContent, FieldLabel } from "@/core/components/ui/field";
-import { FieldEdit } from "../field-edit";
-import type { EditFieldProps } from "../types";
+import { FieldEdit } from "@/base/form/field-edit";
+import type { EditFieldProps } from "@/base/form/field-edit";
 
 function isValueNulled(value?: any) {
   return (

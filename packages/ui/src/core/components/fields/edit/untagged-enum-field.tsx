@@ -9,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/core/components/ui/select";
-import { FieldEdit } from "../field-edit";
-import type { EditFieldProps } from "../types";
+import { FieldEdit } from "@/base/form/field-edit";
+import type { EditFieldProps } from "@/base/form/field-edit";
+import { useCoreStatelyUi } from "@/core/context";
 
 export type UntaggedEnumEditProps<Schema extends CoreSchemas = CoreSchemas> =
   EditFieldProps<Schema, CoreUntaggedEnumNode<Schema>, any>;
@@ -29,7 +30,8 @@ export function UntaggedEnumEdit<Schema extends CoreSchemas = CoreSchemas>({
   onChange,
   isWizard,
 }: UntaggedEnumEditProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema, plugins } = useCoreStatelyUi();
+
   // Extract current tag from the single property key
   let currentTag: string | null = null;
 
@@ -52,7 +54,7 @@ export function UntaggedEnumEdit<Schema extends CoreSchemas = CoreSchemas>({
     );
     if (!variant) return;
     // Get default value for the variant's schema and wrap with tag as key: { variant: {...} }
-    onChange({ [newTag]: schema.utils.getDefaultValue(variant.schema) });
+    onChange({ [newTag]: plugins.core.utils?.getDefaultValue(variant.schema) });
   };
 
   // Handle field change - the child passes the complete variant data
@@ -71,7 +73,7 @@ export function UntaggedEnumEdit<Schema extends CoreSchemas = CoreSchemas>({
           <SelectContent>
             {node.variants.map((variant: (typeof node.variants)[number]) => (
               <SelectItem key={variant.tag} value={variant.tag}>
-                {schema.utils.generateFieldLabel(variant.tag)}
+                {plugins.core.utils?.generateFieldLabel(variant.tag)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -91,7 +93,7 @@ export function UntaggedEnumEdit<Schema extends CoreSchemas = CoreSchemas>({
             node={currentVariant.schema}
             value={value[currentTag]}
             onChange={(newValue) => handleFieldChange(currentTag, newValue)}
-            label={`${schema.utils.generateFieldLabel(currentTag)} Configuration`}
+            label={`${plugins.core.utils?.generateFieldLabel(currentTag)} Configuration`}
             isWizard={isWizard}
           />
         </FieldSet>

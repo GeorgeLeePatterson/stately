@@ -8,15 +8,15 @@
  * append helpers via `runtime.utils`, and register validation hooks.
  */
 
-import type { OpenAPIV3_1 } from "openapi-types";
-import type { StatelyConfig } from "./generated.js";
+import type { OpenAPIV3_1 } from 'openapi-types';
+import type { StatelyConfig } from './generated.js';
+import type { StatelySchemaConfig, StatelySchemas } from './schema.js';
 import {
   runValidationPipeline,
-  ValidateHook,
   type ValidateArgs,
+  type ValidateHook,
   type ValidationResult,
-} from "./validation.js";
-import { StatelySchemaConfig, StatelySchemas } from "./schema.js";
+} from './validation.js';
 
 export interface SchemaRegistry {
   utils: Map<string, (...args: any[]) => unknown>;
@@ -25,9 +25,7 @@ export interface SchemaRegistry {
 /**
  * Schema plugin descriptor installed by plugin factory functions.
  */
-export interface PluginDescriptor<
-  S extends StatelySchemas<StatelyConfig, any>,
-> {
+export interface PluginDescriptor<S extends StatelySchemas<StatelyConfig, any>> {
   validate?: ValidateHook<S>;
 }
 
@@ -41,42 +39,41 @@ export type PluginFactory<S extends StatelySchemas<StatelyConfig, any>> = (
 export interface Stately<S extends StatelySchemas<any, any>> {
   schema: {
     document: OpenAPIV3_1.Document;
-    components: StatelySchemaConfig<S>["components"];
-    paths: StatelySchemaConfig<S>["paths"];
-    nodes: StatelySchemaConfig<S>["nodes"];
+    components: StatelySchemaConfig<S>['components'];
+    paths: StatelySchemaConfig<S>['paths'];
+    nodes: StatelySchemaConfig<S>['nodes'];
   };
-  types: S["types"];
-  data: S["data"];
-  plugins: S["utils"];
+  types: S['types'];
+  data: S['data'];
+  plugins: S['utils'];
   validate: (args: ValidateArgs<S>) => ValidationResult;
 }
 
-export interface StatelyBuilder<S extends StatelySchemas<any, any>>
-  extends Stately<S> {
+export interface StatelyBuilder<S extends StatelySchemas<any, any>> extends Stately<S> {
   withPlugin(plugin: PluginFactory<S>): StatelyBuilder<S>;
 }
 
 export function createStately<S extends StatelySchemas<any, any>>(
   openapi: OpenAPIV3_1.Document,
-  generatedNodes: StatelySchemaConfig<S>["nodes"],
+  generatedNodes: StatelySchemaConfig<S>['nodes'],
 ): StatelyBuilder<S> {
   const baseState: Stately<S> = {
+    data: {} as S['data'],
+    plugins: {} as S['utils'],
     schema: {
+      components: openapi.components || ({} as S['config']['components']),
       document: openapi,
-      components: openapi.components || ({} as S["config"]["components"]),
-      paths: openapi.paths || ({} as S["config"]["paths"]),
       nodes: generatedNodes,
+      paths: openapi.paths || ({} as S['config']['paths']),
     },
-    types: {} as S["types"],
-    data: {} as S["data"],
-    plugins: {} as S["utils"],
-    validate: (args) => runValidationPipeline(baseState, args),
+    types: {} as S['types'],
+    validate: args => runValidationPipeline(baseState, args),
   };
 
   return (function makeBuilder(state: Stately<S>): StatelyBuilder<S> {
     return {
       ...state,
-      validate: (args) => runValidationPipeline({ ...state }, args),
+      validate: args => runValidationPipeline({ ...state }, args),
       withPlugin(plugin: PluginFactory<S>): StatelyBuilder<S> {
         return makeBuilder(plugin({ ...state }));
       },

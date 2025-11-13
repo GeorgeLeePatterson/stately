@@ -1,12 +1,13 @@
 import { useId, useMemo } from "react";
 import { useStatelyUi } from "@/context";
-import { FieldEdit } from "@/core/components/fields/field-edit";
 import { Field, FieldGroup, FieldSet } from "@/core/components/ui/field";
 import { Separator } from "@/core/components/ui/separator";
 import { Skeleton } from "@/core/components/ui/skeleton";
 import type { CoreEntity, CoreObjectNode, CoreSchemas } from "@/core";
-import type { AnyRecord } from "@/core/types";
 import { EntityPropertyEdit } from "./entity-property-edit";
+import { useCoreStatelyUi } from "@/core/context";
+import { AnyRecord } from "@stately/schema/helpers";
+import { FieldEdit } from "@/base/form/field-edit";
 
 export interface EntityFormEditProps<Schema extends CoreSchemas = CoreSchemas> {
   node: CoreObjectNode<Schema>;
@@ -23,7 +24,7 @@ export function EntityFormEdit<Schema extends CoreSchemas = CoreSchemas>({
   isRootEntity,
   isLoading,
 }: EntityFormEditProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema, plugins } = useCoreStatelyUi();
   const formId = useId();
 
   const required = useMemo(
@@ -32,14 +33,14 @@ export function EntityFormEdit<Schema extends CoreSchemas = CoreSchemas>({
   );
   const propertiesWithoutName = useMemo(
     () =>
-      schema.utils.sortEntityProperties(
+      schema.plugins.core.sortEntityProperties(
         Object.entries(node.properties)
           .filter(([name]) => name !== "name")
-          .map(([name, schemaNode]) => [name, schemaNode as Schema["AnyNode"]]),
+          .map(([name, schemaNode]) => [name, schemaNode as Schema['plugin']["AnyNode"]]),
         entityData,
         required,
-      ) as Array<[string, Schema["AnyNode"]]>,
-    [node.properties, value, required, schema.utils.sortEntityProperties],
+      ) as Array<[string, Schema['plugin']["AnyNode"]]>,
+    [node.properties, value, required, schema.plugins.core.sortEntityProperties],
   );
 
   const formEnabled =
@@ -85,7 +86,7 @@ export function EntityFormEdit<Schema extends CoreSchemas = CoreSchemas>({
       >
         {propertiesWithoutName.map(([fieldName, propNode], idx, arr) => {
           const isRequired = required.has(fieldName);
-          const label = schema.utils.generateFieldLabel(fieldName);
+          const label = plugins.core.utils?.generateFieldLabel(fieldName);
           const fieldValue = entityData[fieldName];
           const fieldId = `${fieldName}-${formId}`;
 
@@ -111,7 +112,7 @@ export function EntityFormEdit<Schema extends CoreSchemas = CoreSchemas>({
                 node={propNode}
                 isRequired={isRequired}
               >
-                {schema.utils.isPrimitive(propNode) ? (
+                {schema.plugins.core.isPrimitive(propNode) ? (
                   <Field>{field}</Field>
                 ) : (
                   field

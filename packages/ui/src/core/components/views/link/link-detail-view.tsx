@@ -1,11 +1,12 @@
 import { useStatelyUi } from "@/context";
-import type { ViewFieldProps } from "@/core/components/fields";
 import { Skeleton } from "@/core/components/ui/skeleton";
 import type { CoreLinkNode, CoreSchemas } from "@/core";
 import { useEntityData } from "@/core/hooks/use-entity-data";
 import type { LinkFor } from "./link-edit-view";
 import { LinkInlineView } from "./link-inline-view";
 import { LinkRefView } from "./link-ref-view";
+import { ViewFieldProps } from "@/base/form/field-view";
+import { useCoreStatelyUi } from "@/core/context";
 
 export type LinkViewProps<Schema extends CoreSchemas = CoreSchemas> =
   ViewFieldProps<Schema, CoreLinkNode<Schema>, LinkFor<Schema>>;
@@ -14,7 +15,7 @@ export function LinkView<Schema extends CoreSchemas = CoreSchemas>({
   value,
   node,
 }: LinkViewProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema } = useCoreStatelyUi();
   const inlineSchema = (node as CoreLinkNode<Schema>).inlineSchema;
 
   // Extract entity_type and actual value
@@ -42,7 +43,7 @@ export function LinkView<Schema extends CoreSchemas = CoreSchemas>({
   }
 
   // Convert StateEntry to URL-friendly format for routing
-  const urlType = schema.data.stateEntryToUrl[stateEntry];
+  const urlType = schema.data.stateEntryToUrl?.[stateEntry];
   if (!urlType) {
     console.warn(`LinkView: unknown entity type ${stateEntry}`);
     return null;

@@ -1,7 +1,7 @@
 import type { CoreRecursiveRefNode, CoreSchemas } from "@/core";
 import { useStatelyUi } from "@/context";
-import { FieldEdit } from "../field-edit";
-import type { EditFieldProps } from "../types";
+import { FieldEdit } from "@/base/form/field-edit";
+import type { EditFieldProps } from "@/base/form/field-edit";
 
 export type RecursiveRefEditProps<Schema extends CoreSchemas = CoreSchemas> =
   EditFieldProps<Schema, CoreRecursiveRefNode<Schema>>;
@@ -11,11 +11,12 @@ export function RecursiveRefEdit<Schema extends CoreSchemas = CoreSchemas>(
 ) {
   const { schema } = useStatelyUi();
   // Look up the referenced schema and recurse
-  const referencedSchema = schema.data.nodes[props.node.refName];
+  const referencedSchema =
+    schema.schema.nodes[props.node.refName as keyof typeof schema.schema.nodes];
   if (!referencedSchema) {
     return (
       <div className="p-4 bg-muted rounded-md text-sm text-destructive">
-        Unknown schema reference: {props.node.refName}
+        Unknown schema reference: {String(props.node.refName)}
       </div>
     );
   }

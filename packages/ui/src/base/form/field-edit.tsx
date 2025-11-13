@@ -7,10 +7,11 @@
 
 import { useStatelyUi } from "@/context";
 import { getEditComponent } from "@/registry";
+import { AnyBaseSchemas, BaseSchemas } from "..";
 
 export interface EditFieldProps<
-  Schema extends CoreSchemas = CoreSchemas,
-  N extends Schema["AnyNode"] = Schema["AnyNode"],
+  S extends AnyBaseSchemas = BaseSchemas,
+  N extends S["plugin"]['AnyNode'] = S['plugin']["AnyNode"],
   V = unknown,
 > {
   formId: string;
@@ -25,13 +26,13 @@ export interface EditFieldProps<
 }
 
 export function FieldEdit<
-  Schema extends CoreSchemas = CoreSchemas,
-  N extends Schema["AnyNode"] = Schema["AnyNode"],
+  S extends AnyBaseSchemas = BaseSchemas,
+  N extends S["plugin"]['AnyNode'] = S['plugin']["AnyNode"],
   V = unknown,
->(props: EditFieldProps<Schema, N, V>) {
+>(props: EditFieldProps<S, N, V>) {
   const { node } = props;
   const { registry } = useStatelyUi();
-  const Edit = getEditComponent<Schema, N, V>(
+  const Edit = getEditComponent<S, N, V>(
     registry.components,
     node.nodeType,
   );

@@ -23,6 +23,7 @@ import type {
   CoreStateEntry,
   CoreSummary,
 } from "@/core";
+import { useCoreStatelyUi } from "@/core/context";
 
 export interface EntitySelectEditProps<
   Schema extends CoreSchemas = CoreSchemas,
@@ -34,7 +35,7 @@ export interface EntitySelectEditProps<
   /** The entity type being referenced */
   targetType: CoreStateEntry<Schema>;
   /** List of entity refs */
-  available: Array<CoreSummary<Schema>>;
+  available: Array<CoreSummary>;
   /** Schema for the inline entity */
   node: CoreObjectNode<Schema>;
   /** Current value from parent (either ref or inline) */
@@ -61,9 +62,10 @@ export function EntitySelectEdit<Schema extends CoreSchemas = CoreSchemas>({
   isReadOnly,
   isLoading,
 }: EntitySelectEditProps<Schema>) {
-  const { schema } = useStatelyUi();
-  const entityDisplayName = schema.data.entityDisplayNames[targetType];
-  const label = schema.utils.generateFieldLabel(targetType);
+  const { schema, plugins } = useCoreStatelyUi();
+  const entityDisplayName =
+    schema.data.entityDisplayNames?.[targetType] ?? String(targetType);
+  const label = plugins.core.utils?.generateFieldLabel(targetType);
   const formId = useId();
   const fieldId = `select-${targetType}-${formId}`;
   const selected = value
@@ -175,7 +177,7 @@ export function EntitySelectEdit<Schema extends CoreSchemas = CoreSchemas>({
                 asChild
               >
                 <a
-                  href={`/${schema.data.stateEntryToUrl[targetType]}/${selected.id}`}
+                  href={`/${schema.data.stateEntryToUrl?.[targetType] ?? targetType}/${selected.id}`}
                   target="_blank"
                 >
                   <ExternalLink className="w-4 h-4" />
@@ -190,7 +192,7 @@ export function EntitySelectEdit<Schema extends CoreSchemas = CoreSchemas>({
           message={
             <>
               No {label} configurations found. Create one in Configuration →{" "}
-              {schema.data.entityDisplayNames[targetType]}.
+              {schema.data.entityDisplayNames?.[targetType] ?? targetType}.
             </>
           }
         />

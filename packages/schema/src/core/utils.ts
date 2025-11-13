@@ -4,9 +4,10 @@
  * Helper utilities for working with Stately schemas
  */
 
-import type { DefineUtils, Schemas } from "../index.js";
-import type { CoreStatelyConfig } from "./augment.js";
-import { CoreNodeType, type CoreNodeUnion, type ObjectNode } from "./nodes.js";
+import type { Schemas } from '../index.js';
+import type { DefineUtils } from '../plugin.js';
+import type { CoreStatelyConfig } from './augment.js';
+import { CoreNodeType, type CoreNodeUnion, type ObjectNode } from './nodes.js';
 
 type CoreNodeName = (typeof CoreNodeType)[keyof typeof CoreNodeType];
 
@@ -14,7 +15,7 @@ type CoreNodeName = (typeof CoreNodeType)[keyof typeof CoreNodeType];
  * ID utilities
  */
 
-const SINGLETON_ID = "00000000-0000-0000-0000-000000000000";
+export const SINGLETON_ID = '00000000-0000-0000-0000-000000000000';
 
 function isSingletonId(id: string): boolean {
   return id === SINGLETON_ID;
@@ -29,8 +30,7 @@ function isPrimitive<Config extends CoreStatelyConfig = CoreStatelyConfig>(
 ): boolean {
   return (
     schema.nodeType === CoreNodeType.Primitive ||
-    (schema.nodeType === CoreNodeType.Nullable &&
-      isPrimitive((schema as any).innerSchema)) ||
+    (schema.nodeType === CoreNodeType.Nullable && isPrimitive((schema as any).innerSchema)) ||
     schema.nodeType === CoreNodeType.Enum
   );
 }
@@ -58,25 +58,20 @@ function extractNodeType<Config extends CoreStatelyConfig = CoreStatelyConfig>(
  */
 
 function isEntityValid<Config extends CoreStatelyConfig = CoreStatelyConfig>(
-  entity: Schemas<Config>["types"]["EntityData"]["data"] | null | undefined,
+  entity: Schemas<Config>['types']['EntityData']['data'] | null | undefined,
   schema: ObjectNode<Config> | undefined,
 ): boolean {
   if (!entity || !schema) return false;
-  if (typeof entity !== "object") return false;
+  if (typeof entity !== 'object') return false;
 
-  const nameRequired = "name" in schema.properties;
-  const nameValid =
-    !nameRequired || ("name" in entity && !!(entity as any)?.name);
+  const nameRequired = 'name' in schema.properties;
+  const nameValid = !nameRequired || ('name' in entity && !!(entity as any)?.name);
 
   if (!nameValid || !entity || !schema) return false;
 
   if (schema.required) {
     for (const field of schema.required) {
-      if (
-        !(field in entity) ||
-        entity[field] === undefined ||
-        entity[field] === null
-      ) {
+      if (!(field in entity) || entity[field] === undefined || entity[field] === null) {
         return false;
       }
     }
@@ -89,9 +84,7 @@ function isEntityValid<Config extends CoreStatelyConfig = CoreStatelyConfig>(
  * Property sorting for display
  */
 
-function sortEntityProperties<
-  Config extends CoreStatelyConfig = CoreStatelyConfig,
->(
+function sortEntityProperties<Config extends CoreStatelyConfig = CoreStatelyConfig>(
   properties: Array<[string, CoreNodeUnion<Config>]>,
   value: any,
   required: Set<string>,
@@ -121,29 +114,29 @@ function sortEntityProperties<
  */
 
 function toKebabCase(str: string): string {
-  return str.replace(/_/g, "-");
+  return str.replace(/_/g, '-');
 }
 
 function toTitleCase(str: string): string {
   return str
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 function toSpaceCase(str: string): string {
-  return str.replace(/[-_]/g, " ");
+  return str.replace(/[-_]/g, ' ');
 }
 
 const coreUtils = {
-  isSingletonId,
-  isPrimitive,
   extractNodeType,
   isEntityValid,
+  isPrimitive,
+  isSingletonId,
   sortEntityProperties,
   toKebabCase,
-  toTitleCase,
   toSpaceCase,
+  toTitleCase,
 } as const;
 
 type CoreUtils<Config extends CoreStatelyConfig = CoreStatelyConfig> = DefineUtils<{

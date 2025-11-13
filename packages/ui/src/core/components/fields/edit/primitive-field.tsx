@@ -1,13 +1,13 @@
 import type { CorePrimitiveNode, CoreSchemas } from "@/core";
 import { Input } from "@/core/components/ui/input";
 import { Switch } from "@/core/components/ui/switch";
-import type { EditFieldProps } from "../types";
+import type { EditFieldProps } from "@/base/form/field-edit";
 import { PrimitiveStringEdit } from "./primitive-string";
 
 export type PrimitiveEditProps<Schema extends CoreSchemas = CoreSchemas> =
   EditFieldProps<
     Schema,
-    CorePrimitiveNode<Schema>,
+    CorePrimitiveNode,
     string | number | null | undefined
   >;
 

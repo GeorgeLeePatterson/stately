@@ -6,25 +6,26 @@
 
 import { useStatelyUi } from "@/context";
 import { getViewComponent } from "@/registry";
+import type { AnyBaseSchemas, BaseSchemas } from "..";
 
 export interface ViewFieldProps<
-  Schema extends CoreSchemas = CoreSchemas,
-  N extends Schema["AnyNode"] = Schema["AnyNode"],
+  S extends AnyBaseSchemas = BaseSchemas,
+  N extends S['plugin']["AnyNode"] = S['plugin']["AnyNode"],
   V = unknown,
 > {
   node: N;
   value: V;
 }
 
-export function FieldView<Schema extends CoreSchemas = CoreSchemas>(
-  props: ViewFieldProps<Schema>,
+export function FieldView<S extends AnyBaseSchemas = BaseSchemas>(
+  props: ViewFieldProps<S>,
 ) {
   const { node, value } = props;
   const { registry } = useStatelyUi();
 
   if (value === null || value === undefined) return null;
 
-  const View = getViewComponent<Schema>(registry.components, node.nodeType);
+  const View = getViewComponent<S>(registry.components, node.nodeType);
 
   if (!View) return null;
 

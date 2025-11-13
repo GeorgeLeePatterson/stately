@@ -1,8 +1,8 @@
-import type { CoreSchemas, CoreUntaggedEnumNode } from "@/core";
-import { FieldItem } from "@/core/components/base/array";
+import type { CoreNodeUnion, CoreSchemas, CoreUntaggedEnumNode } from "@/core";
+import { FieldItem } from "@/core/components/base/field";
 import { SimpleLabel } from "@/core/components/base/simple-label";
-import { FieldView } from "../field-view";
-import type { ViewFieldProps } from "../types";
+import { FieldView } from "@/base/form/field-view";
+import type { ViewFieldProps } from "@/base/form/field-view";
 
 export type UntaggedEnumViewProps<Schema extends CoreSchemas = CoreSchemas> =
   ViewFieldProps<Schema, CoreUntaggedEnumNode<Schema>>;
@@ -46,7 +46,7 @@ export function EnumFieldView<Schema extends CoreSchemas = CoreSchemas>({
   value,
 }: {
   tag: string;
-  node: Schema["AnyNode"];
+  node: CoreNodeUnion<Schema>;
   value: unknown;
 }) {
   return (

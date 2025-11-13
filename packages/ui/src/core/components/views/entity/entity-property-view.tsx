@@ -1,14 +1,15 @@
 import type { ComponentProps } from "react";
 import { useStatelyUi } from "@/context";
 import { Item, ItemContent } from "@/core/components/ui/item";
-import { cn } from "@/core/lib/utils";
 import type { CoreSchemas } from "@/core";
+import { useCoreStatelyUi } from "@/core/context";
+import { cn } from "@/base/lib/utils";
 
 export type EntityPropertyMode = "edit" | "view";
 
 export interface EntityPropertyProps<Schema extends CoreSchemas = CoreSchemas> {
   fieldName: string | React.ReactNode;
-  node: Schema["AnyNode"];
+  node: Schema['plugin']["AnyNode"];
   isRequired?: boolean;
   compact?: boolean;
 }
@@ -18,9 +19,10 @@ export function EntityPropertyLabel<Schema extends CoreSchemas = CoreSchemas>({
   node,
   isRequired,
 }: Omit<EntityPropertyProps<Schema>, "compact">) {
-  const { schema, helpers } = useStatelyUi();
-  const NodeTypeIcon = helpers.getNodeTypeIcon(
-    schema.utils.extractNodeType(node),
+  const { schema, plugins, utils: runtimeUtils } = useCoreStatelyUi();
+  // TODO: Remove - this is wrong
+  const NodeTypeIcon = runtimeUtils.getNodeTypeIcon(
+    schema.plugins.core.extractNodeType(node),
   );
   return (
     <div className="flex items-center gap-2 min-w-0">
@@ -28,7 +30,7 @@ export function EntityPropertyLabel<Schema extends CoreSchemas = CoreSchemas>({
       <div className="font-semibold text-sm">
         {typeof fieldName === "string" ? (
           <>
-            {schema.utils.generateFieldLabel(fieldName)}
+            {plugins.core.utils?.generateFieldLabel(fieldName)}
             {isRequired && <span className="text-destructive ml-1">*</span>}
           </>
         ) : (

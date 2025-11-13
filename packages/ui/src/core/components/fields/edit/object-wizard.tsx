@@ -1,17 +1,17 @@
-import { CoreNodeType } from "@stately/schema/core/nodes";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
-import { Fragment, useCallback, useState } from "react";
-import { useStatelyUi } from "@/context";
-import { Button } from "@/core/components/ui/button";
-import { Field, FieldGroup } from "@/core/components/ui/field";
-import { Progress } from "@/core/components/ui/progress";
-import { Skeleton } from "@/core/components/ui/skeleton";
-import { EntityPropertyView } from "@/core/components/views/entity/entity-property-view";
-import { useObjectField } from "@/core/hooks/use-object-field";
-import { cn } from "@/core/lib/utils";
-import type { CoreSchemas } from "@/core";
-import { FieldEdit } from "../field-edit";
-import type { ObjectEditProps } from "./object-field";
+import { CoreNodeType } from '@stately/schema/core/nodes';
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { Fragment, useCallback, useState } from 'react';
+import { FieldEdit } from '@/base/form/field-edit';
+import { cn } from '@/base/lib/utils';
+import type { CoreSchemas } from '@/core';
+import { Button } from '@/core/components/ui/button';
+import { Field, FieldGroup } from '@/core/components/ui/field';
+import { Progress } from '@/core/components/ui/progress';
+import { Skeleton } from '@/core/components/ui/skeleton';
+import { EntityPropertyView } from '@/core/components/views/entity/entity-property-view';
+import { useCoreStatelyUi } from '@/core/context';
+import { useObjectField } from '@/core/hooks/use-object-field';
+import type { ObjectEditProps } from './object-field';
 
 export interface ObjectWizardBaseProps {
   onComplete?: () => void;
@@ -32,7 +32,9 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
   isLoading,
   isEmbedded,
 }: ObjectWizardEditProps<Schema>) => {
-  const { schema } = useStatelyUi();
+  const { schema, plugins } = useCoreStatelyUi();
+  const corePlugin = plugins.core;
+
   const onSave = useCallback(
     (data: any) => {
       onChange(data);
@@ -48,7 +50,7 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
     handleCancel: _,
     fields,
     isValid,
-  } = useObjectField({ label, node, value, onSave });
+  } = useObjectField({ label, node, onSave, value });
 
   const requiredFields = new Set(node.required || []);
 
@@ -59,7 +61,7 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
 
   const [fieldName, propNode] = currentField;
   const isRequired = requiredFields.has(fieldName);
-  const fieldLabel = schema.utils.generateFieldLabel(fieldName);
+  const fieldLabel = corePlugin?.utils?.generateFieldLabel?.(fieldName) ?? fieldName;
   const fieldValue = formData?.[fieldName];
 
   const isFirstStep = currentStep === 0;
@@ -71,8 +73,8 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
 
   // Check if current field is valid (for required fields)
   const fieldValidationResult = schema.validate({
-    path: `${label ? label : ""}[ObjectNode][property]`,
-    ValidateArgs: fieldValue,
+    data: fieldValue,
+    path: `${label ?? ''}[ObjectNode][property]`,
     schema: propNode,
   });
   const isCurrentFieldValid = isNullable || fieldValidationResult.valid;
@@ -81,20 +83,17 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
     if (isLastStep) {
       handleSave();
     } else {
-      setCurrentStep((prev) => Math.min(prev + 1, fields.length - 1));
+      setCurrentStep(prev => Math.min(prev + 1, fields.length - 1));
     }
   };
 
   const handlePrevious = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 0));
+    setCurrentStep(prev => Math.max(prev - 1, 0));
   };
 
   return (
     <div
-      className={cn(
-        "space-y-6",
-        isEmbedded ? "pl-2 border-l-2 border-primary/40 rounded-xs" : "",
-      )}
+      className={cn('space-y-6', isEmbedded ? 'pl-2 border-l-2 border-primary/40 rounded-xs' : '')}
     >
       {/* Progress Bar */}
       {fields.length > 1 && (
@@ -103,11 +102,9 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
             <span className="text-muted-foreground">
               Step {currentStep + 1} of {fields.length}
             </span>
-            <span className="text-muted-foreground">
-              {Math.round(progress)}% complete
-            </span>
+            <span className="text-muted-foreground">{Math.round(progress)}% complete</span>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress className="h-2" value={progress} />
         </div>
       )}
 
@@ -117,37 +114,29 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
           <Skeleton className="h-32 w-full" />
         ) : (
           <Fragment>
-            <EntityPropertyView
-              fieldName={fieldName}
-              node={propNode}
-              isRequired={isRequired}
-            >
+            <EntityPropertyView fieldName={fieldName} isRequired={isRequired} node={propNode}>
               {/* Primitive field view */}
-              {schema.utils.isPrimitive(propNode) ? (
+              {schema.plugins?.core.isPrimitive(propNode) ? (
                 <Field>
                   <FieldEdit
                     formId={formId}
-                    node={propNode}
-                    value={fieldValue}
-                    onChange={handleFieldChange.bind(
-                      null,
-                      fieldName,
-                      isNullable,
-                    )}
-                    label={fieldLabel}
                     isRequired={isRequired}
+                    label={fieldLabel}
+                    node={propNode}
+                    onChange={handleFieldChange.bind(null, fieldName, isNullable)}
+                    value={fieldValue}
                   />
                 </Field>
               ) : (
                 // Complex field view
                 <FieldEdit
                   formId={formId}
-                  node={propNode}
-                  value={fieldValue}
-                  onChange={handleFieldChange.bind(null, fieldName, isNullable)}
-                  label={fieldLabel}
                   isRequired={isRequired}
                   isWizard
+                  label={fieldLabel}
+                  node={propNode}
+                  onChange={handleFieldChange.bind(null, fieldName, isNullable)}
+                  value={fieldValue}
                 />
               )}
             </EntityPropertyView>
@@ -158,11 +147,11 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
       {/* Navigation */}
       <div className="flex justify-between items-center py-4 border-t">
         <Button
+          className="cursor-pointer"
+          disabled={isFirstStep || isLoading}
+          onClick={handlePrevious}
           type="button"
           variant="outline"
-          onClick={handlePrevious}
-          disabled={isFirstStep || isLoading}
-          className="cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Previous
@@ -171,26 +160,24 @@ export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
         <div className="text-sm text-muted-foreground">
           {fields.map((name, index) => (
             <span
-              key={`wizard-field-${name}`}
               className={`inline-block w-2 h-2 rounded-full mx-1 ${
                 index === currentStep
-                  ? "bg-primary"
+                  ? 'bg-primary'
                   : index < currentStep
-                    ? "bg-primary/50"
-                    : "bg-muted"
+                    ? 'bg-primary/50'
+                    : 'bg-muted'
               }`}
+              key={`wizard-field-${name}`}
             />
           ))}
         </div>
 
         {/* Next button */}
         <Button
-          type="button"
-          onClick={handleNext}
-          disabled={
-            !isCurrentFieldValid || isLoading || (isLastStep && !isValid)
-          }
           className="cursor-pointer"
+          disabled={!isCurrentFieldValid || isLoading || (isLastStep && !isValid)}
+          onClick={handleNext}
+          type="button"
         >
           {isLastStep ? (
             <>

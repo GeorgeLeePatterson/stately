@@ -1,10 +1,12 @@
-import { CoreNodeType } from "@stately/schema/core/nodes";
-import { FormInput, WandSparkles } from "lucide-react";
-import { Fragment, useId } from "react";
-import { useStatelyUi } from "@/context";
-import type { CoreObjectNode, CoreSchemas } from "@/core";
-import type { AnyRecord } from "@/core/types";
-import { DescriptionLabel } from "@/core/components/base/description";
+import { CoreNodeType } from '@stately/schema/core/nodes';
+import type { AnyRecord } from '@stately/schema/helpers';
+import { FormInput, WandSparkles } from 'lucide-react';
+import { Fragment, useId } from 'react';
+import { GlowingSave } from '@/base/components/glowing-save';
+import type { EditFieldProps } from '@/base/form/field-edit';
+import { FieldEdit } from '@/base/form/field-edit';
+import type { CoreObjectNode, CoreSchemas } from '@/core';
+import { DescriptionLabel } from '@/core/components/base/description';
 import {
   FieldContent,
   FieldDescription,
@@ -12,26 +14,22 @@ import {
   FieldLabel,
   FieldSeparator,
   FieldSet,
-} from "@/core/components/ui/field";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/core/components/ui/tabs";
-import { useObjectField } from "@/core/hooks/use-object-field";
-import { GlowingSave } from "../../base/glowing-save";
-import { FieldEdit } from "../field-edit";
-import type { EditFieldProps } from "../types";
-import { ObjectWizardEdit } from "./object-wizard";
+} from '@/core/components/ui/field';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/components/ui/tabs';
+import { useCoreStatelyUi } from '@/core/context';
+import { useObjectField } from '@/core/hooks/use-object-field';
+import { ObjectWizardEdit } from './object-wizard';
 
 export enum ObjectEditMode {
-  FORM = "Form",
-  WIZARD = "Wizard",
+  FORM = 'Form',
+  WIZARD = 'Wizard',
 }
 
-export type ObjectEditProps<Schema extends CoreSchemas = CoreSchemas> =
-  EditFieldProps<Schema, CoreObjectNode<Schema>, AnyRecord>;
+export type ObjectEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
+  Schema,
+  CoreObjectNode<Schema>,
+  AnyRecord
+>;
 
 /**
  * Object field component - handles nested object structures
@@ -47,21 +45,15 @@ export function ObjectEdit<Schema extends CoreSchemas = CoreSchemas>({
   const instanceFormId = useId();
   const objectFormId = `object-${instanceFormId}-${formId}`;
 
-  return Object.keys(node.properties).filter((k) => k !== "id").length > 1 ? (
+  return Object.keys(node.properties).filter(k => k !== 'id').length > 1 ? (
     <Tabs defaultValue={ObjectEditMode.FORM}>
       {/* Mode Toggle */}
       <TabsList>
-        <TabsTrigger
-          value={ObjectEditMode.FORM}
-          className="cursor-pointer text-xs"
-        >
+        <TabsTrigger className="cursor-pointer text-xs" value={ObjectEditMode.FORM}>
           <FormInput className="h-3.5! w-3.5!" />
           Form
         </TabsTrigger>
-        <TabsTrigger
-          value={ObjectEditMode.WIZARD}
-          className="cursor-pointer text-xs"
-        >
+        <TabsTrigger className="cursor-pointer text-xs" value={ObjectEditMode.WIZARD}>
           <WandSparkles className="h-3.5! w-3.5!" />
           Wizard
         </TabsTrigger>
@@ -73,8 +65,8 @@ export function ObjectEdit<Schema extends CoreSchemas = CoreSchemas>({
           formId={objectFormId}
           label={label}
           node={node}
-          value={value}
           onChange={onChange}
+          value={value}
         />
       </TabsContent>
 
@@ -82,22 +74,16 @@ export function ObjectEdit<Schema extends CoreSchemas = CoreSchemas>({
       <TabsContent value={ObjectEditMode.WIZARD}>
         <ObjectWizardEdit
           formId={objectFormId}
+          isEmbedded
           label={label}
           node={node}
-          value={value}
           onChange={onChange}
-          isEmbedded
+          value={value}
         />
       </TabsContent>
     </Tabs>
   ) : (
-    <ObjectForm
-      formId={objectFormId}
-      label={label}
-      node={node}
-      value={value}
-      onChange={onChange}
-    />
+    <ObjectForm formId={objectFormId} label={label} node={node} onChange={onChange} value={value} />
   );
 }
 
@@ -115,16 +101,11 @@ function ObjectForm<Schema extends CoreSchemas = CoreSchemas>({
   onChange,
   isWizard,
 }: ObjectFormProps<Schema>) {
-  const { schema } = useStatelyUi();
-  const {
-    formData,
-    handleFieldChange,
-    handleSave,
-    handleCancel,
-    fields,
-    isDirty,
-    isValid,
-  } = useObjectField({ label, node, value, onSave: onChange });
+  const { plugins } = useCoreStatelyUi();
+  const corePlugin = plugins.core;
+
+  const { formData, handleFieldChange, handleSave, handleCancel, fields, isDirty, isValid } =
+    useObjectField({ label, node, onSave: onChange, value });
 
   return (
     <div className="flex-1 border-l-4 border-border rounded-xs pl-4 py-3 space-y-3">
@@ -132,7 +113,7 @@ function ObjectForm<Schema extends CoreSchemas = CoreSchemas>({
         <FieldSet className="min-w-0">
           {fields.map(([propName, propNode], index, arr) => {
             const isRequired = node.required.includes(propName);
-            const propLabel = schema.utils.generateFieldLabel(propName);
+            const propLabel = corePlugin.utils?.generateFieldLabel(propName) || '';
             const propDescription = propNode.description;
             const propValue = formData?.[propName];
 
@@ -141,15 +122,11 @@ function ObjectForm<Schema extends CoreSchemas = CoreSchemas>({
             const isNullable = propNode.nodeType === CoreNodeType.Nullable;
             const wrapNullable = !isRequired && !isNullable;
             if (wrapNullable) {
-              propSchema = {
-                nodeType: CoreNodeType.Nullable,
-                innerSchema: propNode,
-              };
+              propSchema = { innerSchema: propNode, nodeType: CoreNodeType.Nullable };
             }
 
-            const isWrappedNullable =
-              propSchema.nodeType === CoreNodeType.Nullable;
-            const fieldFormId = `field-${propLabel || "label"}-${formId}`;
+            const isWrappedNullable = propSchema.nodeType === CoreNodeType.Nullable;
+            const fieldFormId = `field-${propLabel || 'label'}-${formId}`;
 
             return (
               <Fragment key={propName}>
@@ -158,9 +135,7 @@ function ObjectForm<Schema extends CoreSchemas = CoreSchemas>({
                     {propLabel && (
                       <FieldLabel htmlFor={fieldFormId}>
                         {propLabel}
-                        {isRequired && (
-                          <span className="text-destructive ml-1">*</span>
-                        )}
+                        {isRequired && <span className="text-destructive ml-1">*</span>}
                       </FieldLabel>
                     )}
                     {propDescription && (
@@ -172,16 +147,12 @@ function ObjectForm<Schema extends CoreSchemas = CoreSchemas>({
                 )}
                 <FieldEdit
                   formId={fieldFormId}
-                  node={propSchema}
-                  value={propValue}
-                  onChange={handleFieldChange.bind(
-                    null,
-                    propName,
-                    isWrappedNullable,
-                  )}
-                  label={propLabel}
                   isRequired={isRequired}
                   isWizard={isWizard}
+                  label={propLabel}
+                  node={propSchema}
+                  onChange={handleFieldChange.bind(null, propName, isWrappedNullable)}
+                  value={propValue}
                 />
                 {index !== arr.length - 1 && <FieldSeparator />}
               </Fragment>
@@ -214,13 +185,13 @@ function ObjectForm<Schema extends CoreSchemas = CoreSchemas>({
       {/* Save/Cancel buttons appear when dirty */}
       {isDirty && (
         <GlowingSave
-          mode="edit"
-          size="sm"
-          label={label ? `${label} Object` : "Object"}
-          isDisabled={!isValid}
           disabledExplain="Fill in all required fields."
-          onSave={handleSave}
+          isDisabled={!isValid}
+          label={label ? `${label} Object` : 'Object'}
+          mode="edit"
           onCancel={handleCancel}
+          onSave={handleSave}
+          size="sm"
         />
       )}
     </div>

@@ -1,9 +1,9 @@
 import type { CorePrimitiveNode, CoreSchemas } from "@/core";
 import { NotSet } from "@/core/components/base/not-set";
-import type { ViewFieldProps } from "../types";
+import type { ViewFieldProps } from "@/base/form/field-view";
 
 export type PrimitiveViewProps<Schema extends CoreSchemas = CoreSchemas> =
-  ViewFieldProps<Schema, CorePrimitiveNode<Schema>>;
+  ViewFieldProps<Schema, CorePrimitiveNode>;
 
 export function PrimitiveView<Schema extends CoreSchemas = CoreSchemas>({
   value,

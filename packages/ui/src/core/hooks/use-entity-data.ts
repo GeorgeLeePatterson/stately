@@ -2,13 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useStatelyUi } from "@/context";
 import type {
   CoreEntity,
-  CoreEntityId,
   CoreSchemas,
   CoreStateEntry,
+  CoreStatelyRuntime,
 } from "@/core";
+import { useCoreStatelyUi } from "../context";
 
 type EntityResponse<Schema extends CoreSchemas> = {
-  id: CoreEntityId<Schema>;
+  id: string;
   entity: CoreEntity<Schema>;
 };
 
@@ -21,12 +22,15 @@ export function useEntityData<Schema extends CoreSchemas = CoreSchemas>({
   identifier?: string;
   disabled?: boolean;
 }) {
-  const { http } = useStatelyUi();
-  const { api } = http;
+  const runtime = useCoreStatelyUi();
+  const coreApi = runtime.plugins.core?.api;
   const fetchEnabled = !!entity && !disabled && !!identifier;
   return useQuery({
     queryKey: ["entity", entity, identifier],
     queryFn: async () => {
+      if (!coreApi) {
+        throw new Error("Core entity API is unavailable.");
+      }
       if (!identifier) {
         console.warn("Identifier is missing, can't fetch entity");
         return;
@@ -37,10 +41,15 @@ export function useEntityData<Schema extends CoreSchemas = CoreSchemas>({
         throw new Error(`Unknown entity type: ${entity}`);
       }
 
-      const { data, error } = await api.entity.get({
-        id: identifier,
-        type: entity,
-      });
+      const { data, error } = await coreApi.call(
+        coreApi.operations.getEntityById,
+        {
+          params: {
+            path: { entity_id: identifier },
+            query: { entity_type: entity },
+          },
+        }
+      );
 
       if (error) {
         console.error("API Error fetching entity:", error);
