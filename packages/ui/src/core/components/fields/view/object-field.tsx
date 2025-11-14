@@ -6,7 +6,7 @@ import { SimpleLabel } from "@/core/components/base/simple-label";
 import { FieldView } from "@/base/form/field-view";
 import type { ViewFieldProps } from "@/base/form/field-view";
 import { AnyRecord } from "@stately/schema/helpers";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 
 export type ObjectViewProps<Schema extends CoreSchemas = CoreSchemas> =
   ViewFieldProps<Schema, CoreObjectNode<Schema>, any>;

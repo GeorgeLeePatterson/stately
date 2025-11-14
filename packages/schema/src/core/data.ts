@@ -4,25 +4,26 @@
  * Parsing logic for extracting entity metadata from OpenAPI specs
  */
 
-import type { CoreSchemaTypes, CoreStatelyConfig } from './augment.js';
+import type { CoreStatelyConfig } from './augment.js';
+import { StateEntry } from './helpers.js';
 import { coreUtils } from './utils.js';
 
-type SchemaTypes<Config extends CoreStatelyConfig = CoreStatelyConfig> = CoreSchemaTypes<Config>;
-type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> =
-  SchemaTypes<Config>['StateEntry'] extends string ? SchemaTypes<Config>['StateEntry'] : string;
 /**
  * Parse entity mappings from the Entity schema's oneOf variants
+ *
+ * @param document - Raw OpenAPI document (unknown type, introspected at runtime)
  */
 function parseEntityMappings<Config extends CoreStatelyConfig = CoreStatelyConfig>(
-  components: Config['components'],
+  document: unknown,
 ): Array<{ stateEntry: StateEntry<Config>; schemaName: string }> {
-  // biome-ignore lint/complexity/useLiteralKeys: ''
-  const entitySchema = components?.schemas?.['Entity'];
+  // Runtime introspection of raw OpenAPI document structure
+  const doc = document as any;
+  const entitySchema = doc?.components?.schemas?.['Entity'];
   if (!entitySchema?.oneOf) {
     throw new Error('Entity schema not found in OpenAPI spec or missing oneOf');
   }
 
-  return entitySchema.oneOf.map(variant => {
+  return entitySchema.oneOf.map((variant: any) => {
     const stateEntry = (variant.properties?.type?.enum?.[0] || '') as StateEntry<Config>;
     const schemaName = variant.properties?.data?.$ref?.split('/').pop() || '';
     return { schemaName, stateEntry };
@@ -89,12 +90,12 @@ function buildEntityDisplayNames<Config extends CoreStatelyConfig = CoreStatelyC
 }
 
 function generateCoreData<Config extends CoreStatelyConfig = CoreStatelyConfig>(
-  components: Config['components'] | undefined,
+  document: unknown,
   generatedNodes: Config['nodes'] | undefined,
 ) {
-  if (!components) return {};
+  if (!document) return {};
 
-  const entityMappings = parseEntityMappings(components);
+  const entityMappings = parseEntityMappings<Config>(document);
 
   let entitySchemaCache = {};
   if (generatedNodes) {

@@ -22,17 +22,18 @@ import type {
 
 /**
  * Minimal component extension to feed into CoreStatelyConfig.
- * We only care about StateEntry + Entity typing for these tests.
+ * These reflect the GENERATED types structure (from openapi-typescript),
+ * not raw OpenAPI structure.
  */
 type SampleComponentSchemas = {
-  StateEntry: "sample";
-  Entity: { type: "sample"; data: { id: string; name: string } };
+  StateEntry: "sample";  // Generated as string literal union
+  Entity: { type: "sample"; data: { id: string; name: string } };  // Generated as discriminated union
   EntityId: string;
-  Summary: Record<string, unknown>;
+  Summary: { id?: string; name?: string; description?: string };
 };
 
-type SampleComponents = CoreStatelyConfig["components"] & {
-  schemas: CoreStatelyConfig["components"]["schemas"] & SampleComponentSchemas;
+type SampleComponents = {
+  schemas: SampleComponentSchemas;
 };
 
 type SampleNodes = {

@@ -11,7 +11,7 @@ import {
 } from "@/core/components/ui/select";
 import { FieldEdit } from "@/base/form/field-edit";
 import type { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 
 export type UntaggedEnumEditProps<Schema extends CoreSchemas = CoreSchemas> =
   EditFieldProps<Schema, CoreUntaggedEnumNode<Schema>, any>;

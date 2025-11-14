@@ -58,7 +58,7 @@ function extractNodeType<Config extends CoreStatelyConfig = CoreStatelyConfig>(
  */
 
 function isEntityValid<Config extends CoreStatelyConfig = CoreStatelyConfig>(
-  entity: Schemas<Config>['types']['EntityData']['data'] | null | undefined,
+  entity: Schemas<Config>['types']['EntityData'] | null | undefined,
   schema: ObjectNode<Config> | undefined,
 ): boolean {
   if (!entity || !schema) return false;
@@ -70,8 +70,10 @@ function isEntityValid<Config extends CoreStatelyConfig = CoreStatelyConfig>(
   if (!nameValid || !entity || !schema) return false;
 
   if (schema.required) {
+    // Cast to Record for runtime validation - EntityData is a union so no index signature
+    const entityObj = entity as Record<string, any>;
     for (const field of schema.required) {
-      if (!(field in entity) || entity[field] === undefined || entity[field] === null) {
+      if (!(field in entityObj) || entityObj[field] === undefined || entityObj[field] === null) {
         return false;
       }
     }

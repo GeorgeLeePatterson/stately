@@ -1,17 +1,7 @@
 import type { BaseNode } from '../nodes.js';
 import type { DefineNodeMap } from '../plugin.js';
-import type { CoreSchemaTypes, CoreStatelyConfig } from './augment.js';
-
-/**
- * =============================================================================
- * CORE NODE TYPES
- * =============================================================================
- */
-
-type SchemaTypes<Config extends CoreStatelyConfig = CoreStatelyConfig> = CoreSchemaTypes<Config>;
-type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> =
-  SchemaTypes<Config>['StateEntry'];
-type NodeKey<Config extends CoreStatelyConfig = CoreStatelyConfig> = keyof Config['nodes'];
+import type { CoreStatelyConfig } from './augment.js';
+import { NodeKey, StateEntry } from './helpers.js';
 
 /**
  * Node types (AST representation of OpenAPI schemas)

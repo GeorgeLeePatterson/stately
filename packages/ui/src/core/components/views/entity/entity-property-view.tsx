@@ -2,7 +2,7 @@ import type { ComponentProps } from "react";
 import { useStatelyUi } from "@/context";
 import { Item, ItemContent } from "@/core/components/ui/item";
 import type { CoreSchemas } from "@/core";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 import { cn } from "@/base/lib/utils";
 
 export type EntityPropertyMode = "edit" | "view";

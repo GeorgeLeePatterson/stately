@@ -1,12 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { useStatelyUi } from "@/context";
 import type {
   CoreEntity,
   CoreSchemas,
   CoreStateEntry,
-  CoreStatelyRuntime,
 } from "@/core";
-import { useCoreStatelyUi } from "../context";
+import { useCoreStatelyUi } from "@/core";
 
 type EntityResponse<Schema extends CoreSchemas> = {
   id: string;

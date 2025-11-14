@@ -26,7 +26,7 @@ import {
 } from "@/core/components/ui/input-group";
 import { Item, ItemContent, ItemGroup } from "@/core/components/ui/item";
 import { Separator } from "@/core/components/ui/separator";
-import { useViewMore } from "@/core/hooks/use-view-more";
+import { useViewMore } from "@/base/hooks/use-view-more";
 import type { CoreMapNode, CoreNodeUnion, CoreSchemas } from "@/core";
 import { GlowingSave } from "@/base/components/glowing-save";
 import { FieldEdit } from "@/base/form/field-edit";

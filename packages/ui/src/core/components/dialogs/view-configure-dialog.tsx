@@ -16,7 +16,7 @@ import { ScrollArea } from "@/base/ui/scroll-area";
 import { Separator } from "@/base/ui/separator";
 import { Skeleton } from "@/base/ui/skeleton";
 import { EntityDetailView } from "../views/entity/entity-detail-view";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 
 export interface LinkEntityProps<Schema extends CoreSchemas = CoreSchemas> {
   entityName: string;

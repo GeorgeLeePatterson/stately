@@ -23,7 +23,7 @@ import type {
   CoreStateEntry,
   CoreSummary,
 } from "@/core";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 
 export interface EntitySelectEditProps<
   Schema extends CoreSchemas = CoreSchemas,

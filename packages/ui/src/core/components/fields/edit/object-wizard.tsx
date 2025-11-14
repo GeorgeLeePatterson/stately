@@ -9,7 +9,7 @@ import { Field, FieldGroup } from '@/core/components/ui/field';
 import { Progress } from '@/core/components/ui/progress';
 import { Skeleton } from '@/core/components/ui/skeleton';
 import { EntityPropertyView } from '@/core/components/views/entity/entity-property-view';
-import { useCoreStatelyUi } from '@/core/context';
+import { useCoreStatelyUi } from '@/core';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import type { ObjectEditProps } from './object-field';
 

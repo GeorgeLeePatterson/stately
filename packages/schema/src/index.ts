@@ -61,6 +61,7 @@ import type * as GeneratedTypes from './generated.js';
 import {
   DefineComponents,
   DefineGeneratedNodes,
+  DefineOpenApi,
   DefinePaths,
   DefineStatelyConfig,
 } from './generated.js';
@@ -70,7 +71,8 @@ import type { SchemaAugment } from './plugin.js';
 // Export plugin-author helpers
 import type { StatelySchemas } from './schema.js';
 import { createStately } from './stately.js';
-export { DefineComponents, DefineGeneratedNodes, DefinePaths, DefineStatelyConfig };
+export type { OpenAPIV3_1 };
+export { DefineComponents, DefineGeneratedNodes, DefineOpenApi, DefinePaths, DefineStatelyConfig };
 
 /**
  * Stately plugin types integration - Main API
@@ -138,9 +140,12 @@ export function isNodeOfType<S extends StatelySchemas<any, any>, Type extends Pl
  * Convenience helper that seeds the runtime with the core schema plugin so consumers get all core
  * helpers/validators out of the box. Additional schema plugins can be appended by chaining
  * `.withPlugin(...)` on the returned builder.
+ *
+ * @param openapi - OpenAPI document (accepts JSON imports and typed documents)
+ * @param nodes - Generated node map from codegen
  */
 export function stately<S extends Schemas<any, any> = Schemas>(
-  openapi: OpenAPIV3_1.Document,
+  openapi: DefineOpenApi<any>,
   nodes: SchemaConfig<S>['nodes'],
 ) {
   return createStately<S>(openapi, nodes).withPlugin(createCorePlugin<S>());

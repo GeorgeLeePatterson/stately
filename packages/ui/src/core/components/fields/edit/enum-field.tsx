@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/core/components/ui/select";
 import type { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 
 export type EnumEditProps<Schema extends CoreSchemas = CoreSchemas> =
   EditFieldProps<Schema, CoreEnumNode, string>;

@@ -8,7 +8,7 @@ import type { CoreArrayNode, CoreSchemas } from '@/core';
 import { ArrayIndex } from '@/core/components/base/array';
 import { Button } from '@/core/components/ui/button';
 import { Field, FieldSet } from '@/core/components/ui/field';
-import { useCoreStatelyUi } from '@/core/context';
+import { useCoreStatelyUi } from '@/core';
 import { cn } from '@/base/lib/utils';
 
 export type ArrayEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<

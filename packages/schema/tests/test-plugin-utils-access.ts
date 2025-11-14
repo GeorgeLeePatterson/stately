@@ -25,7 +25,7 @@ import type { Stately } from '../src/stately.js';
 type TestConfig = CoreStatelyConfig;
 type TestSchemas = Schemas<TestConfig>;
 
-const mockOpenAPI: OpenAPIV3_1.Document = {
+const mockOpenAPI = {
   components: {
     schemas: {
       Entity: {
@@ -52,7 +52,6 @@ const mockOpenAPI: OpenAPIV3_1.Document = {
 
 const mockNodes: TestConfig['nodes'] = {
   Entity: { discriminator: 'type', nodeType: 'taggedUnion', variants: [] },
-  EntityData: { nodeType: 'object', properties: {}, required: [] },
 };
 
 const runtime = stately<TestSchemas>(mockOpenAPI, mockNodes);

@@ -1,7 +1,7 @@
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
 import type { ComponentType } from 'react';
-import type { AnyBaseSchemas, BaseSchemas } from './base';
+import type { AnyBaseSchemas } from './base';
 import type { AugmentPlugins, UiAugment } from './plugin';
 
 export type ComponentRegistry = Map<string, ComponentType<any>>;
@@ -34,8 +34,6 @@ export interface StatelyRuntime<
   utils: RuntimeUtils;
   plugins: AugmentPlugins<Schema, Augments>;
 }
-
-export type StatelyBaseRuntime = StatelyRuntime<BaseSchemas, readonly []>;
 
 /**
  * Plugin factory function signature.
@@ -91,7 +89,7 @@ export interface StatelyUiBuilder<
  *   .withPlugin(createCoreUiPlugin());
  * ```
  */
-export function statelyUi<
+export function createStatelyUi<
   Schema extends AnyBaseSchemas,
   Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
 >(

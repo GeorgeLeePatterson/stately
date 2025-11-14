@@ -8,7 +8,9 @@
  */
 
 import * as fs from "node:fs";
+import * as path from "node:path";
 import { CoreNodeType } from "@stately/schema/core/nodes";
+import openapiTS, { astToString } from "openapi-typescript";
 import { createCoreCodegenPlugin } from "./core/index.js";
 import {
   getCodegenPlugins,
@@ -192,6 +194,32 @@ export type ParsedSchemaName = keyof typeof PARSED_SCHEMAS;
   fs.writeFileSync(resolvedOutputPath, output);
 
   console.log(`💾 Written to ${resolvedOutputPath}`);
+
+  // Generate TypeScript types using openapi-typescript
+  console.log("🔧 Generating TypeScript types from OpenAPI spec...");
+
+  const outputDir = path.dirname(resolvedOutputPath);
+  const typesOutputPath = path.join(outputDir, "generated-types.ts");
+
+  try {
+    // openapiTS returns a TypeScript AST, convert it to a string
+    const ast = await openapiTS(new URL(`file://${path.resolve(resolvedOpenapiPath)}`));
+    const typesString = astToString(ast);
+
+    const typesFileContent = `// Auto-generated at build time from openapi.json
+// DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
+
+${typesString}
+`;
+
+    fs.writeFileSync(typesOutputPath, typesFileContent);
+    console.log(`💾 Written types to ${typesOutputPath}`);
+  } catch (error) {
+    console.error("❌ Failed to generate TypeScript types:", error);
+    console.error("Error details:", error);
+    throw error;
+  }
+
   console.log("✨ Schema generation complete!");
 }
 

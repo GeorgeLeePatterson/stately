@@ -21,7 +21,7 @@ import {
   ItemGroup,
   ItemTitle,
 } from "@/core/components/ui/item";
-import { useViewMore } from "@/core/hooks/use-view-more";
+import { useViewMore } from "@/base/hooks/use-view-more";
 import { FieldView } from "@/base/form/field-view";
 import type { ViewFieldProps } from "@/base/form/field-view";
 import { cn } from "@/base/lib/utils";

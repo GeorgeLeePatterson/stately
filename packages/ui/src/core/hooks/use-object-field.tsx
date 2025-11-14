@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useStatelyUi } from "@/context";
 import { AnyRecord } from "@stately/schema/helpers";
-import { useCoreStatelyUi } from "../context";
+import { useCoreStatelyUi } from "@/core";
 
 type UseObjectFieldResult = {
   formData: Record<string, any>;

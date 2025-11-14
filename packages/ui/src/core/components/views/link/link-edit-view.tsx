@@ -9,13 +9,12 @@ import type {
   CoreLinkNode,
   CoreSchemas,
   CoreStateEntry,
-  CoreStatelyRuntime,
 } from "@/core";
 import { useEditEntityData } from "@/core/hooks/use-edit-entity-data";
 import { LinkInlineEdit } from "./link-inline-edit-view";
 import { LinkRefEdit } from "./link-ref-edit-view";
 import { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 import { SINGLETON_ID } from "@stately/schema/core/utils";
 
 // Type helpers for Link editing

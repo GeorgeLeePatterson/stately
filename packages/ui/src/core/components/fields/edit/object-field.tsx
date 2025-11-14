@@ -16,7 +16,7 @@ import {
   FieldSet,
 } from '@/core/components/ui/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/components/ui/tabs';
-import { useCoreStatelyUi } from '@/core/context';
+import { useCoreStatelyUi } from '@/core';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import { ObjectWizardEdit } from './object-wizard';
 

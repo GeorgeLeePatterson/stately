@@ -5,24 +5,20 @@
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
 import { StatelyUiProvider, useStatelyUi } from './context.js';
-import type { CorePaths, CoreSchemas, CoreStatelyRuntime } from './core';
-import { CORE_PLUGIN_NAME, type CoreUiAugment, createCoreUiPlugin } from './core/index.js';
+import type { CorePaths, CoreSchemas } from './core';
+import { type CoreUiAugment, createCoreUiPlugin } from './core/index.js';
 import { callOperation } from './operations.js';
-import { makeRegistryKey } from './plugin.js';
-import { statelyUi } from './runtime.js';
+import { makeRegistryKey, UiAugment } from './plugin.js';
+import { createStatelyUi, StatelyRuntime } from './runtime.js';
 
-export type { RegistryKey, RegistryMode, UiAugment } from './plugin.js';
-export type {
-  ComponentRegistry,
-  StatelyRuntime,
-  StatelyUiBuilder,
-  StatelyUiPluginFactory,
-  UiRegistry,
-} from './runtime.js';
-export { makeRegistryKey };
-export { callOperation };
-export type { OperationMeta } from './operations.js';
-export { CORE_PLUGIN_NAME };
+/**
+ * Runtime with core plugin installed.
+ * The augments array includes CoreUiAugment plus any additional plugins.
+ */
+export type StatelyUi<
+  S extends CoreSchemas = CoreSchemas,
+  ExtraAugments extends readonly UiAugment<string, S, any, any>[] = readonly [],
+> = StatelyRuntime<S, readonly [CoreUiAugment<S>, ...ExtraAugments]>;
 
 /**
  * Create StatelyUi runtime with core plugin pre-installed.
@@ -37,13 +33,26 @@ export { CORE_PLUGIN_NAME };
  * runtime.plugins.core.api.operations // ✓ Intellisense works
  * ```
  */
-export function createStatelyUi<Schema extends CoreSchemas>(
-  integration: Stately<Schema>,
+export function statelyUi<Schema extends CoreSchemas>(
+  state: Stately<Schema>,
   client: Client<CorePaths<Schema> & {}>,
-): CoreStatelyRuntime<Schema> {
-  return statelyUi<Schema, readonly [CoreUiAugment<Schema>]>(integration, client).withPlugin(
+): StatelyUi<Schema> {
+  return createStatelyUi<Schema, readonly [CoreUiAugment<Schema>]>(state, client).withPlugin(
     createCoreUiPlugin<Schema>(),
   );
 }
 
 export { StatelyUiProvider, useStatelyUi };
+
+// Re-exports
+export type { RegistryKey, RegistryMode, UiAugment } from './plugin.js';
+export type {
+  ComponentRegistry,
+  StatelyRuntime,
+  StatelyUiBuilder,
+  StatelyUiPluginFactory,
+  UiRegistry,
+} from './runtime.js';
+export { makeRegistryKey };
+export { callOperation };
+export type { OperationMeta } from './operations.js';

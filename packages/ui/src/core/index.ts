@@ -1,4 +1,5 @@
 import type { CoreSchemaTypes } from '@stately/schema/core/augment';
+import type { StateEntry } from '@stately/schema/core/helpers';
 import type {
   ArrayNode,
   EnumNode,
@@ -13,10 +14,7 @@ import type {
   UntaggedEnumNode,
 } from '@stately/schema/core/nodes';
 import { createUseStatelyUi } from '@/context';
-import type { UiAugment } from '@/plugin';
-import type { StatelyRuntime } from '@/runtime';
 import {
-  CORE_PLUGIN_NAME,
   type CorePluginName,
   type CorePluginRuntime,
   type CorePluginUtils,
@@ -27,7 +25,6 @@ import {
 
 export type { CoreSchemaAugment, CoreStatelyConfig } from '@stately/schema/core/augment';
 export {
-  CORE_PLUGIN_NAME,
   type CorePluginName,
   type CorePluginRuntime,
   type CorePluginUtils,
@@ -38,19 +35,19 @@ export {
 };
 
 /**
+ * Stately UI Context Provider with core included
+ *
+ * This hook is both used in core's plugin code but also serves as an example for how to customize
+ * the application's Stately context with any plugin augmentations.
+ */
+export const useCoreStatelyUi = createUseStatelyUi<CoreSchemas, readonly [CoreUiAugment]>();
+
+/**
  * =============================================================================
  * RUNTIME & HELPER TYPES
  * =============================================================================
  */
 
-/**
- * Runtime with core plugin installed.
- * The augments array includes CoreUiAugment plus any additional plugins.
- */
-export type CoreStatelyRuntime<
-  S extends CoreSchemas = CoreSchemas,
-  ExtraAugments extends readonly UiAugment<string, S, any, any>[] = readonly [],
-> = StatelyRuntime<S, readonly [CoreUiAugment<S>, ...ExtraAugments]>;
 
 type SchemaConfigOf<S extends CoreSchemas> = S['config'];
 type SchemaTypesOf<S extends CoreSchemas> = CoreSchemaTypes<SchemaConfigOf<S>>;
@@ -59,10 +56,11 @@ type PluginInfoOf<S extends CoreSchemas> = S['plugin'];
 export type CorePaths<S extends CoreSchemas = CoreSchemas> = SchemaConfigOf<S>['paths'];
 export type CoreNodes<S extends CoreSchemas = CoreSchemas> = SchemaConfigOf<S>['nodes'];
 
-export type CoreStateEntry<S extends CoreSchemas = CoreSchemas> = SchemaTypesOf<S>['StateEntry'];
+// Use StateEntry from helpers instead of deriving from CoreSchemaTypes
+export type CoreStateEntry<S extends CoreSchemas = CoreSchemas> = StateEntry<SchemaConfigOf<S>>;
+// EntityData is already the extracted data payload from Entity discriminated union
 export type CoreEntity<S extends CoreSchemas = CoreSchemas> = SchemaTypesOf<S>['EntityData'];
-export type CoreEntityData<S extends CoreSchemas = CoreSchemas> =
-  SchemaTypesOf<S>['EntityData']['data'];
+export type CoreEntityData<S extends CoreSchemas = CoreSchemas> = SchemaTypesOf<S>['EntityData'];
 export interface CoreSummary {
   id: string;
   name: string;

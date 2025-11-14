@@ -6,7 +6,7 @@ import type { LinkFor } from "./link-edit-view";
 import { LinkInlineView } from "./link-inline-view";
 import { LinkRefView } from "./link-ref-view";
 import { ViewFieldProps } from "@/base/form/field-view";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 
 export type LinkViewProps<Schema extends CoreSchemas = CoreSchemas> =
   ViewFieldProps<Schema, CoreLinkNode<Schema>, LinkFor<Schema>>;

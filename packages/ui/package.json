@@ -7,33 +7,45 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./base": {
+      "types": "./dist/base/index.d.ts",
+      "import": "./dist/base/index.js"
+    },
+    "./base/components": {
+      "types": "./dist/base/components/index.d.ts",
+      "import": "./dist/base/components/index.js"
+    },
+    "./base/form": {
+      "types": "./dist/base/form/index.d.ts",
+      "import": "./dist/base/form/index.js"
+    },
+    "./base/dialogs": {
+      "types": "./dist/base/dialogs/index.d.ts",
+      "import": "./dist/base/dialogs/index.js"
+    },
+    "./base/hooks": {
+      "types": "./dist/base/hooks/index.d.ts",
+      "import": "./dist/base/hooks/index.js"
+    },
+    "./base/lib": {
+      "types": "./dist/base/lib/index.d.ts",
+      "import": "./dist/base/lib/index.js"
+    },
     "./core": {
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
     },
-    "./core/base": {
-      "types": "./dist/core/components/base/index.d.ts",
-      "import": "./dist/core/components/base/index.js"
-    },
-    "./core/fields": {
-      "types": "./dist/core/components/fields/index.d.ts",
-      "import": "./dist/core/components/fields/index.js"
-    },
-    "./core/dialogs": {
-      "types": "./dist/core/components/dialogs/index.d.ts",
-      "import": "./dist/core/components/dialogs/index.js"
-    },
-    "./core/views": {
-      "types": "./dist/core/components/views/index.d.ts",
-      "import": "./dist/core/components/views/index.js"
+    "./core/context": {
+      "types": "./dist/core/context/index.d.ts",
+      "import": "./dist/core/context/index.js"
     },
     "./core/hooks": {
       "types": "./dist/core/hooks/index.d.ts",
       "import": "./dist/core/hooks/index.js"
     },
-    "./core/context": {
-      "types": "./dist/core/context/index.d.ts",
-      "import": "./dist/core/context/index.js"
+    "./core/components/dialogs": {
+      "types": "./dist/core/components/dialogs/index.d.ts",
+      "import": "./dist/core/components/dialogs/index.js"
     }
   },
   "files": [

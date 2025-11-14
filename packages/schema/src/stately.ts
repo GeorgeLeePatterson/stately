@@ -1,15 +1,17 @@
 /**
  * Stately runtime
  *
- * Lightweight builder that wires OpenAPI-derived schema data into a runtime
- * instance, applies plugins, and exposes helper utilities. The runtime keeps a
- * snapshot of the user-generated OpenAPI document (`data`) plus a registry of
- * helper utilities contributed by plugins. Schema plugins can mutate `runtime.data`,
- * append helpers via `runtime.utils`, and register validation hooks.
+ * Lightweight builder that wires schema data into a runtime instance, applies plugins,
+ * and exposes helper utilities. The runtime keeps a snapshot of the raw OpenAPI document
+ * for runtime introspection, plus a registry of helper utilities contributed by plugins.
+ * Schema plugins can mutate `runtime.data`, append helpers via `runtime.utils`, and
+ * register validation hooks.
+ *
+ * Type safety comes from the generated TypeScript types passed to StatelyConfig, while
+ * the raw OpenAPI document is used purely for runtime introspection.
  */
 
-import type { OpenAPIV3_1 } from 'openapi-types';
-import type { StatelyConfig } from './generated.js';
+import type { DefineOpenApi, StatelyConfig } from './generated.js';
 import type { StatelySchemaConfig, StatelySchemas } from './schema.js';
 import {
   runValidationPipeline,
@@ -38,9 +40,7 @@ export type PluginFactory<S extends StatelySchemas<StatelyConfig, any>> = (
 
 export interface Stately<S extends StatelySchemas<any, any>> {
   schema: {
-    document: OpenAPIV3_1.Document;
-    components: StatelySchemaConfig<S>['components'];
-    paths: StatelySchemaConfig<S>['paths'];
+    document: DefineOpenApi<any>;
     nodes: StatelySchemaConfig<S>['nodes'];
   };
   types: S['types'];
@@ -54,17 +54,15 @@ export interface StatelyBuilder<S extends StatelySchemas<any, any>> extends Stat
 }
 
 export function createStately<S extends StatelySchemas<any, any>>(
-  openapi: OpenAPIV3_1.Document,
+  openapi: DefineOpenApi<any>,
   generatedNodes: StatelySchemaConfig<S>['nodes'],
 ): StatelyBuilder<S> {
   const baseState: Stately<S> = {
     data: {} as S['data'],
     plugins: {} as S['utils'],
     schema: {
-      components: openapi.components || ({} as S['config']['components']),
       document: openapi,
       nodes: generatedNodes,
-      paths: openapi.paths || ({} as S['config']['paths']),
     },
     types: {} as S['types'],
     validate: args => runValidationPipeline(baseState, args),

@@ -5,7 +5,7 @@ import { Separator } from "@/core/components/ui/separator";
 import { Skeleton } from "@/core/components/ui/skeleton";
 import type { CoreEntity, CoreObjectNode, CoreSchemas } from "@/core";
 import { EntityPropertyEdit } from "./entity-property-edit";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 import { AnyRecord } from "@stately/schema/helpers";
 import { FieldEdit } from "@/base/form/field-edit";
 

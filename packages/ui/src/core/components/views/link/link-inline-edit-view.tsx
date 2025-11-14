@@ -9,7 +9,7 @@ import type {
 import { EditMode, EntityEditView } from "../entity/entity-edit-view";
 import type { LinkFor } from "./link-edit-view";
 import { AnyRecord } from "@stately/schema/helpers";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 
 export interface LinkInlineEditProps<Schema extends CoreSchemas = CoreSchemas> {
   /** The entity type being configured inline */

@@ -11,6 +11,7 @@ import { makeRegistryKey, type UiAugment } from '@/plugin';
 import type { ComponentRegistry, StatelyRuntime, StatelyUiPluginFactory } from '@/runtime';
 import { buildCoreHttpBundle, type CoreOperationMap } from './operations';
 import { generateFieldLabel, getDefaultValue, getNodeTypeIcon } from './utils';
+import { CORE_PLUGIN_NAME } from '@stately/schema/core/plugin';
 
 /**
  * =============================================================================
@@ -39,7 +40,6 @@ export type CorePluginRuntime<S extends CoreSchemas = CoreSchemas> = PluginRunti
 
 export type CorePluginName = CoreSchemaAugment<CoreStatelyConfig>['name'];
 
-export const CORE_PLUGIN_NAME: CorePluginName = 'core';
 
 export type CoreUiAugment<S extends CoreSchemas = CoreSchemas> = UiAugment<
   typeof CORE_PLUGIN_NAME,
@@ -68,7 +68,8 @@ export function createCoreUiPlugin<
   return (runtime: StatelyRuntime<Schema, Augments>) => {
     registerCoreComponents(runtime.registry.components);
 
-    const paths = runtime.schema.schema.paths;
+    // Extract paths from OpenAPI document at runtime
+    const paths = runtime.schema.schema.document.paths as Schema['config']['paths'];
     const api = buildCoreHttpBundle(runtime.client, paths);
 
     const descriptor: CorePluginRuntime<Schema> = {

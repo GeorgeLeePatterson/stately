@@ -9,7 +9,7 @@ import type {
   CoreSchemas,
   CoreStateEntry,
 } from "@/core";
-import { useCoreStatelyUi } from "@/core/context";
+import { useCoreStatelyUi } from "@/core";
 import { SINGLETON_ID } from "@stately/schema/core/utils";
 import { FieldView } from "@/base/form/field-view";
 import { JsonView } from "@/base/form/json-view";
