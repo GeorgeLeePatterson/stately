@@ -1,8 +1,8 @@
-import { StatelyConfig } from "./generated.js";
-import { PluginNodeUnion } from "./plugin.js";
-import { StatelySchemas } from "./schema.js";
-import type { Stately } from "./stately.js";
-import { UnknownNodeType } from "./nodes.js";
+import type { StatelyConfig } from './generated.js';
+import { UnknownNodeType } from './nodes.js';
+import type { PluginNodeUnion } from './plugin.js';
+import type { StatelySchemas } from './schema.js';
+import type { Stately } from './stately.js';
 
 export interface ValidationError {
   path: string;
@@ -27,10 +27,7 @@ export interface ValidationOptions {
  * Validation hook context passed to plugins.
  */
 export interface ValidateArgs<
-  S extends StatelySchemas<StatelyConfig, any> = StatelySchemas<
-    StatelyConfig,
-    any
-  >,
+  S extends StatelySchemas<StatelyConfig, any> = StatelySchemas<StatelyConfig, any>,
   Node = PluginNodeUnion<S>,
 > {
   path: string;
@@ -43,32 +40,28 @@ export interface ValidateArgs<
  * Validation hook signature used by schema plugins.
  */
 export type ValidateHook<
-  Schema extends StatelySchemas<StatelyConfig, any> = StatelySchemas<
-    StatelyConfig,
-    any
-  >,
+  Schema extends StatelySchemas<StatelyConfig, any> = StatelySchemas<StatelyConfig, any>,
 > = (args: ValidateArgs<Schema>) => ValidationResult | undefined;
 
 export function runValidationPipeline<Schemas extends StatelySchemas<any, any>>(
   state: Stately<Schemas>,
   args: ValidateArgs<Schemas>,
 ): ValidationResult {
-
   // Handle unknown nodeTypes from codegen - skip validation
   if (args.schema.nodeType === UnknownNodeType) {
     if (args.options?.debug) {
       console.debug(`[Validation] Skipping unknown nodeType: ${args.schema.nodeType}`);
     }
-    return { valid: true, errors: [] };
+    return { errors: [], valid: true };
   }
 
   const hooks = Object.values(state.plugins as Record<string, any>)
-    .map((plugin) => plugin?.["validate"])
+    .map(plugin => plugin?.validate)
     .filter((hook): hook is ValidateHook<Schemas> => Boolean(hook));
 
   if (hooks.length === 0) {
     throw new Error(
-      "No schema validators registered. Apply at least one plugin before using validate().",
+      'No schema validators registered. Apply at least one plugin before using validate().',
     );
   }
 
@@ -79,5 +72,5 @@ export function runValidationPipeline<Schemas extends StatelySchemas<any, any>>(
     }
   }
 
-  return { valid: true, errors: [] };
+  return { errors: [], valid: true };
 }

@@ -1,4 +1,5 @@
-// biome-ignore lint/correctness/noUnusedVariables: type-level test file
+// biome-ignore-all lint/correctness/noUnusedVariables: type-level test file
+// biome-ignore-all lint/correctness/noUnusedFunctionParameters: type-level test file
 /**
  * Tests runtime patterns for plugin authors - validates:
  * 1. Plugin factory function signatures
@@ -8,15 +9,11 @@
  *
  * Run: npx tsc --noEmit tests/test-plugin-runtime.ts
  */
-import type { CoreStatelyConfig } from "../src/core/generated.js";
-import { CoreNodeType, type ObjectNode } from "../src/core/nodes.js";
-import {
-  DefineGeneratedNodes,
-  type Schemas,
-  stately,
-} from "../src/index.js";
-import type { PluginFactory } from "../src/stately.js";
-import type { ValidateArgs, ValidationResult } from "../src/validation.js";
+import type { CoreStatelyConfig } from '../src/core/generated.js';
+import { CoreNodeType, type ObjectNode } from '../src/core/nodes.js';
+import { type DefineGeneratedNodes, type Schemas, stately } from '../src/index.js';
+import type { PluginFactory } from '../src/stately.js';
+import type { ValidateArgs, ValidationResult } from '../src/validation.js';
 
 /**
  * =============================================================================
@@ -26,14 +23,12 @@ import type { ValidateArgs, ValidationResult } from "../src/validation.js";
  */
 
 // Step 1: Define the generated nodes structure using the helper
-type CustomGeneratedNodes = DefineGeneratedNodes<{
-  CustomNode: ObjectNode<CoreStatelyConfig>;
-}>;
+type CustomGeneratedNodes = DefineGeneratedNodes<{ CustomNode: ObjectNode<CoreStatelyConfig> }>;
 
 // Step 2: Create the config type
 type CustomConfig = CoreStatelyConfig<
-  CoreStatelyConfig["components"] & { schemas: { StateEntry: 'test1' | 'test2' }},
-  CoreStatelyConfig["paths"],
+  CoreStatelyConfig['components'] & { schemas: { StateEntry: 'test1' | 'test2' } },
+  CoreStatelyConfig['paths'],
   CustomGeneratedNodes
 >;
 
@@ -48,12 +43,10 @@ type CustomSchemas = Schemas<CustomConfig>;
  * use concrete types in their validation functions.
  */
 function createCustomPlugin(): PluginFactory<CustomSchemas> {
-  return (runtime) => {
+  return runtime => {
     // Test: Type narrowing works in validation (the critical fix)
     // This function demonstrates that narrowing works within the plugin
-    const customValidate = (
-      args: ValidateArgs<CustomSchemas>,
-    ): ValidationResult | undefined => {
+    const customValidate = (args: ValidateArgs<CustomSchemas>): ValidationResult | undefined => {
       const { schema, data, path } = args;
 
       // Without our fix, this would fail because generic S prevents narrowing
@@ -62,36 +55,25 @@ function createCustomPlugin(): PluginFactory<CustomSchemas> {
         const required = schema.required;
         const propertyKeys = Object.keys(schema.properties);
 
-        if (!data || typeof data !== "object") {
-          return {
-            valid: false,
-            errors: [{ path, message: "Expected object", value: data }],
-          };
+        if (!data || typeof data !== 'object') {
+          return { errors: [{ message: 'Expected object', path, value: data }], valid: false };
         }
 
         if (propertyKeys.length === 0) {
-          return {
-            valid: false,
-            errors: [{ path, message: "Object must define properties" }],
-          };
+          return { errors: [{ message: 'Object must define properties', path }], valid: false };
         }
 
         // Check required fields
         for (const field of required) {
           if (!(field in data)) {
             return {
+              errors: [{ message: `Missing required field: ${field}`, path: `${path}.${field}` }],
               valid: false,
-              errors: [
-                {
-                  path: `${path}.${field}`,
-                  message: `Missing required field: ${field}`,
-                },
-              ],
             };
           }
         }
 
-        return { valid: true, errors: [] };
+        return { errors: [], valid: true };
       }
 
       // Other node types...
@@ -112,67 +94,51 @@ function createCustomPlugin(): PluginFactory<CustomSchemas> {
 
 // Mock raw OpenAPI document (passed as unknown to runtime)
 const mockOpenAPI = {
-  openapi: "3.1.0",
-  info: { title: "Test", version: "1.0.0" },
   components: {
     schemas: {
-      StateEntry: { type: "string", enum: ["test"] },
       Entity: {
         oneOf: [
           {
-            type: "object",
-            required: ["type", "data"],
             properties: {
-              type: { type: "string", enum: ["test"] },
-              data: { $ref: "#/components/schemas/TestData" },
+              data: { $ref: '#/components/schemas/TestData' },
+              type: { enum: ['test'], type: 'string' },
             },
+            required: ['type', 'data'],
+            type: 'object',
           },
         ],
       },
-      TestData: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-        },
-      },
-      EntityId: { type: "string" },
-      Summary: { type: "object" },
+      EntityId: { type: 'string' },
+      StateEntry: { enum: ['test'], type: 'string' },
+      Summary: { type: 'object' },
+      TestData: { properties: { id: { type: 'string' } }, type: 'object' },
     },
   },
+  info: { title: 'Test', version: '1.0.0' },
+  openapi: '3.1.0',
 };
 
 // Mock generated nodes
-const mockNodes: CustomConfig["nodes"] = {
+const mockNodes: CustomConfig['nodes'] = {
   CustomNode: {
-    nodeType: "object",
-    properties: {
-      id: {
-        nodeType: "primitive",
-        primitiveType: "string",
-      },
-    },
-    required: ["id"],
+    nodeType: 'object',
+    properties: { id: { nodeType: 'primitive', primitiveType: 'string' } },
+    required: ['id'],
   },
-  Entity: {
-    nodeType: "taggedUnion",
-    discriminator: "type",
-    variants: [],
-  },
+  Entity: { discriminator: 'type', nodeType: 'taggedUnion', variants: [] },
 };
 
 // Test: Can create runtime with custom plugin
-const runtime = stately<CustomSchemas>(mockOpenAPI, mockNodes).withPlugin(
-  createCustomPlugin(),
-);
+const runtime = stately<CustomSchemas>(mockOpenAPI, mockNodes).withPlugin(createCustomPlugin());
 
-const x = runtime.data.entityDisplayNames['test1'];
-const xx = runtime.data.entityDisplayNames['test2'];
+const x = runtime.data.entityDisplayNames.test1;
+const xx = runtime.data.entityDisplayNames.test2;
 
 // Verify runtime has expected structure
 type RuntimeType = typeof runtime;
-type HasValidate = "validate" extends keyof RuntimeType ? true : false;
-type HasSchema = "schema" extends keyof RuntimeType ? true : false;
-type HasPlugins = "plugins" extends keyof RuntimeType ? true : false;
+type HasValidate = 'validate' extends keyof RuntimeType ? true : false;
+type HasSchema = 'schema' extends keyof RuntimeType ? true : false;
+type HasPlugins = 'plugins' extends keyof RuntimeType ? true : false;
 
 type AssertTrue<T extends true> = T;
 type RuntimeStructureValid = AssertTrue<
@@ -193,26 +159,20 @@ type RuntimeStructureValid = AssertTrue<
 
 const testSchema: ObjectNode<CustomConfig> = {
   nodeType: CoreNodeType.Object,
-  properties: {
-    id: {
-      nodeType: CoreNodeType.Primitive,
-      primitiveType: "string",
-    },
-  },
-  required: ["id"],
+  properties: { id: { nodeType: CoreNodeType.Primitive, primitiveType: 'string' } },
+  required: ['id'],
 };
 
 // Test: Can call validate
 const validationResult = runtime.validate({
-  path: "test",
-  data: { id: "123" },
+  data: { id: '123' },
+  path: 'test',
   schema: testSchema,
 });
 
 // Verify result structure
 type ResultValid = typeof validationResult.valid extends boolean ? true : false;
-type ResultErrors =
-  typeof validationResult.errors extends Array<any> ? true : false;
+type ResultErrors = typeof validationResult.errors extends Array<any> ? true : false;
 
 type ValidationResultValid = AssertTrue<
   ResultValid extends true ? (ResultErrors extends true ? true : false) : false
@@ -224,11 +184,10 @@ type ValidationResultValid = AssertTrue<
  * =============================================================================
  */
 
-export const runtimeTests = {
-  runtime,
-  createCustomPlugin,
-  validationResult,
-} satisfies Record<string, unknown>;
+export const runtimeTests = { createCustomPlugin, runtime, validationResult } satisfies Record<
+  string,
+  unknown
+>;
 
 export type RuntimeAssertions = {
   runtimeStructure: RuntimeStructureValid;

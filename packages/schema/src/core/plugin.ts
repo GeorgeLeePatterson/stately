@@ -1,23 +1,23 @@
-import type { CoreUtils } from './utils.js';
-import { SchemaConfig, Schemas } from "../index.js";
-import { PluginFactory } from "../stately.js";
-import type { ValidateArgs } from "../validation.js";
-import { generateCoreData } from "./data.js";
-import { coreUtils } from "./utils.js";
-import { validateNode } from "./validation.js";
-import type { DefineTypes, PluginAugment } from '../plugin.js';
+import type { SchemaConfig, Schemas } from '../index.js';
+import type { DefinePlugin, DefineTypes } from '../plugin.js';
+import type { PluginFactory } from '../stately.js';
+import type { ValidateArgs } from '../validation.js';
 import type { CoreData } from './data.js';
-import type { CoreNodeMap } from './nodes.js';
+import { generateCoreData } from './data.js';
 import type { CoreStatelyConfig } from './generated.js';
+import type { CoreNodeMap } from './nodes.js';
+import type { CoreUtils } from './utils.js';
+import { coreUtils } from './utils.js';
+import { validateNode } from './validation.js';
 
-export const CORE_PLUGIN_NAME: string = 'core' as const;
+export const CORE_PLUGIN_NAME = 'core' as const;
 
 export type CoreTypes<Config extends CoreStatelyConfig> = DefineTypes<{
-  // Derived: Extract the actual data payload from Entity union
-  EntityData: Extract<Config['components']['schemas']['Entity'], { type: any; data: any }>['data'];
+  // Derived: Extracts the actual data payload from Entity union of a particular impl
+  EntityData: Config['components']['schemas']['Entity']['data'];
 }>;
 
-export type CorePlugin<Config extends CoreStatelyConfig> = PluginAugment<
+export type CorePlugin<Config extends CoreStatelyConfig> = DefinePlugin<
   typeof CORE_PLUGIN_NAME,
   CoreNodeMap<Config>,
   CoreTypes<Config>,
@@ -28,12 +28,10 @@ export type CorePlugin<Config extends CoreStatelyConfig> = PluginAugment<
 /**
  * Core schema plugin that wires entity metadata, helpers, and validators.
  */
-export function createCorePlugin<
-  S extends Schemas<any, any> = Schemas,
->(): PluginFactory<S> {
-  return (runtime) => {
+export function createCorePlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
+  return runtime => {
     const document = runtime.schema.document;
-    const nodes = runtime.schema.nodes as SchemaConfig<S>["nodes"];
+    const nodes = runtime.schema.nodes as SchemaConfig<S>['nodes'];
 
     const coreData = generateCoreData(document, nodes);
 

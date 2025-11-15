@@ -39,10 +39,7 @@ export type PluginFactory<S extends StatelySchemas<StatelyConfig, any>> = (
 ) => Stately<S>;
 
 export interface Stately<S extends StatelySchemas<any, any>> {
-  schema: {
-    document: DefineOpenApi<any>;
-    nodes: StatelySchemaConfig<S>['nodes'];
-  };
+  schema: { document: DefineOpenApi<any>; nodes: StatelySchemaConfig<S>['nodes'] };
   types: S['types'];
   data: S['data'];
   plugins: S['utils'];
@@ -60,10 +57,7 @@ export function createStately<S extends StatelySchemas<any, any>>(
   const baseState: Stately<S> = {
     data: {} as S['data'],
     plugins: {} as S['utils'],
-    schema: {
-      document: openapi,
-      nodes: generatedNodes,
-    },
+    schema: { document: openapi, nodes: generatedNodes },
     types: {} as S['types'],
     validate: args => runValidationPipeline(baseState, args),
   };

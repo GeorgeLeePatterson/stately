@@ -65,19 +65,19 @@ import {
   DefinePaths,
   DefineStatelyConfig,
 } from './generated.js';
+import type { NodeMap } from './nodes.js';
 import type * as PluginTypes from './plugin.js';
 import type { PluginAugment } from './plugin.js';
-
-// Export plugin-author helpers
 import type { StatelySchemas } from './schema.js';
 import { createStately } from './stately.js';
+
 export type { OpenAPIV3_1 };
 export { DefineComponents, DefineGeneratedNodes, DefineOpenApi, DefinePaths, DefineStatelyConfig };
 
 export type DefineConfig<
-  C extends DefineComponents<{}> = DefineComponents<{}>,
-  P extends DefinePaths<{}> = DefinePaths<{}>,
-  N extends DefineGeneratedNodes<{}> = DefineGeneratedNodes<{}>,
+  C extends DefineComponents = DefineComponents,
+  P extends DefinePaths = DefinePaths,
+  N extends DefineGeneratedNodes<NodeMap> = DefineGeneratedNodes<NodeMap>,
 > = DefineCoreConfig<C, P, N>;
 
 /**
@@ -85,7 +85,7 @@ export type DefineConfig<
  */
 export type Schemas<
   Config extends CoreStatelyConfig = CoreStatelyConfig,
-  Augments extends readonly PluginAugment<any, any>[] = [],
+  Augments extends readonly PluginAugment<string, NodeMap>[] = [],
 > = StatelySchemas<Config, readonly [CorePlugin<Config>, ...Augments]>;
 
 // Type helper

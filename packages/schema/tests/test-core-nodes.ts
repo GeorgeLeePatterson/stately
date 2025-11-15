@@ -1,25 +1,27 @@
-// biome-ignore lint/correctness/noUnusedVariables: type-level test file
+// biome-ignore-all lint/correctness/noUnusedVariables: type-level test file
+// biome-ignore-all lint/correctness/noUnusedFunctionParameters: type-level test file
 /**
  * Verifies that the canonical node helpers exported from @stately/schema
  * align with the core node definitions (PrimitiveNode, ObjectNode, etc.).
  *
  * Run: npx tsc --noEmit tests/test-core-nodes.ts
  */
-import type { CoreStatelyConfig } from "../src/core/generated.js";
+import type { CoreStatelyConfig } from '../src/core/generated.js';
 import {
   CoreNodeType,
   type ObjectNode,
   type PrimitiveNode,
   PrimitiveType,
-} from "../src/core/nodes.js";
+} from '../src/core/nodes.js';
+import type { AssertTrue } from '../src/helpers.js';
 import type {
   GeneratedNodeNames,
+  PluginNodes,
   PluginNodeTypes,
   PluginNodeUnion,
-  PluginNodes,
   Schemas,
-} from "../src/index.js";
-import { isNodeOfType } from "../src/schema.js";
+} from '../src/index.js';
+import { isNodeOfType } from '../src/schema.js';
 
 /**
  * Minimal component extension to feed into CoreStatelyConfig.
@@ -27,25 +29,17 @@ import { isNodeOfType } from "../src/schema.js";
  * not raw OpenAPI structure.
  */
 type SampleComponentSchemas = {
-  StateEntry: "sample";  // Generated as string literal union
-  Entity: { type: "sample"; data: { id: string; name: string } };  // Generated as discriminated union
+  StateEntry: 'sample'; // Generated as string literal union
+  Entity: { type: 'sample'; data: { id: string; name: string } }; // Generated as discriminated union
   EntityId: string;
   Summary: { id?: string; name?: string; description?: string };
 };
 
-type SampleComponents = {
-  schemas: SampleComponentSchemas;
-};
+type SampleComponents = { schemas: SampleComponentSchemas };
 
-type SampleNodes = {
-  Sample: ObjectNode<SampleConfig>;
-};
+type SampleNodes = { Sample: ObjectNode<SampleConfig> };
 
-type SampleConfig = CoreStatelyConfig<
-  SampleComponents,
-  CoreStatelyConfig["paths"],
-  SampleNodes
->;
+type SampleConfig = CoreStatelyConfig<SampleComponents, CoreStatelyConfig['paths'], SampleNodes>;
 type SampleSchemas = Schemas<SampleConfig, []>;
 
 // Helpers resolved from Schemas should be concrete types
@@ -62,11 +56,8 @@ const primitiveSampleNode: PrimitiveNode = {
 
 const objectSampleNode: SamplePluginNodes[typeof CoreNodeType.Object] = {
   nodeType: CoreNodeType.Object,
-  properties: {
-    id: primitiveSampleNode,
-    name: primitiveSampleNode,
-  },
-  required: ["id", "name"],
+  properties: { id: primitiveSampleNode, name: primitiveSampleNode },
+  required: ['id', 'name'],
 };
 
 // Any plugin node should accept the canonical primitive node
@@ -76,20 +67,15 @@ const anyNodeCheck: SamplePluginAnyNode = primitiveSampleNode;
 const pluginNodeTypeCheck: SamplePluginNodeTypes = CoreNodeType.Primitive;
 
 // Generated node names reflect the Sample node key
-const generatedNodeNameCheck: SampleGeneratedNodeNames = "Sample";
+const generatedNodeNameCheck: SampleGeneratedNodeNames = 'Sample';
 
-type AssertTrue<T extends true> = T;
-type ExpectNotAssignable<Needle, Haystack> = Needle extends Haystack
-  ? false
-  : true;
+type ExpectNotAssignable<Needle, Haystack> = Needle extends Haystack ? false : true;
 
 // Type-level guards
 type InvalidNodeTypeCheck = AssertTrue<
-  ExpectNotAssignable<"not-a-node-type", SamplePluginNodeTypes>
+  ExpectNotAssignable<'not-a-node-type', SamplePluginNodeTypes>
 >;
-type InvalidNodeNameCheck = AssertTrue<
-  ExpectNotAssignable<"invalid", SampleGeneratedNodeNames>
->;
+type InvalidNodeNameCheck = AssertTrue<ExpectNotAssignable<'invalid', SampleGeneratedNodeNames>>;
 
 /**
  * =============================================================================
@@ -101,10 +87,8 @@ type InvalidNodeNameCheck = AssertTrue<
 
 // Test: Plugin helpers accept user schemas with more specific configs
 type UserConfig = CoreStatelyConfig<
-  SampleComponents & {
-    schemas: SampleComponents["schemas"] & { CustomField: string };
-  },
-  CoreStatelyConfig["paths"],
+  SampleComponents & { schemas: SampleComponents['schemas'] & { CustomField: string } },
+  CoreStatelyConfig['paths'],
   SampleNodes & { CustomNode: ObjectNode<any> }
 >;
 type UserSchemas = Schemas<UserConfig, []>;
@@ -115,38 +99,28 @@ type UserPluginUnion = PluginNodeUnion<UserSchemas>; // ✅ Should accept UserSc
 
 function processNodeWithTypeGuard(schema: SamplePluginAnyNode): string {
   // Test isNodeOfType narrows correctly
-  if (
-    isNodeOfType<SampleSchemas, typeof CoreNodeType.Object>(
-      schema,
-      CoreNodeType.Object,
-    )
-  ) {
+  if (isNodeOfType<SampleSchemas, typeof CoreNodeType.Object>(schema, CoreNodeType.Object)) {
     // ✅ Should have access to properties after narrowing
     const props = schema.properties;
     const required = schema.required;
     return `object with ${Object.keys(props).length} properties, ${required.length} required`;
   }
 
-  if (
-    isNodeOfType<SampleSchemas, typeof CoreNodeType.Primitive>(
-      schema,
-      CoreNodeType.Primitive,
-    )
-  ) {
+  if (isNodeOfType<SampleSchemas, typeof CoreNodeType.Primitive>(schema, CoreNodeType.Primitive)) {
     // ✅ Should have access to primitiveType after narrowing
     return `primitive: ${schema.primitiveType}`;
   }
 
-  return "unknown";
+  return 'unknown';
 }
 
 // Export dummy usages so the compiler enforces the assignments above
 export const sampleNodes = {
-  primitiveSampleNode,
-  objectSampleNode,
   anyNodeCheck,
-  pluginNodeTypeCheck,
   generatedNodeNameCheck,
+  objectSampleNode,
+  pluginNodeTypeCheck,
+  primitiveSampleNode,
   processNodeWithTypeGuard,
 } satisfies Record<string, unknown>;
 

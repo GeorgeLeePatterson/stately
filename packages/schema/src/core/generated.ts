@@ -1,7 +1,13 @@
-import { DefineComponents, DefineComponentSchemas, DefineGeneratedNodes, StatelyConfig } from "../generated";
-import { NodeMap } from "../nodes";
-import { TaggedUnionNode } from "./nodes";
-import { CorePaths } from "./paths";
+import type {
+  DefineComponentSchemas,
+  DefineComponents,
+  DefineGeneratedNodes,
+  DefinePaths,
+  StatelyConfig,
+} from '../generated';
+import type { NodeMap } from '../nodes';
+import type { TaggedUnionNode } from './nodes';
+import type { CorePaths } from './paths';
 
 /**
  * Define the minimum expected schema structure from generated types.
@@ -10,8 +16,8 @@ import { CorePaths } from "./paths";
  */
 type CoreComponents = DefineComponents<{
   schemas: DefineComponentSchemas<{
-    StateEntry: string;  // Generated as string union type from enum
-    Entity: { type: string; data: any };  // Generated as discriminated union
+    StateEntry: string; // Generated as string union type from enum
+    Entity: { type: string; data: any }; // Generated as discriminated union
     EntityId: string;
     Summary: { id?: string; name?: string; description?: string | null };
   }>;
@@ -19,9 +25,7 @@ type CoreComponents = DefineComponents<{
 
 type CoreComponentInput = StatelyConfig['components'] & CoreComponents;
 type CorePathsInput = StatelyConfig['paths'] & CorePaths;
-type CoreNodesInput = DefineGeneratedNodes<{
-  Entity: TaggedUnionNode<CoreStatelyConfig, 'type'>;
-}>;
+type CoreNodesInput = DefineGeneratedNodes<{ Entity: TaggedUnionNode<CoreStatelyConfig, 'type'> }>;
 
 /**
  * Core configuration type that plugin authors can specialize with their own
@@ -31,14 +35,14 @@ type CoreNodesInput = DefineGeneratedNodes<{
 export interface CoreStatelyConfig<
   C extends CoreComponentInput = CoreComponentInput,
   P extends CorePathsInput = CorePathsInput,
-  N extends DefineGeneratedNodes<{}> = NodeMap
+  N extends DefineGeneratedNodes<NodeMap> = NodeMap,
 > extends StatelyConfig<C, P, CoreNodesInput & N> {}
 
 /**
  * Helper to define configuration that builds on Core
  */
 export type DefineCoreConfig<
-  C extends DefineComponents<{}> = CoreStatelyConfig['components'],
-  P extends CorePathsInput = CoreStatelyConfig['paths'],
-  N extends DefineGeneratedNodes<{}> = CoreStatelyConfig['nodes']
+  C extends DefineComponents<object> = CoreStatelyConfig['components'],
+  P extends DefinePaths = CoreStatelyConfig['paths'],
+  N extends DefineGeneratedNodes<NodeMap> = CoreStatelyConfig['nodes'],
 > = CoreStatelyConfig<C & CoreComponentInput, P & CorePathsInput, CoreNodesInput & N>;

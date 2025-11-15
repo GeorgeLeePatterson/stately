@@ -6,7 +6,7 @@
  * views are assembled while still presenting a clean surface at the package root.
  */
 import type { GeneratedNodeMap, StatelyConfig } from './generated';
-import type { EmptyRecord, UnionToIntersection } from './helpers';
+import type { AnyRecord, EmptyRecord, NeverRecord, UnionToIntersection } from './helpers';
 import type { NodeInformation, NodeMap } from './nodes';
 import type { PluginAugment, PluginNodeTypes, PluginNodeUnion } from './plugin';
 
@@ -44,7 +44,7 @@ type AugmentPluginNodes<Augments> = Augments extends readonly PluginAugment<
   ? UnionToIntersection<Nodes>
   : NodeMap;
 
-type AugmentPluginTypes<Augments> = (Augments extends readonly PluginAugment<
+type AugmentPluginTypes<Augments> = Augments extends readonly PluginAugment<
   any,
   any,
   infer Types,
@@ -52,8 +52,9 @@ type AugmentPluginTypes<Augments> = (Augments extends readonly PluginAugment<
   any
 >[]
   ? UnionToIntersection<Types>
-  : EmptyRecord) &
-  Record<string, unknown>;
+  : EmptyRecord;
+// &
+//   AnyRecord;
 
 type AugmentPluginData<Augments> = (Augments extends readonly PluginAugment<
   any,
@@ -64,24 +65,18 @@ type AugmentPluginData<Augments> = (Augments extends readonly PluginAugment<
 >[]
   ? UnionToIntersection<Data>
   : EmptyRecord) &
-  Record<string, unknown>;
+  AnyRecord;
 
 type AugmentPluginUtils<Augments> = Augments extends readonly [
-  ...infer Rest extends readonly PluginAugment<any, any, any, any, any>[],
-  infer Last extends PluginAugment<any, any, any, any, any>,
+  ...infer Rest extends readonly PluginAugment<string>[],
+  infer Last extends PluginAugment<string>,
 ]
   ? AugmentPluginUtils<Rest> & PluginUtilsOf<Last>
-  : EmptyRecord;
+  : NeverRecord;
 
-type PluginUtilsOf<Augment> = Augment extends PluginAugment<
-  infer Name,
-  any,
-  any,
-  any,
-  infer Utils
->
+type PluginUtilsOf<Augment> = Augment extends PluginAugment<infer Name, any, any, any, infer Utils>
   ? { [K in Name]: Utils }
-  : EmptyRecord;
+  : AnyRecord;
 
 /**
  * Base schema builder – derives shared surface area without core additions.
@@ -91,7 +86,7 @@ type PluginUtilsOf<Augment> = Augment extends PluginAugment<
  */
 export type StatelySchemas<
   Config extends StatelyConfig,
-  Augments extends readonly PluginAugment<any, any>[] = [],
+  Augments extends readonly PluginAugment<string, NodeMap>[] = [],
 > = {
   /** Store raw configuration and plugin augmentations */
   config: Config;

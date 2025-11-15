@@ -1,6 +1,6 @@
-import { LiteralKeys } from "./helpers";
+import type { LiteralKeys } from './helpers';
 
-export const UnknownNodeType = "unknown";
+export const UnknownNodeType = 'unknown';
 export type TUnknownNodeType = typeof UnknownNodeType;
 
 /**
@@ -23,11 +23,8 @@ export interface UnknownNode extends BaseNode {
 /** Node map helper used internally for fallbacks. */
 export type NodeMap = Record<string, BaseNode>;
 
-type NodeValues<N> = [LiteralKeys<N>] extends [never]
-  ? BaseNode | UnknownNode
-  : N[LiteralKeys<N>];
-type NodeTypeUnion<N> =
-  NodeValues<N> extends { nodeType: infer T } ? Extract<T, string> : string;
+type NodeValues<N> = [LiteralKeys<N>] extends [never] ? BaseNode | UnknownNode : N[LiteralKeys<N>];
+type NodeTypeUnion<N> = NodeValues<N> extends { nodeType: infer T } ? Extract<T, string> : string;
 
 /**
  * Derived view of nodes
@@ -49,23 +46,7 @@ type NodeProp<
     : Value
   : Fallback;
 
-export type AllNodes<NodesDefinition> = NodeProp<
-  NodesDefinition,
-  "Nodes",
-  NodeMap
->;
-export type NodeUnion<NodesDefinition> = NodeProp<
-  NodesDefinition,
-  "AnyNode",
-  BaseNode
->;
-export type NodeNamesUnion<NodesDefinition> = NodeProp<
-  NodesDefinition,
-  "NodeNames",
-  string
->;
-export type NodeTypesUnion<NodesDefinition> = NodeProp<
-  NodesDefinition,
-  "NodeTypes",
-  string
->;
+export type AllNodes<NodesDefinition> = NodeProp<NodesDefinition, 'Nodes', NodeMap>;
+export type NodeUnion<NodesDefinition> = NodeProp<NodesDefinition, 'AnyNode', BaseNode>;
+export type NodeNamesUnion<NodesDefinition> = NodeProp<NodesDefinition, 'NodeNames', string>;
+export type NodeTypesUnion<NodesDefinition> = NodeProp<NodesDefinition, 'NodeTypes', string>;

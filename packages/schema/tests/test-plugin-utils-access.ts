@@ -1,4 +1,5 @@
 // biome-ignore-all lint/correctness/noUnusedVariables: type-level test file
+// biome-ignore-all lint/correctness/noUnusedFunctionParameters: type-level test file
 /**
  * Tests that plugin utils can be accessed with proper types.
  * This validates the fix for the Record<string, AnyRecord> index signature issue.
@@ -11,6 +12,7 @@
  */
 import type { CoreStatelyConfig } from '../src/core/generated.js';
 import type { CoreNodeUnion } from '../src/core/nodes.js';
+import type { AssertTrue } from '../src/helpers.js';
 import type { Schemas } from '../src/index.js';
 import { stately } from '../src/index.js';
 import type { Stately } from '../src/stately.js';
@@ -53,7 +55,8 @@ const mockNodes: TestConfig['nodes'] = {
   Entity: {
     discriminator: 'type',
     nodeType: 'taggedUnion',
-    variants: [{ tag: 'test', schema: { nodeType: 'object', properties: {}, required: [] } }] },
+    variants: [{ schema: { nodeType: 'object', properties: {}, required: [] }, tag: 'test' }],
+  },
 };
 
 const runtime = stately<TestSchemas>(mockOpenAPI, mockNodes);
@@ -73,7 +76,7 @@ const corePlugin = runtime.plugins.core;
 const isPrimitive = runtime.plugins.core.isPrimitive;
 
 const entityMapping = runtime.data;
-const x = entityMapping['entityDisplayNames'];
+const x = entityMapping.entityDisplayNames;
 
 /**
  * =============================================================================
@@ -96,11 +99,8 @@ function testWithGeneric<S extends TestSchemas>(statelyRuntime: Stately<S>) {
   return genericIsPrimitive;
 }
 
-type GenericAccessWorks = AssertTrue<true>; // Will fail if generic access doesn't work
-
 // Test: isPrimitive is a function, not unknown
 type IsPrimitiveType = typeof isPrimitive;
-type AssertTrue<T extends true> = T;
 
 // This should pass - isPrimitive is a function
 type IsPrimitiveIsFunction = IsPrimitiveType extends (schema: CoreNodeUnion<TestConfig>) => boolean

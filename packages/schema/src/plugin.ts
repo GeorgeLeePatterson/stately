@@ -2,29 +2,40 @@
  * @stately/schema - Plugin System
  *
  * Defines the plugin interfaces + helper types for extending Stately schemas.
+ *
+ * =============================================================================
+ * PLUGIN AUTHOR HELPERS - "Fill in the form" types
+ * =============================================================================
+ * These helpers guide plugin authors to define the correct types for their
+ * augments. Use these when creating custom plugins.
  */
-import type { AnyRecord, EmptyRecord } from './helpers.js';
+import type { AnyRecord, EmptyRecord, NeverRecord, RequireLiteral } from './helpers.js';
 import type { BaseNode, NodeInformation, NodeMap, UnknownNode, UnknownNodeType } from './nodes.js';
 
 /**
+ * Public helper for declaring a plugin augment.
+ *
  * Schema augment contributed by a plugin. Each augment registers the canonical
  * node map it provides plus any additional helper types it wants to merge into
  * the final `Schemas` surface. Plugin authors only need to supply the node map;
  * everything else will be wired into the `Plugin` view automatically.
+ *
+ * Enforces string-literal names so downstream utilities preserve keyed utils, types, and data.
+ * Plugin authors should export their augments defined with this type
  */
-export type PluginAugment<
+export type DefinePlugin<
   Name extends string,
   Nodes = NodeMap,
-  Types = EmptyRecord,
-  Data extends AnyRecord = EmptyRecord,
-  Utils extends AnyRecord = EmptyRecord,
-> = {
-  name: Name;
-  nodes: Nodes extends NodeMap ? Nodes : Nodes & NodeMap;
-  types?: Types;
-  data?: Data;
-  utils?: Utils;
-};
+  Types extends DefineTypes = NeverRecord,
+  Data extends DefineData = NeverRecord,
+  Utils extends DefineUtils<AnyRecord> = EmptyRecord,
+> = PluginAugment<
+  RequireLiteral<Name, 'Plugin names must be string literals'>,
+  Nodes,
+  Types,
+  Data,
+  Utils
+>;
 
 /**
  * Plugin helper types for nodes
@@ -43,14 +54,6 @@ export type PluginNodeTypes<Schema> = Schema extends { plugin: NodeInformation<a
   : string;
 
 /**
- * =============================================================================
- * PLUGIN AUTHOR HELPERS - "Fill in the form" types
- * =============================================================================
- * These helpers guide plugin authors to define the correct types for their
- * augments. Use these when creating custom plugins.
- */
-
-/**
  * Define the node map for your plugin augment.
  * The type system will automatically add the required index signature.
  *
@@ -62,9 +65,7 @@ export type PluginNodeTypes<Schema> = Schema extends { plugin: NodeInformation<a
  * }>;
  * ```
  */
-export type DefineNodeMap<
-  T extends Record<string, BaseNode> = Record<string, BaseNode>,
-> = T & { [UnknownNodeType]: UnknownNode };
+export type DefineNodeMap<T extends NodeMap = NodeMap> = T & { [UnknownNodeType]: UnknownNode };
 
 /**
  * Define additional types to expose from your plugin.
@@ -77,7 +78,7 @@ export type DefineNodeMap<
  * }>;
  * ```
  */
-export type DefineTypes<T extends AnyRecord = EmptyRecord> = T;
+export type DefineTypes<T extends AnyRecord = NeverRecord> = T;
 
 /**
  * Define runtime data to expose from your plugin.
@@ -90,7 +91,7 @@ export type DefineTypes<T extends AnyRecord = EmptyRecord> = T;
  * }>;
  * ```
  */
-export type DefineData<T extends AnyRecord = EmptyRecord> = T;
+export type DefineData<T extends AnyRecord = NeverRecord> = T;
 
 /**
  * Define utility functions to expose from your plugin.
@@ -104,3 +105,25 @@ export type DefineData<T extends AnyRecord = EmptyRecord> = T;
  * ```
  */
 export type DefineUtils<T extends AnyRecord = EmptyRecord> = T;
+
+/**
+ * Describes the structural shape of any plugin augment.
+ *
+ * IMPORTANT: Prefer `DefinePlugin` if declaring a plugin's augment.
+ *
+ * Use this when you need to reference plugins generically (e.g., constraints, schema plumbing)
+ * without enforcing literal-string 'Name' requirements.
+ */
+export type PluginAugment<
+  Name extends string,
+  Nodes = NodeMap,
+  Types extends DefineTypes = NeverRecord,
+  Data extends DefineData = NeverRecord,
+  Utils extends DefineUtils<AnyRecord> = AnyRecord,
+> = {
+  name: Name;
+  nodes: Nodes extends NodeMap ? Nodes : Nodes & NodeMap;
+  types?: Types;
+  data?: Data;
+  utils?: Utils;
+};

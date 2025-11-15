@@ -4,8 +4,9 @@
  * Parsing logic for extracting entity metadata from OpenAPI specs
  */
 
+import type { DefineData } from '../plugin.js';
 import type { CoreStatelyConfig } from './generated.js';
-import { StateEntry } from './helpers.js';
+import type { StateEntry } from './helpers.js';
 import { coreUtils } from './utils.js';
 
 /**
@@ -18,7 +19,7 @@ function parseEntityMappings<Config extends CoreStatelyConfig = CoreStatelyConfi
 ): Array<{ stateEntry: StateEntry<Config>; schemaName: string }> {
   // Runtime introspection of raw OpenAPI document structure
   const doc = document as any;
-  const entitySchema = doc?.components?.schemas?.['Entity'];
+  const entitySchema = doc?.components?.schemas?.Entity;
   if (!entitySchema?.oneOf) {
     throw new Error('Entity schema not found in OpenAPI spec or missing oneOf');
   }
@@ -111,13 +112,13 @@ function generateCoreData<Config extends CoreStatelyConfig = CoreStatelyConfig>(
   };
 }
 
-type CoreData<Config extends CoreStatelyConfig = CoreStatelyConfig> = {
+type CoreData<Config extends CoreStatelyConfig = CoreStatelyConfig> = DefineData<{
   entityDisplayNames: Record<StateEntry<Config>, string>;
   entitySchemaCache: Record<StateEntry<Config>, Config['nodes'][keyof Config['nodes']] | null>;
   stateEntryToSchema: Record<StateEntry<Config>, string>;
   stateEntryToUrl: Record<StateEntry<Config>, string>;
   urlToStateEntry: Record<string, StateEntry<Config>>;
-};
+}>;
 
 export type { CoreData };
 export { generateCoreData };

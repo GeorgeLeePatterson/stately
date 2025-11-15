@@ -18,7 +18,7 @@ import type {
  */
 export interface StatelyConfig<
   Components = { schemas?: Record<string, any> },
-  Paths = {},
+  Paths extends {} = Record<string, never>,
   Nodes extends Record<string, BaseNode> = Record<string, BaseNode>,
 > {
   components: Components;
@@ -39,9 +39,9 @@ export interface StatelyConfig<
  * ```
  */
 export type DefineStatelyConfig<
-  C extends DefineComponents<{}> = DefineComponents<{}>,
-  P extends DefinePaths<{}> = DefinePaths<{}>,
-  N extends DefineGeneratedNodes<{}> = DefineGeneratedNodes<{}>,
+  C extends DefineComponents = DefineComponents,
+  P extends DefinePaths = DefinePaths,
+  N extends DefineGeneratedNodes<NodeMap> = DefineGeneratedNodes<NodeMap>,
 > = StatelyConfig<C, P, N>;
 
 /**
@@ -69,7 +69,7 @@ export type DefineStatelyConfig<
  * ```
  */
 export type DefineComponents<
-  T extends { schemas?: Record<string, any> } = { schemas?: Record<string, any> }
+  T extends { schemas?: Record<string, any> } = { schemas?: Record<string, any> },
 > = T;
 
 /**
@@ -84,9 +84,7 @@ export type DefineComponents<
  * }>;
  * ```
  */
-export type DefineComponentSchemas<
-  T extends Record<string, any> = Record<string, any>
-> = T;
+export type DefineComponentSchemas<T extends Record<string, any> = Record<string, any>> = T;
 
 /**
  * Define the paths structure your plugin expects.
@@ -101,9 +99,7 @@ export type DefineComponentSchemas<
  * }>;
  * ```
  */
-export type DefinePaths<
-  T extends Record<string, any> = Record<string, any>
-> = T;
+export type DefinePaths<T extends Record<string, any> = Record<string, any>> = T;
 
 /**
  * Define the generated node structure your plugin expects.
@@ -117,9 +113,8 @@ export type DefinePaths<
  * }>;
  * ```
  */
-export type DefineGeneratedNodes<
-  T extends Record<string, any> = Record<string, BaseNode>
-> = T extends Record<string, BaseNode> ? T : never;
+export type DefineGeneratedNodes<T extends Record<string, any> = Record<string, BaseNode>> =
+  T extends Record<string, BaseNode> ? T : never;
 
 /**
  * Helper type to ensure OpenAPI spec is typed properly.
@@ -131,11 +126,11 @@ export type DefineGeneratedNodes<
  * const doc: DefineOpenApi<typeof openapiDoc> = openapiDoc;
  * ```
  */
-export type DefineOpenApi<T> = T extends OpenAPIV3_1.Document<{}>
+export type DefineOpenApi<T> = T extends OpenAPIV3_1.Document
   ? T
   : T extends Record<string, any>
-    ? T & Partial<OpenAPIV3_1.Document<{}>>
-    : OpenAPIV3_1.Document<{}>;
+    ? T & Partial<OpenAPIV3_1.Document>
+    : OpenAPIV3_1.Document;
 
 export type GeneratedNodeMap<Config extends StatelyConfig> = [StringKeys<Config['nodes']>] extends [
   never,

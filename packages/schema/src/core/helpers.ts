@@ -1,4 +1,4 @@
-import type { CoreStatelyConfig } from "./generated.js";
+import type { CoreStatelyConfig } from './generated.js';
 
 // Derive StateEntry directly from generated components (not from CoreTypes)
 export type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> =
