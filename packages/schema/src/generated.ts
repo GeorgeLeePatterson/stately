@@ -18,7 +18,7 @@ import type {
  */
 export interface StatelyConfig<
   Components = { schemas?: Record<string, any> },
-  Paths = Record<string, any>,
+  Paths = {},
   Nodes extends Record<string, BaseNode> = Record<string, BaseNode>,
 > {
   components: Components;

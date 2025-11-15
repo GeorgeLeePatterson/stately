@@ -1,7 +1,7 @@
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
 import type { ComponentType } from 'react';
-import type { AnyBaseSchemas } from './base';
+import type { AnyBaseSchemas, BaseSchemas } from './base';
 import type { AugmentPlugins, UiAugment } from './plugin';
 
 export type ComponentRegistry = Map<string, ComponentType<any>>;
@@ -90,7 +90,7 @@ export interface StatelyUiBuilder<
  * ```
  */
 export function createStatelyUi<
-  Schema extends AnyBaseSchemas,
+  Schema extends BaseSchemas<any, any>,
   Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
 >(
   schema: Stately<Schema>,

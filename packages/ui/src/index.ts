@@ -16,7 +16,7 @@ import { Schemas } from '@stately/schema';
  * The augments array includes CoreUiAugment plus any additional plugins.
  */
 export type StatelyUi<
-  S extends Schemas<any, any> = Schemas<any, any>,
+  S extends Schemas<any, any> = Schemas,
   ExtraAugments extends readonly UiAugment<string, S, any, any>[] = readonly [],
 > = StatelyRuntime<S, readonly [CoreUiAugment<S>, ...ExtraAugments]>;
 
@@ -35,7 +35,7 @@ export type StatelyUi<
  */
 export function statelyUi<Schema extends Schemas<any, any>>(
   state: Stately<Schema>,
-  client: Client<CorePaths<Schema> & {}>,
+  client: Client<Schema['config']['paths']>,
 ): StatelyUi<Schema> {
   return createStatelyUi<Schema, readonly [CoreUiAugment<Schema>]>(state, client).withPlugin(
     createCoreUiPlugin<Schema>(),
