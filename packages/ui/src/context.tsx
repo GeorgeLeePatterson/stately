@@ -2,6 +2,8 @@ import { createContext, type PropsWithChildren, useContext } from 'react';
 import type { AnyBaseSchemas } from './base';
 import type { UiAugment } from './plugin';
 import type { StatelyRuntime } from './runtime';
+import { Schemas } from '@stately/schema';
+import { CoreUiAugment } from './core/plugin';
 
 /**
  * Context for storing the StatelyUi runtime.
@@ -54,7 +56,7 @@ export const StatelyUiProvider = createStatelyUiProvider();
  * }
  * ```
  */
-export function createUseStatelyUi<
+export function createUseBaseStatelyUi<
   Schema extends AnyBaseSchemas,
   Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
 >() {
@@ -66,6 +68,24 @@ export function createUseStatelyUi<
     return ctx as StatelyRuntime<Schema, Augments>;
   };
 }
+
+
+/**
+ * Stately UI Context Provider with core included
+ *
+ * This hook is both used in core's plugin code but also serves as an example for how to customize
+ * the application's Stately context with any plugin augmentations.
+ */
+ export function createUseStatelyUi<
+   Schema extends Schemas<any, any>,
+   ExtraAugments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
+ >() {
+   type Augments = readonly [CoreUiAugment<Schema>, ...ExtraAugments];
+   return createUseBaseStatelyUi<Schema, Augments>();
+ }
+
+ // concrete hook for core’s own components/views/hooks
+ export const useCoreStatelyUi = createUseStatelyUi<Schemas>();
 
 /**
  * Default untyped hook for convenience.

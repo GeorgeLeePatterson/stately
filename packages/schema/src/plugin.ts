@@ -4,7 +4,7 @@
  * Defines the plugin interfaces + helper types for extending Stately schemas.
  */
 import type { AnyRecord, EmptyRecord } from './helpers.js';
-import type { BaseNode, NodeInformation, NodeMap } from './nodes.js';
+import type { BaseNode, NodeInformation, NodeMap, UnknownNode, UnknownNodeType } from './nodes.js';
 
 /**
  * Schema augment contributed by a plugin. Each augment registers the canonical
@@ -12,7 +12,7 @@ import type { BaseNode, NodeInformation, NodeMap } from './nodes.js';
  * the final `Schemas` surface. Plugin authors only need to supply the node map;
  * everything else will be wired into the `Plugin` view automatically.
  */
-export type SchemaAugment<
+export type PluginAugment<
   Name extends string,
   Nodes = NodeMap,
   Types = EmptyRecord,
@@ -64,7 +64,7 @@ export type PluginNodeTypes<Schema> = Schema extends { plugin: NodeInformation<a
  */
 export type DefineNodeMap<
   T extends Record<string, BaseNode> = Record<string, BaseNode>,
-> = T;
+> = T & { [UnknownNodeType]: UnknownNode };
 
 /**
  * Define additional types to expose from your plugin.

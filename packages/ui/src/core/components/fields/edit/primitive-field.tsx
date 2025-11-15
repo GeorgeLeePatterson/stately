@@ -1,10 +1,11 @@
-import type { CorePrimitiveNode, CoreSchemas } from "@/core";
+import type { CorePrimitiveNode } from "@/core";
 import { Input } from "@/core/components/ui/input";
 import { Switch } from "@/core/components/ui/switch";
 import type { EditFieldProps } from "@/base/form/field-edit";
 import { PrimitiveStringEdit } from "./primitive-string";
+import { Schemas } from "@stately/schema";
 
-export type PrimitiveEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type PrimitiveEditProps<Schema extends Schemas = Schemas> =
   EditFieldProps<
     Schema,
     CorePrimitiveNode,
@@ -14,7 +15,7 @@ export type PrimitiveEditProps<Schema extends CoreSchemas = CoreSchemas> =
 /**
  * Primitive field component - handles basic types: string, number, integer, boolean
  */
-export function PrimitiveEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function PrimitiveEdit<Schema extends Schemas = Schemas>({
   formId,
   node,
   value,

@@ -1,4 +1,4 @@
-import type { CoreSchemas, CoreTaggedUnionNode } from "@/core";
+import type { CoreTaggedUnionNode } from "@/core";
 import { useEffect, useState } from "react";
 import { DescriptionLabel } from "@/core/components/base/description";
 import { Card, CardContent } from "@/core/components/ui/card";
@@ -11,9 +11,10 @@ import {
 } from "@/core/components/ui/select";
 import { FieldEdit } from "@/base/form/field-edit";
 import type { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
+import { Schemas } from "@stately/schema";
 
-export type TaggedUnionEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type TaggedUnionEditProps<Schema extends Schemas = Schemas> =
   EditFieldProps<Schema, CoreTaggedUnionNode<Schema>>;
 
 /**
@@ -28,7 +29,7 @@ export type TaggedUnionEditProps<Schema extends CoreSchemas = CoreSchemas> =
  * Uses inline onChange pattern - the discriminant and value are resolved
  * through inner field saves, so no additional save button is needed here
  */
-export function TaggedUnionEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
   formId,
   node,
   value,

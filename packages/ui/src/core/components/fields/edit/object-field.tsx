@@ -5,7 +5,7 @@ import { Fragment, useId } from 'react';
 import { GlowingSave } from '@/base/components/glowing-save';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
-import type { CoreObjectNode, CoreSchemas } from '@/core';
+import type { CoreObjectNode } from '@/core';
 import { DescriptionLabel } from '@/core/components/base/description';
 import {
   FieldContent,
@@ -16,16 +16,17 @@ import {
   FieldSet,
 } from '@/core/components/ui/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/components/ui/tabs';
-import { useCoreStatelyUi } from '@/core';
+import { useCoreStatelyUi } from '@/context';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import { ObjectWizardEdit } from './object-wizard';
+import { Schemas } from '@stately/schema';
 
 export enum ObjectEditMode {
   FORM = 'Form',
   WIZARD = 'Wizard',
 }
 
-export type ObjectEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
+export type ObjectEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
   CoreObjectNode<Schema>,
   AnyRecord
@@ -35,7 +36,7 @@ export type ObjectEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFiel
  * Object field component - handles nested object structures
  * Uses explicit save pattern with dirty tracking
  */
-export function ObjectEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function ObjectEdit<Schema extends Schemas = Schemas>({
   formId,
   label,
   node,
@@ -87,13 +88,13 @@ export function ObjectEdit<Schema extends CoreSchemas = CoreSchemas>({
   );
 }
 
-type ObjectFormProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
+type ObjectFormProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
   CoreObjectNode<Schema>,
   AnyRecord
 >;
 
-function ObjectForm<Schema extends CoreSchemas = CoreSchemas>({
+function ObjectForm<Schema extends Schemas = Schemas>({
   formId,
   label,
   node,

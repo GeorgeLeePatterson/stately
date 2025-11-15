@@ -6,11 +6,35 @@
  * views are assembled while still presenting a clean surface at the package root.
  */
 import type { GeneratedNodeMap, StatelyConfig } from './generated';
-import type { AnyRecord, EmptyRecord, UnionToIntersection } from './helpers';
+import type { EmptyRecord, UnionToIntersection } from './helpers';
 import type { NodeInformation, NodeMap } from './nodes';
-import type { SchemaAugment } from './plugin';
+import type { PluginAugment, PluginNodeTypes, PluginNodeUnion } from './plugin';
 
-type AugmentPluginNodes<Augments> = Augments extends readonly SchemaAugment<
+/**
+ * Type guard for narrowing plugin node unions by nodeType.
+ *
+ * Use this helper when you need to narrow a `PluginNodeUnion<S>` to a specific node type
+ * based on its `nodeType` discriminator. This is particularly useful in validation functions
+ * and other plugin code that needs to handle different node types.
+ *
+ * @example
+ * ```typescript
+ * function processNode(schema: PluginNodeUnion<MySchemas>) {
+ *   if (isNodeOfType(schema, 'object')) {
+ *     // schema is now narrowed to ObjectNode
+ *     console.log(schema.properties);
+ *   }
+ * }
+ * ```
+ */
+export function isNodeOfType<S extends StatelySchemas<any, any>, Type extends PluginNodeTypes<S>>(
+  schema: PluginNodeUnion<S>,
+  nodeType: Type,
+): schema is Extract<PluginNodeUnion<S>, { nodeType: Type }> {
+  return schema.nodeType === nodeType;
+}
+
+type AugmentPluginNodes<Augments> = Augments extends readonly PluginAugment<
   any,
   infer Nodes,
   any,
@@ -20,7 +44,7 @@ type AugmentPluginNodes<Augments> = Augments extends readonly SchemaAugment<
   ? UnionToIntersection<Nodes>
   : NodeMap;
 
-type AugmentPluginTypes<Augments> = (Augments extends readonly SchemaAugment<
+type AugmentPluginTypes<Augments> = (Augments extends readonly PluginAugment<
   any,
   any,
   infer Types,
@@ -31,7 +55,7 @@ type AugmentPluginTypes<Augments> = (Augments extends readonly SchemaAugment<
   : EmptyRecord) &
   Record<string, unknown>;
 
-type AugmentPluginData<Augments> = (Augments extends readonly SchemaAugment<
+type AugmentPluginData<Augments> = (Augments extends readonly PluginAugment<
   any,
   any,
   any,
@@ -42,16 +66,22 @@ type AugmentPluginData<Augments> = (Augments extends readonly SchemaAugment<
   : EmptyRecord) &
   Record<string, unknown>;
 
-type AugmentPluginUtils<Augments> = (Augments extends readonly SchemaAugment<
+type AugmentPluginUtils<Augments> = Augments extends readonly [
+  ...infer Rest extends readonly PluginAugment<any, any, any, any, any>[],
+  infer Last extends PluginAugment<any, any, any, any, any>,
+]
+  ? AugmentPluginUtils<Rest> & PluginUtilsOf<Last>
+  : EmptyRecord;
+
+type PluginUtilsOf<Augment> = Augment extends PluginAugment<
   infer Name,
   any,
   any,
   any,
   infer Utils
->[]
+>
   ? { [K in Name]: Utils }
-  : EmptyRecord) &
-  Record<string, AnyRecord>;
+  : EmptyRecord;
 
 /**
  * Base schema builder – derives shared surface area without core additions.
@@ -61,7 +91,7 @@ type AugmentPluginUtils<Augments> = (Augments extends readonly SchemaAugment<
  */
 export type StatelySchemas<
   Config extends StatelyConfig,
-  Augments extends readonly SchemaAugment<any, any>[] = [],
+  Augments extends readonly PluginAugment<any, any>[] = [],
 > = {
   /** Store raw configuration and plugin augmentations */
   config: Config;

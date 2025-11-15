@@ -1,11 +1,11 @@
 import { FieldDescription, FieldTitle } from "@/core/components/ui/field";
-import type { CoreSchemas } from "@/core";
 import {
   EntityPropertyLabel,
   type EntityPropertyProps,
 } from "./entity-property-view";
+import { Schemas } from "@stately/schema";
 
-export function EntityPropertyEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function EntityPropertyEdit<Schema extends Schemas = Schemas>({
   fieldName,
   node,
   isRequired,

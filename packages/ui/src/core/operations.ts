@@ -5,7 +5,8 @@ import {
   type HttpBundle,
   type OperationOverrides,
 } from '@/operations';
-import type { CorePaths, CoreSchemas } from '.';
+import type { CorePaths } from '.';
+import { Schemas } from '@stately/schema';
 
 export const CORE_OPERATION_IDS = {
   createEntity: 'create_entity',
@@ -19,9 +20,9 @@ export const CORE_OPERATION_IDS = {
 
 export type CoreOperationMap = typeof CORE_OPERATION_IDS;
 
-export type CoreHttpBundle<Schema extends CoreSchemas> = HttpBundle<Schema, CoreOperationMap>;
+export type CoreHttpBundle<Schema extends Schemas<any, any>> = HttpBundle<Schema, CoreOperationMap>;
 
-export function buildCoreHttpBundle<Schema extends CoreSchemas>(
+export function buildCoreHttpBundle<Schema extends Schemas<any, any>>(
   client: Client<CorePaths<Schema>>,
   paths: CorePaths<Schema>,
   overrides?: OperationOverrides<Schema, CoreOperationMap>,

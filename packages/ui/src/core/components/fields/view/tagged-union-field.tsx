@@ -1,13 +1,14 @@
-import type { CoreSchemas, CoreTaggedUnionNode } from "@/core";
+import type { CoreTaggedUnionNode } from "@/core";
 import { FieldItem } from "@/core/components/base/field";
 import type { ViewFieldProps } from "@/base/form/field-view";
 import { EnumFieldView } from "./untagged-enum-field";
 import { AnyRecord } from "@stately/schema/helpers";
+import { Schemas } from "@stately/schema";
 
-export type TaggedUnionViewProps<Schema extends CoreSchemas = CoreSchemas> =
+export type TaggedUnionViewProps<Schema extends Schemas = Schemas> =
   ViewFieldProps<Schema, CoreTaggedUnionNode<Schema>>;
 
-export function TaggedUnionView<Schema extends CoreSchemas = CoreSchemas>({
+export function TaggedUnionView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: TaggedUnionViewProps<Schema>) {

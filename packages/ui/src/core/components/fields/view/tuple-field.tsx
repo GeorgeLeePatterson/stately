@@ -1,13 +1,14 @@
-import type { CoreSchemas, CoreTupleNode } from "@/core";
+import type { CoreTupleNode } from "@/core";
 import { useId } from "react";
 import { FieldItem } from "@/core/components/base/field";
 import { FieldView } from "@/base/form/field-view";
 import type { ViewFieldProps } from "@/base/form/field-view";
+import { Schemas } from "@stately/schema";
 
-export type TupleViewProps<Schema extends CoreSchemas = CoreSchemas> =
+export type TupleViewProps<Schema extends Schemas = Schemas> =
   ViewFieldProps<Schema, CoreTupleNode<Schema>, unknown[]>;
 
-export function TupleView<Schema extends CoreSchemas = CoreSchemas>({
+export function TupleView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: TupleViewProps<Schema>) {

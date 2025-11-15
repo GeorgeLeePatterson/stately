@@ -1,4 +1,4 @@
-import type { CoreMapNode, CoreSchemas } from "@/core";
+import type { CoreMapNode } from "@/core";
 import {
   ChevronDown,
   ChevronRight,
@@ -26,6 +26,7 @@ import { FieldView } from "@/base/form/field-view";
 import type { ViewFieldProps } from "@/base/form/field-view";
 import { cn } from "@/base/lib/utils";
 import { AnyRecord } from "@stately/schema/helpers";
+import { Schemas } from "@stately/schema";
 
 export function KeyValue({
   active,
@@ -83,10 +84,10 @@ export function KeyValue({
   );
 }
 
-export type MapViewProps<Schema extends CoreSchemas = CoreSchemas> =
+export type MapViewProps<Schema extends Schemas = Schemas> =
   ViewFieldProps<Schema, CoreMapNode<Schema>, AnyRecord>;
 
-export function MapView<Schema extends CoreSchemas = CoreSchemas>({
+export function MapView<Schema extends Schemas = Schemas>({
   node,
   value,
 }: MapViewProps<Schema>) {

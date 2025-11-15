@@ -4,7 +4,7 @@
  * Parsing logic for extracting entity metadata from OpenAPI specs
  */
 
-import type { CoreStatelyConfig } from './augment.js';
+import type { CoreStatelyConfig } from './generated.js';
 import { StateEntry } from './helpers.js';
 import { coreUtils } from './utils.js';
 
@@ -99,15 +99,15 @@ function generateCoreData<Config extends CoreStatelyConfig = CoreStatelyConfig>(
 
   let entitySchemaCache = {};
   if (generatedNodes) {
-    entitySchemaCache = buildEntitySchemaCache(entityMappings, generatedNodes);
+    entitySchemaCache = buildEntitySchemaCache<Config>(entityMappings, generatedNodes);
   }
 
   return {
-    entityDisplayNames: buildEntityDisplayNames(entityMappings),
+    entityDisplayNames: buildEntityDisplayNames<Config>(entityMappings),
     entitySchemaCache,
-    stateEntryToSchema: buildStateEntryToSchema(entityMappings),
-    stateEntryToUrl: buildStateEntryToUrl(entityMappings),
-    urlToStateEntry: buildUrlToStateEntry(entityMappings),
+    stateEntryToSchema: buildStateEntryToSchema<Config>(entityMappings),
+    stateEntryToUrl: buildStateEntryToUrl<Config>(entityMappings),
+    urlToStateEntry: buildUrlToStateEntry<Config>(entityMappings),
   };
 }
 

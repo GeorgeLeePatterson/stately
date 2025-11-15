@@ -1,12 +1,13 @@
-import type { CoreRecursiveRefNode, CoreSchemas } from "@/core";
+import type { CoreRecursiveRefNode } from "@/core";
 import { useStatelyUi } from "@/context";
 import { FieldView } from "@/base/form/field-view";
 import type { ViewFieldProps } from "@/base/form/field-view";
+import { Schemas } from "@stately/schema";
 
-export type RecursiveRefViewProps<Schema extends CoreSchemas = CoreSchemas> =
+export type RecursiveRefViewProps<Schema extends Schemas = Schemas> =
   ViewFieldProps<Schema, CoreRecursiveRefNode<Schema>>;
 
-export function RecursiveRefView<Schema extends CoreSchemas = CoreSchemas>({
+export function RecursiveRefView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: RecursiveRefViewProps<Schema>) {

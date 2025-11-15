@@ -1,6 +1,6 @@
-import { CoreStatelyConfig } from "./augment";
+import type { CoreStatelyConfig } from "./generated.js";
 
-// Derive StateEntry directly from generated components (not from CoreSchemaTypes)
+// Derive StateEntry directly from generated components (not from CoreTypes)
 export type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> =
   Config['components']['schemas']['StateEntry'] extends string
     ? Config['components']['schemas']['StateEntry']

@@ -1,6 +1,6 @@
 import { FileJson, FormInput, WandSparkles } from "lucide-react";
 import { useState } from "react";
-import type { CoreObjectNode, CoreSchemas } from "@/core";
+import type { CoreObjectNode } from "@/core";
 import { FieldGroup } from "@/core/components/ui/field";
 import {
   Tabs,
@@ -13,6 +13,7 @@ import { EntityWizardView } from "./entity-wizard-view";
 import { AnyRecord } from "@stately/schema/helpers";
 import { JsonView } from "@/base/form/json-view";
 import { JsonEdit } from "@/base/form/json-edit";
+import { Schemas } from "@stately/schema";
 
 export enum EditMode {
   FORM = "Form",
@@ -20,7 +21,7 @@ export enum EditMode {
   WIZARD = "Wizard",
 }
 
-export interface EntityEditViewProps<Schema extends CoreSchemas = CoreSchemas> {
+export interface EntityEditViewProps<Schema extends Schemas = Schemas> {
   node: CoreObjectNode<Schema>;
   value: any; // Current entity data (from parent)
   defaultMode?: EditMode;
@@ -34,7 +35,7 @@ export interface EntityEditViewProps<Schema extends CoreSchemas = CoreSchemas> {
  * EntityEditView - coordinator component that maps entity schema to field components
  * Does not maintain its own state - just passes through to child field components
  */
-export function EntityEditView<Schema extends CoreSchemas = CoreSchemas>({
+export function EntityEditView<Schema extends Schemas = Schemas>({
   node,
   value,
   defaultMode,

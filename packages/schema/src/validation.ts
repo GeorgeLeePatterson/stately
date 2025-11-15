@@ -2,6 +2,7 @@ import { StatelyConfig } from "./generated.js";
 import { PluginNodeUnion } from "./plugin.js";
 import { StatelySchemas } from "./schema.js";
 import type { Stately } from "./stately.js";
+import { UnknownNodeType } from "./nodes.js";
 
 export interface ValidationError {
   path: string;
@@ -52,6 +53,15 @@ export function runValidationPipeline<Schemas extends StatelySchemas<any, any>>(
   state: Stately<Schemas>,
   args: ValidateArgs<Schemas>,
 ): ValidationResult {
+
+  // Handle unknown nodeTypes from codegen - skip validation
+  if (args.schema.nodeType === UnknownNodeType) {
+    if (args.options?.debug) {
+      console.debug(`[Validation] Skipping unknown nodeType: ${args.schema.nodeType}`);
+    }
+    return { valid: true, errors: [] };
+  }
+
   const hooks = Object.values(state.plugins as Record<string, any>)
     .map((plugin) => plugin?.["validate"])
     .filter((hook): hook is ValidateHook<Schemas> => Boolean(hook));

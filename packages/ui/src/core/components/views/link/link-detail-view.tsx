@@ -1,17 +1,18 @@
 import { useStatelyUi } from "@/context";
 import { Skeleton } from "@/core/components/ui/skeleton";
-import type { CoreLinkNode, CoreSchemas } from "@/core";
+import type { CoreLinkNode } from "@/core";
 import { useEntityData } from "@/core/hooks/use-entity-data";
 import type { LinkFor } from "./link-edit-view";
 import { LinkInlineView } from "./link-inline-view";
 import { LinkRefView } from "./link-ref-view";
 import { ViewFieldProps } from "@/base/form/field-view";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
+import { Schemas } from "@stately/schema";
 
-export type LinkViewProps<Schema extends CoreSchemas = CoreSchemas> =
+export type LinkViewProps<Schema extends Schemas = Schemas> =
   ViewFieldProps<Schema, CoreLinkNode<Schema>, LinkFor<Schema>>;
 
-export function LinkView<Schema extends CoreSchemas = CoreSchemas>({
+export function LinkView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: LinkViewProps<Schema>) {

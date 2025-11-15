@@ -1,7 +1,8 @@
 import { useStatelyUi } from "@/context";
-import type { CoreObjectNode, CoreSchemas, CoreStateEntry } from "@/core";
+import type { CoreObjectNode, CoreStateEntry } from "@/core";
+import { Schemas } from "@stately/schema";
 
-export function useEntitySchema<Schema extends CoreSchemas = CoreSchemas>(
+export function useEntitySchema<Schema extends Schemas = Schemas>(
   entityType: CoreStateEntry<Schema>,
   entitySchema?: CoreObjectNode<Schema>,
 ):

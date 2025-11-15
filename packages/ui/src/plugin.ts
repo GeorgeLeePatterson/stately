@@ -66,10 +66,10 @@ export interface PluginRuntime<
  * augment this UI plugin corresponds to. This ensures schema.utils[Name] and
  * runtime.plugins[Name] use the SAME key for perfect alignment.
  *
- * Pattern matches SchemaAugment structure: Name is both a type parameter AND
+ * Pattern matches PluginAugment structure: Name is both a type parameter AND
  * a property. The type parameter is used for type distribution (infer Name),
  * while the property provides structural consistency. Plugin authors must use
- * the SAME constant for both SchemaAugment and UiAugment.
+ * the SAME constant for both PluginAugment and UiAugment.
  */
 
 export type UiAugment<

@@ -110,7 +110,7 @@ async function main() {
       // Mark as parsing and create placeholder
       if (cached) {
         cached.state = "parsing";
-        const placeholder: any = { nodeType: null };
+        const placeholder: any = { nodeType: "unknown" };
         cached.node = placeholder;
 
         const parsed = parseSchema(resolved, schemaName);
@@ -149,7 +149,8 @@ async function main() {
       }
     }
 
-    return null;
+    // No plugin could parse this schema - return unknown node
+    return { nodeType: "unknown", description: schema.description };
   }
 
   // Parse all component schemas

@@ -1,20 +1,19 @@
 import type { ComponentProps } from "react";
-import { useStatelyUi } from "@/context";
 import { Item, ItemContent } from "@/core/components/ui/item";
-import type { CoreSchemas } from "@/core";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
 import { cn } from "@/base/lib/utils";
+import { Schemas } from "@stately/schema";
 
 export type EntityPropertyMode = "edit" | "view";
 
-export interface EntityPropertyProps<Schema extends CoreSchemas = CoreSchemas> {
+export interface EntityPropertyProps<Schema extends Schemas = Schemas> {
   fieldName: string | React.ReactNode;
   node: Schema['plugin']["AnyNode"];
   isRequired?: boolean;
   compact?: boolean;
 }
 
-export function EntityPropertyLabel<Schema extends CoreSchemas = CoreSchemas>({
+export function EntityPropertyLabel<Schema extends Schemas = Schemas>({
   fieldName,
   node,
   isRequired,
@@ -41,7 +40,7 @@ export function EntityPropertyLabel<Schema extends CoreSchemas = CoreSchemas>({
   );
 }
 
-export function EntityPropertyView<Schema extends CoreSchemas = CoreSchemas>({
+export function EntityPropertyView<Schema extends Schemas = Schemas>({
   fieldName,
   node,
   isRequired,

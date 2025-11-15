@@ -5,7 +5,7 @@
  *
  * Run: npx tsc --noEmit tests/test-core-nodes.ts
  */
-import type { CoreStatelyConfig } from "../src/core/augment.js";
+import type { CoreStatelyConfig } from "../src/core/generated.js";
 import {
   CoreNodeType,
   type ObjectNode,
@@ -19,6 +19,7 @@ import type {
   PluginNodes,
   Schemas,
 } from "../src/index.js";
+import { isNodeOfType } from "../src/schema.js";
 
 /**
  * Minimal component extension to feed into CoreStatelyConfig.
@@ -111,9 +112,6 @@ type UserSchemas = Schemas<UserConfig, []>;
 // These should all work (variance test)
 type UserPluginNodes = PluginNodes<UserSchemas>; // ✅ Should accept UserSchemas
 type UserPluginUnion = PluginNodeUnion<UserSchemas>; // ✅ Should accept UserSchemas
-
-// Type narrowing test: Can a plugin author use the type guard?
-import { isNodeOfType } from "../src/index.js";
 
 function processNodeWithTypeGuard(schema: SamplePluginAnyNode): string {
   // Test isNodeOfType narrows correctly

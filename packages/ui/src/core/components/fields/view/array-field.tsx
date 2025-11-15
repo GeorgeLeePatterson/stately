@@ -1,14 +1,15 @@
-import type { CoreArrayNode, CoreSchemas } from "@/core";
+import type { CoreArrayNode } from "@/core";
 import { useId } from "react";
 import { ArrayIndex } from "@/core/components/base/array";
 import { Item, ItemContent, ItemGroup } from "@/core/components/ui/item";
 import { FieldView } from "@/base/form/field-view";
 import type { ViewFieldProps } from "@/base/form/field-view";
+import { Schemas } from "@stately/schema";
 
-export type ArrayViewProps<Schema extends CoreSchemas = CoreSchemas> =
+export type ArrayViewProps<Schema extends Schemas = Schemas> =
   ViewFieldProps<Schema, CoreArrayNode<Schema>, unknown[]>;
 
-export function ArrayView<Schema extends CoreSchemas = CoreSchemas>({
+export function ArrayView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: ArrayViewProps<Schema>) {

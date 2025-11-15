@@ -1,21 +1,23 @@
 // biome-ignore lint/correctness/noUnusedVariables: type-level test file
 /**
  * Tests plugin augmentation patterns - verifies that plugin authors can:
- * 1. Create their own SchemaAugment with custom nodes
+ * 1. Create their own PluginAugment with custom nodes
  * 2. Compose multiple augments together
  * 3. Access nodes from different plugins
  * 4. Extend core with additional node types
  *
  * Run: npx tsc --noEmit tests/test-plugin-augmentation.ts
  */
-import type { CoreStatelyConfig } from "../src/core/augment.js";
-import type { SchemaAugment } from "../src/plugin.js";
+import type { CoreStatelyConfig } from "../src/core/generated.js";
+import type { DefineNodeMap, PluginAugment } from "../src/plugin.js";
 import type {
+  DefineGeneratedNodes,
   PluginNodes,
   PluginNodeTypes,
   PluginNodeUnion,
   Schemas,
 } from "../src/index.js";
+import { isNodeOfType, StatelySchemas } from "../src/schema.js";
 
 /**
  * =============================================================================
@@ -41,7 +43,7 @@ type FilesNodeMap = {
   directory: DirectoryNode;
 };
 
-type FilesAugment = SchemaAugment<"files", FilesNodeMap>;
+type FilesAugment = PluginAugment<"files", FilesNodeMap>;
 
 /**
  * =============================================================================
@@ -67,7 +69,7 @@ type WorkflowNodeMap = {
   trigger: TriggerNode;
 };
 
-type WorkflowAugment = SchemaAugment<"workflow", WorkflowNodeMap>;
+type WorkflowAugment = PluginAugment<"workflow", WorkflowNodeMap>;
 
 /**
  * =============================================================================
@@ -75,17 +77,62 @@ type WorkflowAugment = SchemaAugment<"workflow", WorkflowNodeMap>;
  * =============================================================================
  */
 
+type TestNode = { nodeType: "test" };
+const TestNode: TestNode = { nodeType: 'test' };
+type TestNodeMap = DefineNodeMap<{ test: TestNode }>;
+
+type X = TestNodeMap['unknown'];
+type XXX = X extends { nodeType: 'unknown' }  ? X : never;
+
 type TestConfig = CoreStatelyConfig<
   CoreStatelyConfig["components"],
   CoreStatelyConfig["paths"],
-  { TestNode: { nodeType: "test" } }
+  DefineGeneratedNodes<{ TestNode: { nodeType: 'test' }}>
 >;
+
+type Y = TestConfig['nodes']['TestNode'];
+const YYY: TestNodeMap['test'] = { nodeType: 'test' };
+const YYYY: TestNodeMap['unknown'] = { nodeType: 'unknown' };
 
 // User composes core + files + workflow plugins
 type MultiPluginSchemas = Schemas<
   TestConfig,
   readonly [FilesAugment, WorkflowAugment]
 >;
+
+type MultiPluginSchemasBase = StatelySchemas<
+  TestConfig,
+  readonly []
+>;
+
+type Z = MultiPluginSchemas['generated']['AnyNode'];
+type ZZ = MultiPluginSchemas['generated']['Nodes'];
+type ZZZZ = MultiPluginSchemas['generated']['Nodes']['TestNode'];
+type ZZZZZ = MultiPluginSchemas['generated']['NodeNames'];
+type ZZZZZZ = MultiPluginSchemas['generated']['NodeTypes'];
+
+type Z_ = MultiPluginSchemas['plugin']['AnyNode'];
+type ZZ_ = MultiPluginSchemas['plugin']['Nodes'];
+type ZZZ_ = MultiPluginSchemas['plugin']['Nodes']['unknown'];
+type ZZZZ_ = MultiPluginSchemas['plugin']['Nodes']['trigger'];
+type ZZZZZ_ = MultiPluginSchemas['plugin']['NodeNames'];
+type ZZZZZZ_ = MultiPluginSchemas['plugin']['NodeTypes'];
+
+const Z_: Z_ = { nodeType: 'unknown' };
+const ZZZZZ__: ZZZZZ_ = 'trigger'; // NodeName
+const ZZZZZZ_: ZZZZZZ_ = 'unknown';
+const ZZZZZZ__: ZZZZZZ_ = 'trigger';
+
+type z = MultiPluginSchemasBase['generated']['AnyNode'];
+type zzz = MultiPluginSchemasBase['generated']['Nodes']['TestNode'];
+type zzzz = MultiPluginSchemasBase['generated']['NodeNames'];
+type zzzzz = MultiPluginSchemasBase['generated']['NodeTypes'];
+
+type z_ = MultiPluginSchemasBase['plugin']['AnyNode'];
+type zz_ = MultiPluginSchemasBase['plugin']['Nodes']['unknown'];
+type zzz_ = MultiPluginSchemasBase['plugin']['Nodes'];
+type zzzz_ = MultiPluginSchemasBase['plugin']['NodeNames'];
+type zzzzz_ = MultiPluginSchemasBase['plugin']['NodeTypes'];
 
 // Extract plugin nodes - should include core + files + workflow
 type AllPluginNodes = PluginNodes<MultiPluginSchemas>;
@@ -109,12 +156,14 @@ type FilesDirectoryNode = AllPluginNodes["directory"];
 // Test: Can access workflow plugin nodes
 type WorkflowActionNode = AllPluginNodes["action"];
 type WorkflowTriggerNode = AllPluginNodes["trigger"];
+type UnknownBaseNode = AllPluginNodes['unknown'];
 
 // Test: Node type union includes all plugins
 type NodeTypeIncludes = {
   hasCore: "object" extends AllNodeTypes ? true : false;
   hasFiles: "file" extends AllNodeTypes ? true : false;
   hasWorkflow: "action" extends AllNodeTypes ? true : false;
+  hasUnknown: "unknown" extends AllNodeTypes ? true : false;
 };
 
 type AssertTrue<T extends true> = T;
@@ -128,12 +177,18 @@ type FilesDirectoryNodeShape = AssertTrue<
 type WorkflowTriggerNodeShape = AssertTrue<
   WorkflowTriggerNode extends { nodeType: "trigger" } ? true : false
 >;
+type UnknownNodeShape = AssertTrue<
+  UnknownBaseNode extends { nodeType: "unknown" } ? true : false
+>;
+
 
 type AllPluginsPresent = AssertTrue<
   NodeTypeIncludes["hasCore"] extends true
     ? NodeTypeIncludes["hasFiles"] extends true
       ? NodeTypeIncludes["hasWorkflow"] extends true
-        ? true
+        ? NodeTypeIncludes["hasUnknown"] extends true
+          ? true
+          : false
         : false
       : false
     : false
@@ -145,7 +200,6 @@ type AllPluginsPresent = AssertTrue<
  * =============================================================================
  */
 
-import { isNodeOfType } from "../src/index.js";
 
 function processMultiPluginNode(schema: AllNodeUnion): string {
   // Test: Can narrow to core node
@@ -176,7 +230,7 @@ type FilesData = { fileRegistry: Map<string, string> };
 type FilesTypes = { FileMetadata: { size: number; created: Date } };
 type FilesUtils = { resolveFilePath: (path: string) => string };
 
-type FilesAugmentWithExtras = SchemaAugment<
+type FilesAugmentWithExtras = PluginAugment<
   "files",
   FilesNodeMap,
   FilesTypes,
@@ -224,4 +278,5 @@ export type AugmentationAssertions = {
   corePrimitiveShape: CorePrimitiveNodeIsPrimitive;
   filesDirectoryShape: FilesDirectoryNodeShape;
   workflowTriggerShape: WorkflowTriggerNodeShape;
+  unknownShape: UnknownNodeShape;
 };

@@ -9,8 +9,7 @@
  *
  * Run: npx tsc --noEmit tests/test-plugin-utils-access.ts
  */
-import type { OpenAPIV3_1 } from 'openapi-types';
-import type { CoreStatelyConfig } from '../src/core/augment.js';
+import type { CoreStatelyConfig } from '../src/core/generated.js';
 import type { CoreNodeUnion } from '../src/core/nodes.js';
 import type { Schemas } from '../src/index.js';
 import { stately } from '../src/index.js';
@@ -51,7 +50,10 @@ const mockOpenAPI = {
 };
 
 const mockNodes: TestConfig['nodes'] = {
-  Entity: { discriminator: 'type', nodeType: 'taggedUnion', variants: [] },
+  Entity: {
+    discriminator: 'type',
+    nodeType: 'taggedUnion',
+    variants: [{ tag: 'test', schema: { nodeType: 'object', properties: {}, required: [] } }] },
 };
 
 const runtime = stately<TestSchemas>(mockOpenAPI, mockNodes);
@@ -71,6 +73,7 @@ const corePlugin = runtime.plugins.core;
 const isPrimitive = runtime.plugins.core.isPrimitive;
 
 const entityMapping = runtime.data;
+const x = entityMapping['entityDisplayNames'];
 
 /**
  * =============================================================================

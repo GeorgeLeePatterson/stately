@@ -10,7 +10,7 @@ export const CORE_PLUGIN_NAME = "core" as const;
 ```
 
 This constant is the **single source of truth** for the plugin name. It's used in:
-1. Type definitions (SchemaAugment, UiAugment)
+1. Type definitions (PluginAugment, UiAugment)
 2. Runtime population (plugin factories)
 3. Type distribution (plugin map keys)
 
@@ -20,10 +20,10 @@ This constant is the **single source of truth** for the plugin name. It's used i
 import { CORE_PLUGIN_NAME } from "@stately/ui/core";
 
 // Type definition
-export type CoreSchemaAugment<Config> = SchemaAugment<
+export type CorePlugin<Config> = PluginAugment<
   typeof CORE_PLUGIN_NAME,  // ← "core"
   CoreNodeMap<Config>,
-  CoreSchemaTypes<Config>,
+  CoreTypes<Config>,
   CoreData<Config>,
   CoreUtils<Config>
 >;
@@ -69,9 +69,9 @@ export function createCoreUiPlugin<S>(): StatelyUiPluginFactory<...> {
 
 ## Type Distribution Mechanism
 
-### SchemaAugment
+### PluginAugment
 ```typescript
-export type SchemaAugment<
+export type PluginAugment<
   Name extends string,
   Nodes = NodeMap,
   Types = EmptyRecord,
@@ -87,7 +87,7 @@ export type SchemaAugment<
 
 // Distribution uses type parameter, not property
 type AugmentPluginUtils<Augments> = (
-  Augments extends readonly SchemaAugment<
+  Augments extends readonly PluginAugment<
     infer Name,  // ← Extract from type parameter
     any, any, any,
     infer Utils
@@ -105,7 +105,7 @@ export type UiAugment<
   Ops extends DefineOperationMap = DefineOperationMap,
   Utils extends PluginFunctionMap = PluginFunctionMap,
 > = {
-  name: Name;  // ← Property for structural consistency (matches SchemaAugment)
+  name: Name;  // ← Property for structural consistency (matches PluginAugment)
   api?: HttpBundle<Schema, Ops>;
   utils?: PluginUtils<Utils>;
 };
@@ -131,9 +131,9 @@ For a plugin named "foo", plugin authors must:
    export const FOO_PLUGIN_NAME = "foo" as const;
    ```
 
-2. **Use in SchemaAugment**:
+2. **Use in PluginAugment**:
    ```typescript
-   type FooSchemaAugment = SchemaAugment<typeof FOO_PLUGIN_NAME, ...>;
+   type FooSchemaAugment = PluginAugment<typeof FOO_PLUGIN_NAME, ...>;
    ```
 
 3. **Use in UiAugment**:
@@ -158,7 +158,7 @@ For a plugin named "foo", plugin authors must:
 
 ## Why the `name` Property Exists
 
-Both `SchemaAugment` and `UiAugment` have a `name: Name` property, even though:
+Both `PluginAugment` and `UiAugment` have a `name: Name` property, even though:
 - Type distribution uses `infer Name` from the type parameter
 - Runtime population uses string literals via the constant
 

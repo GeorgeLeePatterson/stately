@@ -7,25 +7,25 @@ import { FieldGroup, FieldSet } from "@/core/components/ui/field";
 import type {
   CoreEntity,
   CoreLinkNode,
-  CoreSchemas,
   CoreStateEntry,
 } from "@/core";
 import { useEditEntityData } from "@/core/hooks/use-edit-entity-data";
 import { LinkInlineEdit } from "./link-inline-edit-view";
 import { LinkRefEdit } from "./link-ref-edit-view";
 import { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
 import { SINGLETON_ID } from "@stately/schema/core/utils";
+import { Schemas } from "@stately/schema";
 
 // Type helpers for Link editing
-export type LinkFor<Schema extends CoreSchemas = CoreSchemas> =
+export type LinkFor<Schema extends Schemas = Schemas> =
   | { entity_type: CoreStateEntry<Schema>; ref: string }
   | {
       entity_type: CoreStateEntry<Schema>;
       inline: CoreEntity<Schema>["data"];
     };
 
-export type LinkEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type LinkEditProps<Schema extends Schemas = Schemas> =
   EditFieldProps<
     Schema,
     CoreLinkNode<Schema>,
@@ -36,7 +36,7 @@ export type LinkEditProps<Schema extends CoreSchemas = CoreSchemas> =
  * Component for editing Link<T> fields
  * Orchestrates mode toggling and delegates save/cancel to child components
  */
-export function LinkEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function LinkEdit<Schema extends Schemas = Schemas>({
   node,
   value,
   onChange,

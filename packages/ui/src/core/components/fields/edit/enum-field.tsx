@@ -1,4 +1,4 @@
-import type { CoreEnumNode, CoreSchemas } from "@/core";
+import type { CoreEnumNode } from "@/core";
 import { useStatelyUi } from "@/context";
 import { Field } from "@/core/components/ui/field";
 import {
@@ -9,16 +9,17 @@ import {
   SelectValue,
 } from "@/core/components/ui/select";
 import type { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
+import { Schemas } from "@stately/schema";
 
-export type EnumEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type EnumEditProps<Schema extends Schemas = Schemas> =
   EditFieldProps<Schema, CoreEnumNode, string>;
 
 /**
  * Enum field component - handles string enums with fixed set of values
  * Calls onChange immediately (primitive-like behavior)
  */
-export function EnumEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function EnumEdit<Schema extends Schemas = Schemas>({
   formId,
   node,
   value,

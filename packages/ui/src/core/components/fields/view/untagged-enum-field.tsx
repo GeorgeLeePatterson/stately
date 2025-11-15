@@ -1,13 +1,14 @@
-import type { CoreNodeUnion, CoreSchemas, CoreUntaggedEnumNode } from "@/core";
+import type { CoreNodeUnion, CoreUntaggedEnumNode } from "@/core";
 import { FieldItem } from "@/core/components/base/field";
 import { SimpleLabel } from "@/core/components/base/simple-label";
 import { FieldView } from "@/base/form/field-view";
 import type { ViewFieldProps } from "@/base/form/field-view";
+import { Schemas } from "@stately/schema";
 
-export type UntaggedEnumViewProps<Schema extends CoreSchemas = CoreSchemas> =
+export type UntaggedEnumViewProps<Schema extends Schemas = Schemas> =
   ViewFieldProps<Schema, CoreUntaggedEnumNode<Schema>>;
 
-export function UntaggedEnumView<Schema extends CoreSchemas = CoreSchemas>({
+export function UntaggedEnumView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: UntaggedEnumViewProps<Schema>) {
@@ -40,7 +41,7 @@ export function UntaggedEnumView<Schema extends CoreSchemas = CoreSchemas>({
   );
 }
 
-export function EnumFieldView<Schema extends CoreSchemas = CoreSchemas>({
+export function EnumFieldView<Schema extends Schemas = Schemas>({
   tag,
   node,
   value,

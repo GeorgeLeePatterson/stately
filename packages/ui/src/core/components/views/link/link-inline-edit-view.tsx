@@ -3,15 +3,15 @@ import { FieldLegend } from "@/core/components/ui/field";
 import type {
   CoreEntity,
   CoreObjectNode,
-  CoreSchemas,
   CoreStateEntry,
 } from "@/core";
 import { EditMode, EntityEditView } from "../entity/entity-edit-view";
 import type { LinkFor } from "./link-edit-view";
 import { AnyRecord } from "@stately/schema/helpers";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
+import { Schemas } from "@stately/schema";
 
-export interface LinkInlineEditProps<Schema extends CoreSchemas = CoreSchemas> {
+export interface LinkInlineEditProps<Schema extends Schemas = Schemas> {
   /** The entity type being configured inline */
   targetType: CoreStateEntry<Schema>;
   /** Schema for the inline entity */
@@ -35,7 +35,7 @@ export interface LinkInlineEditProps<Schema extends CoreSchemas = CoreSchemas> {
  * - Handle save/cancel with proper validation
  * - Delegate to EntityEditView for actual field rendering
  */
-export function LinkInlineEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function LinkInlineEdit<Schema extends Schemas = Schemas>({
   targetType,
   node,
   value,

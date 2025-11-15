@@ -117,7 +117,9 @@ export type DefinePaths<
  * }>;
  * ```
  */
-export type DefineGeneratedNodes<T extends Record<string, any> = Record<string, BaseNode>> = T extends Record<string, BaseNode> ? T : never;
+export type DefineGeneratedNodes<
+  T extends Record<string, any> = Record<string, BaseNode>
+> = T extends Record<string, BaseNode> ? T : never;
 
 /**
  * Helper type to ensure OpenAPI spec is typed properly.

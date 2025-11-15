@@ -3,13 +3,14 @@ import { useStatelyUi } from "@/context";
 import { Field, FieldGroup, FieldSet } from "@/core/components/ui/field";
 import { Separator } from "@/core/components/ui/separator";
 import { Skeleton } from "@/core/components/ui/skeleton";
-import type { CoreEntity, CoreObjectNode, CoreSchemas } from "@/core";
+import type { CoreEntity, CoreObjectNode } from "@/core";
 import { EntityPropertyEdit } from "./entity-property-edit";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
 import { AnyRecord } from "@stately/schema/helpers";
 import { FieldEdit } from "@/base/form/field-edit";
+import { Schemas } from "@stately/schema";
 
-export interface EntityFormEditProps<Schema extends CoreSchemas = CoreSchemas> {
+export interface EntityFormEditProps<Schema extends Schemas = Schemas> {
   node: CoreObjectNode<Schema>;
   value?: CoreEntity<Schema>["data"];
   onChange: (value: CoreEntity<Schema>["data"]) => void;
@@ -17,7 +18,7 @@ export interface EntityFormEditProps<Schema extends CoreSchemas = CoreSchemas> {
   isLoading?: boolean;
 }
 
-export function EntityFormEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function EntityFormEdit<Schema extends Schemas = Schemas>({
   node,
   value,
   onChange,

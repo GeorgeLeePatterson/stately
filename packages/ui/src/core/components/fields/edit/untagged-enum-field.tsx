@@ -1,5 +1,4 @@
-import type { CoreSchemas, CoreUntaggedEnumNode } from "@/core";
-import { useStatelyUi } from "@/context";
+import type { CoreUntaggedEnumNode } from "@/core";
 import { DescriptionLabel } from "@/core/components/base/description";
 import { FieldSet } from "@/core/components/ui/field";
 import {
@@ -11,9 +10,10 @@ import {
 } from "@/core/components/ui/select";
 import { FieldEdit } from "@/base/form/field-edit";
 import type { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
+import { Schemas } from "@stately/schema";
 
-export type UntaggedEnumEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type UntaggedEnumEditProps<Schema extends Schemas = Schemas> =
   EditFieldProps<Schema, CoreUntaggedEnumNode<Schema>, any>;
 
 /**
@@ -22,7 +22,7 @@ export type UntaggedEnumEditProps<Schema extends CoreSchemas = CoreSchemas> =
  * The tag is inferred from the single property key in the object
  * Uses explicit save pattern with dirty tracking
  */
-export function UntaggedEnumEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
   formId,
   label,
   node,

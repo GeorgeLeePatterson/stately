@@ -27,7 +27,7 @@ import {
 import { Item, ItemContent, ItemGroup } from "@/core/components/ui/item";
 import { Separator } from "@/core/components/ui/separator";
 import { useViewMore } from "@/base/hooks/use-view-more";
-import type { CoreMapNode, CoreNodeUnion, CoreSchemas } from "@/core";
+import type { CoreMapNode, CoreNodeUnion } from "@/core";
 import { GlowingSave } from "@/base/components/glowing-save";
 import { FieldEdit } from "@/base/form/field-edit";
 import { FieldView } from "@/base/form/field-view";
@@ -35,6 +35,7 @@ import type { EditFieldProps } from "@/base/form/field-edit";
 import { KeyValue } from "../view/map-field";
 import { AnyRecord } from "@stately/schema/helpers";
 import { cn } from "@/base/lib/utils";
+import { Schemas } from "@stately/schema";
 
 const generateSaveLabels = (
   label?: string,
@@ -71,14 +72,14 @@ const generateSaveLabels = (
   };
 };
 
-export type MapEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type MapEditProps<Schema extends Schemas = Schemas> =
   EditFieldProps<Schema, CoreMapNode<Schema>, AnyRecord>;
 
 /**
  * Map/Dictionary field component - handles HashMap<String, T> in Rust
  * Uses explicit save pattern with dirty tracking
  */
-export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function MapEdit<Schema extends Schemas = Schemas>({
   formId: parentFormId,
   label,
   node,
@@ -315,7 +316,7 @@ export function MapEdit<Schema extends CoreSchemas = CoreSchemas>({
   );
 }
 
-function ValueEdit<Schema extends CoreSchemas = CoreSchemas>({
+function ValueEdit<Schema extends Schemas = Schemas>({
   formId,
   node,
   label,

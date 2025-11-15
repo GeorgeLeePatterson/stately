@@ -19,14 +19,14 @@ import {
 import { ViewLinkControl } from "@/core/context/link-explore-context";
 import type {
   CoreObjectNode,
-  CoreSchemas,
   CoreStateEntry,
   CoreSummary,
 } from "@/core";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
+import { Schemas } from "@stately/schema";
 
 export interface EntitySelectEditProps<
-  Schema extends CoreSchemas = CoreSchemas,
+  Schema extends Schemas = Schemas,
 > {
   /** Whether the form is readonly */
   isReadOnly?: boolean;
@@ -50,7 +50,7 @@ export interface EntitySelectEditProps<
   onRefresh: () => void;
 }
 
-export function EntitySelectEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function EntitySelectEdit<Schema extends Schemas = Schemas>({
   targetType,
   available,
   node,

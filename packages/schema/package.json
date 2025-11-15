@@ -39,6 +39,10 @@
       "types": "./dist/core/augment.d.ts",
       "import": "./dist/core/augment.js"
     },
+    "./core/generated": {
+      "types": "./dist/core/generated.d.ts",
+      "import": "./dist/core/generated.js"
+    },
     "./core/helpers": {
       "types": "./dist/core/helpers.d.ts",
       "import": "./dist/core/helpers.js"

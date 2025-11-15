@@ -1,10 +1,11 @@
-import type { CoreNullableNode, CoreSchemas } from "@/core";
+import type { CoreNullableNode } from "@/core";
 import { useId, useState } from "react";
 import { DescriptionLabel } from "@/core/components/base/description";
 import { Checkbox } from "@/core/components/ui/checkbox";
 import { Field, FieldContent, FieldLabel } from "@/core/components/ui/field";
 import { FieldEdit } from "@/base/form/field-edit";
 import type { EditFieldProps } from "@/base/form/field-edit";
+import { Schemas } from "@stately/schema";
 
 function isValueNulled(value?: any) {
   return (
@@ -14,7 +15,7 @@ function isValueNulled(value?: any) {
   );
 }
 
-export type NullableEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type NullableEditProps<Schema extends Schemas = Schemas> =
   EditFieldProps<Schema, CoreNullableNode<Schema>>;
 
 /**
@@ -22,7 +23,7 @@ export type NullableEditProps<Schema extends CoreSchemas = CoreSchemas> =
  * Checkbox controls visibility; toggling OFF clears the value
  * Toggling ON initializes with default if currently null
  */
-export function NullableEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function NullableEdit<Schema extends Schemas = Schemas>({
   formId,
   label,
   node,

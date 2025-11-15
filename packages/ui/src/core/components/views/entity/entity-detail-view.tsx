@@ -1,21 +1,20 @@
 import { Fragment, useMemo, useState } from "react";
-import { useStatelyUi } from "@/context";
 import { SimpleLabel } from "@/core/components/base/simple-label";
 import { Separator } from "@/core/components/ui/separator";
 import { EntityPropertyView } from "@/core/components/views/entity/entity-property-view";
 import type {
   CoreEntity,
   CoreObjectNode,
-  CoreSchemas,
   CoreStateEntry,
 } from "@/core";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
 import { SINGLETON_ID } from "@stately/schema/core/utils";
 import { FieldView } from "@/base/form/field-view";
 import { JsonView } from "@/base/form/json-view";
+import { Schemas } from "@stately/schema";
 
 export interface EntityDetailViewProps<
-  Schema extends CoreSchemas = CoreSchemas,
+  Schema extends Schemas = Schemas,
 > {
   entityType: CoreStateEntry<Schema>;
   node: CoreObjectNode<Schema>;
@@ -24,7 +23,7 @@ export interface EntityDetailViewProps<
   disableJsonView?: boolean;
 }
 
-export function EntityDetailView<Schema extends CoreSchemas = CoreSchemas>({
+export function EntityDetailView<Schema extends Schemas = Schemas>({
   entityType,
   node,
   entity,

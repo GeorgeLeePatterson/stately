@@ -4,14 +4,15 @@ import { useCallback, useEffect, useId, useState } from 'react';
 import { GlowingSave } from '@/base/components/glowing-save';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
-import type { CoreArrayNode, CoreSchemas } from '@/core';
+import type { CoreArrayNode } from '@/core';
 import { ArrayIndex } from '@/core/components/base/array';
 import { Button } from '@/core/components/ui/button';
 import { Field, FieldSet } from '@/core/components/ui/field';
-import { useCoreStatelyUi } from '@/core';
+import { useCoreStatelyUi } from '@/context';
 import { cn } from '@/base/lib/utils';
+import { Schemas } from '@stately/schema';
 
-export type ArrayEditProps<Schema extends CoreSchemas = CoreSchemas> = EditFieldProps<
+export type ArrayEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
   CoreArrayNode<Schema>,
   unknown[]
@@ -21,7 +22,7 @@ export type ArrayEditProps<Schema extends CoreSchemas = CoreSchemas> = EditField
  * Array field component - handles Vec<T> in Rust
  * Uses explicit save pattern with dirty tracking
  */
-export function ArrayEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function ArrayEdit<Schema extends Schemas = Schemas>({
   label,
   node,
   value,

@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import { useStatelyUi } from "@/context";
 import { useEntityData } from "@/core/hooks/use-entity-data";
 import { useEntitySchema } from "@/core/hooks/use-entity-schema";
-import type { CoreObjectNode, CoreSchemas, CoreStateEntry } from "@/core";
+import type { CoreObjectNode, CoreStateEntry } from "@/core";
 import { Button } from "@/base/ui/button";
 import {
   Dialog,
@@ -16,15 +16,16 @@ import { ScrollArea } from "@/base/ui/scroll-area";
 import { Separator } from "@/base/ui/separator";
 import { Skeleton } from "@/base/ui/skeleton";
 import { EntityDetailView } from "../views/entity/entity-detail-view";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
+import { Schemas } from "@stately/schema";
 
-export interface LinkEntityProps<Schema extends CoreSchemas = CoreSchemas> {
+export interface LinkEntityProps<Schema extends Schemas = Schemas> {
   entityName: string;
   entityType: CoreStateEntry<Schema>;
   schema?: CoreObjectNode<Schema>;
 }
 
-export interface ViewLinkDialogProps<Schema extends CoreSchemas = CoreSchemas> {
+export interface ViewLinkDialogProps<Schema extends Schemas = Schemas> {
   open?: boolean;
   onOpenChange: (open: boolean) => void;
   breadcrumbs?: LinkEntityProps<Schema>[];
@@ -35,7 +36,7 @@ export interface ViewLinkDialogProps<Schema extends CoreSchemas = CoreSchemas> {
  * Dialog to view a Link<T> reference (read-only)
  * Fetches the entity by name and type, then displays it inline
  */
-export function ViewLinkDialog<Schema extends CoreSchemas = CoreSchemas>({
+export function ViewLinkDialog<Schema extends Schemas = Schemas>({
   entityType,
   entityName,
   schema,
@@ -45,8 +46,11 @@ export function ViewLinkDialog<Schema extends CoreSchemas = CoreSchemas>({
   onNavigateToBreadcrumb,
 }: ViewLinkDialogProps<Schema> & LinkEntityProps<Schema>) {
   const { schema: statelySchema } = useCoreStatelyUi();
-  const entityDisplayName =
-    statelySchema.data.entityDisplayNames?.[entityType] ?? String(entityType);
+  const entityDisplayNames =
+    statelySchema.data.entityDisplayNames as
+      | Record<CoreStateEntry<Schema>, string>
+      | undefined;
+  const entityDisplayName = entityDisplayNames?.[entityType] ?? String(entityType);
   const entitySchema = useEntitySchema(entityType, schema);
 
   const {

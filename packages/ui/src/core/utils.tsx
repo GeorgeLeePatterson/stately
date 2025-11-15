@@ -1,12 +1,12 @@
-import type { CoreStatelyConfig } from '@stately/schema/core/augment';
+import type { CoreStatelyConfig } from '@stately/schema/core/generated';
 import { CoreNodeType, type CoreNodeUnion } from '@stately/schema/core/nodes';
 import { Braces, Brackets, Cog, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { getComponentByPath } from '@/registry';
 import type { ComponentRegistry } from '@/runtime';
-import { CoreSchemas } from './plugin';
+import { Schemas } from '@stately/schema';
 
-export interface CoreUtils<Schema extends CoreSchemas = CoreSchemas> {
+export interface CoreUtils<Schema extends Schemas = Schemas> {
   generateFieldLabel(field: string): string;
   getDefaultValue(node: Schema['plugin']['AnyNode']): unknown;
   sortEntityProperties(

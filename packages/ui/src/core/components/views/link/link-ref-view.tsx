@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import type { CoreObjectNode, CoreSchemas, CoreStateEntry } from "@/core";
+import type { CoreObjectNode, CoreStateEntry } from "@/core";
 import { Button } from "@/core/components/ui/button";
 import {
   Item,
@@ -10,8 +10,9 @@ import {
 } from "@/core/components/ui/item";
 import { ViewLinkControl } from "@/core/context/link-explore-context";
 import { cn } from "@/base/lib/utils";
+import { Schemas } from "@stately/schema";
 
-export interface LinkRefViewProps<Schema extends CoreSchemas = CoreSchemas> {
+export interface LinkRefViewProps<Schema extends Schemas = Schemas> {
   label?: React.ReactNode;
   name?: string;
   urlType: string;
@@ -20,7 +21,7 @@ export interface LinkRefViewProps<Schema extends CoreSchemas = CoreSchemas> {
   isRequired?: boolean;
 }
 
-export function LinkRefView<Schema extends CoreSchemas = CoreSchemas>({
+export function LinkRefView<Schema extends Schemas = Schemas>({
   label,
   name,
   urlType,

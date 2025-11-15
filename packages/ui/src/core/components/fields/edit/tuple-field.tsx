@@ -1,18 +1,19 @@
-import type { CoreSchemas, CoreTupleNode } from "@/core";
+import type { CoreTupleNode } from "@/core";
 import { useCallback, useState } from "react";
 import { FieldSet } from "@/core/components/ui/field";
 import { GlowingSave } from "@/base/components/glowing-save";
 import { FieldEdit } from "@/base/form/field-edit";
 import type { EditFieldProps } from "@/base/form/field-edit";
+import { Schemas } from "@stately/schema";
 
-export type TupleEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type TupleEditProps<Schema extends Schemas = Schemas> =
   EditFieldProps<Schema, CoreTupleNode<Schema>, unknown[]>;
 
 /**
  * Tuple field component - handles fixed-length heterogeneous arrays
  * Uses explicit save pattern with dirty tracking
  */
-export function TupleEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function TupleEdit<Schema extends Schemas = Schemas>({
   formId,
   label,
   description,

@@ -1,10 +1,22 @@
 import { LiteralKeys } from "./helpers";
 
+export const UnknownNodeType = "unknown";
+export type TUnknownNodeType = typeof UnknownNodeType;
+
 /**
  * Base node interface
+ *
+ * The nodeType can be any string. Codegen emits "unknown" for schemas it cannot parse,
+ * which allows graceful degradation - the UI will show "Unknown node type" for these.
  */
 export interface BaseNode {
   nodeType: string;
+  description?: string;
+  [key: string]: unknown;
+}
+
+export interface UnknownNode extends BaseNode {
+  nodeType: TUnknownNodeType;
   description?: string;
 }
 
@@ -12,7 +24,7 @@ export interface BaseNode {
 export type NodeMap = Record<string, BaseNode>;
 
 type NodeValues<N> = [LiteralKeys<N>] extends [never]
-  ? BaseNode
+  ? BaseNode | UnknownNode
   : N[LiteralKeys<N>];
 type NodeTypeUnion<N> =
   NodeValues<N> extends { nodeType: infer T } ? Extract<T, string> : string;
@@ -21,10 +33,10 @@ type NodeTypeUnion<N> =
  * Derived view of nodes
  */
 export type NodeInformation<Nodes> = {
-  Nodes: Nodes;
+  Nodes: Nodes & { [UnknownNodeType]: UnknownNode };
   AnyNode: NodeValues<Nodes>;
   NodeNames: LiteralKeys<Nodes>;
-  NodeTypes: NodeTypeUnion<Nodes>;
+  NodeTypes: NodeTypeUnion<Nodes> | TUnknownNodeType;
 };
 
 type NodeProp<

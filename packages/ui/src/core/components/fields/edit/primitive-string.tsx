@@ -1,4 +1,4 @@
-import type { CorePrimitiveNode, CoreSchemas } from "@/core";
+import type { CorePrimitiveNode } from "@/core";
 import { FileText, Link as LinkIcon, Type } from "lucide-react";
 import { useState } from "react";
 import { useStatelyUi } from "@/context";
@@ -18,6 +18,7 @@ import {
 } from "@/core/components/ui/select";
 import type { EditFieldProps } from "@/base/form/field-edit";
 import { Editor } from "@/base/components/editor";
+import { Schemas } from "@stately/schema";
 
 /// Core string input modes available by default
 const CORE_STRING_MODES = [
@@ -31,7 +32,7 @@ const CORE_STRING_MODES = [
   },
 ];
 
-export type PrimitiveStringEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type PrimitiveStringEditProps<Schema extends Schemas = Schemas> =
   EditFieldProps<
     Schema,
     CorePrimitiveNode,
@@ -73,7 +74,7 @@ export type PrimitiveStringEditProps<Schema extends CoreSchemas = CoreSchemas> =
  * }));
  * ```
  */
-export function PrimitiveStringEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function PrimitiveStringEdit<Schema extends Schemas = Schemas>({
   formId,
   node,
   value,

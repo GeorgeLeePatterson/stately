@@ -1,14 +1,14 @@
 import { useCallback } from "react";
 import type {
   CoreObjectNode,
-  CoreSchemas,
   CoreStateEntry,
   CoreSummary,
 } from "@/core";
 import { EntitySelectEdit } from "../entity/entity-select-edit";
 import type { LinkFor } from "./link-edit-view";
+import { Schemas } from "@stately/schema";
 
-export interface LinkRefEditProps<Schema extends CoreSchemas = CoreSchemas> {
+export interface LinkRefEditProps<Schema extends Schemas = Schemas> {
   /** Whether the form is readonly */
   isReadOnly?: boolean;
   /** Show loading indicator */
@@ -40,7 +40,7 @@ export interface LinkRefEditProps<Schema extends CoreSchemas = CoreSchemas> {
  * - Display dropdown selector
  * - Handle save/cancel with proper validation
  */
-export function LinkRefEdit<Schema extends CoreSchemas = CoreSchemas>({
+export function LinkRefEdit<Schema extends Schemas = Schemas>({
   isReadOnly,
   isLoading,
   targetType,

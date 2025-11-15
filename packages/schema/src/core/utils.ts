@@ -6,7 +6,7 @@
 
 import type { Schemas } from '../index.js';
 import type { DefineUtils } from '../plugin.js';
-import type { CoreStatelyConfig } from './augment.js';
+import type { CoreStatelyConfig } from './generated.js';
 import { CoreNodeType, type CoreNodeUnion, type ObjectNode } from './nodes.js';
 
 type CoreNodeName = (typeof CoreNodeType)[keyof typeof CoreNodeType];

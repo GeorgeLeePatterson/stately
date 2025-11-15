@@ -1,6 +1,6 @@
 import type { BaseNode } from '../nodes.js';
 import type { DefineNodeMap } from '../plugin.js';
-import type { CoreStatelyConfig } from './augment.js';
+import type { CoreStatelyConfig } from './generated.js';
 import { NodeKey, StateEntry } from './helpers.js';
 
 /**
@@ -161,5 +161,9 @@ export type CoreNodeMap<Config extends CoreStatelyConfig = CoreStatelyConfig> = 
   [CoreNodeType.RecursiveRef]: RecursiveRefNode<Config>;
 }>;
 
+/**
+ * Union of all core node types, plus BaseNode to allow any nodeType (including "unknown").
+ * This allows codegen to emit nodes with nodeType: "unknown" when it cannot parse a schema.
+ */
 export type CoreNodeUnion<Config extends CoreStatelyConfig = CoreStatelyConfig> =
   CoreNodeMap<Config>[keyof CoreNodeMap<Config>];

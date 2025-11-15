@@ -8,8 +8,7 @@
  *
  * Run: npx tsc --noEmit tests/test-plugin-runtime.ts
  */
-import type { OpenAPIV3_1 } from "openapi-types";
-import type { CoreStatelyConfig } from "../src/core/augment.js";
+import type { CoreStatelyConfig } from "../src/core/generated.js";
 import { CoreNodeType, type ObjectNode } from "../src/core/nodes.js";
 import {
   DefineGeneratedNodes,
@@ -33,7 +32,7 @@ type CustomGeneratedNodes = DefineGeneratedNodes<{
 
 // Step 2: Create the config type
 type CustomConfig = CoreStatelyConfig<
-  CoreStatelyConfig["components"],
+  CoreStatelyConfig["components"] & { schemas: { StateEntry: 'test1' | 'test2' }},
   CoreStatelyConfig["paths"],
   CustomGeneratedNodes
 >;
@@ -165,6 +164,9 @@ const mockNodes: CustomConfig["nodes"] = {
 const runtime = stately<CustomSchemas>(mockOpenAPI, mockNodes).withPlugin(
   createCustomPlugin(),
 );
+
+const x = runtime.data.entityDisplayNames['test1'];
+const xx = runtime.data.entityDisplayNames['test2'];
 
 // Verify runtime has expected structure
 type RuntimeType = typeof runtime;

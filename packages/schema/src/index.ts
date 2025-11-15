@@ -55,7 +55,7 @@
  */
 
 import type { OpenAPIV3_1 } from 'openapi-types';
-import type { CoreSchemaAugment, CoreStatelyConfig } from './core/index.js';
+import type { CorePlugin, CoreStatelyConfig, DefineCoreConfig } from './core/index.js';
 import { createCorePlugin } from './core/index.js';
 import type * as GeneratedTypes from './generated.js';
 import {
@@ -66,7 +66,7 @@ import {
   DefineStatelyConfig,
 } from './generated.js';
 import type * as PluginTypes from './plugin.js';
-import type { SchemaAugment } from './plugin.js';
+import type { PluginAugment } from './plugin.js';
 
 // Export plugin-author helpers
 import type { StatelySchemas } from './schema.js';
@@ -74,16 +74,21 @@ import { createStately } from './stately.js';
 export type { OpenAPIV3_1 };
 export { DefineComponents, DefineGeneratedNodes, DefineOpenApi, DefinePaths, DefineStatelyConfig };
 
+export type DefineConfig<
+  C extends DefineComponents<{}> = DefineComponents<{}>,
+  P extends DefinePaths<{}> = DefinePaths<{}>,
+  N extends DefineGeneratedNodes<{}> = DefineGeneratedNodes<{}>,
+> = DefineCoreConfig<C, P, N>;
+
 /**
  * Stately plugin types integration - Main API
  */
 export type Schemas<
   Config extends CoreStatelyConfig = CoreStatelyConfig,
-  Augments extends readonly SchemaAugment<any, any>[] = [],
-> = StatelySchemas<Config, readonly [CoreSchemaAugment<Config>, ...Augments]>;
+  Augments extends readonly PluginAugment<any, any>[] = [],
+> = StatelySchemas<Config, readonly [CorePlugin<Config>, ...Augments]>;
 
 // Type helper
-// export type SchemaConfig<S> = S extends StatelySchemas<infer Config, any> ? Config : never;
 export type SchemaConfig<S> = S extends Schemas<infer Config, any> ? Config : never;
 
 /**
@@ -109,30 +114,6 @@ export type PluginNodeNames<S extends StatelySchemas<any, any> = Schemas> =
   PluginTypes.PluginNodeNames<S>;
 export type PluginNodeTypes<S extends StatelySchemas<any, any> = Schemas> =
   PluginTypes.PluginNodeTypes<S>;
-
-/**
- * Type guard for narrowing plugin node unions by nodeType.
- *
- * Use this helper when you need to narrow a `PluginNodeUnion<S>` to a specific node type
- * based on its `nodeType` discriminator. This is particularly useful in validation functions
- * and other plugin code that needs to handle different node types.
- *
- * @example
- * ```typescript
- * function processNode(schema: PluginNodeUnion<MySchemas>) {
- *   if (isNodeOfType(schema, 'object')) {
- *     // schema is now narrowed to ObjectNode
- *     console.log(schema.properties);
- *   }
- * }
- * ```
- */
-export function isNodeOfType<S extends StatelySchemas<any, any>, Type extends PluginNodeTypes<S>>(
-  schema: PluginNodeUnion<S>,
-  nodeType: Type,
-): schema is Extract<PluginNodeUnion<S>, { nodeType: Type }> {
-  return schema.nodeType === nodeType;
-}
 
 /**
  * Stately plugin functionality integration - Main API

@@ -4,19 +4,19 @@
 
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
-import { StatelyUiProvider, useStatelyUi } from './context.js';
-import type { CorePaths, CoreSchemas } from './core';
+import type { CorePaths } from './core';
 import { type CoreUiAugment, createCoreUiPlugin } from './core/index.js';
 import { callOperation } from './operations.js';
 import { makeRegistryKey, UiAugment } from './plugin.js';
 import { createStatelyUi, StatelyRuntime } from './runtime.js';
+import { Schemas } from '@stately/schema';
 
 /**
  * Runtime with core plugin installed.
  * The augments array includes CoreUiAugment plus any additional plugins.
  */
 export type StatelyUi<
-  S extends CoreSchemas = CoreSchemas,
+  S extends Schemas<any, any> = Schemas<any, any>,
   ExtraAugments extends readonly UiAugment<string, S, any, any>[] = readonly [],
 > = StatelyRuntime<S, readonly [CoreUiAugment<S>, ...ExtraAugments]>;
 
@@ -33,7 +33,7 @@ export type StatelyUi<
  * runtime.plugins.core.api.operations // ✓ Intellisense works
  * ```
  */
-export function statelyUi<Schema extends CoreSchemas>(
+export function statelyUi<Schema extends Schemas<any, any>>(
   state: Stately<Schema>,
   client: Client<CorePaths<Schema> & {}>,
 ): StatelyUi<Schema> {
@@ -42,7 +42,7 @@ export function statelyUi<Schema extends CoreSchemas>(
   );
 }
 
-export { StatelyUiProvider, useStatelyUi };
+export { StatelyUiProvider, useStatelyUi, createUseStatelyUi } from './context.js';
 
 // Re-exports
 export type { RegistryKey, RegistryMode, UiAugment } from './plugin.js';

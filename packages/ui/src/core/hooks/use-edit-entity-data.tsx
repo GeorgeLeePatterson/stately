@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Note } from "@/base/components/note";
-import type { CoreSchemas, CoreStateEntry } from "@/core";
+import type { CoreStateEntry } from "@/core";
 import { useEntityData } from "./use-entity-data";
+import { Schemas } from "@stately/schema";
 
-export function useEditEntityData<Schema extends CoreSchemas = CoreSchemas>({
+export function useEditEntityData<Schema extends Schemas = Schemas>({
   entity,
   disabled,
 }: {

@@ -3,15 +3,15 @@ import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Fragment, useCallback, useState } from 'react';
 import { FieldEdit } from '@/base/form/field-edit';
 import { cn } from '@/base/lib/utils';
-import type { CoreSchemas } from '@/core';
 import { Button } from '@/core/components/ui/button';
 import { Field, FieldGroup } from '@/core/components/ui/field';
 import { Progress } from '@/core/components/ui/progress';
 import { Skeleton } from '@/core/components/ui/skeleton';
 import { EntityPropertyView } from '@/core/components/views/entity/entity-property-view';
-import { useCoreStatelyUi } from '@/core';
+import { useCoreStatelyUi } from '@/context';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import type { ObjectEditProps } from './object-field';
+import { Schemas } from '@stately/schema';
 
 export interface ObjectWizardBaseProps {
   onComplete?: () => void;
@@ -19,10 +19,10 @@ export interface ObjectWizardBaseProps {
   isEmbedded?: boolean;
 }
 
-export type ObjectWizardEditProps<Schema extends CoreSchemas = CoreSchemas> =
+export type ObjectWizardEditProps<Schema extends Schemas = Schemas> =
   ObjectWizardBaseProps & ObjectEditProps<Schema>;
 
-export const ObjectWizardEdit = <Schema extends CoreSchemas = CoreSchemas>({
+export const ObjectWizardEdit = <Schema extends Schemas = Schemas>({
   formId,
   label,
   node,

@@ -1,9 +1,10 @@
 import { useId } from "react";
-import type { CoreEntity, CoreObjectNode, CoreSchemas } from "@/core";
+import type { CoreEntity, CoreObjectNode } from "@/core";
 import { ObjectWizardEdit } from "../../fields/edit/object-wizard";
+import { Schemas } from "@stately/schema";
 
 export interface EntityWizardViewProps<
-  Schema extends CoreSchemas = CoreSchemas,
+  Schema extends Schemas = Schemas,
 > {
   node: CoreObjectNode<Schema>;
   value?: CoreEntity<Schema>["data"];
@@ -17,7 +18,7 @@ export interface EntityWizardViewProps<
  * EntityWizardView - Step-by-step wizard for creating/editing entities
  * Walks through each top-level field one at a time
  */
-export function EntityWizardView<Schema extends CoreSchemas = CoreSchemas>({
+export function EntityWizardView<Schema extends Schemas = Schemas>({
   node,
   value,
   onChange,

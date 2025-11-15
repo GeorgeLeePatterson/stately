@@ -1,17 +1,17 @@
-import type { CoreObjectNode, CoreSchemas } from "@/core";
-import { useStatelyUi } from "@/context";
+import type { CoreObjectNode } from "@/core";
 import { DescriptionLabel } from "@/core/components/base/description";
 import { NotSet } from "@/core/components/base/not-set";
 import { SimpleLabel } from "@/core/components/base/simple-label";
 import { FieldView } from "@/base/form/field-view";
 import type { ViewFieldProps } from "@/base/form/field-view";
 import { AnyRecord } from "@stately/schema/helpers";
-import { useCoreStatelyUi } from "@/core";
+import { useCoreStatelyUi } from "@/context";
+import { Schemas } from "@stately/schema";
 
-export type ObjectViewProps<Schema extends CoreSchemas = CoreSchemas> =
+export type ObjectViewProps<Schema extends Schemas = Schemas> =
   ViewFieldProps<Schema, CoreObjectNode<Schema>, any>;
 
-export function ObjectView<Schema extends CoreSchemas = CoreSchemas>({
+export function ObjectView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: ObjectViewProps<Schema>) {
@@ -30,7 +30,7 @@ export function ObjectView<Schema extends CoreSchemas = CoreSchemas>({
         const singleLine =
           !valueDefined || schema.plugins.core.isPrimitive(typedSchema);
         const valueDisplay = valueDefined ? (
-          <FieldView node={typedSchema} value={propValue} />
+          <FieldView<Schema> node={typedSchema} value={propValue} />
         ) : (
           <NotSet />
         );

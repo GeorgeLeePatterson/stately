@@ -2,13 +2,14 @@
  * Core plugin entrypoint.
  *
  * Treat this module like any other Stately plugin: it exposes the schema augment
- * (`CoreSchemaAugment`), the runtime plugin factory (`createCorePlugin`), and the
+ * (`CorePlugin`), the runtime plugin factory (`createCorePlugin`), and the
  * node helpers that plugin authors might want to reuse. Import everything from
  * here instead of reaching directly into ./augment or ./plugin.
  */
 import { CORE_PLUGIN_NAME, createCorePlugin } from "./plugin.js";
 
-export type { CoreSchemaAugment, CoreStatelyConfig } from "./augment.js";
+export type { CorePlugin } from './plugin.js';
+export type { CoreStatelyConfig, DefineCoreConfig } from './generated.js';
 export type {
   ArrayNode,
   CoreNodeMap,
