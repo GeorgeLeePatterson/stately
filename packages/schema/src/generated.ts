@@ -15,11 +15,15 @@ import type {
  * Accepts generated TypeScript types from openapi-typescript (not raw OpenAPI structure).
  * The type system uses clean generated types for type safety, while runtime introspection
  * uses the raw OpenAPI document passed to stately().
+ *
+ * Variance annotations enforce that Config can only be used in covariant (output) positions.
+ * This prevents accidentally using patterns like `keyof Config['nodes']` which create
+ * invariant constraints and break subtype compatibility.
  */
 export interface StatelyConfig<
-  Components = { schemas?: AnyRecord },
-  Paths extends {} = EmptyRecord,
-  Nodes extends NodeMap = NodeMap,
+  out Components = { schemas?: AnyRecord },
+  out Paths extends {} = EmptyRecord,
+  out Nodes extends NodeMap = NodeMap,
 > {
   components: Components;
   paths: Paths;

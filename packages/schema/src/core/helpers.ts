@@ -1,9 +1,46 @@
 import type { CoreStatelyConfig } from './generated.js';
 
-// Derive StateEntry directly from generated components (not from CoreTypes)
-export type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> =
-  Config['components']['schemas']['StateEntry'] extends string
-    ? Config['components']['schemas']['StateEntry']
-    : string;
+/**
+ * StateEntry type - represents entity state discriminator values.
+ *
+ * Uses conditional type extraction to provide Config-specific narrowing while maintaining
+ * covariance. Direct extraction like `Config['components']['schemas']['StateEntry']` would
+ * create invariance when used as Record keys, but conditional extraction with `infer`
+ * maintains covariance because the conditional distributes over the constraint.
+ */
+export type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> = Config extends {
+  components: { schemas: { StateEntry: infer S } };
+}
+  ? S
+  : string;
 
-export type NodeKey<Config extends CoreStatelyConfig = CoreStatelyConfig> = keyof Config['nodes'];
+/**
+ * Node key type - represents a reference to a schema node by name.
+ *
+ * Uses conditional type extraction to provide Config-specific narrowing while maintaining
+ * covariance. Direct extraction like `keyof Config['nodes']` would create invariance when
+ * used as Record keys, but conditional extraction with `infer` maintains covariance.
+ */
+export type NodeKey<Config extends CoreStatelyConfig = CoreStatelyConfig> = Config extends {
+  nodes: infer N;
+}
+  ? N extends object
+    ? keyof N
+    : string
+  : string;
+
+/**
+ * Node value type - represents any node value from the Config's nodes map.
+ *
+ * Uses conditional type extraction to provide Config-specific narrowing while maintaining
+ * covariance. Direct extraction like `Config['nodes'][keyof Config['nodes']]` would create
+ * invariance when used in covariant positions, but conditional extraction with `infer`
+ * maintains covariance.
+ */
+export type NodeValue<Config extends CoreStatelyConfig = CoreStatelyConfig> = Config extends {
+  nodes: infer N;
+}
+  ? N extends object
+    ? N[keyof N]
+    : unknown
+  : unknown;

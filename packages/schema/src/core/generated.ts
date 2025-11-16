@@ -31,11 +31,14 @@ type CoreNodesInput = DefineGeneratedNodes<{ Entity: TaggedUnionNode<CoreStately
  * Core configuration type that plugin authors can specialize with their own
  * components, paths, and additional nodes. The nodes property automatically
  * includes CoreGenerated nodes merged with any custom nodes passed in.
+ *
+ * Variance annotations inherited from StatelyConfig ensure Config can only be
+ * used covariantly, preventing invariant-causing patterns.
  */
 export interface CoreStatelyConfig<
-  C extends CoreComponentInput = CoreComponentInput,
-  P extends CorePathsInput = CorePathsInput,
-  N extends DefineGeneratedNodes<NodeMap> = NodeMap,
+  out C extends CoreComponentInput = CoreComponentInput,
+  out P extends CorePathsInput = CorePathsInput,
+  out N extends DefineGeneratedNodes<NodeMap> = NodeMap,
 > extends StatelyConfig<C, P, CoreNodesInput & N> {}
 
 /**

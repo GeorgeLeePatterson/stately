@@ -6,7 +6,7 @@
 
 import type { DefineData } from '../plugin.js';
 import type { CoreStatelyConfig } from './generated.js';
-import type { StateEntry } from './helpers.js';
+import type { NodeValue, StateEntry } from './helpers.js';
 import { coreUtils } from './utils.js';
 
 // TODO: Remove - include this in data
@@ -58,13 +58,13 @@ function buildStateEntryToSchema<Config extends CoreStatelyConfig = CoreStatelyC
 function buildEntitySchemaCache<Config extends CoreStatelyConfig = CoreStatelyConfig>(
   entityMappings: Array<{ stateEntry: StateEntry<Config>; schemaName: string }>,
   generatedSchemas: Config['nodes'],
-): Record<StateEntry<Config>, Config['nodes'][keyof Config['nodes']] | null> {
+): Record<StateEntry<Config>, NodeValue<Config> | null> {
   return Object.fromEntries(
     entityMappings.map(({ stateEntry, schemaName }) => [
       stateEntry,
       generatedSchemas[schemaName as keyof Config['nodes']] || null,
     ]),
-  ) as Record<StateEntry, Config['nodes'][keyof Config['nodes']] | null>;
+  ) as Record<StateEntry<Config>, NodeValue<Config> | null>;
 }
 
 /**
@@ -124,7 +124,7 @@ function generateCoreData<Config extends CoreStatelyConfig = CoreStatelyConfig>(
 
 type CoreData<Config extends CoreStatelyConfig = CoreStatelyConfig> = DefineData<{
   entityDisplayNames: Record<StateEntry<Config>, string>;
-  entitySchemaCache: Record<StateEntry<Config>, Config['nodes'][keyof Config['nodes']] | null>;
+  entitySchemaCache: Record<StateEntry<Config>, NodeValue<Config> | null>;
   stateEntryToSchema: Record<StateEntry<Config>, string>;
   stateEntryToUrl: Record<StateEntry<Config>, string>;
   urlToStateEntry: Record<string, StateEntry<Config>>;

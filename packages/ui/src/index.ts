@@ -9,7 +9,7 @@ import type { Client } from 'openapi-fetch';
 import { StatelyUiProvider } from './base/context.js';
 import { callOperation, createHttpBundle, type DefineOperationMap } from './base/operations.js';
 import { makeRegistryKey, type PluginFunctionMap, type UiPluginAugment } from './base/plugin.js';
-import { createStatelyUi, type StatelyRuntime } from './base/runtime.js';
+import { createStatelyUi, type StatelyRuntime, type StatelyUiBuilder } from './base/runtime.js';
 import { createUseStatelyUi } from './context.js';
 import { type CoreUiAugment, createCoreUiPlugin } from './core/index.js';
 
@@ -68,7 +68,7 @@ export type StatelyUi<
 export function statelyUi<Schema extends Schemas<any, any>>(
   state: Stately<Schema>,
   client: Client<Schema['config']['paths']>,
-): StatelyUi<Schema> {
+): StatelyUiBuilder<Schema, readonly [CoreUiAugment<Schema>]> {
   return createStatelyUi<Schema, readonly [CoreUiAugment<Schema>]>(state, client).withPlugin(
     createCoreUiPlugin<Schema>(),
   );

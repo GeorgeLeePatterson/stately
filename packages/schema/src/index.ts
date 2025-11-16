@@ -122,9 +122,13 @@ export type DefineConfig<
 
 /**
  * Stately plugin types integration - Main API
+ *
+ * Variance annotation enforces that Config can only be used covariantly.
+ * This acts as a compile-time guardrail preventing invariant-causing patterns
+ * like `keyof Config['nodes']` from being introduced anywhere in the type system.
  */
 export type Schemas<
-  Config extends CoreStatelyConfig = CoreStatelyConfig,
+  out Config extends CoreStatelyConfig = CoreStatelyConfig,
   Augments extends readonly PluginAugment<string, NodeMap>[] = [],
 > = StatelySchemas<Config, readonly [CorePlugin<Config>, ...Augments]>;
 

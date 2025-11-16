@@ -165,10 +165,9 @@ export type FilesUiPlugin<S extends Schemas<any, any> = Schemas<any, any>> = Def
  * Registers file-related components and operations.
  */
 export function createFilesUiPlugin<
-  Schema extends Schemas = Schemas,
-  Augments extends readonly FilesUiPlugin<Schema>[] = readonly [FilesUiPlugin<Schema>],
->(): StatelyUiPluginFactory<Schema, Augments> {
-  return (runtime: StatelyRuntime<Schema, Augments>) => {
+  Schema extends Schemas<any, any> = Schemas,
+>(): StatelyUiPluginFactory<Schema> {
+  return (runtime: StatelyRuntime<Schema, any>) => {
     const { registry, client, schema } = runtime;
 
     // Build HTTP operations bundle

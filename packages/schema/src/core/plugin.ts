@@ -22,7 +22,7 @@ export type CorePlugin<Config extends CoreStatelyConfig> = DefinePlugin<
   CoreNodeMap<Config>,
   CoreTypes<Config>,
   CoreData<Config>,
-  CoreUtils<Config>
+  CoreUtils
 >;
 
 /**

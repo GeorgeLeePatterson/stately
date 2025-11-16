@@ -83,9 +83,12 @@ type PluginUtilsOf<Augment> = Augment extends PluginAugment<infer Name, any, any
  *
  * This type helper is the core type helper, without any assumptions baked in, not even "core".
  * Prefer the exported `Schemas` in the entrypoint of the package.
+ *
+ * Variance annotation enforces that Config can only be used covariantly, preventing
+ * invariant-causing patterns like `keyof Config['nodes']` from being introduced.
  */
 export type StatelySchemas<
-  Config extends StatelyConfig,
+  out Config extends StatelyConfig,
   Augments extends readonly PluginAugment<string, NodeMap>[] = [],
 > = {
   /** Store raw configuration and plugin augmentations */

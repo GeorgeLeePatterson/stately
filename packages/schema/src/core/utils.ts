@@ -141,12 +141,12 @@ const coreUtils = {
   toTitleCase,
 } as const;
 
-type CoreUtils<Config extends CoreStatelyConfig = CoreStatelyConfig> = DefineUtils<{
+type CoreUtils = DefineUtils<{
   isSingletonId: typeof isSingletonId;
   isPrimitive: typeof isPrimitive;
-  extractNodeType: typeof extractNodeType<Config>;
-  isEntityValid: typeof isEntityValid<Config>;
-  sortEntityProperties: typeof sortEntityProperties<Config>;
+  extractNodeType: typeof extractNodeType;
+  isEntityValid: typeof isEntityValid;
+  sortEntityProperties: typeof sortEntityProperties;
   toKebabCase: typeof toKebabCase;
   toTitleCase: typeof toTitleCase;
   toSpaceCase: typeof toSpaceCase;
