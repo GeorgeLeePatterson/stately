@@ -1,12 +1,12 @@
 #![expect(clippy::needless_for_each)]
 use serde::{Deserialize, Serialize};
 
-use super::entity::{RelativePath, UserDefinedPath};
+use super::path::{RelativePath, UserDefinedPath};
 use super::types::{
     FileEntryType, FileInfo, FileListQuery, FileListResponse, FileSaveRequest, FileUploadResponse,
     FileVersion,
 };
-use crate::entity::VersionedPath;
+use crate::path::VersionedPath;
 use crate::settings::Dirs;
 
 // TODO:

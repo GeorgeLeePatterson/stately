@@ -1,7 +1,7 @@
 pub mod api;
-pub mod entity;
 pub mod error;
 pub mod handlers;
+pub mod path;
 pub mod router;
 pub mod settings;
 pub mod types;
