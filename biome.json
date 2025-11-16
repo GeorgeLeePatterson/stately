@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.5/schema.json",
+  "$schema": "node_modules/@biomejs/biome/configuration_schema.json",
   "assist": {
     "actions": {
       "source": { "organizeImports": "on", "useSortedAttributes": "on", "useSortedKeys": "on" }
@@ -106,7 +106,9 @@
       "!**/coverage/",
       "!ui/src/components/ui/*.tsx",
       "!ui/src/types/api.ts",
-      "!**/node_modules/"
+      "!**/node_modules/",
+      "!**/*.json",
+      "!**/tsup.config.ts"
     ]
   }
 }

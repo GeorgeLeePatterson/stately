@@ -1,8 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
-import type { FileInfo } from "@/types/file";
-import type { FileListResponse } from "@/types/fs-api";
-import { useFilesApi } from "@/lib/files-api";
+import { useQuery } from '@tanstack/react-query';
+import { useCallback, useEffect, useState } from 'react';
+import { useFilesStatelyUi } from '../context';
+import type { FileInfo, FileListResponse } from '../types/api';
 
 export function useFileView({
   initialPath,
@@ -13,8 +12,10 @@ export function useFileView({
   onSelectFile?: (file: FileInfo, currentPath?: string) => void;
   isDisabled?: boolean;
 }) {
-  const filesApi = useFilesApi();
-  const [currentPath, setCurrentPath] = useState<string>("");
+  const runtime = useFilesStatelyUi();
+  const filesApi = runtime.plugins.files?.api;
+
+  const [currentPath, setCurrentPath] = useState<string>('');
   const [selectedEntry, setSelectedEntry] = useState<FileInfo | null>(null);
 
   // Update path when initialPath changes (e.g., navigation from another page)
@@ -26,26 +27,28 @@ export function useFileView({
 
   // Fetch files list for current path
   const queryResults = useQuery({
-    queryKey: filesApi.key.list(currentPath),
+    enabled: !isDisabled && !!filesApi,
     queryFn: async () => {
-      const params = currentPath ? { path: currentPath } : {};
-      const { data, error } = await filesApi.list({ path: params.path });
+      if (!filesApi) throw new Error('Files API is unavailable');
+
+      const { data, error } = await filesApi.call(filesApi.operations.listFiles, {
+        params: { query: { path: currentPath || undefined } },
+      });
+
       if (error || !data) {
-        throw new Error("Failed to load files");
+        throw new Error('Failed to load files');
       }
       return data as FileListResponse;
     },
-    enabled: !isDisabled && !!filesApi.listMeta,
+    queryKey: ['files', 'list', currentPath],
   });
 
   // Handle entry click - navigate into directories or select files
   const handleEntryClick = useCallback(
     (entry: FileInfo) => {
-      if (entry.type === "directory") {
+      if (entry.type === 'directory') {
         // Navigate into directory
-        const newPath = currentPath
-          ? `${currentPath}/${entry.name}`
-          : entry.name;
+        const newPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
         setCurrentPath(newPath);
         setSelectedEntry(null);
       } else {
@@ -60,19 +63,19 @@ export function useFileView({
   // Navigate up one level
   const navigateUp = useCallback(() => {
     if (!currentPath) return;
-    const parts = currentPath.split("/");
+    const parts = currentPath.split('/');
     parts.pop();
-    setCurrentPath(parts.join("/"));
+    setCurrentPath(parts.join('/'));
     setSelectedEntry(null);
   }, [currentPath]);
 
   return {
     currentPath,
-    setCurrentPath,
-    selectedEntry,
-    setSelectedEntry,
     handleEntryClick,
     navigateUp,
     queryResults,
+    selectedEntry,
+    setCurrentPath,
+    setSelectedEntry,
   };
 }

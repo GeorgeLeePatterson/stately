@@ -1,1 +1,2 @@
-export { createCoreCodegenPlugin } from "./plugin.js";
+import { createCoreCodegenPlugin } from './plugin.js';
+export { createCoreCodegenPlugin };

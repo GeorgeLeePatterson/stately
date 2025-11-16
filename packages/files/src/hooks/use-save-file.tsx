@@ -1,37 +1,31 @@
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { FileUploadResponse } from "@/types/fs-api";
-import { useFilesApi } from "@/lib/files-api";
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { useFilesStatelyUi } from '@/context';
+import type { FileUploadResponse } from '@/types/api';
 
-export const useSaveFile = ({
-  onSuccess,
-}: {
-  onSuccess: (data: FileUploadResponse) => void;
-}) => {
-  const filesApi = useFilesApi();
-  // Mutation for compose mode file save
+export const useSaveFile = ({ onSuccess }: { onSuccess: (data: FileUploadResponse) => void }) => {
+  const runtime = useFilesStatelyUi();
+  const filesApi = runtime.plugins.files?.api;
+
   return useMutation({
-    mutationFn: async ({
-      content,
-      filename,
-    }: {
-      content: string;
-      filename?: string;
-    }) => {
-      if (!content) throw new Error("Content cannot be empty");
-      const { data, error } = await filesApi.save({ content, name: filename });
-      if (!data || error) throw new Error("Save failed");
+    mutationFn: async ({ content, filename }: { content: string; filename?: string }) => {
+      if (!content) throw new Error('Content cannot be empty');
+      if (!filesApi) throw new Error('Files API is unavailable');
+
+      const { data, error } = await filesApi.call(filesApi.operations.saveFile, {
+        body: { content, name: filename },
+      });
+
+      if (error || !data) throw new Error('Save failed');
       return data as FileUploadResponse;
     },
-    onSuccess: (data) => {
-      toast.success("File saved successfully");
-      onSuccess(data);
+    onError: error => {
+      console.error('Compose save error:', error);
+      toast.error('Failed to save file');
     },
-    onError: (error) => {
-      console.error("Compose save error:", error);
-      toast.error("Failed to save file");
+    onSuccess: data => {
+      toast.success('File saved successfully');
+      onSuccess(data);
     },
   });
 };
-
-export type { FileUploadResponse };

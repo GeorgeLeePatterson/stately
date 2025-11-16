@@ -1,9 +1,9 @@
-import { CoreNodeType } from "@stately/schema/core/nodes";
-import type { CodegenPlugin, CodegenPluginContext } from "../plugin-manager.js";
+import { CoreNodeType } from '@stately/schema/core/nodes';
+import type { CodegenPlugin, CodegenPluginContext } from '../plugin-manager.js';
 
 export function createCoreCodegenPlugin(): CodegenPlugin {
   return {
-    name: "stately:codegen-core",
+    name: 'stately:codegen-core',
     transform(schema, ctx) {
       return transformSchema(schema, ctx);
     },
@@ -14,33 +14,30 @@ function transformSchema(schema: any, ctx: CodegenPluginContext) {
   if (!schema) return null;
 
   // Nullable via type: ["string", "null"]
-  if (Array.isArray(schema.type) && schema.type.includes("null")) {
-    const nonNullTypes = schema.type.filter((t: string) => t !== "null");
+  if (Array.isArray(schema.type) && schema.type.includes('null')) {
+    const nonNullTypes = schema.type.filter((t: string) => t !== 'null');
     if (nonNullTypes.length === 1) {
-      const parsed = ctx.parseSchema(
-        { ...schema, type: nonNullTypes[0] },
-        ctx.schemaName,
-      );
+      const parsed = ctx.parseSchema({ ...schema, type: nonNullTypes[0] }, ctx.schemaName);
       if (parsed) {
         return {
-          nodeType: CoreNodeType.Nullable,
-          innerSchema: parsed,
           description: schema.description,
+          innerSchema: parsed,
+          nodeType: CoreNodeType.Nullable,
         };
       }
     }
   }
 
   // Nullable via oneOf pattern (string | null)
-  if (schema.oneOf && schema.oneOf.some((v: any) => v.type === "null")) {
-    const innerSchema = schema.oneOf.find((v: any) => v.type !== "null");
+  if (schema.oneOf?.some((v: any) => v.type === 'null')) {
+    const innerSchema = schema.oneOf.find((v: any) => v.type !== 'null');
     if (innerSchema) {
       const parsed = ctx.parseSchema(innerSchema, ctx.schemaName);
       if (parsed) {
         return {
-          nodeType: CoreNodeType.Nullable,
-          innerSchema: parsed,
           description: schema.description,
+          innerSchema: parsed,
+          nodeType: CoreNodeType.Nullable,
         };
       }
     }
@@ -61,10 +58,10 @@ function transformSchema(schema: any, ctx: CodegenPluginContext) {
 
     if (Object.keys(mergedProperties).length > 0) {
       return {
+        description: schema.description,
         nodeType: CoreNodeType.Object,
         properties: mergedProperties,
         required: [...new Set(mergedRequired)],
-        description: schema.description,
       };
     }
   }
@@ -79,56 +76,33 @@ function transformSchema(schema: any, ctx: CodegenPluginContext) {
   }
 
   // Arrays and tuples
-  if (schema.type === "array") {
+  if (schema.type === 'array') {
     if (schema.prefixItems) {
       const items = schema.prefixItems
         .map((item: any) => ctx.parseSchema(item, ctx.schemaName))
         .filter((node: any) => node !== null);
 
       if (items.length === schema.prefixItems.length) {
-        return {
-          nodeType: CoreNodeType.Tuple,
-          items,
-          description: schema.description,
-        };
+        return { description: schema.description, items, nodeType: CoreNodeType.Tuple };
       }
     }
 
-    const itemSchema = schema.items
-      ? ctx.parseSchema(schema.items, ctx.schemaName)
-      : null;
-    return {
-      nodeType: CoreNodeType.Array,
-      items: itemSchema,
-      description: schema.description,
-    };
+    const itemSchema = schema.items ? ctx.parseSchema(schema.items, ctx.schemaName) : null;
+    return { description: schema.description, items: itemSchema, nodeType: CoreNodeType.Array };
   }
 
   // Map/dictionary
-  if (
-    schema.type === "object" &&
-    schema.additionalProperties &&
-    !schema.properties
-  ) {
-    const valueSchema = ctx.parseSchema(
-      schema.additionalProperties,
-      ctx.schemaName,
-    );
+  if (schema.type === 'object' && schema.additionalProperties && !schema.properties) {
+    const valueSchema = ctx.parseSchema(schema.additionalProperties, ctx.schemaName);
     if (!valueSchema) return null;
 
-    return {
-      nodeType: CoreNodeType.Map,
-      valueSchema,
-      description: schema.description,
-    };
+    return { description: schema.description, nodeType: CoreNodeType.Map, valueSchema };
   }
 
   // Objects
-  if (schema.type === "object") {
+  if (schema.type === 'object') {
     const properties: Record<string, any> = {};
-    for (const [propName, propSchema] of Object.entries(
-      schema.properties || {},
-    )) {
+    for (const [propName, propSchema] of Object.entries(schema.properties || {})) {
       const parsed = ctx.parseSchema(propSchema as any, ctx.schemaName);
       if (parsed) {
         properties[propName] = parsed;
@@ -136,33 +110,29 @@ function transformSchema(schema: any, ctx: CodegenPluginContext) {
     }
 
     return {
+      description: schema.description,
       nodeType: CoreNodeType.Object,
       properties,
       required: schema.required || [],
-      description: schema.description,
     };
   }
 
   // Primitives + enums
   if (
-    schema.type === "string" ||
-    schema.type === "number" ||
-    schema.type === "integer" ||
-    schema.type === "boolean"
+    schema.type === 'string' ||
+    schema.type === 'number' ||
+    schema.type === 'integer' ||
+    schema.type === 'boolean'
   ) {
     if (schema.enum && schema.enum.length > 0) {
-      return {
-        nodeType: CoreNodeType.Enum,
-        values: schema.enum,
-        description: schema.description,
-      };
+      return { description: schema.description, nodeType: CoreNodeType.Enum, values: schema.enum };
     }
 
     return {
+      description: schema.description,
+      format: schema.format,
       nodeType: CoreNodeType.Primitive,
       primitiveType: schema.type,
-      format: schema.format,
-      description: schema.description,
     };
   }
 
@@ -175,8 +145,7 @@ function detectLinkNode(schema: any, ctx: CodegenPluginContext) {
   const bothHaveEntityType = variants.every((v: any) => {
     const resolved = resolveVariant(v, ctx);
     return (
-      resolved?.properties?.entity_type?.enum &&
-      Array.isArray(resolved.properties.entity_type.enum)
+      resolved?.properties?.entity_type?.enum && Array.isArray(resolved.properties.entity_type.enum)
     );
   });
   const hasRef = variants.some((v: any) => {
@@ -200,10 +169,10 @@ function detectLinkNode(schema: any, ctx: CodegenPluginContext) {
     const parsedInline = ctx.parseSchema(inlineSchema, ctx.schemaName);
     if (parsedInline && parsedInline.nodeType === CoreNodeType.Object) {
       return {
+        description: schema.description,
+        inlineSchema: parsedInline,
         nodeType: CoreNodeType.Link,
         targetType: entityType,
-        inlineSchema: parsedInline,
-        description: schema.description,
       };
     }
   }
@@ -214,7 +183,7 @@ function detectLinkNode(schema: any, ctx: CodegenPluginContext) {
 function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
   const objectVariants = schema.oneOf
     .map((variant: any) => resolveVariant(variant, ctx))
-    .filter((resolved: any) => resolved?.type === "object");
+    .filter((resolved: any) => resolved?.type === 'object');
 
   let discriminatorField: string | null = null;
   let isUntaggedEnum = false;
@@ -230,9 +199,7 @@ function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
       for (const fieldName of Object.keys(firstProperties)) {
         const hasEnumInAll = objectVariants.every((resolved: any) => {
           const field = resolved?.properties?.[fieldName];
-          return (
-            field?.enum && Array.isArray(field.enum) && field.enum.length > 0
-          );
+          return field?.enum && Array.isArray(field.enum) && field.enum.length > 0;
         });
 
         if (hasEnumInAll) {
@@ -248,34 +215,23 @@ function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
 
   for (const variant of schema.oneOf) {
     const resolved = resolveVariant(variant, ctx);
-    if (!resolved || resolved.type === "null") continue;
+    if (!resolved || resolved.type === 'null') continue;
 
     // Unit variant (string enum)
-    if (
-      resolved.type === "string" &&
-      resolved.enum &&
-      resolved.enum.length > 0
-    ) {
+    if (resolved.type === 'string' && resolved.enum && resolved.enum.length > 0) {
       const tag = resolved.enum[0];
-      const variantSchema = {
-        nodeType: CoreNodeType.Object,
-        properties: {},
-        required: [],
-      };
-      (isUntaggedEnum ? untaggedVariants : taggedVariants).push({
-        tag,
-        schema: variantSchema,
-      });
+      const variantSchema = { nodeType: CoreNodeType.Object, properties: {}, required: [] };
+      (isUntaggedEnum ? untaggedVariants : taggedVariants).push({ schema: variantSchema, tag });
       continue;
     }
 
-    if (resolved.type === "object") {
+    if (resolved.type === 'object') {
       const properties = resolved.properties || {};
       const propertyKeys = Object.keys(properties);
       if (propertyKeys.length === 0) continue;
 
       if (isUntaggedEnum) {
-        const tag = propertyKeys[0]!;
+        const tag = propertyKeys[0] || '';
         const innerPropertySchema = properties[tag];
         const parsed = ctx.parseSchema(innerPropertySchema, ctx.schemaName);
         const variantSchema = parsed || {
@@ -283,11 +239,10 @@ function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
           properties: {},
           required: [],
         };
-        untaggedVariants.push({ tag, schema: variantSchema });
+        untaggedVariants.push({ schema: variantSchema, tag });
       } else if (discriminatorField) {
         const discriminatorSchema = properties[discriminatorField];
-        if (!discriminatorSchema?.enum || discriminatorSchema.enum.length === 0)
-          continue;
+        if (!discriminatorSchema?.enum || discriminatorSchema.enum.length === 0) continue;
 
         const tag = discriminatorSchema.enum[0];
         const variantProperties: Record<string, any> = {};
@@ -302,29 +257,27 @@ function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
         const variantSchema = {
           nodeType: CoreNodeType.Object,
           properties: variantProperties,
-          required: (resolved.required || []).filter(
-            (r: string) => r !== discriminatorField,
-          ),
+          required: (resolved.required || []).filter((r: string) => r !== discriminatorField),
         };
-        taggedVariants.push({ tag, schema: variantSchema });
+        taggedVariants.push({ schema: variantSchema, tag });
       }
     }
   }
 
   if (isUntaggedEnum && untaggedVariants.length > 0) {
     return {
+      description: schema.description,
       nodeType: CoreNodeType.UntaggedEnum,
       variants: untaggedVariants,
-      description: schema.description,
     };
   }
 
   if (discriminatorField && taggedVariants.length > 0) {
     return {
-      nodeType: CoreNodeType.TaggedUnion,
-      discriminator: discriminatorField,
-      variants: taggedVariants,
       description: schema.description,
+      discriminator: discriminatorField,
+      nodeType: CoreNodeType.TaggedUnion,
+      variants: taggedVariants,
     };
   }
 
