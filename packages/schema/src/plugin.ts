@@ -9,33 +9,8 @@
  * These helpers guide plugin authors to define the correct types for their
  * augments. Use these when creating custom plugins.
  */
-import type { AnyRecord, EmptyRecord, NeverRecord, RequireLiteral } from './helpers.js';
+import type { AnyRecord, EmptyRecord, NeverRecord } from './helpers.js';
 import type { BaseNode, NodeInformation, NodeMap, UnknownNode, UnknownNodeType } from './nodes.js';
-
-/**
- * Public helper for declaring a plugin augment.
- *
- * Schema augment contributed by a plugin. Each augment registers the canonical
- * node map it provides plus any additional helper types it wants to merge into
- * the final `Schemas` surface. Plugin authors only need to supply the node map;
- * everything else will be wired into the `Plugin` view automatically.
- *
- * Enforces string-literal names so downstream utilities preserve keyed utils, types, and data.
- * Plugin authors should export their augments defined with this type
- */
-export type DefinePlugin<
-  Name extends string,
-  Nodes = NodeMap,
-  Types extends DefineTypes = NeverRecord,
-  Data extends DefineData = NeverRecord,
-  Utils extends DefineUtils<AnyRecord> = EmptyRecord,
-> = PluginAugment<
-  RequireLiteral<Name, 'Plugin names must be string literals'>,
-  Nodes,
-  Types,
-  Data,
-  Utils
->;
 
 /**
  * Plugin helper types for nodes

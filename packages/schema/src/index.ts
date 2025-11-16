@@ -55,25 +55,65 @@
  */
 
 import type { OpenAPIV3_1 } from 'openapi-types';
+
+// Core
 import type { CorePlugin, CoreStatelyConfig, DefineCoreConfig } from './core/index.js';
-import { createCorePlugin } from './core/index.js';
+import { corePlugin } from './core/index.js';
+
+// Base
 import type * as GeneratedTypes from './generated.js';
-import {
+import type {
   DefineComponents,
   DefineGeneratedNodes,
   DefineOpenApi,
   DefinePaths,
   DefineStatelyConfig,
 } from './generated.js';
+import type { AnyRecord, EmptyRecord, NeverRecord, RequireLiteral } from './helpers.js';
 import type { NodeMap } from './nodes.js';
 import type * as PluginTypes from './plugin.js';
 import type { PluginAugment } from './plugin.js';
 import type { StatelySchemas } from './schema.js';
 import { createStately } from './stately.js';
 
+// Re-exports
 export type { OpenAPIV3_1 };
-export { DefineComponents, DefineGeneratedNodes, DefineOpenApi, DefinePaths, DefineStatelyConfig };
+export type {
+  DefineComponents,
+  DefineGeneratedNodes,
+  DefineOpenApi,
+  DefinePaths,
+  DefineStatelyConfig,
+};
 
+/**
+ * Public helper for declaring a plugin augment.
+ *
+ * Schema augment contributed by a plugin. Each augment registers the canonical
+ * node map it provides plus any additional helper types it wants to merge into
+ * the final `Schemas` surface. Plugin authors only need to supply the node map;
+ * everything else will be wired into the `Plugin` view automatically.
+ *
+ * Enforces string-literal names so downstream utilities preserve keyed utils, types, and data.
+ * Plugin authors should export their augments defined with this type
+ */
+export type DefinePlugin<
+  Name extends string,
+  Nodes = NodeMap,
+  Types extends PluginTypes.DefineTypes = NeverRecord,
+  Data extends PluginTypes.DefineData = NeverRecord,
+  Utils extends PluginTypes.DefineUtils<AnyRecord> = EmptyRecord,
+> = PluginAugment<
+  RequireLiteral<Name, 'Plugin names must be string literals'>,
+  Nodes,
+  Types,
+  Data,
+  Utils
+>;
+
+/**
+ * Public helper for declaring a full Stately config
+ */
 export type DefineConfig<
   C extends DefineComponents = DefineComponents,
   P extends DefinePaths = DefinePaths,
@@ -88,7 +128,26 @@ export type Schemas<
   Augments extends readonly PluginAugment<string, NodeMap>[] = [],
 > = StatelySchemas<Config, readonly [CorePlugin<Config>, ...Augments]>;
 
-// Type helper
+/**
+ * Stately plugin functionality integration - Main API
+ *
+ * Convenience helper that seeds the runtime with the core schema plugin so consumers get all core
+ * helpers/validators out of the box. Additional schema plugins can be appended by chaining
+ * `.withPlugin(...)` on the returned builder.
+ *
+ * @param openapi - OpenAPI document (accepts JSON imports and typed documents)
+ * @param nodes - Generated node map from codegen
+ */
+export function stately<S extends Schemas<any, any> = Schemas>(
+  openapi: DefineOpenApi<any>,
+  nodes: SchemaConfig<S>['nodes'],
+) {
+  return createStately<S>(openapi, nodes).withPlugin(corePlugin<S>());
+}
+
+/**
+ * Type helper to access the underlying `StatelyConfig` of a `Schemas`, `StatelySchemas` w/ core.
+ */
 export type SchemaConfig<S> = S extends Schemas<infer Config, any> ? Config : never;
 
 /**
@@ -114,20 +173,3 @@ export type PluginNodeNames<S extends StatelySchemas<any, any> = Schemas> =
   PluginTypes.PluginNodeNames<S>;
 export type PluginNodeTypes<S extends StatelySchemas<any, any> = Schemas> =
   PluginTypes.PluginNodeTypes<S>;
-
-/**
- * Stately plugin functionality integration - Main API
- *
- * Convenience helper that seeds the runtime with the core schema plugin so consumers get all core
- * helpers/validators out of the box. Additional schema plugins can be appended by chaining
- * `.withPlugin(...)` on the returned builder.
- *
- * @param openapi - OpenAPI document (accepts JSON imports and typed documents)
- * @param nodes - Generated node map from codegen
- */
-export function stately<S extends Schemas<any, any> = Schemas>(
-  openapi: DefineOpenApi<any>,
-  nodes: SchemaConfig<S>['nodes'],
-) {
-  return createStately<S>(openapi, nodes).withPlugin(createCorePlugin<S>());
-}

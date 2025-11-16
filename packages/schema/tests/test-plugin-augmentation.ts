@@ -13,12 +13,13 @@ import type { CoreStatelyConfig } from '../src/core/generated.js';
 import type { AssertTrue } from '../src/helpers.js';
 import type {
   DefineGeneratedNodes,
+  DefinePlugin,
   PluginNodes,
   PluginNodeTypes,
   PluginNodeUnion,
   Schemas,
 } from '../src/index.js';
-import type { DefineNodeMap, DefinePlugin } from '../src/plugin.js';
+import type { DefineNodeMap } from '../src/plugin.js';
 import { isNodeOfType, type StatelySchemas } from '../src/schema.js';
 
 /**

@@ -19,7 +19,7 @@ type CoreComponents = DefineComponents<{
     StateEntry: string; // Generated as string union type from enum
     Entity: { type: string; data: any }; // Generated as discriminated union
     EntityId: string;
-    Summary: { id?: string; name?: string; description?: string | null };
+    Summary: { id: string; name: string; description?: string | null };
   }>;
 }>;
 

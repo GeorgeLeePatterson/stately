@@ -9,6 +9,16 @@ import type { CoreStatelyConfig } from './generated.js';
 import type { StateEntry } from './helpers.js';
 import { coreUtils } from './utils.js';
 
+// TODO: Remove - include this in data
+// // Generate entity types from metadata
+// const entityTypes = (Object.keys(xeo4Schema.data.entityDisplayNames) as StateEntry[]).map(
+//   entry => ({
+//     description: `${xeo4Schema.data.entityDisplayNames[entry]} configurations`,
+//     label: xeo4Schema.data.entityDisplayNames[entry],
+//     type: xeo4Schema.data.stateEntryToUrl[entry],
+//   }),
+// );
+
 /**
  * Parse entity mappings from the Entity schema's oneOf variants
  *

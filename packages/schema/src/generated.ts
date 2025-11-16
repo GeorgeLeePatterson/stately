@@ -1,5 +1,5 @@
 import type { OpenAPIV3_1 } from 'openapi-types';
-import type { StringKeys } from './helpers';
+import type { AnyRecord, EmptyRecord, StringKeys } from './helpers';
 import type {
   AllNodes,
   BaseNode,
@@ -17,9 +17,9 @@ import type {
  * uses the raw OpenAPI document passed to stately().
  */
 export interface StatelyConfig<
-  Components = { schemas?: Record<string, any> },
-  Paths extends {} = Record<string, never>,
-  Nodes extends Record<string, BaseNode> = Record<string, BaseNode>,
+  Components = { schemas?: AnyRecord },
+  Paths extends {} = EmptyRecord,
+  Nodes extends NodeMap = NodeMap,
 > {
   components: Components;
   paths: Paths;

@@ -1,5 +1,5 @@
-import type { SchemaConfig, Schemas } from '../index.js';
-import type { DefinePlugin, DefineTypes } from '../plugin.js';
+import type { DefinePlugin, SchemaConfig, Schemas } from '../index.js';
+import type { DefineTypes } from '../plugin.js';
 import type { PluginFactory } from '../stately.js';
 import type { ValidateArgs } from '../validation.js';
 import type { CoreData } from './data.js';
@@ -28,7 +28,7 @@ export type CorePlugin<Config extends CoreStatelyConfig> = DefinePlugin<
 /**
  * Core schema plugin that wires entity metadata, helpers, and validators.
  */
-export function createCorePlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
+export function corePlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
   return runtime => {
     const document = runtime.schema.document;
     const nodes = runtime.schema.nodes as SchemaConfig<S>['nodes'];

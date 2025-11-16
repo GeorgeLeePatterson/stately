@@ -32,7 +32,7 @@ type SampleComponentSchemas = {
   StateEntry: 'sample'; // Generated as string literal union
   Entity: { type: 'sample'; data: { id: string; name: string } }; // Generated as discriminated union
   EntityId: string;
-  Summary: { id?: string; name?: string; description?: string };
+  Summary: { id: string; name: string; description?: string | null };
 };
 
 type SampleComponents = { schemas: SampleComponentSchemas };
