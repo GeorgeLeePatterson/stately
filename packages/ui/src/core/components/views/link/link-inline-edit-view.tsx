@@ -1,15 +1,10 @@
-import { useStatelyUi } from "@/context";
-import { FieldLegend } from "@/core/components/ui/field";
-import type {
-  CoreEntity,
-  CoreObjectNode,
-  CoreStateEntry,
-} from "@/core";
-import { EditMode, EntityEditView } from "../entity/entity-edit-view";
-import type { LinkFor } from "./link-edit-view";
-import { AnyRecord } from "@stately/schema/helpers";
-import { useCoreStatelyUi } from "@/context";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import type { AnyRecord } from '@stately/schema/helpers';
+import { FieldLegend } from '@/base/ui/field';
+import type { CoreEntity, CoreObjectNode, CoreStateEntry } from '@/core';
+import { useStatelyUi } from '@/core';
+import { EditMode, EntityEditView } from '../entity/entity-edit-view';
+import type { LinkFor } from './link-edit-view';
 
 export interface LinkInlineEditProps<Schema extends Schemas = Schemas> {
   /** The entity type being configured inline */
@@ -43,39 +38,30 @@ export function LinkInlineEdit<Schema extends Schemas = Schemas>({
   after,
   isWizard,
 }: LinkInlineEditProps<Schema>) {
-  const { schema } = useCoreStatelyUi();
-  const entityValue: CoreEntity<Schema>["data"] =
-    value && "inline" in value
-      ? value.inline
-      : ({} as CoreEntity<Schema>["data"]);
+  const { schema } = useStatelyUi();
+  const entityValue: CoreEntity<Schema>['data'] =
+    value && 'inline' in value ? value.inline : ({} as CoreEntity<Schema>['data']);
 
   // Handle changes: wrap the entity back up
   const handleChange = (entity: AnyRecord) => {
     onChange({ entity_type: targetType, inline: entity } as LinkFor<Schema>);
   };
 
-  const entityDisplayName =
-    schema.data.entityDisplayNames?.[targetType] ?? String(targetType);
+  const entityDisplayName = schema.data.entityDisplayNames?.[targetType] ?? String(targetType);
 
   return (
     <>
       <FieldLegend className="flex justify-between flex-1 w-full">
-        <div className="text-sm font-medium">
-          Inline {entityDisplayName} Configuration
-        </div>
+        <div className="text-sm font-medium">Inline {entityDisplayName} Configuration</div>
         {after}
       </FieldLegend>
 
-      <div
-        className={
-          "flex flex-col min-h-0 border-l-4 border-primary/20 pl-3 space-y-3"
-        }
-      >
+      <div className={'flex flex-col min-h-0 border-l-4 border-primary/20 pl-3 space-y-3'}>
         <EntityEditView
-          node={node}
-          value={entityValue}
-          onChange={handleChange}
           defaultMode={isWizard ? EditMode.WIZARD : undefined}
+          node={node}
+          onChange={handleChange}
+          value={entityValue}
         />
       </div>
     </>

@@ -1,21 +1,17 @@
-import type { CoreTaggedUnionNode } from "@/core";
-import { useEffect, useState } from "react";
-import { DescriptionLabel } from "@/core/components/base/description";
-import { Card, CardContent } from "@/core/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/core/components/ui/select";
-import { FieldEdit } from "@/base/form/field-edit";
-import type { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/context";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { useEffect, useState } from 'react';
+import { DescriptionLabel } from '@/base/components/description';
+import type { EditFieldProps } from '@/base/form/field-edit';
+import { FieldEdit } from '@/base/form/field-edit';
+import { Card, CardContent } from '@/base/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
+import type { CoreTaggedUnionNode } from '@/core';
+import { useStatelyUi } from '@/core';
 
-export type TaggedUnionEditProps<Schema extends Schemas = Schemas> =
-  EditFieldProps<Schema, CoreTaggedUnionNode<Schema>>;
+export type TaggedUnionEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
+  Schema,
+  CoreTaggedUnionNode<Schema>
+>;
 
 /**
  * Tagged union field component - handles Rust enums with explicit discriminator
@@ -36,7 +32,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: TaggedUnionEditProps<Schema>) {
-  const { schema, plugins } = useCoreStatelyUi();
+  const { plugins } = useStatelyUi();
   const discriminatorField = node.discriminator;
 
   // Local state for current data
@@ -54,9 +50,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
 
   // Find the current variant schema
   const currentVariant = currentTag
-    ? node.variants.find(
-        (variant: (typeof node.variants)[number]) => variant.tag === currentTag,
-      )
+    ? node.variants.find((variant: (typeof node.variants)[number]) => variant.tag === currentTag)
     : null;
 
   // Handle discriminator change - propagate immediately
@@ -72,7 +66,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
     // Merge discriminator with variant data
     const newValue = {
       [discriminatorField]: newTag,
-      ...(typeof defaultVariantData === "object" && defaultVariantData !== null
+      ...(typeof defaultVariantData === 'object' && defaultVariantData !== null
         ? defaultVariantData
         : {}),
     };
@@ -89,19 +83,15 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
     onChange(newValue);
   };
 
-  const discriminatorLabel =
-    plugins.core.utils?.generateFieldLabel(discriminatorField);
+  const discriminatorLabel = plugins.core.utils?.generateFieldLabel(discriminatorField);
 
   return (
     <div className="space-y-3 min-w-0">
       <div className="flex flex-col gap-2">
-        <Select
-          value={currentTag || ""}
-          onValueChange={handleDiscriminatorChange}
-        >
+        <Select onValueChange={handleDiscriminatorChange} value={currentTag || ''}>
           <SelectTrigger id={formId}>
             <SelectValue
-            placeholder={`Select ${discriminatorLabel?.toLowerCase() || 'Variant'}...`}
+              placeholder={`Select ${discriminatorLabel?.toLowerCase() || 'Variant'}...`}
             />
           </SelectTrigger>
           <SelectContent>
@@ -113,9 +103,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
           </SelectContent>
         </Select>
         {currentVariant?.schema.description && (
-          <DescriptionLabel>
-            {currentVariant.schema.description}
-          </DescriptionLabel>
+          <DescriptionLabel>{currentVariant.schema.description}</DescriptionLabel>
         )}
       </div>
 
@@ -123,11 +111,10 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
         <Card>
           <CardContent className="space-y-4">
             {/* TODO: Remove - why is this only handling objects? */}
-            {currentVariant.schema.nodeType === "object" &&
+            {currentVariant.schema.nodeType === 'object' &&
               Object.entries(currentVariant.schema.properties || {}).map(
                 ([fieldName, fieldSchema]) => {
-                  const isRequired =
-                    currentVariant.schema.required?.includes(fieldName);
+                  const isRequired = currentVariant.schema.required?.includes(fieldName);
                   const fieldValue = formData[fieldName];
                   const fieldFormId = `${fieldName}-tagged-union-${formId}`;
 
@@ -135,14 +122,12 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
                     <div key={fieldName}>
                       <FieldEdit
                         formId={fieldFormId}
-                        label={plugins.core.utils?.generateFieldLabel(fieldName)}
-                        node={fieldSchema}
-                        value={fieldValue}
-                        onChange={(newValue) =>
-                          handleFieldChange(fieldName, newValue)
-                        }
                         isRequired={isRequired}
                         isWizard={isWizard}
+                        label={plugins.core.utils?.generateFieldLabel(fieldName)}
+                        node={fieldSchema}
+                        onChange={newValue => handleFieldChange(fieldName, newValue)}
+                        value={fieldValue}
                       />
                     </div>
                   );

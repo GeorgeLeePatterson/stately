@@ -4,30 +4,27 @@
  * Uses flat component registry lookup: 'nodeType::view'
  */
 
-import { useStatelyUi } from "@/context";
-import { getViewComponent } from "@/registry";
-import type { AnyBaseSchemas, BaseSchemas } from "..";
+import type { StatelySchemas } from '@stately/schema/schema';
+import { getViewComponent } from '@/base/registry';
+import { useStatelyUi } from '@/core';
 
 export interface ViewFieldProps<
-  S extends AnyBaseSchemas = BaseSchemas,
-  N extends S['plugin']["AnyNode"] = S['plugin']["AnyNode"],
+  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
+  N extends S['plugin']['AnyNode'] = S['plugin']['AnyNode'],
   V = unknown,
 > {
   node: N;
   value: V;
 }
 
-export function FieldView<S extends AnyBaseSchemas = BaseSchemas>(
+export function FieldView<S extends StatelySchemas<any, any> = StatelySchemas<any, any>>(
   props: ViewFieldProps<S>,
 ) {
   const { node, value } = props;
   const { registry } = useStatelyUi();
 
   if (value === null || value === undefined) return null;
-
   const View = getViewComponent<S>(registry.components, node.nodeType);
-
   if (!View) return null;
-
   return <View {...props} />;
 }

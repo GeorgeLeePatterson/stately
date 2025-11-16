@@ -1,57 +1,53 @@
-import type { CoreObjectNode } from "@/core";
-import { DescriptionLabel } from "@/core/components/base/description";
-import { NotSet } from "@/core/components/base/not-set";
-import { SimpleLabel } from "@/core/components/base/simple-label";
-import { FieldView } from "@/base/form/field-view";
-import type { ViewFieldProps } from "@/base/form/field-view";
-import { AnyRecord } from "@stately/schema/helpers";
-import { useCoreStatelyUi } from "@/context";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import type { AnyRecord } from '@stately/schema/helpers';
+import { DescriptionLabel } from '@/base/components/description';
+import { NotSet } from '@/base/components/not-set';
+import { SimpleLabel } from '@/base/components/simple-label';
+import type { ViewFieldProps } from '@/base/form/field-view';
+import { FieldView } from '@/base/form/field-view';
+import type { CoreObjectNode } from '@/core';
+import { useStatelyUi } from '@/core';
 
-export type ObjectViewProps<Schema extends Schemas = Schemas> =
-  ViewFieldProps<Schema, CoreObjectNode<Schema>, any>;
+export type ObjectViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
+  Schema,
+  CoreObjectNode<Schema>,
+  any
+>;
 
 export function ObjectView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: ObjectViewProps<Schema>) {
-  const { schema, plugins } = useCoreStatelyUi();
+  const { schema, plugins } = useStatelyUi();
   const required = new Set(node.required || []);
   const objValue = value as AnyRecord;
 
   return (
     <div className="flex-1 border-l-2 border-primary/30 rounded-xs pl-4 py-3 space-y-4">
       {Object.entries(node.properties).map(([propName, propSchema]) => {
-        const typedSchema = propSchema as Schema['plugin']["AnyNode"];
+        const typedSchema = propSchema as Schema['plugin']['AnyNode'];
         const propValue = objValue[propName];
         const valueDefined = propValue !== undefined && propValue !== null;
         const label = `${plugins.core.utils?.generateFieldLabel(propName)}:`;
         const description = typedSchema.description;
-        const singleLine =
-          !valueDefined || schema.plugins.core.isPrimitive(typedSchema);
+        const singleLine = !valueDefined || schema.plugins.core.isPrimitive(typedSchema);
         const valueDisplay = valueDefined ? (
           <FieldView<Schema> node={typedSchema} value={propValue} />
         ) : (
           <NotSet />
         );
-        const wrappingClass = singleLine
-          ? "items-center"
-          : "flex-col space-y-2";
+        const wrappingClass = singleLine ? 'items-center' : 'flex-col space-y-2';
 
         return (
-          <div key={propName} className={`flex flex-1 gap-2 ${wrappingClass}`}>
+          <div className={`flex flex-1 gap-2 ${wrappingClass}`} key={propName}>
             <div className="flex flex-col justify-between">
               {label && (
                 <SimpleLabel>
                   {label}
-                  {required.has(propName) && (
-                    <span className="text-destructive ml-1">*</span>
-                  )}
+                  {required.has(propName) && <span className="text-destructive ml-1">*</span>}
                 </SimpleLabel>
               )}
-              {description && !singleLine && (
-                <DescriptionLabel>{description}</DescriptionLabel>
-              )}
+              {description && !singleLine && <DescriptionLabel>{description}</DescriptionLabel>}
             </div>
             <div className="flex-1">{valueDisplay}</div>
           </div>

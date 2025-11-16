@@ -1,9 +1,6 @@
-import { FieldDescription, FieldTitle } from "@/core/components/ui/field";
-import {
-  EntityPropertyLabel,
-  type EntityPropertyProps,
-} from "./entity-property-view";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { FieldDescription, FieldTitle } from '@/base/ui/field';
+import { EntityPropertyLabel, type EntityPropertyProps } from './entity-property-view';
 
 export function EntityPropertyEdit<Schema extends Schemas = Schemas>({
   fieldName,
@@ -15,11 +12,7 @@ export function EntityPropertyEdit<Schema extends Schemas = Schemas>({
   return (
     <>
       <FieldTitle className="flex items-center gap-2">
-        <EntityPropertyLabel
-          fieldName={fieldName}
-          node={node}
-          isRequired={isRequired}
-        />
+        <EntityPropertyLabel fieldName={fieldName} isRequired={isRequired} node={node} />
       </FieldTitle>
       {node.description && !compact && (
         <FieldDescription className="text-xs italic leading-none font-medium text-muted-foreground">

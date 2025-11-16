@@ -4,19 +4,26 @@ export default defineConfig({
   entry: {
     // Base + Core
     index: "src/index.ts",
+    // Base
+    "base/index": "src/base/index.ts",
+    "base/components/index": "src/base/components/index.ts",
+    "base/dialogs/index": "src/base/dialogs/index.ts",
+    "base/form/index": "src/base/form/index.ts",
+    "base/hooks/index": "src/base/hooks/index.ts",
+    "base/lib/utils": "src/base/lib/utils.ts",
+    "base/ui/index": "src/base/ui/index.ts",
     // Core
     "core/index": "src/core/index.ts",
     "core/components/fields/index": "src/core/components/fields/index.ts",
+    "core/components/fields/edit/index": "src/core/components/fields/edit/index.ts",
+    "core/components/fields/view/index": "src/core/components/fields/view/index.ts",
+    //     TODO: Individual Fields
     "core/components/dialogs/index": "src/core/components/dialogs/index.ts",
     "core/components/views/index": "src/core/components/views/index.ts",
-    "core/hooks/index": "src/core/hooks/index.ts",
+    "core/components/views/entity/index": "src/core/components/views/entity/index.ts",
+    "core/components/views/link/index": "src/core/components/views/link/index.ts",
     "core/context/index": "src/core/context/index.ts",
-    // Base
-    "core/base/index": "src/base/index.ts",
-    "core/base/components": "src/base/components/index.ts",
-    "core/base/form": "src/base/form/index.ts",
-    "core/base/hooks": "src/base/hooks/index.ts",
-    "core/base/lib/utils": "src/base/lib/utils.ts",
+    "core/hooks/index": "src/core/hooks/index.ts",
 
   },
   format: ["esm"],

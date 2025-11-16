@@ -1,8 +1,8 @@
+import type { StatelySchemas } from '@stately/schema/schema';
 import type { ComponentType } from 'react';
-import type { AnyBaseSchemas, BaseSchemas } from '@/base';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import type { ViewFieldProps } from '@/base/form/field-view';
-import { makeRegistryKey } from '@/plugin';
+import { makeRegistryKey } from '@/base/plugin';
 import type { ComponentRegistry } from './runtime';
 
 export function getComponent(
@@ -26,7 +26,7 @@ export function getComponentByPath(
 }
 
 export function getEditComponent<
-  S extends AnyBaseSchemas = BaseSchemas,
+  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
   N extends S['plugin']['AnyNode'] = S['plugin']['AnyNode'],
   V = unknown,
 >(registry: ComponentRegistry, node: string): ComponentType<EditFieldProps<S, N, V>> | undefined {
@@ -35,14 +35,14 @@ export function getEditComponent<
   >;
 }
 
-export function getViewComponent<S extends AnyBaseSchemas = BaseSchemas>(
+export function getViewComponent<S extends StatelySchemas<any, any> = StatelySchemas<any, any>>(
   registry: ComponentRegistry,
   node: string,
 ): ComponentType<ViewFieldProps<S>> | undefined {
   return getComponent(registry, makeRegistryKey(node, 'view')) as ComponentType<ViewFieldProps<S>>;
 }
 
-export function getEditTransformer<S extends AnyBaseSchemas = BaseSchemas>(
+export function getEditTransformer<S extends StatelySchemas<any, any> = StatelySchemas<any, any>>(
   registry: ComponentRegistry,
   node: string,
   discriminator: string,
@@ -52,7 +52,7 @@ export function getEditTransformer<S extends AnyBaseSchemas = BaseSchemas>(
   >;
 }
 
-export function getViewTransformer<S extends AnyBaseSchemas = BaseSchemas>(
+export function getViewTransformer<S extends StatelySchemas<any, any> = StatelySchemas<any, any>>(
   registry: ComponentRegistry,
   node: string,
   discriminator: string,

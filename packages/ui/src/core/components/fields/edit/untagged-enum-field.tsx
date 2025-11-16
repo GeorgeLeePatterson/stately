@@ -1,20 +1,17 @@
-import type { CoreUntaggedEnumNode } from "@/core";
-import { DescriptionLabel } from "@/core/components/base/description";
-import { FieldSet } from "@/core/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/core/components/ui/select";
-import { FieldEdit } from "@/base/form/field-edit";
-import type { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/context";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { DescriptionLabel } from '@/base/components/description';
+import type { EditFieldProps } from '@/base/form/field-edit';
+import { FieldEdit } from '@/base/form/field-edit';
+import { FieldSet } from '@/base/ui/field';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
+import type { CoreUntaggedEnumNode } from '@/core';
+import { useStatelyUi } from '@/core';
 
-export type UntaggedEnumEditProps<Schema extends Schemas = Schemas> =
-  EditFieldProps<Schema, CoreUntaggedEnumNode<Schema>, any>;
+export type UntaggedEnumEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
+  Schema,
+  CoreUntaggedEnumNode<Schema>,
+  any
+>;
 
 /**
  * Untagged Enum field component - handles Rust untagged enums
@@ -30,21 +27,19 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: UntaggedEnumEditProps<Schema>) {
-  const { schema, plugins } = useCoreStatelyUi();
+  const { plugins } = useStatelyUi();
 
   // Extract current tag from the single property key
   let currentTag: string | null = null;
 
-  if (typeof value === "object" && value !== null && value !== undefined) {
+  if (typeof value === 'object' && value !== null && value !== undefined) {
     const keys = Object.keys(value);
     currentTag = keys.length > 0 ? keys[0] : null;
   }
 
   // Find the current variant schema
   const currentVariant = currentTag
-    ? node.variants.find(
-        (variant: (typeof node.variants)[number]) => variant.tag === currentTag,
-      )
+    ? node.variants.find((variant: (typeof node.variants)[number]) => variant.tag === currentTag)
     : null;
 
   // Handle variant selection change
@@ -66,9 +61,9 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
   return (
     <div className="space-y-3 border rounded-md p-2 min-w-0">
       <div className="flex flex-col gap-2">
-        <Select value={currentTag || ""} onValueChange={handleVariantChange}>
+        <Select onValueChange={handleVariantChange} value={currentTag || ''}>
           <SelectTrigger id={formId}>
-            <SelectValue placeholder={`Select ${label || "variant"}...`} />
+            <SelectValue placeholder={`Select ${label || 'variant'}...`} />
           </SelectTrigger>
           <SelectContent>
             {node.variants.map((variant: (typeof node.variants)[number]) => (
@@ -79,9 +74,7 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
           </SelectContent>
         </Select>
         {currentVariant?.schema.description && (
-          <DescriptionLabel>
-            {currentVariant.schema.description}
-          </DescriptionLabel>
+          <DescriptionLabel>{currentVariant.schema.description}</DescriptionLabel>
         )}
       </div>
 
@@ -90,11 +83,11 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
           {/* Render the variant schema directly */}
           <FieldEdit
             formId={`untagged-enum-${currentTag}-${formId}`}
-            node={currentVariant.schema}
-            value={value[currentTag]}
-            onChange={(newValue) => handleFieldChange(currentTag, newValue)}
-            label={`${plugins.core.utils?.generateFieldLabel(currentTag)} Configuration`}
             isWizard={isWizard}
+            label={`${plugins.core.utils?.generateFieldLabel(currentTag)} Configuration`}
+            node={currentVariant.schema}
+            onChange={newValue => handleFieldChange(currentTag, newValue)}
+            value={value[currentTag]}
           />
         </FieldSet>
       )}

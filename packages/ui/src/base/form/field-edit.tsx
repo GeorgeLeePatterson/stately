@@ -5,13 +5,13 @@
  * All base components are pre-registered in statelyUi()
  */
 
-import { useStatelyUi } from "@/context";
-import { getEditComponent } from "@/registry";
-import { AnyBaseSchemas, BaseSchemas } from "..";
+import type { StatelySchemas } from '@stately/schema/schema';
+import { getEditComponent } from '@/base/registry';
+import { useStatelyUi } from '@/core';
 
 export interface EditFieldProps<
-  S extends AnyBaseSchemas = BaseSchemas,
-  N extends S["plugin"]['AnyNode'] = S['plugin']["AnyNode"],
+  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
+  N extends S['plugin']['AnyNode'] = S['plugin']['AnyNode'],
   V = unknown,
 > {
   formId: string;
@@ -26,23 +26,16 @@ export interface EditFieldProps<
 }
 
 export function FieldEdit<
-  S extends AnyBaseSchemas = BaseSchemas,
-  N extends S["plugin"]['AnyNode'] = S['plugin']["AnyNode"],
+  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
+  N extends S['plugin']['AnyNode'] = S['plugin']['AnyNode'],
   V = unknown,
 >(props: EditFieldProps<S, N, V>) {
   const { node } = props;
   const { registry } = useStatelyUi();
-  const Edit = getEditComponent<S, N, V>(
-    registry.components,
-    node.nodeType,
-  );
+  const Edit = getEditComponent<S, N, V>(registry.components, node.nodeType);
 
   if (!Edit) {
-    return (
-      <div className="text-destructive text-sm">
-        Unknown node type: {node.nodeType}
-      </div>
-    );
+    return <div className="text-destructive text-sm">Unknown node type: {node.nodeType}</div>;
   }
 
   return <Edit {...props} />;

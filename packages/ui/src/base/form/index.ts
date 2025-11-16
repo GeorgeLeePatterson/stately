@@ -1,8 +1,9 @@
-import { FieldView } from "./field-view";
-import { FieldEdit } from "./field-edit";
-import { JsonEdit } from "./json-edit";
-import { JsonView } from "./json-view";
+import { FieldEdit } from './field-edit';
+import { FieldView } from './field-view';
+import { FormActions } from './form-actions';
+import { JsonEdit } from './json-edit';
+import { JsonView } from './json-view';
 
-export type { ViewFieldProps } from "./field-view";
-export type { EditFieldProps } from "./field-edit";
-export { FieldView, FieldEdit, JsonEdit, JsonView };
+export type { EditFieldProps } from './field-edit';
+export type { ViewFieldProps } from './field-view';
+export { FormActions, FieldView, FieldEdit, JsonEdit, JsonView };

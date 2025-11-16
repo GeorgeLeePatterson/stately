@@ -1,29 +1,30 @@
-import type { DefineConfig, Schemas } from '@stately/schema';
+import type { Schemas } from '@stately/schema';
 import type { CoreStatelyConfig } from '@stately/schema/core/generated';
+import {
+  CoreNodeType,
+  type CoreNodeUnion as SchemaCoreNodeUnion,
+} from '@stately/schema/core/nodes';
 import type { CorePlugin } from '@stately/schema/core/plugin';
-import { CoreNodeType, type CoreNodeUnion as SchemaCoreNodeUnion } from '@stately/schema/core/nodes';
+import { CORE_PLUGIN_NAME } from '@stately/schema/core/plugin';
 import type { ComponentType } from 'react';
+import type { PluginRuntime } from '@/base/plugin';
+import { makeRegistryKey, type UiPluginAugment } from '@/base/plugin';
+import type { ComponentRegistry, StatelyRuntime, StatelyUiPluginFactory } from '@/base/runtime';
 import * as editFields from '@/core/components/fields/edit';
 import * as viewFields from '@/core/components/fields/view';
 import * as linkFields from '@/core/components/views/link';
-import type { PluginRuntime } from '@/plugin';
-import { makeRegistryKey, type UiAugment } from '@/plugin';
-import type { ComponentRegistry, StatelyRuntime, StatelyUiPluginFactory } from '@/runtime';
+import type { DefineUiPlugin } from '..';
 import { buildCoreHttpBundle, type CoreOperationMap } from './operations';
-import { generateFieldLabel, getDefaultValue as computeDefaultValue, getNodeTypeIcon } from './utils';
-import { CORE_PLUGIN_NAME } from '@stately/schema/core/plugin';
-
-/**
- * =============================================================================
- * CORE PLUGIN TYPES
- * =============================================================================
- */
-type SchemaNodeUnion<S extends Schemas<any, any>> = S['plugin']['AnyNode'];
+import {
+  getDefaultValue as computeDefaultValue,
+  generateFieldLabel,
+  getNodeTypeIcon,
+} from './utils';
 
 export type CorePluginUtils<S extends Schemas<any, any> = Schemas<any, any>> = {
   getNodeTypeIcon: (nodeType: string) => ComponentType<any>;
   generateFieldLabel: (fieldName: string) => string;
-  getDefaultValue: (node: SchemaNodeUnion<S>) => any;
+  getDefaultValue: (node: S['plugin']['AnyNode']) => any;
 };
 
 export type CorePluginRuntime<S extends Schemas<any, any> = Schemas<any, any>> = PluginRuntime<
@@ -34,7 +35,7 @@ export type CorePluginRuntime<S extends Schemas<any, any> = Schemas<any, any>> =
 
 export type CorePluginName = CorePlugin<CoreStatelyConfig>['name'];
 
-export type CoreUiAugment<S extends Schemas<any, any> = Schemas<any, any>> = UiAugment<
+export type CoreUiAugment<S extends Schemas<any, any> = Schemas<any, any>> = DefineUiPlugin<
   typeof CORE_PLUGIN_NAME,
   S,
   CoreOperationMap,
@@ -42,23 +43,20 @@ export type CoreUiAugment<S extends Schemas<any, any> = Schemas<any, any>> = UiA
 >;
 
 /**
- * =============================================================================
- * CORE PLUGIN FACTORY
- * =============================================================================
- */
-
-/**
+ * Core plugin factory
+ *
  * Create the core UI plugin factory.
  * Populates the runtime with core plugin data (components, api, utils).
  * The runtime type already declares CoreUiAugment; this factory fulfills it.
  */
-export function createCoreUiPlugin<
+export function coreUiPlugin<
   Schema extends Schemas = Schemas,
-  Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [
+  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [
     CoreUiAugment<Schema>,
   ],
 >(): StatelyUiPluginFactory<Schema, Augments> {
   return (runtime: StatelyRuntime<Schema, Augments>) => {
+    // Register core components
     registerCoreComponents(runtime.registry.components);
 
     // Extract paths from OpenAPI document at runtime
@@ -70,9 +68,7 @@ export function createCoreUiPlugin<
       utils: {
         generateFieldLabel,
         getDefaultValue: node =>
-          computeDefaultValue<Schema['config']>(
-            node as SchemaCoreNodeUnion<Schema['config']>,
-          ),
+          computeDefaultValue<Schema['config']>(node as SchemaCoreNodeUnion<Schema['config']>),
         getNodeTypeIcon: (nodeType: string) =>
           getNodeTypeIcon(nodeType, runtime.registry.components),
       },

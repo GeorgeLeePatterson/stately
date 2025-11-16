@@ -2,14 +2,46 @@
  * @stately/ui - Main exports
  */
 
+import type { Schemas } from '@stately/schema';
+import type { RequireLiteral } from '@stately/schema/helpers';
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
-import type { CorePaths } from './core';
+import { StatelyUiProvider } from './base/context.js';
+import { callOperation, createHttpBundle, type DefineOperationMap } from './base/operations.js';
+import { makeRegistryKey, type PluginFunctionMap, type UiPluginAugment } from './base/plugin.js';
+import { createStatelyUi, type StatelyRuntime } from './base/runtime.js';
+import { createUseStatelyUi } from './context.js';
 import { type CoreUiAugment, createCoreUiPlugin } from './core/index.js';
-import { callOperation } from './operations.js';
-import { makeRegistryKey, UiAugment } from './plugin.js';
-import { createStatelyUi, StatelyRuntime } from './runtime.js';
-import { Schemas } from '@stately/schema';
+
+export type { DefineOperationMap, HttpBundle, OperationMeta } from './base/operations.js';
+export { createHttpBundle };
+export type { PluginRuntime, RegistryKey, RegistryMode, UiPluginAugment } from './base/plugin.js';
+export type {
+  ComponentRegistry,
+  StatelyRuntime,
+  StatelyUiBuilder,
+  StatelyUiPluginFactory,
+  UiRegistry,
+} from './base/runtime.js';
+export { StatelyUiProvider, createUseStatelyUi, makeRegistryKey, callOperation };
+
+/**
+ * Public helper for declaring a ui plugin augment.
+ *
+ * Enforces string-literal names so downstream utilities preserve keyed plugins.
+ * Plugin authors should export their augments defined with this type
+ */
+export type DefineUiPlugin<
+  Name extends string,
+  Schema extends Schemas<any, any> = Schemas,
+  Ops extends DefineOperationMap = DefineOperationMap,
+  Utils extends PluginFunctionMap = PluginFunctionMap,
+> = UiPluginAugment<
+  RequireLiteral<Name, 'Plugin names must be string literals'>,
+  Schema,
+  Ops,
+  Utils
+>;
 
 /**
  * Runtime with core plugin installed.
@@ -17,7 +49,7 @@ import { Schemas } from '@stately/schema';
  */
 export type StatelyUi<
   S extends Schemas<any, any> = Schemas,
-  ExtraAugments extends readonly UiAugment<string, S, any, any>[] = readonly [],
+  ExtraAugments extends readonly UiPluginAugment<string, S, any, any>[] = readonly [],
 > = StatelyRuntime<S, readonly [CoreUiAugment<S>, ...ExtraAugments]>;
 
 /**
@@ -41,18 +73,3 @@ export function statelyUi<Schema extends Schemas<any, any>>(
     createCoreUiPlugin<Schema>(),
   );
 }
-
-export { StatelyUiProvider, useStatelyUi, createUseStatelyUi } from './context.js';
-
-// Re-exports
-export type { RegistryKey, RegistryMode, UiAugment } from './plugin.js';
-export type {
-  ComponentRegistry,
-  StatelyRuntime,
-  StatelyUiBuilder,
-  StatelyUiPluginFactory,
-  UiRegistry,
-} from './runtime.js';
-export { makeRegistryKey };
-export { callOperation };
-export type { OperationMeta } from './operations.js';

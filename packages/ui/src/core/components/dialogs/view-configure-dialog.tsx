@@ -1,23 +1,22 @@
-import { ChevronRight } from "lucide-react";
-import { Fragment } from "react";
-import { useStatelyUi } from "@/context";
-import { useEntityData } from "@/core/hooks/use-entity-data";
-import { useEntitySchema } from "@/core/hooks/use-entity-schema";
-import type { CoreObjectNode, CoreStateEntry } from "@/core";
-import { Button } from "@/base/ui/button";
+import type { Schemas } from '@stately/schema';
+import { ChevronRight } from 'lucide-react';
+import { Fragment } from 'react';
+import { Button } from '@/base/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/base/ui/dialog";
-import { ScrollArea } from "@/base/ui/scroll-area";
-import { Separator } from "@/base/ui/separator";
-import { Skeleton } from "@/base/ui/skeleton";
-import { EntityDetailView } from "../views/entity/entity-detail-view";
-import { useCoreStatelyUi } from "@/context";
-import { Schemas } from "@stately/schema";
+} from '@/base/ui/dialog';
+import { ScrollArea } from '@/base/ui/scroll-area';
+import { Separator } from '@/base/ui/separator';
+import { Skeleton } from '@/base/ui/skeleton';
+import type { CoreObjectNode, CoreStateEntry } from '@/core';
+import { useStatelyUi } from '@/core';
+import { useEntityData } from '@/core/hooks/use-entity-data';
+import { useEntitySchema } from '@/core/hooks/use-entity-schema';
+import { EntityDetailView } from '../views/entity/entity-detail-view';
 
 export interface LinkEntityProps<Schema extends Schemas = Schemas> {
   entityName: string;
@@ -45,11 +44,10 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
   breadcrumbs = [],
   onNavigateToBreadcrumb,
 }: ViewLinkDialogProps<Schema> & LinkEntityProps<Schema>) {
-  const { schema: statelySchema } = useCoreStatelyUi();
-  const entityDisplayNames =
-    statelySchema.data.entityDisplayNames as
-      | Record<CoreStateEntry<Schema>, string>
-      | undefined;
+  const { schema: statelySchema } = useStatelyUi();
+  const entityDisplayNames = statelySchema.data.entityDisplayNames as
+    | Record<CoreStateEntry<Schema>, string>
+    | undefined;
   const entityDisplayName = entityDisplayNames?.[entityType] ?? String(entityType);
   const entitySchema = useEntitySchema(entityType, schema);
 
@@ -58,16 +56,16 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
     isLoading,
     error: queryError,
   } = useEntityData<Schema>({
-    identifier: entityName,
-    entity: entityType,
     disabled: !entitySchema.node,
+    entity: entityType,
+    identifier: entityName,
   });
 
   // Extract the entity data and remove id for display
   const entityData = data?.entity?.data;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className="max-w-6xl w-[90vw] max-h-[90vh] min-w-[60vw] flex flex-col overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
@@ -76,9 +74,7 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
             </span>
             <span className="truncate">{entityName}</span>
           </DialogTitle>
-          <DialogDescription>
-            Navigate around referenced configuration
-          </DialogDescription>
+          <DialogDescription>Navigate around referenced configuration</DialogDescription>
         </DialogHeader>
 
         {/* Breadcrumb Navigation */}
@@ -87,20 +83,16 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
             <div className="flex items-center gap-1 text-sm overflow-x-auto pb-2">
               {breadcrumbs.map((crumb, idx) => (
                 <Fragment key={`${crumb.entityName}-${idx}`}>
-                  {idx > 0 && (
-                    <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                  )}
+                  {idx > 0 && <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />}
                   <Button
+                    className="shrink-0 cursor-pointer"
+                    disabled={idx === breadcrumbs.length - 1}
+                    onClick={() => onNavigateToBreadcrumb?.(idx)}
+                    size="sm"
                     type="button"
                     variant="ghost"
-                    size="sm"
-                    onClick={() => onNavigateToBreadcrumb?.(idx)}
-                    disabled={idx === breadcrumbs.length - 1}
-                    className="shrink-0 cursor-pointer"
                   >
-                    <span className="truncate max-w-[150px]">
-                      {crumb.entityType}
-                    </span>
+                    <span className="truncate max-w-[150px]">{crumb.entityType}</span>
                   </Button>
                 </Fragment>
               ))}
@@ -120,24 +112,20 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
             // Entity fetch error
             <div className="text-center py-8">
               <p className="text-destructive mb-2">Error loading entity</p>
-              <p className="text-sm text-muted-foreground">
-                {queryError.message}
-              </p>
+              <p className="text-sm text-muted-foreground">{queryError.message}</p>
             </div>
           ) : !entityData ? (
             // No entity type
-            <p className="text-muted-foreground text-center py-8">
-              Entity not found
-            </p>
+            <p className="text-muted-foreground text-center py-8">Entity not found</p>
           ) : !entitySchema.node ? (
             // Entity schema error
             <div className="text-center py-8 text-destructive">
-              {entitySchema.error || "No entity found"}
+              {entitySchema.error || 'No entity found'}
             </div>
           ) : (
             <EntityDetailView
-              entityType={entityType}
               entity={entityData}
+              entityType={entityType}
               node={entitySchema.node}
             />
           )}

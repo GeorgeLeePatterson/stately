@@ -1,12 +1,15 @@
-import type { CoreTupleNode } from "@/core";
-import { useId } from "react";
-import { FieldItem } from "@/core/components/base/field";
-import { FieldView } from "@/base/form/field-view";
-import type { ViewFieldProps } from "@/base/form/field-view";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { useId } from 'react';
+import { FieldItem } from '@/base/components/field';
+import type { ViewFieldProps } from '@/base/form/field-view';
+import { FieldView } from '@/base/form/field-view';
+import type { CoreTupleNode } from '@/core';
 
-export type TupleViewProps<Schema extends Schemas = Schemas> =
-  ViewFieldProps<Schema, CoreTupleNode<Schema>, unknown[]>;
+export type TupleViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
+  Schema,
+  CoreTupleNode<Schema>,
+  unknown[]
+>;
 
 export function TupleView<Schema extends Schemas = Schemas>({
   value,
@@ -16,25 +19,23 @@ export function TupleView<Schema extends Schemas = Schemas>({
   const keyPrefix = `${node.nodeType}-tuple-${formId}`;
   const arrValue = Array.isArray(value)
     ? value
-    : typeof value === "object"
+    : typeof value === 'object'
       ? Object.entries(value)
       : [value];
 
   return (
     <FieldItem>
       <div className="space-y-2 pl-4 border-l-2 border-muted">
-        {node.items.map(
-          (itemSchema: (typeof node.items)[number], index: number) => (
-            <FieldView
-              key={`${keyPrefix}-tuple-${
-                // biome-ignore lint/suspicious/noArrayIndexKey: Tuples are stable
-                index
-              }`}
-              node={itemSchema}
-              value={arrValue[index]}
-            />
-          ),
-        )}
+        {node.items.map((itemSchema: (typeof node.items)[number], index: number) => (
+          <FieldView
+            key={`${keyPrefix}-tuple-${
+              // biome-ignore lint/suspicious/noArrayIndexKey: Tuples are stable
+              index
+            }`}
+            node={itemSchema}
+            value={arrValue[index]}
+          />
+        ))}
       </div>
     </FieldItem>
   );

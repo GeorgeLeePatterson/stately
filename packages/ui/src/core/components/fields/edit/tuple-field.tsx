@@ -1,13 +1,16 @@
-import type { CoreTupleNode } from "@/core";
-import { useCallback, useState } from "react";
-import { FieldSet } from "@/core/components/ui/field";
-import { GlowingSave } from "@/base/components/glowing-save";
-import { FieldEdit } from "@/base/form/field-edit";
-import type { EditFieldProps } from "@/base/form/field-edit";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { useCallback, useState } from 'react';
+import { GlowingSave } from '@/base/components/glowing-save';
+import type { EditFieldProps } from '@/base/form/field-edit';
+import { FieldEdit } from '@/base/form/field-edit';
+import { FieldSet } from '@/base/ui/field';
+import type { CoreTupleNode } from '@/core';
 
-export type TupleEditProps<Schema extends Schemas = Schemas> =
-  EditFieldProps<Schema, CoreTupleNode<Schema>, unknown[]>;
+export type TupleEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
+  Schema,
+  CoreTupleNode<Schema>,
+  unknown[]
+>;
 
 /**
  * Tuple field component - handles fixed-length heterogeneous arrays
@@ -28,9 +31,7 @@ export function TupleEdit<Schema extends Schemas = Schemas>({
   const [firstSet, setFirstSet] = useState(false);
 
   // Validate tuple - simple check that all items present if required (items validate themselves)
-  const isValid =
-    !isRequired ||
-    (Array.isArray(formData) && formData.length === node.items.length);
+  const isValid = !isRequired || (Array.isArray(formData) && formData.length === node.items.length);
 
   const twoTuple = node.items.length === 2;
 
@@ -54,44 +55,42 @@ export function TupleEdit<Schema extends Schemas = Schemas>({
     [formData],
   );
 
-  if (!Array.isArray(value) && typeof value !== "object") {
-    console.warn("TupleField edit, unable to render: ", { label, node, value });
+  if (!Array.isArray(value) && typeof value !== 'object') {
+    console.warn('TupleField edit, unable to render: ', { label, node, value });
     return null;
   }
 
   if (node.items.length === 0) {
-    console.warn("TupleField edit, no items: ", { label, node, value });
+    console.warn('TupleField edit, no items: ', { label, node, value });
     return null;
   }
 
   return (
     <div className="space-y-2 border-l-4 border-border rounded-xs pl-4 py-3">
       <div className="font-medium">{label}</div>
-      {description && (
-        <p className="text-sm text-muted-foreground">{description}</p>
-      )}
+      {description && <p className="text-sm text-muted-foreground">{description}</p>}
       <div className="space-y-2">
         <FieldEdit
           formId={formId}
+          label={twoTuple ? 'Key' : `${label} 1`}
           node={node.items[0]}
+          onChange={newValue => handleFieldChange(0, newValue)}
           value={formData[0]}
-          onChange={(newValue) => handleFieldChange(0, newValue)}
-          label={twoTuple ? "Key" : `${label} 1`}
         />
         {node.items.length > 1 && (
           <FieldSet className="min-w-0" disabled={!firstSet}>
             {node.items.slice(1).map((itemNode: any, idx: number) => {
               const index = idx + 1;
-              const itemLabel = twoTuple ? "Value" : `${label} ${index + 1}`;
+              const itemLabel = twoTuple ? 'Value' : `${label} ${index + 1}`;
               return (
                 <div key={`${itemLabel}-${index}`}>
                   <FieldEdit
                     formId={`tuple-${formId}-${idx}`}
-                    node={itemNode}
-                    value={formData[index]}
-                    onChange={(newValue) => handleFieldChange(index, newValue)}
-                    label={itemLabel}
                     isWizard={isWizard}
+                    label={itemLabel}
+                    node={itemNode}
+                    onChange={newValue => handleFieldChange(index, newValue)}
+                    value={formData[index]}
                   />
                 </div>
               );
@@ -103,15 +102,15 @@ export function TupleEdit<Schema extends Schemas = Schemas>({
       {/* Save/Cancel buttons */}
       {!isWizard && isDirty && (
         <GlowingSave
-          mode="edit"
-          size="sm"
-          label={label ? `${label} Tuple` : "Tuple"}
           isDisabled={!isValid}
-          onSave={handleSave}
+          label={label ? `${label} Tuple` : 'Tuple'}
+          mode="edit"
           onCancel={() => {
             setFormData(value || []);
             setIsDirty(false);
           }}
+          onSave={handleSave}
+          size="sm"
         />
       )}
     </div>

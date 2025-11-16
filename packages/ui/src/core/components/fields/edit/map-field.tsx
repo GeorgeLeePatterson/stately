@@ -1,21 +1,17 @@
-import { CoreNodeType } from "@stately/schema/core/nodes";
-import {
-  ChevronsDownUp,
-  ChevronsUpDown,
-  Pencil,
-  Plus,
-  Trash2,
-  X,
-} from "lucide-react";
-import { useCallback, useId, useState } from "react";
-import { Button } from "@/core/components/ui/button";
-import { Card, CardContent } from "@/core/components/ui/card";
-import {
-  Field,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-} from "@/core/components/ui/field";
+import type { Schemas } from '@stately/schema';
+import { CoreNodeType } from '@stately/schema/core/nodes';
+import type { AnyRecord } from '@stately/schema/helpers';
+import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { useCallback, useId, useState } from 'react';
+import { GlowingSave } from '@/base/components/glowing-save';
+import type { EditFieldProps } from '@/base/form/field-edit';
+import { FieldEdit } from '@/base/form/field-edit';
+import { FieldView } from '@/base/form/field-view';
+import { useViewMore } from '@/base/hooks/use-view-more';
+import { cn } from '@/base/lib/utils';
+import { Button } from '@/base/ui/button';
+import { Card, CardContent } from '@/base/ui/card';
+import { Field, FieldLegend, FieldSeparator, FieldSet } from '@/base/ui/field';
 import {
   InputGroup,
   InputGroupAddon,
@@ -23,19 +19,11 @@ import {
   InputGroupInput,
   InputGroupText,
   InputGroupTextarea,
-} from "@/core/components/ui/input-group";
-import { Item, ItemContent, ItemGroup } from "@/core/components/ui/item";
-import { Separator } from "@/core/components/ui/separator";
-import { useViewMore } from "@/base/hooks/use-view-more";
-import type { CoreMapNode, CoreNodeUnion } from "@/core";
-import { GlowingSave } from "@/base/components/glowing-save";
-import { FieldEdit } from "@/base/form/field-edit";
-import { FieldView } from "@/base/form/field-view";
-import type { EditFieldProps } from "@/base/form/field-edit";
-import { KeyValue } from "../view/map-field";
-import { AnyRecord } from "@stately/schema/helpers";
-import { cn } from "@/base/lib/utils";
-import { Schemas } from "@stately/schema";
+} from '@/base/ui/input-group';
+import { Item, ItemContent, ItemGroup } from '@/base/ui/item';
+import { Separator } from '@/base/ui/separator';
+import type { CoreMapNode, CoreNodeUnion } from '@/core';
+import { KeyValue } from '../view/map-field';
 
 const generateSaveLabels = (
   label?: string,
@@ -43,37 +31,29 @@ const generateSaveLabels = (
   value?: any,
   isEditDirty?: boolean,
 ): { edit: string; save: string; saveAll: string } => {
-  const newVariables = Object.keys(formData || {}).filter(
-    (k) => !value || !(k in value),
-  );
+  const newVariables = Object.keys(formData || {}).filter(k => !value || !(k in value));
   const hasNewVariable = newVariables.length > 0;
   const hasNewVariables = newVariables.length > 1;
   const pluralize = (hasNewVariable && isEditDirty) || hasNewVariables;
 
-  const saveFormLabel = label ? `New ${label} Variable` : "New Variable";
-  const editFormLabel = label ? `Edited ${label} Variable` : "Edited Variable";
+  const saveFormLabel = label ? `New ${label} Variable` : 'New Variable';
+  const editFormLabel = label ? `Edited ${label} Variable` : 'Edited Variable';
 
-  let saveLabelPrefix = "";
+  let saveLabelPrefix = '';
   if (!!formData && !!value && (hasNewVariable || isEditDirty)) {
-    saveLabelPrefix =
-      hasNewVariable && !isEditDirty
-        ? "New "
-        : !hasNewVariable
-          ? "Edited "
-          : "";
+    saveLabelPrefix = hasNewVariable && !isEditDirty ? 'New ' : !hasNewVariable ? 'Edited ' : '';
   }
   const saveAllFormLabel = label
-    ? `${saveLabelPrefix}${label} Variable${pluralize ? "s" : ""}`
-    : `${saveLabelPrefix}Variable${pluralize ? "s" : ""}`;
-  return {
-    edit: editFormLabel,
-    save: saveFormLabel,
-    saveAll: saveAllFormLabel,
-  };
+    ? `${saveLabelPrefix}${label} Variable${pluralize ? 's' : ''}`
+    : `${saveLabelPrefix}Variable${pluralize ? 's' : ''}`;
+  return { edit: editFormLabel, save: saveFormLabel, saveAll: saveAllFormLabel };
 };
 
-export type MapEditProps<Schema extends Schemas = Schemas> =
-  EditFieldProps<Schema, CoreMapNode<Schema>, AnyRecord>;
+export type MapEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
+  Schema,
+  CoreMapNode<Schema>,
+  AnyRecord
+>;
 
 /**
  * Map/Dictionary field component - handles HashMap<String, T> in Rust
@@ -107,8 +87,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   const saveLabels = generateSaveLabels(label, formData, value, isEditDirty);
 
   const newKeys =
-    formData &&
-    Object.keys(formData).filter((k) => !Object.keys(value || {}).includes(k));
+    formData && Object.keys(formData).filter(k => !Object.keys(value || {}).includes(k));
 
   // Handle save
   const handleSave = useCallback(() => {
@@ -121,9 +100,9 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   const onAddEdit = useCallback(
     (valueToAdd: any) => {
       if (!editKey) return;
-      setFormData((prev) => ({ ...prev, [editKey]: valueToAdd }));
-      setEditKey("");
-      setEditValue("");
+      setFormData(prev => ({ ...prev, [editKey]: valueToAdd }));
+      setEditKey('');
+      setEditValue('');
       setIsDirty(true);
       setIsEditDirty(true);
     },
@@ -133,9 +112,9 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   const onAddNew = useCallback(
     (valueToAdd: any) => {
       if (!newKey) return;
-      setFormData((prev) => ({ ...prev, [newKey]: valueToAdd }));
-      setNewKey("");
-      setNewValue("");
+      setFormData(prev => ({ ...prev, [newKey]: valueToAdd }));
+      setNewKey('');
+      setNewValue('');
       setIsDirty(true);
     },
     [newKey],
@@ -143,9 +122,9 @@ export function MapEdit<Schema extends Schemas = Schemas>({
 
   const onRemove = (key: string) => {
     if (key === editKey) {
-      setEditKey("");
+      setEditKey('');
     }
-    setFormData((prev) => {
+    setFormData(prev => {
       const { [key]: _, ...rest } = prev;
       return rest;
     });
@@ -157,12 +136,8 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   return (
     <>
       <div
+        className={cn('flex flex-col gap-2', 'border-l-3 border-l-border border-dotted ', 'pl-3')}
         id={parentFormId}
-        className={cn(
-          "flex flex-col gap-2",
-          "border-l-3 border-l-border border-dotted ",
-          "pl-3",
-        )}
       >
         {/*View Existing Items*/}
         {Object.entries(formData).length === 0 ? (
@@ -179,34 +154,31 @@ export function MapEdit<Schema extends Schemas = Schemas>({
             <ItemGroup className="space-y-3 min-w-0 flex-1">
               {existingView.map(([key, itemValue]) => (
                 <KeyValue
-                  key={`${key}-${key === editKey ? String(editValue) : ""}`}
                   active={newKeys.includes(key)}
-                  itemKey={key}
-                  open={key === editKey}
                   after={
                     <span className="inline-flex gap-2">
                       {/* Edit or cancel */}
                       {editKey === key ? (
                         <Button
+                          className="h-8 cursor-pointer"
+                          onClick={() => setEditKey(undefined)}
+                          size="sm"
                           type="button"
                           variant="ghost"
-                          size="sm"
-                          onClick={() => setEditKey(undefined)}
-                          className="h-8 cursor-pointer"
                         >
                           <X className="w-4 h-4" />
                         </Button>
                       ) : (
                         <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
+                          className="h-8 cursor-pointer"
+                          disabled={!!editKey}
                           onClick={() => {
                             setEditKey(key);
                             setEditValue(itemValue);
                           }}
-                          className="h-8 cursor-pointer"
-                          disabled={!!editKey}
+                          size="sm"
+                          type="button"
+                          variant="ghost"
                         >
                           <Pencil className="w-4 h-4" />
                         </Button>
@@ -214,27 +186,30 @@ export function MapEdit<Schema extends Schemas = Schemas>({
 
                       {/* Remove */}
                       <Button
+                        className="h-8 cursor-pointer text-destructive hover:text-destructive"
+                        onClick={() => onRemove(key)}
+                        size="sm"
                         type="button"
                         variant="ghost"
-                        size="sm"
-                        onClick={() => onRemove(key)}
-                        className="h-8 cursor-pointer text-destructive hover:text-destructive"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </span>
                   }
+                  itemKey={key}
+                  key={`${key}-${key === editKey ? String(editValue) : ''}`}
+                  open={key === editKey}
                 >
                   {key === editKey ? (
                     <ValueEdit
                       formId={formId}
-                      label={saveLabels.edit}
-                      node={node}
-                      hasKey={true}
-                      newValue={editValue}
-                      setNewValue={setEditValue}
                       handleAdd={onAddEdit}
+                      hasKey={true}
                       isWizard={isWizard}
+                      label={saveLabels.edit}
+                      newValue={editValue}
+                      node={node}
+                      setNewValue={setEditValue}
                     />
                   ) : (
                     <FieldView node={node} value={itemValue} />
@@ -243,21 +218,21 @@ export function MapEdit<Schema extends Schemas = Schemas>({
               ))}
 
               {/* View More */}
-              <Item size="sm" variant="muted" className="p-1">
+              <Item className="p-1" size="sm" variant="muted">
                 <ItemContent
                   className={cn(
-                    "flex flex-nowrap flex-1 justify-center w-full",
-                    "text-xs font-mono",
+                    'flex flex-nowrap flex-1 justify-center w-full',
+                    'text-xs font-mono',
                   )}
                 >
                   <Button
+                    className="cursor-pointer font-mono text-sm"
+                    onClick={() => setViewMore(v => !v)}
                     type="button"
                     variant="link"
-                    onClick={() => setViewMore((v) => !v)}
-                    className="cursor-pointer font-mono text-sm"
                   >
                     {viewMore ? <ChevronsDownUp /> : <ChevronsUpDown />}
-                    View {viewMore ? "Less" : "More"}
+                    View {viewMore ? 'Less' : 'More'}
                   </Button>
                 </ItemContent>
               </Item>
@@ -275,9 +250,9 @@ export function MapEdit<Schema extends Schemas = Schemas>({
             <InputGroup className="flex gap-2">
               <InputGroupInput
                 id={`input-${formId}`}
+                onChange={e => setNewKey(e.target.value)}
                 placeholder="New key..."
-                value={newKey || ""}
-                onChange={(e) => setNewKey(e.target.value)}
+                value={newKey || ''}
               />
             </InputGroup>
           </Field>
@@ -285,14 +260,14 @@ export function MapEdit<Schema extends Schemas = Schemas>({
           {/*Value*/}
           <ValueEdit<Schema>
             formId={formId}
-            label={saveLabels.save}
-            node={node}
-            isDisabled={!!editKey}
+            handleAdd={val => onAddNew(val ?? newValue)}
             hasKey={!!newKey}
-            newValue={newValue}
-            setNewValue={setNewValue}
-            handleAdd={(val) => onAddNew(val ?? newValue)}
+            isDisabled={!!editKey}
             isWizard={isWizard}
+            label={saveLabels.save}
+            newValue={newValue}
+            node={node}
+            setNewValue={setNewValue}
           />
         </div>
 
@@ -300,14 +275,14 @@ export function MapEdit<Schema extends Schemas = Schemas>({
           <>
             <FieldSeparator />
             <GlowingSave
-              size="sm"
-              label={saveLabels.saveAll}
               isDisabled={!isValid}
-              onSave={handleSave}
+              label={saveLabels.saveAll}
               onCancel={() => {
                 setFormData(value ?? {});
                 setIsDirty(false);
               }}
+              onSave={handleSave}
+              size="sm"
             />
           </>
         )}
@@ -347,28 +322,28 @@ function ValueEdit<Schema extends Schemas = Schemas>({
               {/* Textarea */}
               <InputGroupTextarea
                 id={`text-area-${formId}`}
-                placeholder="Value..."
-                value={newValue}
-                onChange={(e) => setNewValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (!isDisabled && e.key === "Enter" && e.shiftKey) {
+                onChange={e => setNewValue(e.target.value)}
+                onKeyDown={e => {
+                  if (!isDisabled && e.key === 'Enter' && e.shiftKey) {
                     e.preventDefault();
                     handleAdd(newValue);
                   }
                 }}
+                placeholder="Value..."
+                value={newValue}
               />
 
               {/* Add button */}
               <InputGroupAddon align="block-end">
                 <InputGroupText className="text-xs text-muted-foreground italic">
-                  {hasKey ? "Create a new key value pair" : "Set the key first"}
+                  {hasKey ? 'Create a new key value pair' : 'Set the key first'}
                 </InputGroupText>
                 <InputGroupButton
-                  size="xs"
                   className="ml-auto cursor-pointer"
-                  variant={isDisabled || !hasKey ? "ghost" : "default"}
                   disabled={isDisabled}
                   onClick={() => handleAdd(newValue)}
+                  size="xs"
+                  variant={isDisabled || !hasKey ? 'ghost' : 'default'}
                 >
                   Add <Plus />
                 </InputGroupButton>
@@ -380,36 +355,30 @@ function ValueEdit<Schema extends Schemas = Schemas>({
           <div className="flex flex-col border-border border rounded-md">
             <div
               className={cn(
-                "py-2 px-3 flex justify-between items-center",
-                "text-sm",
-                "rounded-t-md",
-                hasKey
-                  ? "text-accent-foreground bg-muted"
-                  : "text-muted-foreground bg-accent",
+                'py-2 px-3 flex justify-between items-center',
+                'text-sm',
+                'rounded-t-md',
+                hasKey ? 'text-accent-foreground bg-muted' : 'text-muted-foreground bg-accent',
               )}
             >
               <span>Value... </span>
-              {!hasKey && (
-                <span className="text-xs italic">(Set the key first)</span>
-              )}
+              {!hasKey && <span className="text-xs italic">(Set the key first)</span>}
             </div>
             {node.description && (
-              <div className="bg-muted text-xs italic p-2">
-                {node.description}
-              </div>
+              <div className="bg-muted text-xs italic p-2">{node.description}</div>
             )}
             <div className="p-2 flex-1 w-full min-w-0">
               <FieldEdit
                 formId={formId}
+                isRequired
+                isWizard={isWizard}
                 label={label}
                 node={node}
-                onChange={(val) => {
+                onChange={val => {
                   setNewValue(val);
                   handleAdd(val);
                 }}
                 value={newValue}
-                isWizard={isWizard}
-                isRequired
               />
             </div>
           </div>

@@ -1,12 +1,14 @@
-import type { CoreTaggedUnionNode } from "@/core";
-import { FieldItem } from "@/core/components/base/field";
-import type { ViewFieldProps } from "@/base/form/field-view";
-import { EnumFieldView } from "./untagged-enum-field";
-import { AnyRecord } from "@stately/schema/helpers";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import type { AnyRecord } from '@stately/schema/helpers';
+import { FieldItem } from '@/base/components/field';
+import type { ViewFieldProps } from '@/base/form/field-view';
+import type { CoreTaggedUnionNode } from '@/core';
+import { EnumFieldView } from './untagged-enum-field';
 
-export type TaggedUnionViewProps<Schema extends Schemas = Schemas> =
-  ViewFieldProps<Schema, CoreTaggedUnionNode<Schema>>;
+export type TaggedUnionViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
+  Schema,
+  CoreTaggedUnionNode<Schema>
+>;
 
 export function TaggedUnionView<Schema extends Schemas = Schemas>({
   value,
@@ -17,8 +19,7 @@ export function TaggedUnionView<Schema extends Schemas = Schemas>({
 
   // Find the variant by discriminator value
   const activeVariant = node.variants.find(
-    (variant: (typeof node.variants)[number]) =>
-      variant.tag === discriminatorValue,
+    (variant: (typeof node.variants)[number]) => variant.tag === discriminatorValue,
   );
 
   if (!activeVariant) {
@@ -31,11 +32,5 @@ export function TaggedUnionView<Schema extends Schemas = Schemas>({
     );
   }
 
-  return (
-    <EnumFieldView
-      tag={activeVariant.tag}
-      node={activeVariant.schema}
-      value={unionValue}
-    />
-  );
+  return <EnumFieldView node={activeVariant.schema} tag={activeVariant.tag} value={unionValue} />;
 }

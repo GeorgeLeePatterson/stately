@@ -15,25 +15,49 @@
       "types": "./dist/base/components/index.d.ts",
       "import": "./dist/base/components/index.js"
     },
-    "./base/form": {
-      "types": "./dist/base/form/index.d.ts",
-      "import": "./dist/base/form/index.js"
-    },
     "./base/dialogs": {
       "types": "./dist/base/dialogs/index.d.ts",
       "import": "./dist/base/dialogs/index.js"
+    },
+    "./base/form": {
+      "types": "./dist/base/form/index.d.ts",
+      "import": "./dist/base/form/index.js"
     },
     "./base/hooks": {
       "types": "./dist/base/hooks/index.d.ts",
       "import": "./dist/base/hooks/index.js"
     },
-    "./base/lib": {
-      "types": "./dist/base/lib/index.d.ts",
-      "import": "./dist/base/lib/index.js"
+    "./base/lib/utils": {
+      "types": "./dist/base/lib/utils.d.ts",
+      "import": "./dist/base/lib/utils.js"
+    },
+    "./base/ui": {
+      "types": "./dist/base/ui/index.d.ts",
+      "import": "./dist/base/ui/index.js"
     },
     "./core": {
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
+    },
+    "./core/components/dialogs": {
+      "types": "./dist/core/components/dialogs/index.d.ts",
+      "import": "./dist/core/components/dialogs/index.js"
+    },
+    "./core/components/fields": {
+      "types": "./dist/core/components/fields/index.d.ts",
+      "import": "./dist/core/components/fields/index.js"
+    },
+    "./core/components/views": {
+      "types": "./dist/core/components/views/index.d.ts",
+      "import": "./dist/core/components/views/index.js"
+    },
+    "./core/components/views/entity": {
+      "types": "./dist/core/components/views/entity/index.d.ts",
+      "import": "./dist/core/components/views/entity/index.js"
+    },
+    "./core/components/views/link": {
+      "types": "./dist/core/components/views/link/index.d.ts",
+      "import": "./dist/core/components/views/link/index.js"
     },
     "./core/context": {
       "types": "./dist/core/context/index.d.ts",
@@ -42,10 +66,6 @@
     "./core/hooks": {
       "types": "./dist/core/hooks/index.d.ts",
       "import": "./dist/core/hooks/index.js"
-    },
-    "./core/components/dialogs": {
-      "types": "./dist/core/components/dialogs/index.d.ts",
-      "import": "./dist/core/components/dialogs/index.js"
     }
   },
   "files": [
@@ -58,8 +78,8 @@
   },
   "peerDependencies": {
     "openapi-fetch": "^0.12.0 || ^0.13.0 || ^0.14.0 || ^0.15",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -102,8 +122,8 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
     "tsup": "^8.3.5",
     "typescript": "^5.6.3"
   }

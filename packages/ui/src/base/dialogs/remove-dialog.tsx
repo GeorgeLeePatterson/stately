@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/base/ui/alert-dialog";
+} from '@/base/ui/alert-dialog';
 
 export interface RemoveDialogProps {
   name: string;
@@ -16,27 +16,21 @@ export interface RemoveDialogProps {
   setOpen: (open: boolean) => void;
 }
 
-export function RemoveDialog({
-  name,
-  onRemove,
-  open,
-  setOpen,
-}: RemoveDialogProps) {
+export function RemoveDialog({ name, onRemove, open, setOpen }: RemoveDialogProps) {
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog onOpenChange={setOpen} open={open}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the {name}. This action cannot be
-            undone.
+            This will permanently delete the {name}. This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={onRemove}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            onClick={onRemove}
           >
             Delete
           </AlertDialogAction>

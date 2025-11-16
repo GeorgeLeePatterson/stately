@@ -1,19 +1,15 @@
-import type { CoreEnumNode } from "@/core";
-import { useStatelyUi } from "@/context";
-import { Field } from "@/core/components/ui/field";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/core/components/ui/select";
-import type { EditFieldProps } from "@/base/form/field-edit";
-import { useCoreStatelyUi } from "@/context";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import type { EditFieldProps } from '@/base/form/field-edit';
+import { Field } from '@/base/ui/field';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
+import type { CoreEnumNode } from '@/core';
+import { useStatelyUi } from '@/core';
 
-export type EnumEditProps<Schema extends Schemas = Schemas> =
-  EditFieldProps<Schema, CoreEnumNode, string>;
+export type EnumEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
+  Schema,
+  CoreEnumNode,
+  string
+>;
 
 /**
  * Enum field component - handles string enums with fixed set of values
@@ -26,18 +22,14 @@ export function EnumEdit<Schema extends Schemas = Schemas>({
   onChange,
   placeholder,
 }: EnumEditProps<Schema>) {
-  const { plugins } = useCoreStatelyUi();
+  const { plugins } = useStatelyUi();
 
   return (
     <Field>
-      <Select value={value || ""} onValueChange={onChange}>
-        <SelectTrigger id={formId} className="bg-background">
+      <Select onValueChange={onChange} value={value || ''}>
+        <SelectTrigger className="bg-background" id={formId}>
           <SelectValue
-            placeholder={
-              placeholder
-                ? `Select ${placeholder.toLowerCase()}...`
-                : "Select value"
-            }
+            placeholder={placeholder ? `Select ${placeholder.toLowerCase()}...` : 'Select value'}
           />
         </SelectTrigger>
         <SelectContent>

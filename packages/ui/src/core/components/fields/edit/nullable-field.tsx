@@ -1,22 +1,24 @@
-import type { CoreNullableNode } from "@/core";
-import { useId, useState } from "react";
-import { DescriptionLabel } from "@/core/components/base/description";
-import { Checkbox } from "@/core/components/ui/checkbox";
-import { Field, FieldContent, FieldLabel } from "@/core/components/ui/field";
-import { FieldEdit } from "@/base/form/field-edit";
-import type { EditFieldProps } from "@/base/form/field-edit";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { useId, useState } from 'react';
+import { DescriptionLabel } from '@/base/components/description';
+import type { EditFieldProps } from '@/base/form/field-edit';
+import { FieldEdit } from '@/base/form/field-edit';
+import { Checkbox } from '@/base/ui/checkbox';
+import { Field, FieldContent, FieldLabel } from '@/base/ui/field';
+import type { CoreNullableNode } from '@/core';
 
 function isValueNulled(value?: any) {
   return (
     value === null ||
     value === undefined ||
-    (typeof value === "object" && Object.keys(value).length === 0)
+    (typeof value === 'object' && Object.keys(value).length === 0)
   );
 }
 
-export type NullableEditProps<Schema extends Schemas = Schemas> =
-  EditFieldProps<Schema, CoreNullableNode<Schema>>;
+export type NullableEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
+  Schema,
+  CoreNullableNode<Schema>
+>;
 
 /**
  * Nullable field component - handles Option<T> in Rust
@@ -48,16 +50,12 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
 
   return (
     <div className="p-4 border rounded-md space-y-3">
-      <Field orientation="horizontal" className="flex space-x-2">
-        <Checkbox
-          id={formId}
-          checked={isIncluded}
-          onCheckedChange={handleToggle}
-        />
+      <Field className="flex space-x-2" orientation="horizontal">
+        <Checkbox checked={isIncluded} id={formId} onCheckedChange={handleToggle} />
         <FieldContent>
           <FieldLabel
-            htmlFor={`nullable-${label}`}
             className="cursor-pointer font-medium flex justify-between flex-1"
+            htmlFor={`nullable-${label}`}
           >
             <span>
               Include {label}
@@ -65,9 +63,7 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
             </span>
           </FieldLabel>
           {(node.description || description) && (
-            <DescriptionLabel>
-              {node.description || description}
-            </DescriptionLabel>
+            <DescriptionLabel>{node.description || description}</DescriptionLabel>
           )}
         </FieldContent>
       </Field>
@@ -75,11 +71,11 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
       {isIncluded && (
         <FieldEdit
           formId={nullableFormId}
-          node={node}
-          value={value}
-          onChange={onChange}
-          label={label}
           isWizard={isWizard}
+          label={label}
+          node={node}
+          onChange={onChange}
+          value={value}
         />
       )}
     </div>

@@ -1,12 +1,12 @@
+import type { Schemas } from '@stately/schema';
 import type { Client } from 'openapi-fetch';
 import {
   createHttpBundle,
   type DefineOperationMap,
   type HttpBundle,
   type OperationOverrides,
-} from '@/operations';
+} from '@/base/operations';
 import type { CorePaths } from '.';
-import { Schemas } from '@stately/schema';
 
 export const CORE_OPERATION_IDS = {
   createEntity: 'create_entity',

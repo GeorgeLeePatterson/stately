@@ -1,16 +1,16 @@
+import type { Schemas } from '@stately/schema';
 import { CoreNodeType } from '@stately/schema/core/nodes';
 import { Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useId, useState } from 'react';
+import { ArrayIndex } from '@/base/components/array';
 import { GlowingSave } from '@/base/components/glowing-save';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
-import type { CoreArrayNode } from '@/core';
-import { ArrayIndex } from '@/core/components/base/array';
-import { Button } from '@/core/components/ui/button';
-import { Field, FieldSet } from '@/core/components/ui/field';
-import { useCoreStatelyUi } from '@/context';
 import { cn } from '@/base/lib/utils';
-import { Schemas } from '@stately/schema';
+import { Button } from '@/base/ui/button';
+import { Field, FieldSet } from '@/base/ui/field';
+import type { CoreArrayNode } from '@/core';
+import { useStatelyUi } from '@/core';
 
 export type ArrayEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
@@ -30,7 +30,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
   isRequired,
   isWizard,
 }: ArrayEditProps<Schema>) {
-  const { schema, plugins } = useCoreStatelyUi();
+  const { schema, plugins } = useStatelyUi();
 
   // Defensive: ensure value is actually an array
   const safeValue = Array.isArray(value) ? value : [];

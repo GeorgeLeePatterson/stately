@@ -1,45 +1,42 @@
-import { useStatelyUi } from "@/context";
-import { Skeleton } from "@/core/components/ui/skeleton";
-import type { CoreLinkNode } from "@/core";
-import { useEntityData } from "@/core/hooks/use-entity-data";
-import type { LinkFor } from "./link-edit-view";
-import { LinkInlineView } from "./link-inline-view";
-import { LinkRefView } from "./link-ref-view";
-import { ViewFieldProps } from "@/base/form/field-view";
-import { useCoreStatelyUi } from "@/context";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import type { ViewFieldProps } from '@/base/form/field-view';
+import { Skeleton } from '@/base/ui/skeleton';
+import type { CoreLinkNode } from '@/core';
+import { useStatelyUi } from '@/core';
+import { useEntityData } from '@/core/hooks/use-entity-data';
+import type { LinkFor } from './link-edit-view';
+import { LinkInlineView } from './link-inline-view';
+import { LinkRefView } from './link-ref-view';
 
-export type LinkViewProps<Schema extends Schemas = Schemas> =
-  ViewFieldProps<Schema, CoreLinkNode<Schema>, LinkFor<Schema>>;
+export type LinkViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
+  Schema,
+  CoreLinkNode<Schema>,
+  LinkFor<Schema>
+>;
 
-export function LinkView<Schema extends Schemas = Schemas>({
-  value,
-  node,
-}: LinkViewProps<Schema>) {
-  const { schema } = useCoreStatelyUi();
+export function LinkView<Schema extends Schemas = Schemas>({ value, node }: LinkViewProps<Schema>) {
+  const { schema } = useStatelyUi();
   const inlineSchema = (node as CoreLinkNode<Schema>).inlineSchema;
 
   // Extract entity_type and actual value
   const entityType = node?.targetType;
   const stateEntry = entityType || value?.entity_type;
 
-  const identifier = value && "ref" in value ? value.ref : undefined;
+  const identifier = value && 'ref' in value ? value.ref : undefined;
 
   const { data, isLoading } = useEntityData<Schema>({
+    disabled: !identifier,
     entity: stateEntry,
     identifier,
-    disabled: !identifier,
   });
 
-  if (!value || typeof value !== "object") {
-    console.warn(
-      "LinkView: value must be an object with entity_type and ref/inline",
-    );
+  if (!value || typeof value !== 'object') {
+    console.warn('LinkView: value must be an object with entity_type and ref/inline');
     return null;
   }
 
   if (!stateEntry) {
-    console.warn("LinkView: entity_type is required");
+    console.warn('LinkView: entity_type is required');
     return null;
   }
 
@@ -55,29 +52,25 @@ export function LinkView<Schema extends Schemas = Schemas>({
   }
 
   // Render as a reference with a link
-  if ("ref" in value) {
+  if ('ref' in value) {
     const entity = data?.entity?.data;
     return (
       <LinkRefView
-        name={entity && "name" in entity ? entity?.name : undefined}
+        name={entity && 'name' in entity ? entity?.name : undefined}
+        schema={inlineSchema}
         urlType={urlType}
         value={value}
-        schema={inlineSchema}
       />
     );
   }
 
   // Render inline configuration
-  if ("inline" in value) {
+  if ('inline' in value) {
     return (
-      <LinkInlineView
-        targetType={value.entity_type}
-        node={inlineSchema}
-        value={value.inline}
-      />
+      <LinkInlineView node={inlineSchema} targetType={value.entity_type} value={value.inline} />
     );
   }
 
-  console.warn("LinkView: value must have either ref or inline field");
+  console.warn('LinkView: value must have either ref or inline field');
   return null;
 }

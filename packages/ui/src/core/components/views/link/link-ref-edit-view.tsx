@@ -1,12 +1,8 @@
-import { useCallback } from "react";
-import type {
-  CoreObjectNode,
-  CoreStateEntry,
-  CoreSummary,
-} from "@/core";
-import { EntitySelectEdit } from "../entity/entity-select-edit";
-import type { LinkFor } from "./link-edit-view";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { useCallback } from 'react';
+import type { CoreObjectNode, CoreStateEntry } from '@/core';
+import { EntitySelectEdit } from '../entity/entity-select-edit';
+import type { LinkFor } from './link-edit-view';
 
 export interface LinkRefEditProps<Schema extends Schemas = Schemas> {
   /** Whether the form is readonly */
@@ -16,7 +12,7 @@ export interface LinkRefEditProps<Schema extends Schemas = Schemas> {
   /** The entity type being referenced (e.g., "source_driver", "input") */
   targetType: CoreStateEntry<Schema>;
   /** List of entity refs */
-  availableEntities: Array<CoreSummary>;
+  availableEntities: Array<Schema['config']['components']['schemas']['Summary']>;
   /** Schema for the inline entity */
   node: CoreObjectNode<Schema>;
   /** Current value from parent (either ref or inline) */
@@ -52,31 +48,28 @@ export function LinkRefEdit<Schema extends Schemas = Schemas>({
   after,
   onEditAsInline,
 }: LinkRefEditProps<Schema>) {
-  const ref = value && "ref" in value ? value.ref : isReadOnly ? "default" : "";
+  const ref = value && 'ref' in value ? value.ref : isReadOnly ? 'default' : '';
 
   // Handle selection change
   const handleChange = useCallback(
     (selectedRef: string | null) => {
-      onChange({
-        entity_type: targetType,
-        ref: selectedRef,
-      } as LinkFor<Schema>);
+      onChange({ entity_type: targetType, ref: selectedRef } as LinkFor<Schema>);
     },
     [targetType, onChange],
   );
 
   return (
     <EntitySelectEdit
-      targetType={targetType}
-      isReadOnly={isReadOnly}
-      isLoading={isLoading}
-      available={availableEntities}
-      value={ref}
-      onChange={handleChange}
-      onRefresh={onRefresh}
-      node={node}
       after={after}
+      available={availableEntities}
+      isLoading={isLoading}
+      isReadOnly={isReadOnly}
+      node={node}
+      onChange={handleChange}
       onEdit={onEditAsInline}
+      onRefresh={onRefresh}
+      targetType={targetType}
+      value={ref}
     />
   );
 }

@@ -1,8 +1,8 @@
+import type { StatelySchemas } from '@stately/schema/schema';
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
 import type { ComponentType } from 'react';
-import type { AnyBaseSchemas, BaseSchemas } from './base';
-import type { AugmentPlugins, UiAugment } from './plugin';
+import type { AugmentPlugins, UiPluginAugment } from './plugin';
 
 export type ComponentRegistry = Map<string, ComponentType<any>>;
 export type TransformerRegistry = Map<string, (value: any) => any>;
@@ -25,8 +25,8 @@ export interface RuntimeUtils {
  * Each augment's Name becomes a key in the plugins record with full intellisense.
  */
 export interface StatelyRuntime<
-  Schema extends AnyBaseSchemas,
-  Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
+  Schema extends StatelySchemas<any, any>,
+  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
 > {
   schema: Stately<Schema>;
   client: Client<Schema['config']['paths']>;
@@ -43,15 +43,15 @@ export interface StatelyRuntime<
  * Pattern matches @stately/schema's PluginFactory.
  */
 export type StatelyUiPluginFactory<
-  Schema extends AnyBaseSchemas,
-  Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
+  Schema extends StatelySchemas<any, any>,
+  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
 > = (runtime: StatelyRuntime<Schema, Augments>) => StatelyRuntime<Schema, Augments>;
 
 const DefaultIcon: ComponentType<any> = () => null;
 
 function createRuntimeUtils<
-  Schema extends AnyBaseSchemas,
-  Augments extends readonly UiAugment<string, Schema, any, any>[],
+  Schema extends StatelySchemas<any, any>,
+  Augments extends readonly UiPluginAugment<string, Schema, any, any>[],
 >(plugins: AugmentPlugins<Schema, Augments>): RuntimeUtils {
   return {
     getNodeTypeIcon(node: string): ComponentType<any> {
@@ -73,8 +73,8 @@ function createRuntimeUtils<
  * Augments are declared upfront; withPlugin() populates runtime data.
  */
 export interface StatelyUiBuilder<
-  Schema extends AnyBaseSchemas,
-  Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
+  Schema extends StatelySchemas<any, any>,
+  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
 > extends StatelyRuntime<Schema, Augments> {
   withPlugin(plugin: StatelyUiPluginFactory<Schema, Augments>): StatelyUiBuilder<Schema, Augments>;
 }
@@ -90,8 +90,8 @@ export interface StatelyUiBuilder<
  * ```
  */
 export function createStatelyUi<
-  Schema extends BaseSchemas<any, any>,
-  Augments extends readonly UiAugment<string, Schema, any, any>[] = readonly [],
+  Schema extends StatelySchemas<any, any>,
+  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
 >(
   schema: Stately<Schema>,
   client: Client<Schema['config']['paths']>,

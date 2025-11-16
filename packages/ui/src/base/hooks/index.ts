@@ -1,3 +1,3 @@
-import { useTheme, ThemeProvider } from "./use-theme";
-import { useViewMore } from "./use-view-more";
+import { ThemeProvider, useTheme } from './use-theme';
+import { useViewMore } from './use-view-more';
 export { useTheme, useViewMore, ThemeProvider };

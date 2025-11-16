@@ -1,36 +1,37 @@
+import type { StatelySchemas } from '@stately/schema/schema';
 import type { Client } from 'openapi-fetch';
-import type { AnyBaseSchemas } from './base';
 
 export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 export type DefineOperationMap<T extends Record<string, string> = Record<string, string>> = T;
 
-type BasePaths<Schema extends AnyBaseSchemas> = Schema['config']['paths'];
-
-export interface OperationMeta<Schema extends AnyBaseSchemas = AnyBaseSchemas> {
-  path: keyof BasePaths<Schema> & string;
+export interface OperationMeta<Schema extends StatelySchemas<any, any>> {
+  path: keyof Schema['config']['paths'] & string;
   method: HttpMethod;
   operationId: string;
 }
 
-export type OperationIndex<Schema extends AnyBaseSchemas = AnyBaseSchemas> = Record<
+export type OperationIndex<Schema extends StatelySchemas<any, any>> = Record<
   string,
   OperationMeta<Schema>
 >;
 
-export type StatelyOperations<Schema extends AnyBaseSchemas, Ops extends DefineOperationMap> = {
+export type StatelyOperations<
+  Schema extends StatelySchemas<any, any>,
+  Ops extends DefineOperationMap,
+> = {
   [K in keyof Ops]: OperationMeta<Schema>;
 };
 
 export type OperationOverrides<
-  Schema extends AnyBaseSchemas,
+  Schema extends StatelySchemas<any, any>,
   Ops extends DefineOperationMap,
 > = Partial<{
   [K in keyof Ops]: Pick<OperationMeta<Schema>, 'path' | 'method'>;
 }>;
 
 export interface HttpBundle<
-  Schema extends AnyBaseSchemas,
+  Schema extends StatelySchemas<any, any>,
   Ops extends DefineOperationMap = DefineOperationMap,
 > {
   operationIndex: OperationIndex<Schema>;
@@ -40,8 +41,8 @@ export interface HttpBundle<
 
 const METHOD_KEYS: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 
-export function buildOperationIndex<Schema extends AnyBaseSchemas>(
-  paths: BasePaths<Schema>,
+export function buildOperationIndex<Schema extends StatelySchemas<any, any>>(
+  paths: Schema['config']['paths'],
 ): OperationIndex<Schema> {
   const index: Partial<OperationIndex<Schema>> = {};
   for (const [pathKey, record] of Object.entries(paths ?? {})) {
@@ -51,7 +52,7 @@ export function buildOperationIndex<Schema extends AnyBaseSchemas>(
         index[op.operationId] = {
           method,
           operationId: op.operationId,
-          path: pathKey as keyof BasePaths<Schema> & string,
+          path: pathKey as keyof Schema['config']['paths'] & string,
         };
       }
     }
@@ -60,7 +61,7 @@ export function buildOperationIndex<Schema extends AnyBaseSchemas>(
 }
 
 export function buildStatelyOperations<
-  Schema extends AnyBaseSchemas,
+  Schema extends StatelySchemas<any, any>,
   Ops extends DefineOperationMap,
 >(
   index: OperationIndex<Schema>,
@@ -84,9 +85,12 @@ export function buildStatelyOperations<
   return Object.fromEntries(entries) as StatelyOperations<Schema, Ops>;
 }
 
-export function createHttpBundle<Schema extends AnyBaseSchemas, Ops extends DefineOperationMap>(
-  client: Client<BasePaths<Schema>>,
-  paths: BasePaths<Schema>,
+export function createHttpBundle<
+  Schema extends StatelySchemas<any, any>,
+  Ops extends DefineOperationMap,
+>(
+  client: Client<Schema['config']['paths']>,
+  paths: Schema['config']['paths'],
   operationIds: Ops,
   overrides?: OperationOverrides<Schema, Ops>,
 ): HttpBundle<Schema, Ops> {
@@ -101,8 +105,8 @@ export function createHttpBundle<Schema extends AnyBaseSchemas, Ops extends Defi
   };
 }
 
-export function callOperation<Schema extends AnyBaseSchemas>(
-  client: Client<BasePaths<Schema>>,
+export function callOperation<Schema extends StatelySchemas<any, any>>(
+  client: Client<Schema['config']['paths']>,
   meta: OperationMeta<Schema>,
   options: any,
 ): Promise<any> {

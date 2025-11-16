@@ -1,10 +1,10 @@
-import { Save, X } from "lucide-react";
-import { useCallback, useId, useMemo, useState } from "react";
-import { Label } from "@/base/ui/label";
-import { cn } from "@/base/lib/utils";
-import { Note } from "@/base/components/note";
-import { Button } from "@/base/ui/button";
-import { Editor } from "@/base/components/editor";
+import { Save, X } from 'lucide-react';
+import { useCallback, useId, useMemo, useState } from 'react';
+import { Editor } from '@/base/components/editor';
+import { Note } from '@/base/components/note';
+import { cn } from '@/base/lib/utils';
+import { Button } from '@/base/ui/button';
+import { Label } from '@/base/ui/label';
 
 type JsonStatus = { valid: boolean; error?: string; msg?: string };
 
@@ -17,16 +17,10 @@ interface JsonEditViewProps {
 /**
  * Component for editing entity configuration as raw JSON
  */
-export function JsonEdit({
-  value,
-  onSave,
-  label = "Configuration (JSON)",
-}: JsonEditViewProps) {
+export function JsonEdit({ value, onSave, label = 'Configuration (JSON)' }: JsonEditViewProps) {
   const formId = useId();
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [json, setJson] = useState<string>(
-    JSON.stringify(value || {}, null, 2),
-  );
+  const [json, setJson] = useState<string>(JSON.stringify(value || {}, null, 2));
 
   const handleJsonForm = useCallback((val: string) => {
     setJson(val);
@@ -34,74 +28,69 @@ export function JsonEdit({
       JSON.parse(val);
       setIsDirty(true);
     } catch (error) {
-      console.error("Invalid JSON syntax", error);
+      console.error('Invalid JSON syntax', error);
     }
   }, []);
 
   const status: JsonStatus = useMemo(() => {
     if (!json) {
-      return { valid: false, msg: "Enter valid JSON" };
+      return { msg: 'Enter valid JSON', valid: false };
     }
 
     try {
       JSON.parse(json);
-      return { valid: true, msg: "Valid JSON" };
+      return { msg: 'Valid JSON', valid: true };
     } catch (error) {
-      const msg = "Invalid JSON syntax";
+      const msg = 'Invalid JSON syntax';
       const errMsg = error
-        ? typeof error === "object" && "message" in error
+        ? typeof error === 'object' && 'message' in error
           ? error.message
           : error
-        : "";
-      return { valid: false, msg: `${msg}: ${errMsg}` };
+        : '';
+      return { msg: `${msg}: ${errMsg}`, valid: false };
     }
   }, [json]);
 
   return (
     <div className="space-y-4 p-3">
-      <Note
-        mode={status.valid ? "success" : "error"}
-        message={status.error || status.msg || ""}
-      />
+      <Note message={status.error || status.msg || ''} mode={status.valid ? 'success' : 'error'} />
 
       <div className="space-y-2">
         <Label htmlFor="config-json">{label}</Label>
         <Editor
-          formId={formId}
           content={json}
+          formId={formId}
           onContent={handleJsonForm}
           placeholder="Enter JSON configuration here"
-          supportedLanguages={["json"]}
+          supportedLanguages={['json']}
         />
       </div>
 
       {/* Save/Cancel buttons appear when dirty */}
       <Button
-        variant="secondary"
+        className={cn(
+          'cursor-pointer',
+          isDirty && status.valid && 'animate-[save-glow_2s_ease-in-out_infinite]',
+        )}
+        disabled={!status.valid || !isDirty}
         onClick={() => {
           setIsDirty(false);
           onSave(json);
         }}
-        disabled={!status.valid || !isDirty}
         size="sm"
-        className={cn(
-          "cursor-pointer",
-          isDirty &&
-            status.valid &&
-            "animate-[save-glow_2s_ease-in-out_infinite]",
-        )}
+        variant="secondary"
       >
         <Save className="w-4 h-4 mr-2" />
         Submit
       </Button>
       <Button
-        size="sm"
-        variant="ghost"
+        className="cursor-pointer"
         onClick={() => {
           setJson(JSON.stringify(value ?? {}));
           setIsDirty(false);
         }}
-        className="cursor-pointer"
+        size="sm"
+        variant="ghost"
       >
         <X className="w-4 h-4 mr-2" />
         Cancel

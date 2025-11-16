@@ -1,17 +1,17 @@
+import type { Schemas } from '@stately/schema';
 import { CoreNodeType } from '@stately/schema/core/nodes';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Fragment, useCallback, useState } from 'react';
 import { FieldEdit } from '@/base/form/field-edit';
 import { cn } from '@/base/lib/utils';
-import { Button } from '@/core/components/ui/button';
-import { Field, FieldGroup } from '@/core/components/ui/field';
-import { Progress } from '@/core/components/ui/progress';
-import { Skeleton } from '@/core/components/ui/skeleton';
+import { Button } from '@/base/ui/button';
+import { Field, FieldGroup } from '@/base/ui/field';
+import { Progress } from '@/base/ui/progress';
+import { Skeleton } from '@/base/ui/skeleton';
+import { useStatelyUi } from '@/core';
 import { EntityPropertyView } from '@/core/components/views/entity/entity-property-view';
-import { useCoreStatelyUi } from '@/context';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import type { ObjectEditProps } from './object-field';
-import { Schemas } from '@stately/schema';
 
 export interface ObjectWizardBaseProps {
   onComplete?: () => void;
@@ -19,8 +19,8 @@ export interface ObjectWizardBaseProps {
   isEmbedded?: boolean;
 }
 
-export type ObjectWizardEditProps<Schema extends Schemas = Schemas> =
-  ObjectWizardBaseProps & ObjectEditProps<Schema>;
+export type ObjectWizardEditProps<Schema extends Schemas = Schemas> = ObjectWizardBaseProps &
+  ObjectEditProps<Schema>;
 
 export const ObjectWizardEdit = <Schema extends Schemas = Schemas>({
   formId,
@@ -32,7 +32,7 @@ export const ObjectWizardEdit = <Schema extends Schemas = Schemas>({
   isLoading,
   isEmbedded,
 }: ObjectWizardEditProps<Schema>) => {
-  const { schema, plugins } = useCoreStatelyUi();
+  const { schema, plugins } = useStatelyUi();
   const corePlugin = plugins.core;
 
   const onSave = useCallback(

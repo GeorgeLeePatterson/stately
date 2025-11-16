@@ -1,12 +1,12 @@
+import type { Schemas } from '@stately/schema';
 import { CoreNodeType } from '@stately/schema/core/nodes';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { FormInput, WandSparkles } from 'lucide-react';
 import { Fragment, useId } from 'react';
+import { DescriptionLabel } from '@/base/components/description';
 import { GlowingSave } from '@/base/components/glowing-save';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
-import type { CoreObjectNode } from '@/core';
-import { DescriptionLabel } from '@/core/components/base/description';
 import {
   FieldContent,
   FieldDescription,
@@ -14,12 +14,12 @@ import {
   FieldLabel,
   FieldSeparator,
   FieldSet,
-} from '@/core/components/ui/field';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/core/components/ui/tabs';
-import { useCoreStatelyUi } from '@/context';
+} from '@/base/ui/field';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/base/ui/tabs';
+import type { CoreObjectNode } from '@/core';
+import { useStatelyUi } from '@/core';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import { ObjectWizardEdit } from './object-wizard';
-import { Schemas } from '@stately/schema';
 
 export enum ObjectEditMode {
   FORM = 'Form',
@@ -102,7 +102,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: ObjectFormProps<Schema>) {
-  const { plugins } = useCoreStatelyUi();
+  const { plugins } = useStatelyUi();
   const corePlugin = plugins.core;
 
   const { formData, handleFieldChange, handleSave, handleCancel, fields, isDirty, isValid } =

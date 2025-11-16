@@ -1,11 +1,13 @@
-import type { CoreNullableNode } from "@/core";
-import { NotSet } from "@/core/components/base/not-set";
-import { FieldView } from "@/base/form/field-view";
-import type { ViewFieldProps } from "@/base/form/field-view";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { NotSet } from '@/base/components/not-set';
+import type { ViewFieldProps } from '@/base/form/field-view';
+import { FieldView } from '@/base/form/field-view';
+import type { CoreNullableNode } from '@/core';
 
-export type NullableViewProps<Schema extends Schemas = Schemas> =
-  ViewFieldProps<Schema, CoreNullableNode<Schema>>;
+export type NullableViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
+  Schema,
+  CoreNullableNode<Schema>
+>;
 
 export function NullableView<Schema extends Schemas = Schemas>({
   value,

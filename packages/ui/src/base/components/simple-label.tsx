@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes } from 'react';
 
 export function SimpleLabel({
   children,
@@ -7,7 +7,7 @@ export function SimpleLabel({
   return (
     <span
       {...rest}
-      className={`text-sm font-medium text-accent-foreground ${rest.className || ""}`}
+      className={`text-sm font-medium text-accent-foreground ${rest.className || ''}`}
     >
       {children}
     </span>

@@ -1,16 +1,10 @@
-import { ExternalLink } from "lucide-react";
-import type { CoreObjectNode, CoreStateEntry } from "@/core";
-import { Button } from "@/core/components/ui/button";
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemTitle,
-} from "@/core/components/ui/item";
-import { ViewLinkControl } from "@/core/context/link-explore-context";
-import { cn } from "@/base/lib/utils";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { ExternalLink } from 'lucide-react';
+import { cn } from '@/base/lib/utils';
+import { Button } from '@/base/ui/button';
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/base/ui/item';
+import type { CoreObjectNode, CoreStateEntry } from '@/core';
+import { ViewLinkControl } from '@/core/context/link-explore-context';
 
 export interface LinkRefViewProps<Schema extends Schemas = Schemas> {
   label?: React.ReactNode;
@@ -32,22 +26,15 @@ export function LinkRefView<Schema extends Schemas = Schemas>({
   return (
     <>
       <Item
-        className={cn(
-          "flex-1 bg-muted",
-          isRequired && !value?.ref ? "border-red-500" : "",
-        )}
+        className={cn('flex-1 bg-muted', isRequired && !value?.ref ? 'border-red-500' : '')}
         size="sm"
       >
         <ItemContent>
           <ItemTitle>
-            Name:{" "}
+            Name:{' '}
             {name ||
               value.ref ||
-              (isRequired ? (
-                <span className="text-red-500">Invalid, missing ref</span>
-              ) : (
-                "Unknown"
-              ))}
+              (isRequired ? <span className="text-red-500">Invalid, missing ref</span> : 'Unknown')}
           </ItemTitle>
           {label && <ItemDescription>{label} Configuration</ItemDescription>}
         </ItemContent>
@@ -55,24 +42,20 @@ export function LinkRefView<Schema extends Schemas = Schemas>({
           {/* Convenience button to view configuration */}
           {schema && value?.ref && (
             <ViewLinkControl
-              entityType={value.entity_type}
               entityName={value.ref}
+              entityType={value.entity_type}
               schema={schema}
             />
           )}
 
           {value?.ref && (
             <Button
-              variant="default"
-              size="icon-sm"
-              className="rounded-full cursor-pointer"
               asChild
+              className="rounded-full cursor-pointer"
+              size="icon-sm"
+              variant="default"
             >
-              <a
-                href={`/entities/${urlType}/${value.ref}`}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={`/entities/${urlType}/${value.ref}`} rel="noreferrer" target="_blank">
                 <ExternalLink className="w-4 h-4" />
               </a>
             </Button>

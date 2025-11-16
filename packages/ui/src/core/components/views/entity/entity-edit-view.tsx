@@ -1,24 +1,19 @@
-import { FileJson, FormInput, WandSparkles } from "lucide-react";
-import { useState } from "react";
-import type { CoreObjectNode } from "@/core";
-import { FieldGroup } from "@/core/components/ui/field";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/core/components/ui/tabs";
-import { EntityFormEdit } from "./entity-form-edit";
-import { EntityWizardView } from "./entity-wizard-view";
-import { AnyRecord } from "@stately/schema/helpers";
-import { JsonView } from "@/base/form/json-view";
-import { JsonEdit } from "@/base/form/json-edit";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import type { AnyRecord } from '@stately/schema/helpers';
+import { FileJson, FormInput, WandSparkles } from 'lucide-react';
+import { useState } from 'react';
+import { JsonEdit } from '@/base/form/json-edit';
+import { JsonView } from '@/base/form/json-view';
+import { FieldGroup } from '@/base/ui/field';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/base/ui/tabs';
+import type { CoreObjectNode } from '@/core';
+import { EntityFormEdit } from './entity-form-edit';
+import { EntityWizardView } from './entity-wizard-view';
 
 export enum EditMode {
-  FORM = "Form",
-  JSON = "JSON",
-  WIZARD = "Wizard",
+  FORM = 'Form',
+  JSON = 'JSON',
+  WIZARD = 'Wizard',
 }
 
 export interface EntityEditViewProps<Schema extends Schemas = Schemas> {
@@ -49,15 +44,15 @@ export function EntityEditView<Schema extends Schemas = Schemas>({
     <Tabs defaultValue={defaultMode || EditMode.FORM}>
       {/* Mode Toggle */}
       <TabsList>
-        <TabsTrigger value={EditMode.FORM} className="cursor-pointer">
+        <TabsTrigger className="cursor-pointer" value={EditMode.FORM}>
           <FormInput />
           Form
         </TabsTrigger>
-        <TabsTrigger value={EditMode.WIZARD} className="cursor-pointer">
+        <TabsTrigger className="cursor-pointer" value={EditMode.WIZARD}>
           <WandSparkles />
           Wizard
         </TabsTrigger>
-        <TabsTrigger value={EditMode.JSON} className="cursor-pointer">
+        <TabsTrigger className="cursor-pointer" value={EditMode.JSON}>
           <FileJson />
           JSON
         </TabsTrigger>
@@ -66,35 +61,31 @@ export function EntityEditView<Schema extends Schemas = Schemas>({
       <TabsContent value={EditMode.FORM}>
         <div className="space-y-5 min-w-0 p-2">
           <EntityFormEdit
-            node={node}
-            value={value}
-            onChange={onChange}
-            isRootEntity={isRootEntity}
             isLoading={isLoading}
+            isRootEntity={isRootEntity}
+            node={node}
+            onChange={onChange}
+            value={value}
           />
           {/*View json configuration*/}
           {!!value && Object.keys(value).length > 0 && (
-            <JsonView
-              data={value}
-              isOpen={debugOpen}
-              setIsOpen={setDebugOpen}
-            />
+            <JsonView data={value} isOpen={debugOpen} setIsOpen={setDebugOpen} />
           )}
         </div>
       </TabsContent>
       <TabsContent value={EditMode.JSON}>
         <FieldGroup className="min-w-0">
-          <JsonEdit value={value} onSave={onChange} />
+          <JsonEdit onSave={onChange} value={value} />
         </FieldGroup>
       </TabsContent>
       <TabsContent value={EditMode.WIZARD}>
         <EntityWizardView
+          isLoading={isLoading}
+          isRootEntity={isRootEntity}
           node={node}
-          value={value}
           onChange={onChange}
           onComplete={onSave}
-          isRootEntity={isRootEntity}
-          isLoading={isLoading}
+          value={value}
         />
       </TabsContent>
     </Tabs>

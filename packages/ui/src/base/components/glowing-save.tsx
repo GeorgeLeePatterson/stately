@@ -1,24 +1,24 @@
-import { Save, X } from "lucide-react";
-import { type ComponentProps, useMemo } from "react";
-import { Button } from "../ui/button";
-import { Field } from "../ui/field";
-import { Explain } from "./explain";
+import { Save, X } from 'lucide-react';
+import { type ComponentProps, useMemo } from 'react';
+import { Button } from '../ui/button';
+import { Field } from '../ui/field';
+import { Explain } from './explain';
 
 const Wrapper = ({
   children,
-  mode = "view",
+  mode = 'view',
 }: {
-  mode?: "view" | "edit";
+  mode?: 'view' | 'edit';
   children: React.ReactNode;
 }) =>
-  mode === "view" ? (
+  mode === 'view' ? (
     <div className="flex justify-start gap-2">{children}</div>
   ) : (
     <Field orientation="horizontal">{children}</Field>
   );
 
 const createLabel = (label?: string, loading?: boolean) => {
-  const maybeLabel = label ? ` ${label}` : "";
+  const maybeLabel = label ? ` ${label}` : '';
   return `${loading ? `Saving${maybeLabel}` : `Save${maybeLabel}`}`;
 };
 
@@ -30,24 +30,24 @@ export function GlowingSave({
   isDisabled,
   disabledExplain,
   isLoading,
-  mode = "view",
+  mode = 'view',
 }: {
-  size?: ComponentProps<typeof Button>["size"];
+  size?: ComponentProps<typeof Button>['size'];
   label?: string;
   onSave: () => void;
   onCancel?: () => void;
   isDisabled?: boolean;
   isLoading?: boolean;
   disabledExplain?: string;
-  mode?: "view" | "edit";
+  mode?: 'view' | 'edit';
 }) {
   const saveButton = useMemo(() => {
     return (
       <Button
-        onClick={onSave}
-        disabled={isDisabled || isLoading}
-        size={size}
         className="animate-[save-glow_2s_ease-in-out_infinite] cursor-pointer"
+        disabled={isDisabled || isLoading}
+        onClick={onSave}
+        size={size}
       >
         <Save className="w-4 h-4 mr-2" />
         {createLabel(label, isLoading)}
@@ -67,11 +67,11 @@ export function GlowingSave({
       )}
       {onCancel && (
         <Button
+          className="cursor-pointer"
+          disabled={isLoading}
           onClick={onCancel}
           size={size}
           variant="outline"
-          disabled={isLoading}
-          className="cursor-pointer"
         >
           <X className="w-4 h-4 mr-2" />
           Cancel

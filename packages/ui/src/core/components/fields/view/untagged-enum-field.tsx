@@ -1,12 +1,14 @@
-import type { CoreNodeUnion, CoreUntaggedEnumNode } from "@/core";
-import { FieldItem } from "@/core/components/base/field";
-import { SimpleLabel } from "@/core/components/base/simple-label";
-import { FieldView } from "@/base/form/field-view";
-import type { ViewFieldProps } from "@/base/form/field-view";
-import { Schemas } from "@stately/schema";
+import type { Schemas } from '@stately/schema';
+import { FieldItem } from '@/base/components/field';
+import { SimpleLabel } from '@/base/components/simple-label';
+import type { ViewFieldProps } from '@/base/form/field-view';
+import { FieldView } from '@/base/form/field-view';
+import type { CoreNodeUnion, CoreUntaggedEnumNode } from '@/core';
 
-export type UntaggedEnumViewProps<Schema extends Schemas = Schemas> =
-  ViewFieldProps<Schema, CoreUntaggedEnumNode<Schema>>;
+export type UntaggedEnumViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
+  Schema,
+  CoreUntaggedEnumNode<Schema>
+>;
 
 export function UntaggedEnumView<Schema extends Schemas = Schemas>({
   value,
@@ -32,13 +34,7 @@ export function UntaggedEnumView<Schema extends Schemas = Schemas>({
   // Extract the inner value for this variant
   const innerValue = unionValue[activeVariant.tag];
 
-  return (
-    <EnumFieldView
-      tag={activeVariant.tag}
-      node={activeVariant.schema}
-      value={innerValue}
-    />
-  );
+  return <EnumFieldView node={activeVariant.schema} tag={activeVariant.tag} value={innerValue} />;
 }
 
 export function EnumFieldView<Schema extends Schemas = Schemas>({
