@@ -1,12 +1,11 @@
 import type { Schemas } from '@stately/schema';
 import type { ViewFieldProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
-import type { CoreRecursiveRefNode } from '@/core';
 import { useStatelyUi } from '@/core';
 
 export type RecursiveRefViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
   Schema,
-  CoreRecursiveRefNode<Schema>
+  Schema['plugin']['Nodes']['recursiveRef']
 >;
 
 export function RecursiveRefView<Schema extends Schemas = Schemas>({
@@ -15,7 +14,7 @@ export function RecursiveRefView<Schema extends Schemas = Schemas>({
 }: RecursiveRefViewProps<Schema>) {
   const { schema } = useStatelyUi();
   // Look up the referenced schema and recurse
-  const referencedSchema = schema.schema.nodes[node.refName as keyof typeof schema.schema.nodes];
+  const referencedSchema = schema.schema.nodes[node.refName] as Schema['plugin']['AnyNode'];
   if (!referencedSchema) {
     return (
       <div className="p-4 bg-muted rounded-md text-sm text-destructive">

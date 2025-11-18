@@ -1,3 +1,4 @@
+import type { Schemas } from '@stately/schema';
 import { Eye } from 'lucide-react';
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { Button } from '@/base/ui/button';
@@ -6,7 +7,7 @@ import {
   ViewLinkDialog,
 } from '@/core/components/dialogs/view-configure-dialog';
 
-export function ViewLinkControl(props: LinkEntityProps) {
+export function ViewLinkControl<Schema extends Schemas = Schemas>(props: LinkEntityProps<Schema>) {
   const { openLinkExplorer } = useLinkExplorer();
   return (
     <Button
@@ -22,19 +23,19 @@ export function ViewLinkControl(props: LinkEntityProps) {
   );
 }
 
-export interface LinkExplorerContextValue {
-  openLinkExplorer: (info: LinkEntityProps) => void;
+export interface LinkExplorerContextValue<Schema extends Schemas = Schemas> {
+  openLinkExplorer: (info: LinkEntityProps<Schema>) => void;
   closeLinkExplorer: () => void;
   navigateToIndex: (index: number) => void;
-  breadcrumbs: LinkEntityProps[];
+  breadcrumbs: LinkEntityProps<Schema>[];
 }
 
 const LinkExplorerContext = createContext<LinkExplorerContextValue | null>(null);
 
 export function LinkExplorerProvider({ children }: { children: ReactNode }) {
-  const [entityStack, setEntityStack] = useState<LinkEntityProps[]>([]);
+  const [entityStack, setEntityStack] = useState<LinkEntityProps<Schemas>[]>([]);
 
-  const openLinkExplorer = useCallback((info: LinkEntityProps) => {
+  const openLinkExplorer = useCallback((info: LinkEntityProps<Schemas>) => {
     setEntityStack(prev => {
       const current = prev[prev.length - 1];
       // Avoid pushing duplicate
@@ -85,10 +86,10 @@ export function LinkExplorerProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useLinkExplorer() {
+export function useLinkExplorer<Schema extends Schemas = Schemas>() {
   const context = useContext(LinkExplorerContext);
   if (!context) {
     throw new Error('useLinkExplorer must be used within LinkExplorerProvider');
   }
-  return context;
+  return context as unknown as LinkExplorerContextValue<Schema>;
 }

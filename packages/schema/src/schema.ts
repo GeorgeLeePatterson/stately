@@ -7,8 +7,8 @@
  */
 import type { GeneratedNodeMap, StatelyConfig } from './generated';
 import type { AnyRecord, EmptyRecord, NeverRecord, UnionToIntersection } from './helpers';
-import type { NodeInformation, NodeMap } from './nodes';
-import type { PluginAugment, PluginNodeTypes, PluginNodeUnion } from './plugin';
+import type { BaseNode, NodeInformation, NodeMap } from './nodes';
+import type { PluginAugment } from './plugin';
 
 /**
  * Type guard for narrowing plugin node unions by nodeType.
@@ -20,19 +20,21 @@ import type { PluginAugment, PluginNodeTypes, PluginNodeUnion } from './plugin';
  * @example
  * ```typescript
  * function processNode(schema: PluginNodeUnion<MySchemas>) {
- *   if (isNodeOfType(schema, 'object')) {
+ *   if (isNodeOfType<ObjectNode>(schema, 'object')) {
  *     // schema is now narrowed to ObjectNode
  *     console.log(schema.properties);
  *   }
  * }
  * ```
  */
-export function isNodeOfType<S extends StatelySchemas<any, any>, Type extends PluginNodeTypes<S>>(
-  schema: PluginNodeUnion<S>,
-  nodeType: Type,
-): schema is Extract<PluginNodeUnion<S>, { nodeType: Type }> {
+export function isNodeOfType<N extends BaseNode>(
+  schema: BaseNode,
+  nodeType: N['nodeType'],
+): schema is N {
   return schema.nodeType === nodeType;
 }
+
+export type DerivedPluginNodes<Augments> = AugmentPluginNodes<Augments>;
 
 type AugmentPluginNodes<Augments> = Augments extends readonly PluginAugment<
   any,
@@ -53,8 +55,6 @@ type AugmentPluginTypes<Augments> = Augments extends readonly PluginAugment<
 >[]
   ? UnionToIntersection<Types>
   : EmptyRecord;
-// &
-//   AnyRecord;
 
 type AugmentPluginData<Augments> = (Augments extends readonly PluginAugment<
   any,

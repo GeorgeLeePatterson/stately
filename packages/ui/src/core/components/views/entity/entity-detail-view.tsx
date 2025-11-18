@@ -1,17 +1,18 @@
 import type { Schemas } from '@stately/schema';
 import { SINGLETON_ID } from '@stately/schema/core/utils';
+import { Tuple } from '@stately/schema/helpers';
 import { Fragment, useMemo, useState } from 'react';
 import { SimpleLabel } from '@/base/components/simple-label';
 import { FieldView } from '@/base/form/field-view';
 import { JsonView } from '@/base/form/json-view';
 import { Separator } from '@/base/ui/separator';
-import type { CoreEntity, CoreObjectNode, CoreStateEntry } from '@/core';
+import type { CoreEntity, CoreStateEntry } from '@/core';
 import { useStatelyUi } from '@/core';
 import { EntityPropertyView } from '@/core/components/views/entity/entity-property-view';
 
 export interface EntityDetailViewProps<Schema extends Schemas = Schemas> {
   entityType: CoreStateEntry<Schema>;
-  node: CoreObjectNode<Schema>;
+  node: Schema['plugin']['Nodes']['object'];
   entity: CoreEntity<Schema>['data'];
   entityId?: string;
   disableJsonView?: boolean;
@@ -29,15 +30,15 @@ export function EntityDetailView<Schema extends Schemas = Schemas>({
 
   const required = new Set(node.required || []);
 
-  const entityProperties = useMemo<Array<[string, Schema['plugin']['AnyNode']]>>(
+  const entityProperties = useMemo(
     () =>
       Object.entries(node.properties)
         .filter(([name]) => name !== 'name')
-        .map(([name, schemaNode]) => [name, schemaNode as Schema['plugin']['AnyNode']]),
+        .map(([name, schemaNode]) => Tuple([name, schemaNode])),
     [node.properties],
   );
 
-  const sortedProperties = useMemo<Array<[string, Schema['plugin']['AnyNode']]>>(
+  const sortedProperties = useMemo(
     () =>
       schema.plugins.core.sortEntityProperties(
         entityProperties,

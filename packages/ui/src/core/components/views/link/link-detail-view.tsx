@@ -1,8 +1,8 @@
 import type { Schemas } from '@stately/schema';
+import type { LinkNode } from '@stately/schema/core/nodes';
 import type { ViewFieldProps } from '@/base/form/field-view';
 import { Skeleton } from '@/base/ui/skeleton';
-import type { CoreLinkNode } from '@/core';
-import { useStatelyUi } from '@/core';
+import { type CoreStateEntry, useStatelyUi } from '@/core';
 import { useEntityData } from '@/core/hooks/use-entity-data';
 import type { LinkFor } from './link-edit-view';
 import { LinkInlineView } from './link-inline-view';
@@ -10,17 +10,17 @@ import { LinkRefView } from './link-ref-view';
 
 export type LinkViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
   Schema,
-  CoreLinkNode<Schema>,
+  LinkNode,
   LinkFor<Schema>
 >;
 
 export function LinkView<Schema extends Schemas = Schemas>({ value, node }: LinkViewProps<Schema>) {
   const { schema } = useStatelyUi();
-  const inlineSchema = (node as CoreLinkNode<Schema>).inlineSchema;
+  const inlineSchema = node.inlineSchema;
 
   // Extract entity_type and actual value
   const entityType = node?.targetType;
-  const stateEntry = entityType || value?.entity_type;
+  const stateEntry = (entityType || value?.entity_type) as CoreStateEntry<Schema>;
 
   const identifier = value && 'ref' in value ? value.ref : undefined;
 

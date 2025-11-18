@@ -42,7 +42,7 @@ export const RELATIVE_PATH_MODES = [
   },
 ] as const;
 
-export interface RelativePathFieldProps {
+export interface RelativePathEditProps {
   formId: string;
   value?: any;
   onChange: (value: any) => void;
@@ -50,13 +50,13 @@ export interface RelativePathFieldProps {
   standalone?: boolean;
 }
 
-export function RelativePathField({
+export function RelativePathEdit({
   formId,
   value,
   onChange,
   placeholder,
   standalone,
-}: RelativePathFieldProps) {
+}: RelativePathEditProps) {
   // Detect if value is an upload path object (versioned)
   const isUploadPath =
     typeof value === 'object' && value !== null && 'dir' in value && value.dir === 'upload';

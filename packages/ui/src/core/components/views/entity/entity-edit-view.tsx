@@ -6,7 +6,6 @@ import { JsonEdit } from '@/base/form/json-edit';
 import { JsonView } from '@/base/form/json-view';
 import { FieldGroup } from '@/base/ui/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/base/ui/tabs';
-import type { CoreObjectNode } from '@/core';
 import { EntityFormEdit } from './entity-form-edit';
 import { EntityWizardView } from './entity-wizard-view';
 
@@ -17,7 +16,7 @@ export enum EditMode {
 }
 
 export interface EntityEditViewProps<Schema extends Schemas = Schemas> {
-  node: CoreObjectNode<Schema>;
+  node: Schema['plugin']['Nodes']['object'];
   value: any; // Current entity data (from parent)
   defaultMode?: EditMode;
   onChange: (data: AnyRecord) => void;

@@ -10,7 +10,6 @@ import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/base/ui/collapsible';
 import { Item, ItemActions, ItemContent, ItemGroup, ItemTitle } from '@/base/ui/item';
-import type { CoreMapNode } from '@/core';
 
 export function KeyValue({
   active,
@@ -57,7 +56,7 @@ export function KeyValue({
 
 export type MapViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
   Schema,
-  CoreMapNode<Schema>,
+  Schema['plugin']['Nodes']['map'],
   AnyRecord
 >;
 
@@ -78,7 +77,7 @@ export function MapView<Schema extends Schemas = Schemas>({ node, value }: MapVi
     <ItemGroup className="space-y-3">
       {entries.map(([key, val]) => (
         <KeyValue itemKey={key} key={key}>
-          <FieldView node={node} value={val} />
+          <FieldView<Schema> node={node} value={val} />
         </KeyValue>
       ))}
 

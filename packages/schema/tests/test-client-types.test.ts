@@ -51,9 +51,9 @@ type MockComponents = DefineComponents<{
 }>;
 
 // Mock nodes (minimal for test)
-const MOCK_PARSED_SCHEMAS: Schemas['config']['nodes'] = {
+const MOCK_PARSED_SCHEMAS = {
   Entity: { discriminator: 'type', nodeType: CoreNodeType.TaggedUnion, variants: [] },
-};
+} as const;
 
 // Create config and schema types (matching xeo4 pattern)
 type MockConfig = DefineConfig<

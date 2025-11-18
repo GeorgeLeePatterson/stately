@@ -10,16 +10,10 @@
  * Run: npx tsc --noEmit tests/test-plugin-augmentation.ts
  */
 import type { CoreStatelyConfig } from '../src/core/generated.js';
+import type { ObjectNode, PrimitiveNode } from '../src/core/nodes.js';
 import type { AssertTrue } from '../src/helpers.js';
-import type {
-  DefineGeneratedNodes,
-  DefinePlugin,
-  PluginNodes,
-  PluginNodeTypes,
-  PluginNodeUnion,
-  Schemas,
-} from '../src/index.js';
-import type { DefineNodeMap } from '../src/plugin.js';
+import type { DefineGeneratedNodes, DefinePlugin, PluginNodeUnion, Schemas } from '../src/index.js';
+import type { DefineData, DefineNodeMap } from '../src/plugin.js';
 import { isNodeOfType, type StatelySchemas } from '../src/schema.js';
 
 /**
@@ -110,9 +104,7 @@ type zzzz_ = MultiPluginSchemasBase['plugin']['NodeNames'];
 type zzzzz_ = MultiPluginSchemasBase['plugin']['NodeTypes'];
 
 // Extract plugin nodes - should include core + files + workflow
-type AllPluginNodes = PluginNodes<MultiPluginSchemas>;
 type AllNodeUnion = PluginNodeUnion<MultiPluginSchemas>;
-type AllNodeTypes = PluginNodeTypes<MultiPluginSchemas>;
 
 /**
  * =============================================================================
@@ -120,37 +112,17 @@ type AllNodeTypes = PluginNodeTypes<MultiPluginSchemas>;
  * =============================================================================
  */
 
-// Test: Can access core nodes
-type CoreObjectNode = AllPluginNodes['object'];
-type CorePrimitiveNode = AllPluginNodes['primitive'];
-
-// Test: Can access files plugin nodes
-type FilesFileNode = AllPluginNodes['file'];
-type FilesDirectoryNode = AllPluginNodes['directory'];
-
-// Test: Can access workflow plugin nodes
-type WorkflowActionNode = AllPluginNodes['action'];
-type WorkflowTriggerNode = AllPluginNodes['trigger'];
-type UnknownBaseNode = AllPluginNodes['unknown'];
-
 // Test: Node type union includes all plugins
 type NodeTypeIncludes = {
-  hasCore: 'object' extends AllNodeTypes ? true : false;
-  hasFiles: 'file' extends AllNodeTypes ? true : false;
-  hasWorkflow: 'action' extends AllNodeTypes ? true : false;
-  hasUnknown: 'unknown' extends AllNodeTypes ? true : false;
+  hasCore: 'object' extends MultiPluginSchemas['plugin']['NodeTypes'] ? true : false;
+  hasFiles: 'file' extends MultiPluginSchemas['plugin']['NodeTypes'] ? true : false;
+  hasWorkflow: 'action' extends MultiPluginSchemas['plugin']['NodeTypes'] ? true : false;
+  hasUnknown: 'unknown' extends MultiPluginSchemas['plugin']['NodeTypes'] ? true : false;
 };
 
 type CorePrimitiveNodeIsPrimitive = AssertTrue<
-  CorePrimitiveNode extends { nodeType: 'primitive' } ? true : false
+  PrimitiveNode extends { nodeType: 'primitive' } ? true : false
 >;
-type FilesDirectoryNodeShape = AssertTrue<
-  FilesDirectoryNode extends { nodeType: 'directory' } ? true : false
->;
-type WorkflowTriggerNodeShape = AssertTrue<
-  WorkflowTriggerNode extends { nodeType: 'trigger' } ? true : false
->;
-type UnknownNodeShape = AssertTrue<UnknownBaseNode extends { nodeType: 'unknown' } ? true : false>;
 
 type AllPluginsPresent = AssertTrue<
   NodeTypeIncludes['hasCore'] extends true
@@ -172,17 +144,17 @@ type AllPluginsPresent = AssertTrue<
 
 function processMultiPluginNode(schema: AllNodeUnion): string {
   // Test: Can narrow to core node
-  if (isNodeOfType<MultiPluginSchemas, 'object'>(schema, 'object')) {
+  if (isNodeOfType<ObjectNode>(schema, 'object')) {
     return `core object with ${Object.keys(schema.properties).length} properties`;
   }
 
   // Test: Can narrow to files plugin node
-  if (isNodeOfType<MultiPluginSchemas, 'file'>(schema, 'file')) {
+  if (isNodeOfType<FileNode>(schema, 'file')) {
     return `file at ${schema.path}${schema.mimeType ? ` (${schema.mimeType})` : ''}`;
   }
 
   // Test: Can narrow to workflow plugin node
-  if (isNodeOfType<MultiPluginSchemas, 'action'>(schema, 'action')) {
+  if (isNodeOfType<ActionNode>(schema, 'action')) {
     return `action: ${schema.actionType}`;
   }
 
@@ -195,7 +167,7 @@ function processMultiPluginNode(schema: AllNodeUnion): string {
  * =============================================================================
  */
 
-type FilesData = { fileRegistry: Map<string, string> };
+type FilesData = DefineData<{ fileRegistry: Map<string, string> }>;
 type FilesTypes = { FileMetadata: { size: number; created: Date } };
 type FilesUtils = { resolveFilePath: (path: string) => string };
 
@@ -235,11 +207,5 @@ export type AugmentationAssertions = {
   allPluginsPresent: AllPluginsPresent;
   allExtrasPresent: AllExtrasPresent;
   // Type-level verification
-  coreNodes: CoreObjectNode;
-  filesNodes: FilesFileNode;
-  workflowNodes: WorkflowActionNode;
   corePrimitiveShape: CorePrimitiveNodeIsPrimitive;
-  filesDirectoryShape: FilesDirectoryNodeShape;
-  workflowTriggerShape: WorkflowTriggerNodeShape;
-  unknownShape: UnknownNodeShape;
 };

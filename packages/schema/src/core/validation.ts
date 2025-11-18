@@ -4,14 +4,14 @@
  * Validation functions for Stately schemas
  */
 
-import type { SchemaConfig, Schemas } from '../index.js';
+import type { Schemas } from '../index.js';
 import type {
   ValidateArgs,
   ValidationError,
   ValidationOptions,
   ValidationResult,
 } from '../validation.js';
-import type { CoreNodeUnion, ObjectNode } from './nodes.js';
+import type { ObjectNode } from './nodes.js';
 import { CoreNodeType } from './nodes.js';
 
 export type ValidatorCallback = (value: unknown, schema: unknown) => boolean;
@@ -39,13 +39,12 @@ export function clearValidationCache(): void {
 /**
  * Validate data against a schema node
  */
-export function validateNode({
+export function validateNode<S extends Schemas = Schemas>({
   path,
   data,
-  schema: rawSchema,
+  schema,
   options = {},
-}: ValidateArgs<Schemas>): ValidationResult {
-  const schema = rawSchema as CoreNodeUnion<SchemaConfig<Schemas>>;
+}: ValidateArgs<S>): ValidationResult {
   // Check cache first
   const cacheKey = createValidationCacheKey(path, data);
   const cached = validationCache.get(cacheKey);
@@ -104,8 +103,8 @@ export function validateNode({
         break;
       }
 
-      const variantData = (data as any)[variant];
-      const variantSchema = (schema as any).variants.find((v: any) => v.tag === variant);
+      const variantData = data[variant];
+      const variantSchema = schema.variants.find((v: any) => v.tag === variant);
 
       if (!variantSchema) {
         result = {
@@ -136,7 +135,7 @@ export function validateNode({
       const errors: ValidationError[] = [];
       for (let i = 0; i < data.length; i++) {
         const itemResult = validateNode({
-          data: (data as any)[i],
+          data: data[i],
           options: nextOptions,
           path: `${path}[${i}]`,
           schema: schema.items,
@@ -154,8 +153,8 @@ export function validateNode({
         break;
       }
 
-      const discriminator = (schema as any).discriminator as string;
-      const tag = (data as any)[discriminator];
+      const discriminator = schema.discriminator as string;
+      const tag = data[discriminator];
 
       if (!tag) {
         result = {
@@ -171,7 +170,7 @@ export function validateNode({
         break;
       }
 
-      const variant = (schema as any).variants.find((v: any) => v.tag === tag);
+      const variant = schema.variants.find((v: any) => v.tag === tag);
       if (!variant) {
         result = {
           errors: [
@@ -197,7 +196,7 @@ export function validateNode({
       }
 
       const mapErrors: ValidationError[] = [];
-      for (const [key, value] of Object.entries(data as Record<string, any>)) {
+      for (const [key, value] of Object.entries(data)) {
         const itemResult = validateNode({
           data: value,
           options: nextOptions,
@@ -219,17 +218,11 @@ export function validateNode({
   return result;
 }
 
-// TODO: Remove
-// type ValidateFieldArgs<
-//   S extends Schemas = Schemas,
-//   N = AnyCoreNode<SchemaConfig<S>>
-// > = Omit<ValidateArgs<S>, 'schema'> & { schema: N };
-
 /**
  * Validate an object against an ObjectNode schema
  */
 export function validateObject(
-  args: Omit<ValidateArgs<Schemas>, 'schema'> & { schema: ObjectNode<SchemaConfig<Schemas>> },
+  args: Omit<ValidateArgs<Schemas>, 'schema'> & { schema: ObjectNode },
 ): ValidationResult {
   const { path, data, schema, options } = args;
   const { debug = false } = options || {};
@@ -242,7 +235,7 @@ export function validateObject(
     return { errors: [{ message: 'Expected an object', path, value: data }], valid: false };
   }
 
-  const required = new Set((schema as any).required || []);
+  const required = new Set(schema.required || []);
   const errors: ValidationError[] = [];
 
   for (const [propertyName, propertySchema] of Object.entries(schema.properties)) {
@@ -262,11 +255,6 @@ export function validateObject(
 
   return { errors, valid: errors.length === 0 };
 }
-
-// path: string;
-// data: any;
-// schema: plugin node union for S;
-// options?: ValidationOptions;
 
 /**
  * Validate a single object field
@@ -292,7 +280,7 @@ export function validateObjectField(
     // For other types, missing or empty object is invalid
     if (
       isMissing ||
-      (typeof data === 'object' && !Array.isArray(data) && Object.keys(data as object).length === 0)
+      (typeof data === 'object' && !Array.isArray(data) && Object.keys(data).length === 0)
     ) {
       return {
         errors: [{ message: `Field '${name}' is required`, path: fieldPath, value: data }],

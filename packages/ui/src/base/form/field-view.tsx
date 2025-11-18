@@ -4,13 +4,15 @@
  * Uses flat component registry lookup: 'nodeType::view'
  */
 
+import type { BaseNode } from '@stately/schema/nodes';
+import type { PluginNodeUnion } from '@stately/schema/plugin';
 import type { StatelySchemas } from '@stately/schema/schema';
 import { getViewComponent } from '@/base/registry';
 import { useStatelyUi } from '@/core';
 
 export interface ViewFieldProps<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
-  N extends S['plugin']['AnyNode'] = S['plugin']['AnyNode'],
+  N extends BaseNode = PluginNodeUnion<S>,
   V = unknown,
 > {
   node: N;

@@ -1,6 +1,7 @@
 import type { Schemas } from '@stately/schema';
+import type { ObjectNode } from '@stately/schema/core/nodes';
 import { useCallback } from 'react';
-import type { CoreObjectNode, CoreStateEntry } from '@/core';
+import type { CoreStateEntry } from '@/core';
 import { EntitySelectEdit } from '../entity/entity-select-edit';
 import type { LinkFor } from './link-edit-view';
 
@@ -14,7 +15,7 @@ export interface LinkRefEditProps<Schema extends Schemas = Schemas> {
   /** List of entity refs */
   availableEntities: Array<Schema['config']['components']['schemas']['Summary']>;
   /** Schema for the inline entity */
-  node: CoreObjectNode<Schema>;
+  node: ObjectNode;
   /** Current value from parent (either ref or inline) */
   value?: LinkFor<Schema> | null;
   /** Called when save is clicked with new ref value */

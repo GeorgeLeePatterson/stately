@@ -22,7 +22,7 @@ import {
 } from '@/base/ui/input-group';
 import { Item, ItemContent, ItemGroup } from '@/base/ui/item';
 import { Separator } from '@/base/ui/separator';
-import type { CoreMapNode, CoreNodeUnion } from '@/core';
+import type { CoreNodeUnion } from '@/core';
 import { KeyValue } from '../view/map-field';
 
 const generateSaveLabels = (
@@ -51,7 +51,7 @@ const generateSaveLabels = (
 
 export type MapEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
-  CoreMapNode<Schema>,
+  Schema['plugin']['Nodes']['map'],
   AnyRecord
 >;
 
@@ -212,7 +212,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
                       setNewValue={setEditValue}
                     />
                   ) : (
-                    <FieldView node={node} value={itemValue} />
+                    <FieldView<Schema> node={node} value={itemValue} />
                   )}
                 </KeyValue>
               ))}
@@ -368,7 +368,7 @@ function ValueEdit<Schema extends Schemas = Schemas>({
               <div className="bg-muted text-xs italic p-2">{node.description}</div>
             )}
             <div className="p-2 flex-1 w-full min-w-0">
-              <FieldEdit
+              <FieldEdit<Schema, CoreNodeUnion<Schema>, string>
                 formId={formId}
                 isRequired
                 isWizard={isWizard}

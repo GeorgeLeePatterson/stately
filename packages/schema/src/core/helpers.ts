@@ -1,4 +1,10 @@
+import type { BaseConfig } from '../generated.js';
+import type { Schemas } from '../index.js';
+import type { NodeMap, NodeValues } from '../nodes.js';
+import type { AnyPluginAugment } from '../plugin.js';
+import type { DerivedPluginNodes } from '../schema.js';
 import type { CoreStatelyConfig } from './generated.js';
+import type { CoreNodes } from './nodes.js';
 
 /**
  * StateEntry type - represents entity state discriminator values.
@@ -8,7 +14,7 @@ import type { CoreStatelyConfig } from './generated.js';
  * create invariance when used as Record keys, but conditional extraction with `infer`
  * maintains covariance because the conditional distributes over the constraint.
  */
-export type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> = Config extends {
+export type StateEntry<Config extends BaseConfig = BaseConfig> = Config extends {
   components: { schemas: { StateEntry: infer S } };
 }
   ? S
@@ -21,13 +27,7 @@ export type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> = C
  * covariance. Direct extraction like `keyof Config['nodes']` would create invariance when
  * used as Record keys, but conditional extraction with `infer` maintains covariance.
  */
-export type NodeKey<Config extends CoreStatelyConfig = CoreStatelyConfig> = Config extends {
-  nodes: infer N;
-}
-  ? N extends object
-    ? keyof N
-    : string
-  : string;
+export type NodeKey<N extends NodeMap = NodeMap> = N extends object ? keyof N : string;
 
 /**
  * Node value type - represents any node value from the Config's nodes map.
@@ -44,3 +44,11 @@ export type NodeValue<Config extends CoreStatelyConfig = CoreStatelyConfig> = Co
     ? N[keyof N]
     : unknown
   : unknown;
+
+export type CoreAnyNode<Augments extends AnyPluginAugment = []> = CoreNodes<
+  NodeValues<DerivedPluginNodes<Augments>>
+>;
+
+export type CoreAnySchemaNode<Schema extends Schemas<any, any> = Schemas> = CoreNodes<
+  NodeValues<DerivedPluginNodes<Schema['augments']>>
+>;

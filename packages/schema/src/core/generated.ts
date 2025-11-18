@@ -17,7 +17,7 @@ import type { CorePaths } from './paths';
 type CoreComponents = DefineComponents<{
   schemas: DefineComponentSchemas<{
     StateEntry: string; // Generated as string union type from enum
-    Entity: { type: string; data: any }; // Generated as discriminated union
+    Entity: { type: string; data: { name?: string; [key: string]: any } }; // Generated as discriminated union
     EntityId: string;
     Summary: { id: string; name: string; description?: string | null };
   }>;
@@ -25,7 +25,9 @@ type CoreComponents = DefineComponents<{
 
 type CoreComponentInput = StatelyConfig['components'] & CoreComponents;
 type CorePathsInput = StatelyConfig['paths'] & CorePaths;
-type CoreNodesInput = DefineGeneratedNodes<{ Entity: TaggedUnionNode<CoreStatelyConfig, 'type'> }>;
+type CoreNodesInput<T extends NodeMap = NodeMap> = DefineGeneratedNodes<{
+  Entity: TaggedUnionNode<T[keyof T], 'type'>;
+}>;
 
 /**
  * Core configuration type that plugin authors can specialize with their own
@@ -38,7 +40,7 @@ type CoreNodesInput = DefineGeneratedNodes<{ Entity: TaggedUnionNode<CoreStately
 export interface CoreStatelyConfig<
   out C extends CoreComponentInput = CoreComponentInput,
   out P extends CorePathsInput = CorePathsInput,
-  out N extends DefineGeneratedNodes<NodeMap> = NodeMap,
+  out N extends DefineGeneratedNodes = NodeMap,
 > extends StatelyConfig<C, P, CoreNodesInput & N> {}
 
 /**
@@ -47,5 +49,5 @@ export interface CoreStatelyConfig<
 export type DefineCoreConfig<
   C extends DefineComponents<object> = CoreStatelyConfig['components'],
   P extends DefinePaths = CoreStatelyConfig['paths'],
-  N extends DefineGeneratedNodes<NodeMap> = CoreStatelyConfig['nodes'],
+  N extends DefineGeneratedNodes = CoreStatelyConfig['nodes'],
 > = CoreStatelyConfig<C & CoreComponentInput, P & CorePathsInput, CoreNodesInput & N>;

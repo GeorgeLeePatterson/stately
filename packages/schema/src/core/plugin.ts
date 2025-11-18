@@ -1,10 +1,10 @@
-import type { DefinePlugin, SchemaConfig, Schemas } from '../index.js';
-import type { DefineTypes } from '../plugin.js';
+import type { DefinePlugin, Schemas } from '../index.js';
+import type { NodeMap } from '../nodes.js';
+import type { DefineTypes, PluginAugment } from '../plugin.js';
 import type { PluginFactory } from '../stately.js';
-import type { ValidateArgs } from '../validation.js';
-import type { CoreData } from './data.js';
-import { generateCoreData } from './data.js';
+import { type CoreData, generateCoreData } from './data.js';
 import type { CoreStatelyConfig } from './generated.js';
+import type { CoreAnyNode } from './helpers.js';
 import type { CoreNodeMap } from './nodes.js';
 import type { CoreUtils } from './utils.js';
 import { coreUtils } from './utils.js';
@@ -17,9 +17,12 @@ export type CoreTypes<Config extends CoreStatelyConfig> = DefineTypes<{
   EntityData: Config['components']['schemas']['Entity']['data'];
 }>;
 
-export type CorePlugin<Config extends CoreStatelyConfig> = DefinePlugin<
+export type CorePlugin<
+  Config extends CoreStatelyConfig,
+  Augments extends readonly PluginAugment<string, NodeMap>[] = [],
+> = DefinePlugin<
   typeof CORE_PLUGIN_NAME,
-  CoreNodeMap<Config>,
+  CoreNodeMap<CoreAnyNode<Augments>>,
   CoreTypes<Config>,
   CoreData<Config>,
   CoreUtils
@@ -31,18 +34,13 @@ export type CorePlugin<Config extends CoreStatelyConfig> = DefinePlugin<
 export function corePlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
   return runtime => {
     const document = runtime.schema.document;
-    const nodes = runtime.schema.nodes as SchemaConfig<S>['nodes'];
-
-    const coreData = generateCoreData(document, nodes);
+    const coreData = generateCoreData(document, runtime.schema.nodes);
 
     return {
       ...runtime,
       data: { ...runtime.data, ...coreData },
-      plugins: {
-        ...runtime.plugins,
-        [CORE_PLUGIN_NAME]: coreUtils,
-        validate: (args: ValidateArgs<Schemas>) => validateNode(args),
-      },
+      plugins: { ...runtime.plugins, [CORE_PLUGIN_NAME]: coreUtils },
+      validate: args => validateNode(args),
     };
   };
 }

@@ -3,13 +3,11 @@ import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
 import type { ComponentType } from 'react';
 import type { AugmentPlugins, UiPluginAugment } from './plugin';
-
-export type ComponentRegistry = Map<string, ComponentType<any>>;
-export type TransformerRegistry = Map<string, (value: any) => any>;
-export type FunctionRegistry = Map<string, (...args: any[]) => any>;
+import type { ComponentRegistry, FunctionRegistry, TransformerRegistry } from './registry';
 
 export interface UiRegistry {
   components: ComponentRegistry;
+  // TODO: Important! Allow specifying transformer `types`
   transformers: TransformerRegistry;
   functions: FunctionRegistry;
 }

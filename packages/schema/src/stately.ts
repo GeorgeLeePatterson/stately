@@ -11,7 +11,7 @@
  * the raw OpenAPI document is used purely for runtime introspection.
  */
 
-import type { DefineOpenApi, StatelyConfig } from './generated.js';
+import type { DefineOpenApi } from './generated.js';
 import type { StatelySchemaConfig, StatelySchemas } from './schema.js';
 import {
   runValidationPipeline,
@@ -27,16 +27,14 @@ export interface SchemaRegistry {
 /**
  * Schema plugin descriptor installed by plugin factory functions.
  */
-export interface PluginDescriptor<S extends StatelySchemas<StatelyConfig, any>> {
+export interface PluginDescriptor<S extends StatelySchemas<any, any>> {
   validate?: ValidateHook<S>;
 }
 
 /**
  * Runtime plugin factory signature.
  */
-export type PluginFactory<S extends StatelySchemas<StatelyConfig, any>> = (
-  runtime: Stately<S>,
-) => Stately<S>;
+export type PluginFactory<S extends StatelySchemas<any, any>> = (runtime: Stately<S>) => Stately<S>;
 
 export interface Stately<S extends StatelySchemas<any, any>> {
   schema: { document: DefineOpenApi<any>; nodes: StatelySchemaConfig<S>['nodes'] };

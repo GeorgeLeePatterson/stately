@@ -1,7 +1,8 @@
 import type { Schemas } from '@stately/schema';
+import type { ObjectNode } from '@stately/schema/core/nodes';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { FieldLegend } from '@/base/ui/field';
-import type { CoreEntity, CoreObjectNode, CoreStateEntry } from '@/core';
+import type { CoreEntity, CoreStateEntry } from '@/core';
 import { useStatelyUi } from '@/core';
 import { EditMode, EntityEditView } from '../entity/entity-edit-view';
 import type { LinkFor } from './link-edit-view';
@@ -10,7 +11,7 @@ export interface LinkInlineEditProps<Schema extends Schemas = Schemas> {
   /** The entity type being configured inline */
   targetType: CoreStateEntry<Schema>;
   /** Schema for the inline entity */
-  node: CoreObjectNode<Schema>;
+  node: ObjectNode;
   /** Current value from parent (either ref or inline) */
   value?: LinkFor<Schema> | null;
   /** Called when save is clicked with new inline value */

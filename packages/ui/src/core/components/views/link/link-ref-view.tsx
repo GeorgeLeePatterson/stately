@@ -1,9 +1,10 @@
 import type { Schemas } from '@stately/schema';
+import type { ObjectNode } from '@stately/schema/core/nodes';
 import { ExternalLink } from 'lucide-react';
 import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/base/ui/item';
-import type { CoreObjectNode, CoreStateEntry } from '@/core';
+import type { CoreStateEntry } from '@/core';
 import { ViewLinkControl } from '@/core/context/link-explore-context';
 
 export interface LinkRefViewProps<Schema extends Schemas = Schemas> {
@@ -11,7 +12,7 @@ export interface LinkRefViewProps<Schema extends Schemas = Schemas> {
   name?: string;
   urlType: string;
   value: { entity_type: CoreStateEntry<Schema>; ref: string };
-  schema?: CoreObjectNode<Schema>;
+  schema?: ObjectNode;
   isRequired?: boolean;
 }
 

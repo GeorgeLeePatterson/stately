@@ -5,12 +5,11 @@ import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { Card, CardContent } from '@/base/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
-import type { CoreTaggedUnionNode } from '@/core';
 import { useStatelyUi } from '@/core';
 
 export type TaggedUnionEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
-  CoreTaggedUnionNode<Schema>
+  Schema['plugin']['Nodes']['taggedUnion']
 >;
 
 /**
@@ -120,7 +119,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
 
                   return (
                     <div key={fieldName}>
-                      <FieldEdit
+                      <FieldEdit<Schema>
                         formId={fieldFormId}
                         isRequired={isRequired}
                         isWizard={isWizard}

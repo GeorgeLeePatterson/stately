@@ -1,10 +1,10 @@
 import type { Schemas } from '@stately/schema';
 import { useId } from 'react';
-import type { CoreEntity, CoreObjectNode } from '@/core';
+import type { CoreEntity } from '@/core';
 import { ObjectWizardEdit } from '../../fields/edit/object-wizard';
 
 export interface EntityWizardViewProps<Schema extends Schemas = Schemas> {
-  node: CoreObjectNode<Schema>;
+  node: Schema['plugin']['Nodes']['object'];
   value?: CoreEntity<Schema>['data'];
   onChange: (value: CoreEntity<Schema>['data']) => void;
   onComplete?: () => void;
@@ -31,7 +31,7 @@ export function EntityWizardView<Schema extends Schemas = Schemas>({
       ? { ...node, required: [...node.required, 'name'] }
       : node;
   return (
-    <ObjectWizardEdit<Schema>
+    <ObjectWizardEdit<Schema, Schema['plugin']['Nodes']['object'], CoreEntity<Schema>['data']>
       formId={formId}
       isLoading={isLoading}
       node={newNode}

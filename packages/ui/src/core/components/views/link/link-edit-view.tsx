@@ -1,4 +1,5 @@
 import type { Schemas } from '@stately/schema';
+import type { LinkNode } from '@stately/schema/core/nodes';
 import { SINGLETON_ID } from '@stately/schema/core/utils';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
@@ -6,7 +7,7 @@ import type { EditFieldProps } from '@/base/form/field-edit';
 import { Button } from '@/base/ui/button';
 import { ButtonGroup } from '@/base/ui/button-group';
 import { FieldGroup, FieldSet } from '@/base/ui/field';
-import type { CoreEntity, CoreLinkNode, CoreStateEntry } from '@/core';
+import type { CoreEntity, CoreStateEntry } from '@/core';
 import { useStatelyUi } from '@/core';
 import { useEditEntityData } from '@/core/hooks/use-edit-entity-data';
 import { LinkInlineEdit } from './link-inline-edit-view';
@@ -19,7 +20,7 @@ export type LinkFor<Schema extends Schemas = Schemas> =
 
 export type LinkEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
-  CoreLinkNode<Schema>,
+  LinkNode,
   LinkFor<Schema> | null | undefined
 >;
 
@@ -35,7 +36,7 @@ export function LinkEdit<Schema extends Schemas = Schemas>({
 }: LinkEditProps<Schema>) {
   const { plugins } = useStatelyUi();
   const coreApi = plugins.core?.api;
-  const targetType = node.targetType;
+  const targetType = node.targetType as CoreStateEntry<Schema>;
 
   // Mode state - undefined until entities are fetched
   const [mode, setMode] = useState<'ref' | 'inline'>(

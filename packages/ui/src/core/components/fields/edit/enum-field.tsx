@@ -2,12 +2,11 @@ import type { Schemas } from '@stately/schema';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import { Field } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
-import type { CoreEnumNode } from '@/core';
 import { useStatelyUi } from '@/core';
 
 export type EnumEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
-  CoreEnumNode,
+  Schema['plugin']['Nodes']['enum'],
   string
 >;
 

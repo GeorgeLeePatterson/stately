@@ -1,6 +1,4 @@
-import type { StatelyConfig } from './generated.js';
-import { UnknownNodeType } from './nodes.js';
-import type { PluginNodeUnion } from './plugin.js';
+import { type BaseNode, UnknownNodeType } from './nodes.js';
 import type { StatelySchemas } from './schema.js';
 import type { Stately } from './stately.js';
 
@@ -27,8 +25,8 @@ export interface ValidationOptions {
  * Validation hook context passed to plugins.
  */
 export interface ValidateArgs<
-  S extends StatelySchemas<StatelyConfig, any> = StatelySchemas<StatelyConfig, any>,
-  Node = PluginNodeUnion<S>,
+  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
+  Node extends BaseNode = S['plugin']['AnyNode'],
 > {
   path: string;
   data: any;
@@ -39,13 +37,13 @@ export interface ValidateArgs<
 /**
  * Validation hook signature used by schema plugins.
  */
-export type ValidateHook<
-  Schema extends StatelySchemas<StatelyConfig, any> = StatelySchemas<StatelyConfig, any>,
-> = (args: ValidateArgs<Schema>) => ValidationResult | undefined;
+export type ValidateHook<S extends StatelySchemas<any, any> = StatelySchemas<any, any>> = (
+  args: ValidateArgs<S>,
+) => ValidationResult | undefined;
 
-export function runValidationPipeline<Schemas extends StatelySchemas<any, any>>(
-  state: Stately<Schemas>,
-  args: ValidateArgs<Schemas>,
+export function runValidationPipeline<S extends StatelySchemas<any, any>>(
+  state: Stately<S>,
+  args: ValidateArgs<S>,
 ): ValidationResult {
   // Handle unknown nodeTypes from codegen - skip validation
   if (args.schema.nodeType === UnknownNodeType) {
@@ -57,7 +55,7 @@ export function runValidationPipeline<Schemas extends StatelySchemas<any, any>>(
 
   const hooks = Object.values(state.plugins as Record<string, any>)
     .map(plugin => plugin?.validate)
-    .filter((hook): hook is ValidateHook<Schemas> => Boolean(hook));
+    .filter((hook): hook is ValidateHook<S> => Boolean(hook));
 
   if (hooks.length === 0) {
     throw new Error(

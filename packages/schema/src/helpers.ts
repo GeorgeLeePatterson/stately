@@ -27,3 +27,6 @@ export type UnionToIntersection<U> = (U extends any ? (arg: U) => void : never) 
 ) => void
   ? I
   : never;
+
+/** Convert an array of values to a non-readonly tuple */
+export const Tuple = <T extends [any, ...any]>(v: T) => v;

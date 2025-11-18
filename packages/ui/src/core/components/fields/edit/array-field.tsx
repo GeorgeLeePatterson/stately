@@ -9,12 +9,11 @@ import { FieldEdit } from '@/base/form/field-edit';
 import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
 import { Field, FieldSet } from '@/base/ui/field';
-import type { CoreArrayNode } from '@/core';
 import { useStatelyUi } from '@/core';
 
-export type ArrayEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
+export type ArrayEditProps<Schema extends Schemas<any, any> = Schemas> = EditFieldProps<
   Schema,
-  CoreArrayNode<Schema>,
+  Schema['plugin']['Nodes']['array'],
   unknown[]
 >;
 

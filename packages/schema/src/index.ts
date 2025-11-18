@@ -61,7 +61,6 @@ import type { CorePlugin, CoreStatelyConfig, DefineCoreConfig } from './core/ind
 import { corePlugin } from './core/index.js';
 
 // Base
-import type * as GeneratedTypes from './generated.js';
 import type {
   DefineComponents,
   DefineGeneratedNodes,
@@ -99,7 +98,7 @@ export type {
  */
 export type DefinePlugin<
   Name extends string,
-  Nodes = NodeMap,
+  Nodes extends NodeMap = NodeMap,
   Types extends PluginTypes.DefineTypes = NeverRecord,
   Data extends PluginTypes.DefineData = NeverRecord,
   Utils extends PluginTypes.DefineUtils<AnyRecord> = EmptyRecord,
@@ -155,25 +154,7 @@ export function stately<S extends Schemas<any, any> = Schemas>(
 export type SchemaConfig<S> = S extends Schemas<infer Config, any> ? Config : never;
 
 /**
- * Type helpers for referencing generated node information
- */
-export type GeneratedNodes<C extends CoreStatelyConfig = CoreStatelyConfig> =
-  GeneratedTypes.GeneratedNodes<C>;
-export type GeneratedNodeUnion<C extends CoreStatelyConfig = CoreStatelyConfig> =
-  GeneratedTypes.GeneratedNodeUnion<C>;
-export type GeneratedNodeNames<C extends CoreStatelyConfig = CoreStatelyConfig> =
-  GeneratedTypes.GeneratedNodeNames<C>;
-export type GeneratedNodeTypes<C extends CoreStatelyConfig = CoreStatelyConfig> =
-  GeneratedTypes.GeneratedNodeTypes<C>;
-
-/**
  * Type helpers for referencing plugin node information
  */
-export type PluginNodes<S extends StatelySchemas<any, any> = Schemas> =
-  PluginTypes.PluginNodeMap<S>;
 export type PluginNodeUnion<S extends StatelySchemas<any, any> = Schemas> =
   PluginTypes.PluginNodeUnion<S>;
-export type PluginNodeNames<S extends StatelySchemas<any, any> = Schemas> =
-  PluginTypes.PluginNodeNames<S>;
-export type PluginNodeTypes<S extends StatelySchemas<any, any> = Schemas> =
-  PluginTypes.PluginNodeTypes<S>;

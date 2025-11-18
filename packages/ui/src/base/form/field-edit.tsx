@@ -5,13 +5,15 @@
  * All base components are pre-registered in statelyUi()
  */
 
+import type { BaseNode } from '@stately/schema/nodes';
+import type { PluginNodeUnion } from '@stately/schema/plugin';
 import type { StatelySchemas } from '@stately/schema/schema';
 import { getEditComponent } from '@/base/registry';
 import { useStatelyUi } from '@/core';
 
 export interface EditFieldProps<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
-  N extends S['plugin']['AnyNode'] = S['plugin']['AnyNode'],
+  N extends BaseNode = PluginNodeUnion<S>,
   V = unknown,
 > {
   formId: string;
@@ -27,7 +29,7 @@ export interface EditFieldProps<
 
 export function FieldEdit<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
-  N extends S['plugin']['AnyNode'] = S['plugin']['AnyNode'],
+  N extends BaseNode = PluginNodeUnion<S>,
   V = unknown,
 >(props: EditFieldProps<S, N, V>) {
   const { node } = props;

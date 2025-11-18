@@ -14,8 +14,12 @@ import type { DefineOperationMap, HttpBundle } from './operations';
 
 /** Registry modes */
 export type RegistryMode = 'edit' | 'view';
+export type RegistryType = 'component' | 'transformer';
 /** Registry keys */
-export type RegistryKey = `${string}::${RegistryMode}` | `${string}::${RegistryMode}::${string}`;
+export type RegistryKey =
+  | `${string}::${RegistryMode}` // Same as w/ 'component'
+  | `${string}::${RegistryMode}::${RegistryType}`
+  | `${string}::${RegistryMode}::${RegistryType}::${string}`;
 
 /** The types of components registered into the component registry */
 export type NodeTypeComponent<
@@ -26,19 +30,12 @@ export type NodeTypeComponent<
 export function makeRegistryKey(
   node: string,
   mode: RegistryMode,
-  discriminator?: string,
+  discriminator: RegistryType = 'component',
+  state?: string,
 ): RegistryKey {
-  return discriminator ? `${node}::${mode}::${discriminator}` : `${node}::${mode}`;
-}
-
-/** Helper to split a registry key */
-export function splitRegistryKey(key: RegistryKey): {
-  node: string;
-  mode: RegistryMode;
-  discriminator?: string;
-} {
-  const [node, mode, discriminator] = key.split('::');
-  return { discriminator, mode: mode as RegistryMode, node };
+  let key: RegistryKey = `${node}::${mode}::${discriminator}`;
+  if (state) key = `${key}::${state}`;
+  return key;
 }
 
 /**

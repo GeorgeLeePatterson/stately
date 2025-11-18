@@ -3,11 +3,10 @@ import { useId } from 'react';
 import { FieldItem } from '@/base/components/field';
 import type { ViewFieldProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
-import type { CoreTupleNode } from '@/core';
 
 export type TupleViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
   Schema,
-  CoreTupleNode<Schema>,
+  Schema['plugin']['Nodes']['tuple'],
   unknown[]
 >;
 
@@ -27,7 +26,7 @@ export function TupleView<Schema extends Schemas = Schemas>({
     <FieldItem>
       <div className="space-y-2 pl-4 border-l-2 border-muted">
         {node.items.map((itemSchema: (typeof node.items)[number], index: number) => (
-          <FieldView
+          <FieldView<Schema>
             key={`${keyPrefix}-tuple-${
               // biome-ignore lint/suspicious/noArrayIndexKey: Tuples are stable
               index

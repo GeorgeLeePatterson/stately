@@ -9,6 +9,13 @@ import { TaggedUnionEdit } from './tagged-union-field';
 import { TupleEdit } from './tuple-field';
 import { UntaggedEnumEdit } from './untagged-enum-field';
 
+// Transformers
+export type {
+  PrimitiveStringEditTransformerProps,
+  PrimitiveStringExtra,
+  StringMode,
+} from './primitive-string';
+
 export {
   ArrayEdit,
   EnumEdit,

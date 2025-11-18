@@ -4,10 +4,17 @@
  * Helper utilities for working with Stately schemas
  */
 
-import type { Schemas } from '../index.js';
-import type { DefineUtils } from '../plugin.js';
-import type { CoreStatelyConfig } from './generated.js';
-import { CoreNodeType, type CoreNodeUnion, type ObjectNode } from './nodes.js';
+import type { BaseNode } from '../nodes.js';
+import type { AnyPluginAugment, DefineUtils } from '../plugin.js';
+import { isNodeOfType } from '../schema.js';
+import type { CoreAnyNode } from './helpers.js';
+import {
+  type ArrayNode,
+  CoreNodeType,
+  type NullableNode,
+  type ObjectNode,
+  type PrimitiveNode,
+} from './nodes.js';
 
 type CoreNodeName = (typeof CoreNodeType)[keyof typeof CoreNodeType];
 
@@ -25,52 +32,64 @@ function isSingletonId(id: string): boolean {
  * Schema type checking utilities
  */
 
-function isPrimitive<Config extends CoreStatelyConfig = CoreStatelyConfig>(
-  schema: CoreNodeUnion<Config>,
-): boolean {
-  return (
-    schema.nodeType === CoreNodeType.Primitive ||
-    (schema.nodeType === CoreNodeType.Nullable && isPrimitive((schema as any).innerSchema)) ||
-    schema.nodeType === CoreNodeType.Enum
-  );
+export function isNullable<Augments extends AnyPluginAugment = []>(
+  schema: CoreAnyNode<Augments> | BaseNode,
+): schema is NullableNode<CoreAnyNode<Augments>> {
+  return isNodeOfType<NullableNode<CoreAnyNode<Augments>>>(schema, CoreNodeType.Nullable);
 }
 
-function extractNodeType<Config extends CoreStatelyConfig = CoreStatelyConfig>(
-  schema: CoreNodeUnion<Config>,
-): CoreNodeName {
-  switch (schema.nodeType) {
-    case CoreNodeType.Nullable:
-      return extractNodeType((schema as any).innerSchema);
-    case CoreNodeType.Array: {
-      const items = (schema as any).items;
-      if (Array.isArray(items) && items.length > 0) {
-        return extractNodeType(items[0]);
-      }
-      return schema.nodeType as CoreNodeName;
-    }
-    default:
-      return schema.nodeType as CoreNodeName;
+export function isArray<Augments extends AnyPluginAugment = []>(
+  schema: CoreAnyNode<Augments> | BaseNode,
+): schema is ArrayNode<CoreAnyNode<Augments>> {
+  return isNodeOfType<ArrayNode<CoreAnyNode<Augments>>>(schema, CoreNodeType.Array);
+}
+
+export function isObject<Augments extends AnyPluginAugment = []>(
+  schema: CoreAnyNode<Augments> | BaseNode,
+): schema is ObjectNode<CoreAnyNode<Augments>> {
+  return isNodeOfType<ObjectNode<CoreAnyNode<Augments>>>(schema, CoreNodeType.Object);
+}
+
+export function isPrimitive(schema: BaseNode): schema is PrimitiveNode {
+  return isNodeOfType<PrimitiveNode>(schema, CoreNodeType.Primitive);
+}
+
+export function isPrimitiveNode(schema: BaseNode): boolean {
+  if (isNullable(schema)) {
+    return isPrimitiveNode(schema.innerSchema);
   }
+  return schema.nodeType === CoreNodeType.Primitive || schema.nodeType === CoreNodeType.Enum;
+}
+
+function extractNodeType(schema: BaseNode): CoreNodeName | string {
+  if (isNullable(schema)) {
+    return extractNodeType(schema.innerSchema);
+  }
+
+  if (isArray(schema)) {
+    const items = schema.items;
+    if (Array.isArray(items) && items.length > 0) {
+      return extractNodeType(items[0]);
+    }
+  }
+
+  return schema.nodeType;
 }
 
 /**
  * Entity validation helper
  */
 
-function isEntityValid<Config extends CoreStatelyConfig = CoreStatelyConfig>(
-  entity: Schemas<Config>['types']['EntityData'] | null | undefined,
-  schema: ObjectNode<Config> | undefined,
-): boolean {
+function isEntityValid(entity: any | null | undefined, schema: ObjectNode | undefined): boolean {
   if (!entity || !schema) return false;
   if (typeof entity !== 'object') return false;
 
   const nameRequired = 'name' in schema.properties;
-  const nameValid = !nameRequired || ('name' in entity && !!(entity as any)?.name);
+  const nameValid = !nameRequired || ('name' in entity && !!entity?.name);
 
   if (!nameValid || !entity || !schema) return false;
 
   if (schema.required) {
-    // Cast to Record for runtime validation - EntityData is a union so no index signature
     const entityObj = entity as Record<string, any>;
     for (const field of schema.required) {
       if (!(field in entityObj) || entityObj[field] === undefined || entityObj[field] === null) {
@@ -86,11 +105,11 @@ function isEntityValid<Config extends CoreStatelyConfig = CoreStatelyConfig>(
  * Property sorting for display
  */
 
-function sortEntityProperties<Config extends CoreStatelyConfig = CoreStatelyConfig>(
-  properties: Array<[string, CoreNodeUnion<Config>]>,
+function sortEntityProperties<N extends BaseNode = BaseNode>(
+  properties: Array<[string, N]>,
   value: any,
   required: Set<string>,
-): Array<[string, CoreNodeUnion<Config>]> {
+): Array<[string, N]> {
   return properties.sort(([nameA, nodeA], [nameB, nodeB]) => {
     const isRequiredA = required.has(nameA);
     const isRequiredB = required.has(nameB);
@@ -133,7 +152,7 @@ function toSpaceCase(str: string): string {
 const coreUtils = {
   extractNodeType,
   isEntityValid,
-  isPrimitive,
+  isPrimitive: isPrimitiveNode,
   isSingletonId,
   sortEntityProperties,
   toKebabCase,
@@ -143,7 +162,7 @@ const coreUtils = {
 
 type CoreUtils = DefineUtils<{
   isSingletonId: typeof isSingletonId;
-  isPrimitive: typeof isPrimitive;
+  isPrimitiveNode: typeof isPrimitiveNode;
   extractNodeType: typeof extractNodeType;
   isEntityValid: typeof isEntityValid;
   sortEntityProperties: typeof sortEntityProperties;

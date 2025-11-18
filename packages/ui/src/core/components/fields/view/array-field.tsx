@@ -4,11 +4,10 @@ import { ArrayIndex } from '@/base/components/array';
 import type { ViewFieldProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
 import { Item, ItemContent, ItemGroup } from '@/base/ui/item';
-import type { CoreArrayNode } from '@/core';
 
 export type ArrayViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
   Schema,
-  CoreArrayNode<Schema>,
+  Schema['plugin']['Nodes']['array'],
   unknown[]
 >;
 
@@ -36,7 +35,7 @@ export function ArrayView<Schema extends Schemas = Schemas>({
           >
             <ArrayIndex index={index + 1} />
             <ItemContent>
-              <FieldView node={node} value={item} />
+              <FieldView<Schema> node={node} value={item} />
             </ItemContent>
           </Item>
         );

@@ -1,5 +1,6 @@
 import type { Schemas } from '@stately/schema';
 import { CoreNodeType } from '@stately/schema/core/nodes';
+import type { AnyRecord } from '@stately/schema/helpers';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Fragment, useCallback, useState } from 'react';
 import { FieldEdit } from '@/base/form/field-edit';
@@ -11,7 +12,7 @@ import { Skeleton } from '@/base/ui/skeleton';
 import { useStatelyUi } from '@/core';
 import { EntityPropertyView } from '@/core/components/views/entity/entity-property-view';
 import { useObjectField } from '@/core/hooks/use-object-field';
-import type { ObjectEditProps } from './object-field';
+import type { ObjectEditNode, ObjectEditProps } from './object-field';
 
 export interface ObjectWizardBaseProps {
   onComplete?: () => void;
@@ -19,10 +20,17 @@ export interface ObjectWizardBaseProps {
   isEmbedded?: boolean;
 }
 
-export type ObjectWizardEditProps<Schema extends Schemas = Schemas> = ObjectWizardBaseProps &
-  ObjectEditProps<Schema>;
+export type ObjectWizardEditProps<
+  Schema extends Schemas = Schemas,
+  Node extends ObjectEditNode<Schema> = ObjectEditNode<Schema>,
+  V = AnyRecord,
+> = ObjectWizardBaseProps & ObjectEditProps<Schema, Node, V>;
 
-export const ObjectWizardEdit = <Schema extends Schemas = Schemas>({
+export const ObjectWizardEdit = <
+  Schema extends Schemas = Schemas,
+  Node extends ObjectEditNode<Schema> = ObjectEditNode<Schema>,
+  V = AnyRecord,
+>({
   formId,
   label,
   node,
@@ -31,7 +39,7 @@ export const ObjectWizardEdit = <Schema extends Schemas = Schemas>({
   onComplete,
   isLoading,
   isEmbedded,
-}: ObjectWizardEditProps<Schema>) => {
+}: ObjectWizardEditProps<Schema, Node, V>) => {
   const { schema, plugins } = useStatelyUi();
   const corePlugin = plugins.core;
 
@@ -50,7 +58,7 @@ export const ObjectWizardEdit = <Schema extends Schemas = Schemas>({
     handleCancel: _,
     fields,
     isValid,
-  } = useObjectField({ label, node, onSave, value });
+  } = useObjectField<Schema>({ label, node, onSave, value });
 
   const requiredFields = new Set(node.required || []);
 
@@ -116,9 +124,9 @@ export const ObjectWizardEdit = <Schema extends Schemas = Schemas>({
           <Fragment>
             <EntityPropertyView fieldName={fieldName} isRequired={isRequired} node={propNode}>
               {/* Primitive field view */}
-              {schema.plugins?.core.isPrimitive(propNode) ? (
+              {schema.plugins?.core.isPrimitiveNode(propNode) ? (
                 <Field>
-                  <FieldEdit
+                  <FieldEdit<Schema>
                     formId={formId}
                     isRequired={isRequired}
                     label={fieldLabel}
@@ -129,7 +137,7 @@ export const ObjectWizardEdit = <Schema extends Schemas = Schemas>({
                 </Field>
               ) : (
                 // Complex field view
-                <FieldEdit
+                <FieldEdit<Schema>
                   formId={formId}
                   isRequired={isRequired}
                   isWizard

@@ -10,23 +10,14 @@
  * augments. Use these when creating custom plugins.
  */
 import type { AnyRecord, EmptyRecord, NeverRecord } from './helpers.js';
-import type { BaseNode, NodeInformation, NodeMap, UnknownNode, UnknownNodeType } from './nodes.js';
+import type { NodeMap, UnknownNode, UnknownNodeType } from './nodes.js';
+import type { StatelySchemas } from './schema.js';
 
 /**
  * Plugin helper types for nodes
  */
-export type PluginNodeMap<Schema> = Schema extends { plugin: NodeInformation<any> }
-  ? Schema['plugin']['Nodes']
-  : NodeMap;
-export type PluginNodeUnion<Schema> = Schema extends { plugin: NodeInformation<any> }
-  ? Schema['plugin']['AnyNode']
-  : BaseNode;
-export type PluginNodeNames<Schema> = Schema extends { plugin: NodeInformation<any> }
-  ? Schema['plugin']['NodeNames']
-  : string;
-export type PluginNodeTypes<Schema> = Schema extends { plugin: NodeInformation<any> }
-  ? Schema['plugin']['NodeTypes']
-  : string;
+export type PluginNodeUnion<S extends StatelySchemas<any, any> = StatelySchemas<any, any>> =
+  S['plugin']['AnyNode'];
 
 /**
  * Define the node map for your plugin augment.
@@ -66,7 +57,7 @@ export type DefineTypes<T extends AnyRecord = NeverRecord> = T;
  * }>;
  * ```
  */
-export type DefineData<T extends AnyRecord = NeverRecord> = T;
+export type DefineData<T extends AnyRecord = AnyRecord> = T;
 
 /**
  * Define utility functions to expose from your plugin.
@@ -91,14 +82,10 @@ export type DefineUtils<T extends AnyRecord = EmptyRecord> = T;
  */
 export type PluginAugment<
   Name extends string,
-  Nodes = NodeMap,
+  Nodes extends NodeMap = NodeMap,
   Types extends DefineTypes = NeverRecord,
   Data extends DefineData = NeverRecord,
   Utils extends DefineUtils<AnyRecord> = AnyRecord,
-> = {
-  name: Name;
-  nodes: Nodes extends NodeMap ? Nodes : Nodes & NodeMap;
-  types?: Types;
-  data?: Data;
-  utils?: Utils;
-};
+> = { name: Name; nodes: Nodes; types?: Types; data?: Data; utils?: Utils };
+
+export type AnyPluginAugment = readonly PluginAugment<string, NodeMap, any, any>[];

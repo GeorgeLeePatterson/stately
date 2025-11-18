@@ -1,16 +1,13 @@
 import type { Schemas } from '@stately/schema';
-import type { CoreObjectNode, CoreStateEntry } from '@/core';
+import type { CoreStateEntry } from '@/core';
 import { useStatelyUi } from '@/core';
 
 export function useEntitySchema<Schema extends Schemas>(
   entityType: CoreStateEntry<Schema>,
-  entitySchema?: CoreObjectNode<Schema>,
-):
-  | { node: CoreObjectNode<Schema>; schema: CoreObjectNode<Schema>; error?: never }
-  | { error: string; node?: never; schema?: never } {
+  entitySchema?: Schema['plugin']['Nodes']['object'],
+): { node: Schema['plugin']['Nodes']['object']; error?: never } | { error: string; node?: never } {
   const { schema } = useStatelyUi();
-  const cache =
-    (schema.data.entitySchemaCache as Record<string, CoreObjectNode<Schema> | undefined>) || {};
+  const cache = schema.data.entitySchemaCache || schema.schema.nodes[entityType];
   const node = entitySchema || cache[entityType];
 
   if (!node) {
@@ -30,5 +27,5 @@ export function useEntitySchema<Schema extends Schemas>(
     };
   }
 
-  return { node, schema: node };
+  return { node };
 }

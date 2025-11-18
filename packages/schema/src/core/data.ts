@@ -4,9 +4,10 @@
  * Parsing logic for extracting entity metadata from OpenAPI specs
  */
 
-import type { DefineData } from '../plugin.js';
+import type { AnyPluginAugment, DefineData } from '../plugin.js';
 import type { CoreStatelyConfig } from './generated.js';
-import type { NodeValue, StateEntry } from './helpers.js';
+import type { CoreAnyNode, NodeValue, StateEntry } from './helpers.js';
+import type { CorePlugin } from './plugin.js';
 import { coreUtils } from './utils.js';
 
 // TODO: Remove - include this in data
@@ -122,9 +123,15 @@ function generateCoreData<Config extends CoreStatelyConfig = CoreStatelyConfig>(
   };
 }
 
-type CoreData<Config extends CoreStatelyConfig = CoreStatelyConfig> = DefineData<{
+type CoreData<
+  Config extends CoreStatelyConfig = CoreStatelyConfig,
+  Augments extends AnyPluginAugment = [],
+> = DefineData<{
   entityDisplayNames: Record<StateEntry<Config>, string>;
-  entitySchemaCache: Record<StateEntry<Config>, NodeValue<Config> | null>;
+  entitySchemaCache: Record<
+    StateEntry<Config>,
+    CoreAnyNode<readonly [CorePlugin<Config>, ...Augments]> | null
+  >;
   stateEntryToSchema: Record<StateEntry<Config>, string>;
   stateEntryToUrl: Record<StateEntry<Config>, string>;
   urlToStateEntry: Record<string, StateEntry<Config>>;

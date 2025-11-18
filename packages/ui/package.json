@@ -47,6 +47,14 @@
       "types": "./dist/core/components/fields/index.d.ts",
       "import": "./dist/core/components/fields/index.js"
     },
+    "./core/components/fields/edit": {
+      "types": "./dist/core/components/fields/edit/index.d.ts",
+      "import": "./dist/core/components/fields/edit/index.js"
+    },
+    "./core/components/fields/view": {
+      "types": "./dist/core/components/fields/view/index.d.ts",
+      "import": "./dist/core/components/fields/view/index.js"
+    },
     "./core/components/views": {
       "types": "./dist/core/components/views/index.d.ts",
       "import": "./dist/core/components/views/index.js"

@@ -11,7 +11,7 @@
  * Run: npx tsc --noEmit tests/test-plugin-utils-access.ts
  */
 import type { CoreStatelyConfig } from '../src/core/generated.js';
-import type { CoreNodeUnion } from '../src/core/nodes.js';
+import { type CoreNodeMap, CoreNodeType } from '../src/core/nodes.js';
 import type { AssertTrue } from '../src/helpers.js';
 import type { Schemas } from '../src/index.js';
 import { stately } from '../src/index.js';
@@ -25,6 +25,7 @@ import type { Stately } from '../src/stately.js';
 
 type TestConfig = CoreStatelyConfig;
 type TestSchemas = Schemas<TestConfig>;
+type Nodes = TestConfig['nodes'];
 
 const mockOpenAPI = {
   components: {
@@ -51,11 +52,13 @@ const mockOpenAPI = {
   openapi: '3.1.0',
 };
 
-const mockNodes: TestConfig['nodes'] = {
+const mockNodes = {
   Entity: {
-    discriminator: 'type',
-    nodeType: 'taggedUnion',
-    variants: [{ schema: { nodeType: 'object', properties: {}, required: [] }, tag: 'test' }],
+    discriminator: 'type' as const,
+    nodeType: CoreNodeType.TaggedUnion,
+    variants: [
+      { schema: { nodeType: CoreNodeType.Object, properties: {}, required: [] }, tag: 'test' },
+    ],
   },
 };
 
@@ -73,7 +76,7 @@ const runtime = stately<TestSchemas>(mockOpenAPI, mockNodes);
 const corePlugin = runtime.plugins.core;
 
 // Test: Can access isPrimitive with proper type
-const isPrimitive = runtime.plugins.core.isPrimitive;
+const isPrimitive = runtime.plugins.core.isPrimitiveNode;
 
 const entityMapping = runtime.data;
 const x = entityMapping.entityDisplayNames;
@@ -87,7 +90,7 @@ const x = entityMapping.entityDisplayNames;
 // This reproduces the actual issue in object-wizard.tsx
 function testWithGeneric<S extends TestSchemas>(statelyRuntime: Stately<S>) {
   // This is what happens in components - accessing plugins on a generic
-  const genericIsPrimitive = statelyRuntime.plugins.core.isPrimitive;
+  const genericIsPrimitive = statelyRuntime.plugins.core.isPrimitiveNode;
 
   type GenericIsPrimitiveType = typeof genericIsPrimitive;
 
@@ -103,14 +106,16 @@ function testWithGeneric<S extends TestSchemas>(statelyRuntime: Stately<S>) {
 type IsPrimitiveType = typeof isPrimitive;
 
 // This should pass - isPrimitive is a function
-type IsPrimitiveIsFunction = IsPrimitiveType extends (schema: CoreNodeUnion<TestConfig>) => boolean
+type IsPrimitiveIsFunction = IsPrimitiveType extends (
+  schema: CoreNodeMap[keyof CoreNodeMap],
+) => boolean
   ? true
   : false;
 
 // Test: Can call isPrimitive
-const testNode: CoreNodeUnion<TestConfig> = { nodeType: 'primitive', primitiveType: 'string' };
+const testNode: CoreNodeMap[keyof CoreNodeMap] = { nodeType: 'primitive', primitiveType: 'string' };
 
-const result: boolean = runtime.plugins.core.isPrimitive(testNode);
+const result: boolean = runtime.plugins.core.isPrimitiveNode(testNode);
 
 // Test: Can access other core utils
 const extractNodeType = runtime.plugins.core.extractNodeType;
@@ -118,7 +123,7 @@ const isEntityValid = runtime.plugins.core.isEntityValid;
 const sortEntityProperties = runtime.plugins.core.sortEntityProperties;
 
 type ExtractNodeTypeIsFunction = typeof extractNodeType extends (
-  schema: CoreNodeUnion<TestConfig>,
+  schema: CoreNodeMap[keyof CoreNodeMap],
 ) => string
   ? true
   : false;

@@ -12,7 +12,7 @@ import {
 import { ScrollArea } from '@/base/ui/scroll-area';
 import { Separator } from '@/base/ui/separator';
 import { Skeleton } from '@/base/ui/skeleton';
-import type { CoreObjectNode, CoreStateEntry } from '@/core';
+import type { CoreStateEntry } from '@/core';
 import { useStatelyUi } from '@/core';
 import { useEntityData } from '@/core/hooks/use-entity-data';
 import { useEntitySchema } from '@/core/hooks/use-entity-schema';
@@ -21,7 +21,7 @@ import { EntityDetailView } from '../views/entity/entity-detail-view';
 export interface LinkEntityProps<Schema extends Schemas = Schemas> {
   entityName: string;
   entityType: CoreStateEntry<Schema>;
-  schema?: CoreObjectNode<Schema>;
+  schema?: Schema['plugin']['Nodes']['object'];
 }
 
 export interface ViewLinkDialogProps<Schema extends Schemas = Schemas> {

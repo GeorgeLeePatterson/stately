@@ -16,7 +16,6 @@ import {
   FieldSet,
 } from '@/base/ui/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/base/ui/tabs';
-import type { CoreObjectNode } from '@/core';
 import { useStatelyUi } from '@/core';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import { ObjectWizardEdit } from './object-wizard';
@@ -26,11 +25,13 @@ export enum ObjectEditMode {
   WIZARD = 'Wizard',
 }
 
-export type ObjectEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
-  Schema,
-  CoreObjectNode<Schema>,
-  AnyRecord
->;
+export type ObjectEditNode<Schema extends Schemas = Schemas> = Schema['plugin']['Nodes']['object'];
+
+export type ObjectEditProps<
+  Schema extends Schemas = Schemas,
+  Node extends ObjectEditNode<Schema> = ObjectEditNode<Schema>,
+  V = AnyRecord,
+> = EditFieldProps<Schema, Node, V>;
 
 /**
  * Object field component - handles nested object structures
@@ -90,7 +91,7 @@ export function ObjectEdit<Schema extends Schemas = Schemas>({
 
 type ObjectFormProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
-  CoreObjectNode<Schema>,
+  Schema['plugin']['Nodes']['object'],
   AnyRecord
 >;
 
@@ -106,7 +107,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
   const corePlugin = plugins.core;
 
   const { formData, handleFieldChange, handleSave, handleCancel, fields, isDirty, isValid } =
-    useObjectField({ label, node, onSave: onChange, value });
+    useObjectField<Schema>({ label, node, onSave: onChange, value });
 
   return (
     <div className="flex-1 border-l-4 border-border rounded-xs pl-4 py-3 space-y-3">
@@ -119,11 +120,14 @@ function ObjectForm<Schema extends Schemas = Schemas>({
             const propValue = formData?.[propName];
 
             // If the value is not set, then wrap in nullable
-            let propSchema = propNode;
+            let propSchema: Schema['plugin']['AnyNode'] = propNode;
             const isNullable = propNode.nodeType === CoreNodeType.Nullable;
             const wrapNullable = !isRequired && !isNullable;
             if (wrapNullable) {
-              propSchema = { innerSchema: propNode, nodeType: CoreNodeType.Nullable };
+              propSchema = {
+                innerSchema: propNode,
+                nodeType: CoreNodeType.Nullable,
+              } as Schema['plugin']['AnyNode'];
             }
 
             const isWrappedNullable = propSchema.nodeType === CoreNodeType.Nullable;
@@ -146,7 +150,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
                     )}
                   </FieldContent>
                 )}
-                <FieldEdit
+                <FieldEdit<Schema>
                   formId={fieldFormId}
                   isRequired={isRequired}
                   isWizard={isWizard}

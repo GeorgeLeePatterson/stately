@@ -1,18 +1,19 @@
+import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { useCallback, useEffect, useState } from 'react';
 import { useStatelyUi } from '@/core';
 
-type UseObjectFieldResult = {
+export interface ObjectFieldState<S extends Schemas = Schemas> {
   formData: Record<string, any>;
   handleFieldChange: (fieldName: string, isNullable: boolean, newValue: any) => void;
   handleSave: () => void;
   handleCancel: () => void;
-  fields: Array<[string, any]>;
+  fields: Array<[string, S['plugin']['AnyNode']]>;
   isDirty: boolean;
   isValid: boolean;
-};
+}
 
-export const useObjectField = ({
+export function useObjectField<S extends Schemas = Schemas>({
   label,
   node,
   value,
@@ -22,7 +23,7 @@ export const useObjectField = ({
   node: any;
   value: any;
   onSave: (formData: AnyRecord) => void;
-}): UseObjectFieldResult => {
+}): ObjectFieldState {
   const { schema } = useStatelyUi();
   const [formData, setFormData] = useState<Record<string, any>>(value ?? {});
   const [isDirty, setIsDirty] = useState(false);
@@ -35,7 +36,11 @@ export const useObjectField = ({
     ([fieldName]) => fieldName !== 'id',
   );
   const valueFields = [...baseValueFields, ...mergedFields];
-  const fields = schema.plugins.core.sortEntityProperties(valueFields, value, required);
+  const fields = schema.plugins.core.sortEntityProperties<S['plugin']['AnyNode']>(
+    valueFields,
+    value,
+    required,
+  );
 
   const objectValidation = schema.validate({
     data: formData,
@@ -80,5 +85,5 @@ export const useObjectField = ({
     handleSave,
     isDirty,
     isValid,
-  } as UseObjectFieldResult;
-};
+  } as ObjectFieldState;
+}

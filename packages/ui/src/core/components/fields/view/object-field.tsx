@@ -5,12 +5,11 @@ import { NotSet } from '@/base/components/not-set';
 import { SimpleLabel } from '@/base/components/simple-label';
 import type { ViewFieldProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
-import type { CoreObjectNode } from '@/core';
 import { useStatelyUi } from '@/core';
 
 export type ObjectViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
   Schema,
-  CoreObjectNode<Schema>,
+  Schema['plugin']['Nodes']['object'],
   any
 >;
 
@@ -30,7 +29,7 @@ export function ObjectView<Schema extends Schemas = Schemas>({
         const valueDefined = propValue !== undefined && propValue !== null;
         const label = `${plugins.core.utils?.generateFieldLabel(propName)}:`;
         const description = typedSchema.description;
-        const singleLine = !valueDefined || schema.plugins.core.isPrimitive(typedSchema);
+        const singleLine = !valueDefined || schema.plugins.core.isPrimitiveNode(typedSchema);
         const valueDisplay = valueDefined ? (
           <FieldView<Schema> node={typedSchema} value={propValue} />
         ) : (

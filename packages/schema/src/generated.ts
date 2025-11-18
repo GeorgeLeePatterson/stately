@@ -1,13 +1,6 @@
 import type { OpenAPIV3_1 } from 'openapi-types';
 import type { AnyRecord, EmptyRecord, StringKeys } from './helpers';
-import type {
-  AllNodes,
-  BaseNode,
-  NodeMap,
-  NodeNamesUnion,
-  NodeTypesUnion,
-  NodeUnion,
-} from './nodes';
+import type { BaseNode, NodeMap } from './nodes';
 
 /**
  * Base provided configuration
@@ -28,6 +21,12 @@ export interface StatelyConfig<
   components: Components;
   paths: Paths;
   nodes: Nodes;
+}
+
+export interface BaseConfig {
+  components: { schemas?: AnyRecord };
+  paths: AnyRecord;
+  nodes: NodeMap;
 }
 
 /**
@@ -117,8 +116,18 @@ export type DefinePaths<T extends Record<string, any> = Record<string, any>> = T
  * }>;
  * ```
  */
-export type DefineGeneratedNodes<T extends Record<string, any> = Record<string, BaseNode>> =
-  T extends Record<string, BaseNode> ? T : never;
+export type DefineGeneratedNodes<T extends NodeMap = NodeMap> = T;
+
+export type GeneratedNodeMap<Config extends StatelyConfig> = Config['nodes'] extends Record<
+  string,
+  any
+>
+  ? {
+      [K in StringKeys<Config['nodes']>]: Config['nodes'][K] extends BaseNode
+        ? Config['nodes'][K]
+        : never;
+    }
+  : NodeMap;
 
 /**
  * Helper type to ensure OpenAPI spec is typed properly.
@@ -135,22 +144,3 @@ export type DefineOpenApi<T> = T extends OpenAPIV3_1.Document
   : T extends Record<string, any>
     ? T & Partial<OpenAPIV3_1.Document>
     : OpenAPIV3_1.Document;
-
-export type GeneratedNodeMap<Config extends StatelyConfig> = [StringKeys<Config['nodes']>] extends [
-  never,
-]
-  ? NodeMap
-  : {
-      [K in StringKeys<Config['nodes']>]: Config['nodes'][K] extends BaseNode
-        ? Config['nodes'][K]
-        : BaseNode;
-    };
-
-export type GeneratedNodes<Config extends StatelyConfig> = AllNodes<GeneratedNodeMap<Config>>;
-export type GeneratedNodeUnion<Config extends StatelyConfig> = NodeUnion<GeneratedNodeMap<Config>>;
-export type GeneratedNodeNames<Config extends StatelyConfig> = NodeNamesUnion<
-  GeneratedNodeMap<Config>
->;
-export type GeneratedNodeTypes<Config extends StatelyConfig> = NodeTypesUnion<
-  GeneratedNodeMap<Config>
->;

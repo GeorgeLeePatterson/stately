@@ -1,15 +1,15 @@
 import type { Schemas } from '@stately/schema';
 import type { CoreStatelyConfig } from '@stately/schema/core/generated';
-import {
-  CoreNodeType,
-  type CoreNodeUnion as SchemaCoreNodeUnion,
-} from '@stately/schema/core/nodes';
+import { CoreNodeType } from '@stately/schema/core/nodes';
 import type { CorePlugin } from '@stately/schema/core/plugin';
 import { CORE_PLUGIN_NAME } from '@stately/schema/core/plugin';
+
 import type { ComponentType } from 'react';
 import type { PluginRuntime } from '@/base/plugin';
 import { makeRegistryKey, type UiPluginAugment } from '@/base/plugin';
-import type { ComponentRegistry, StatelyRuntime, StatelyUiPluginFactory } from '@/base/runtime';
+import type { ComponentRegistry, TransformerRegistry } from '@/base/registry';
+import type { StatelyRuntime, StatelyUiPluginFactory } from '@/base/runtime';
+import * as fields from '@/core/components/fields';
 import * as editFields from '@/core/components/fields/edit';
 import * as viewFields from '@/core/components/fields/view';
 import * as linkFields from '@/core/components/views/link';
@@ -20,6 +20,8 @@ import {
   generateFieldLabel,
   getNodeTypeIcon,
 } from './utils';
+
+const NodeType = CoreNodeType;
 
 export type CorePluginUtils<S extends Schemas<any, any> = Schemas<any, any>> = {
   getNodeTypeIcon: (nodeType: string) => ComponentType<any>;
@@ -59,6 +61,9 @@ export function coreUiPlugin<
     // Register core components
     registerCoreComponents(runtime.registry.components);
 
+    // TODO: Register core transformers
+    registerCoreTransformers(runtime.registry.transformers);
+
     // Extract paths from OpenAPI document at runtime
     const paths = runtime.schema.schema.document.paths as Schema['config']['paths'];
     const api = buildCoreHttpBundle(runtime.client, paths);
@@ -67,10 +72,8 @@ export function coreUiPlugin<
       api,
       utils: {
         generateFieldLabel,
-        getDefaultValue: node =>
-          computeDefaultValue<Schema['config']>(node as SchemaCoreNodeUnion<Schema['config']>),
-        getNodeTypeIcon: (nodeType: string) =>
-          getNodeTypeIcon(nodeType, runtime.registry.components),
+        getDefaultValue: node => computeDefaultValue(node),
+        getNodeTypeIcon: nodeType => getNodeTypeIcon(nodeType),
       },
     };
 
@@ -85,7 +88,6 @@ export function coreUiPlugin<
 }
 
 function registerCoreComponents(registry: ComponentRegistry) {
-  const NodeType = CoreNodeType;
   registry.set(makeRegistryKey(NodeType.Array, 'edit'), editFields.ArrayEdit);
   registry.set(makeRegistryKey(NodeType.Array, 'view'), viewFields.ArrayView);
 
@@ -118,4 +120,12 @@ function registerCoreComponents(registry: ComponentRegistry) {
 
   registry.set(makeRegistryKey(NodeType.Link, 'edit'), linkFields.LinkEdit);
   registry.set(makeRegistryKey(NodeType.Link, 'view'), linkFields.LinkView);
+}
+
+function registerCoreTransformers(registry: TransformerRegistry) {
+  /** Add any plugin enhancements here */
+  registry.set(
+    makeRegistryKey(NodeType.Primitive, 'edit', 'transformer', 'string'),
+    fields.defaultPrimitiveStringTransformer,
+  );
 }

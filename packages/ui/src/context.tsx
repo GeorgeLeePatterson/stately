@@ -11,8 +11,7 @@ import type { CoreUiAugment } from './core/plugin';
  */
 export function createUseStatelyUi<
   Schema extends Schemas<any, any>,
-  ExtraAugments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
+  ExtraAugments extends readonly UiPluginAugment<string, Schema, any, any>[] = [],
 >() {
-  type Augments = readonly [CoreUiAugment<Schema>, ...ExtraAugments];
-  return createUseBaseStatelyUi<Schema, Augments>();
+  return createUseBaseStatelyUi<Schema, readonly [CoreUiAugment<Schema>, ...ExtraAugments]>();
 }

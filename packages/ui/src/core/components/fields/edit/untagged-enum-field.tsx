@@ -4,12 +4,11 @@ import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { FieldSet } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
-import type { CoreUntaggedEnumNode } from '@/core';
 import { useStatelyUi } from '@/core';
 
 export type UntaggedEnumEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
-  CoreUntaggedEnumNode<Schema>,
+  Schema['plugin']['Nodes']['untaggedEnum'],
   any
 >;
 
@@ -81,7 +80,7 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
       {currentVariant && currentTag && (
         <FieldSet className="p-2 min-w-0">
           {/* Render the variant schema directly */}
-          <FieldEdit
+          <FieldEdit<Schema>
             formId={`untagged-enum-${currentTag}-${formId}`}
             isWizard={isWizard}
             label={`${plugins.core.utils?.generateFieldLabel(currentTag)} Configuration`}

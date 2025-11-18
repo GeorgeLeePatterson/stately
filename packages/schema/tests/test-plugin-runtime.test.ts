@@ -23,7 +23,7 @@ import type { ValidateArgs, ValidationResult } from '../src/validation.js';
  */
 
 // Step 1: Define the generated nodes structure using the helper
-type CustomGeneratedNodes = DefineGeneratedNodes<{ CustomNode: ObjectNode<CoreStatelyConfig> }>;
+type CustomGeneratedNodes = DefineGeneratedNodes<{ CustomNode: ObjectNode }>;
 
 // Step 2: Create the config type
 type CustomConfig = CoreStatelyConfig<
@@ -34,6 +34,8 @@ type CustomConfig = CoreStatelyConfig<
 
 // Step 3: Create the schemas type
 type CustomSchemas = Schemas<CustomConfig>;
+
+type X = CustomSchemas['config']['components']['schemas']['StateEntry'];
 
 /**
  * Plugin factory function - this is what plugin authors export.
@@ -157,7 +159,7 @@ type RuntimeStructureValid = AssertTrue<
  * =============================================================================
  */
 
-const testSchema: ObjectNode<CustomConfig> = {
+const testSchema: ObjectNode = {
   nodeType: CoreNodeType.Object,
   properties: { id: { nodeType: CoreNodeType.Primitive, primitiveType: 'string' } },
   required: ['id'],

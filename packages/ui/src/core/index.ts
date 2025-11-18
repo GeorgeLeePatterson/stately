@@ -1,18 +1,5 @@
 import type { Schemas } from '@stately/schema';
 import type { StateEntry } from '@stately/schema/core/helpers';
-import type {
-  ArrayNode,
-  EnumNode,
-  LinkNode,
-  MapNode,
-  NullableNode,
-  ObjectNode,
-  PrimitiveNode,
-  RecursiveRefNode,
-  TaggedUnionNode,
-  TupleNode,
-  UntaggedEnumNode,
-} from '@stately/schema/core/nodes';
 import type { CoreTypes } from '@stately/schema/core/plugin';
 import { createUseStatelyUi } from '@/context';
 import { CORE_OPERATION_IDS } from './operations';
@@ -28,13 +15,7 @@ export type {
 } from './plugin';
 export type { CoreUtils } from './utils';
 
-export {
-  CORE_OPERATION_IDS,
-  getDefaultValue,
-  generateFieldLabel,
-  getNodeTypeIcon,
-  coreUiPlugin as createCoreUiPlugin,
-};
+export { CORE_OPERATION_IDS, getDefaultValue, generateFieldLabel, getNodeTypeIcon, coreUiPlugin };
 
 /**
  * Default Core hook for core plugin usage.
@@ -62,41 +43,11 @@ export type CoreNodes<S extends Schemas<any, any> = Schemas<any, any>> = SchemaC
 export type CoreStateEntry<S extends Schemas<any, any> = Schemas<any, any>> = StateEntry<
   SchemaConfigOf<S>
 >;
+
 // EntityData is already the extracted data payload from Entity discriminated union
-export type CoreEntity<S extends Schemas<any, any> = Schemas<any, any>> =
-  SchemaTypesOf<S>['EntityData'];
+export type CoreEntity<S extends Schemas = Schemas> = S['types']['EntityData'];
 export type CoreEntityData<S extends Schemas<any, any> = Schemas<any, any>> =
   SchemaTypesOf<S>['EntityData'];
-// TODO: Remove
-// export interface CoreSummary
-
-export type CoreArrayNode<S extends Schemas<any, any> = Schemas<any, any>> = ArrayNode<
-  SchemaConfigOf<S>
->;
-export type CoreEnumNode = EnumNode;
-export type CoreLinkNode<S extends Schemas<any, any> = Schemas<any, any>> = LinkNode<
-  SchemaConfigOf<S>
->;
-export type CoreMapNode<S extends Schemas<any, any> = Schemas<any, any>> = MapNode<
-  SchemaConfigOf<S>
->;
-export type CoreNullableNode<S extends Schemas<any, any> = Schemas<any, any>> = NullableNode<
-  SchemaConfigOf<S>
->;
-export type CoreObjectNode<S extends Schemas<any, any> = Schemas<any, any>> = ObjectNode<
-  SchemaConfigOf<S>
->;
-export type CorePrimitiveNode = PrimitiveNode;
-export type CoreRecursiveRefNode<S extends Schemas<any, any> = Schemas<any, any>> =
-  RecursiveRefNode<SchemaConfigOf<S>>;
-export type CoreTaggedUnionNode<S extends Schemas<any, any> = Schemas<any, any>> = TaggedUnionNode<
-  SchemaConfigOf<S>
->;
-export type CoreTupleNode<S extends Schemas<any, any> = Schemas<any, any>> = TupleNode<
-  SchemaConfigOf<S>
->;
-export type CoreUntaggedEnumNode<S extends Schemas<any, any> = Schemas<any, any>> =
-  UntaggedEnumNode<SchemaConfigOf<S>>;
 
 export type CoreNodeMap<S extends Schemas<any, any> = Schemas<any, any>> = PluginInfoOf<S>['Nodes'];
 export type CoreNodeUnion<S extends Schemas<any, any> = Schemas<any, any>> =

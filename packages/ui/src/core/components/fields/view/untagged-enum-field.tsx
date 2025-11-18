@@ -3,11 +3,11 @@ import { FieldItem } from '@/base/components/field';
 import { SimpleLabel } from '@/base/components/simple-label';
 import type { ViewFieldProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
-import type { CoreNodeUnion, CoreUntaggedEnumNode } from '@/core';
+import type { CoreNodeUnion } from '@/core';
 
 export type UntaggedEnumViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
   Schema,
-  CoreUntaggedEnumNode<Schema>
+  Schema['plugin']['Nodes']['untaggedEnum']
 >;
 
 export function UntaggedEnumView<Schema extends Schemas = Schemas>({

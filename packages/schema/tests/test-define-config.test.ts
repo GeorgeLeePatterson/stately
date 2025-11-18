@@ -16,7 +16,7 @@ type FilesPaths = DefinePaths<{
   };
 }>;
 
-type FilesNodes = DefineGeneratedNodes<{ FileEntity: ObjectNode<CoreStatelyConfig> }>;
+type FilesNodes = DefineGeneratedNodes<{ FileEntity: ObjectNode }>;
 
 type FilesConfig = DefineConfig<FilesComponents, FilesPaths, FilesNodes>;
 
@@ -45,7 +45,7 @@ function filesComponent<Schema extends Schemas<FilesConfig>>(
   // @ts-expect-error Verify that only the expected keys exist
   const doesNotExist = runtime.plugins.something?.isPrimitive(node);
 
-  return runtime.plugins.core.isPrimitive(node);
+  return runtime.plugins.core.isPrimitiveNode(node);
 }
 
 const filesComponentResult = filesComponent(filesRuntime, filesNode);

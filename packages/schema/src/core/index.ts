@@ -13,7 +13,6 @@ export type { NodeKey, StateEntry } from './helpers.js';
 export type {
   ArrayNode,
   CoreNodeMap,
-  CoreNodeUnion,
   EnumNode,
   LinkNode,
   MapNode,

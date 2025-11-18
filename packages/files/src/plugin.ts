@@ -6,23 +6,25 @@
  */
 
 import type { DefinePlugin, Schemas } from '@stately/schema';
-import type { DefineData, DefineTypes, DefineUtils } from '@stately/schema/plugin';
+import { CoreNodeType } from '@stately/schema/core/nodes';
+import type { DefineData, DefineTypes } from '@stately/schema/plugin';
 import type { PluginFactory } from '@stately/schema/stately';
 import type {
   DefineUiPlugin,
   PluginRuntime,
   StatelyRuntime,
   StatelyUiPluginFactory,
+  UiPluginAugment,
 } from '@stately/ui';
 import { createHttpBundle, makeRegistryKey } from '@stately/ui';
-import { FileText, Folder, FolderOpen, History } from 'lucide-react';
-import type { ComponentType } from 'react';
-import { RelativePathField } from './fields/edit/relative-path-field';
+import { primitiveStringTransformer } from './fields/edit/primitive-string';
+import { RelativePathEdit } from './fields/edit/relative-path-field';
 import { RelativePathFieldView } from './fields/view/relative-path-field';
 import { FILES_OPERATION_IDS, type FilesOperationMap } from './operations';
 import type { FilesNodeMap } from './schema';
 import { FilesNodeType } from './schema';
 import type { FileEntryType, FileInfo, FileSaveRequest, FileVersion } from './types/api';
+import { type FilesUiPluginUtils, type FilesUtils, filesUiUtils, filesUtils } from './utils';
 
 // =============================================================================
 // SCHEMA PLUGIN
@@ -50,24 +52,6 @@ export type FilesTypes = DefineTypes<{
 export type FilesData = DefineData;
 
 /**
- * Files plugin utilities
- */
-export type FilesUtils = DefineUtils<{
-  /**
-   * Get icon component for a file entry type
-   */
-  getFileEntryIcon: (entryType: FileEntryType, isSelected?: boolean) => ComponentType<any>;
-  /**
-   * Format file size in bytes to human-readable string
-   */
-  formatFileSize: (bytes: number) => string;
-  /**
-   * Format Unix timestamp to date string
-   */
-  formatTimestamp: (timestamp?: number, withTime?: boolean) => string | null;
-}>;
-
-/**
  * Files schema plugin augment type
  */
 export type FilesPlugin = DefinePlugin<
@@ -77,37 +61,6 @@ export type FilesPlugin = DefinePlugin<
   FilesData,
   FilesUtils
 >;
-
-/**
- * Files plugin utilities implementation
- */
-const filesUtils: FilesUtils = {
-  formatFileSize(bytes: number): string {
-    if (bytes < 1024) return `${bytes}B`;
-    const kb = bytes / 1024;
-    if (kb < 1024) return `${kb.toFixed(1)}KB`;
-    const mb = kb / 1024;
-    return `${mb.toFixed(1)}MB`;
-  },
-
-  formatTimestamp(timestamp?: number, withTime = false): string | null {
-    if (timestamp === undefined) return null;
-    const date = new Date(timestamp * 1000);
-    if (Number.isNaN(date.getTime())) return null;
-    return withTime ? date.toLocaleString() : date.toLocaleDateString();
-  },
-
-  getFileEntryIcon(entryType: FileEntryType, isSelected = false) {
-    switch (entryType) {
-      case 'directory':
-        return isSelected ? FolderOpen : Folder;
-      case 'versioned_file':
-        return History;
-      default:
-        return FileText;
-    }
-  },
-};
 
 /**
  * Create files schema plugin
@@ -127,18 +80,6 @@ export function filesSchemaPlugin<S extends Schemas<any, any> = Schemas>(): Plug
 // =============================================================================
 // UI PLUGIN
 // =============================================================================
-
-/**
- * Files UI plugin utilities
- */
-export type FilesUiPluginUtils = {
-  /**
-   * Get the configured operation IDs for the files plugin
-   */
-  getFilesOperationIds: () => FilesOperationMap;
-};
-
-const filesUiUtils: FilesUiPluginUtils = { getFilesOperationIds: () => FILES_OPERATION_IDS };
 
 /**
  * Files UI plugin runtime type
@@ -164,10 +105,11 @@ export type FilesUiPlugin<S extends Schemas<any, any> = Schemas<any, any>> = Def
  *
  * Registers file-related components and operations.
  */
-export function createFilesUiPlugin<
+export function filesUiPlugin<
   Schema extends Schemas<any, any> = Schemas,
->(): StatelyUiPluginFactory<Schema> {
-  return (runtime: StatelyRuntime<Schema, any>) => {
+  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = [],
+>(): StatelyUiPluginFactory<Schema, Augments> {
+  return (runtime: StatelyRuntime<Schema, Augments>) => {
     const { registry, client, schema } = runtime;
 
     // Build HTTP operations bundle
@@ -175,10 +117,16 @@ export function createFilesUiPlugin<
     const api = createHttpBundle(client, paths, FILES_OPERATION_IDS);
 
     // Register components
-    registry.components.set(makeRegistryKey(FilesNodeType.RelativePath, 'edit'), RelativePathField);
+    registry.components.set(makeRegistryKey(FilesNodeType.RelativePath, 'edit'), RelativePathEdit);
     registry.components.set(
       makeRegistryKey(FilesNodeType.RelativePath, 'view'),
       RelativePathFieldView,
+    );
+
+    // Register transformers
+    registry.transformers.set(
+      makeRegistryKey(CoreNodeType.Primitive, 'edit', 'transformer', 'string'),
+      primitiveStringTransformer,
     );
 
     const descriptor: FilesPluginRuntime<Schema> = { api, utils: filesUiUtils };
@@ -192,8 +140,3 @@ export function createFilesUiPlugin<
     };
   };
 }
-
-/**
- * Default files UI plugin instance
- */
-export const filesUiPlugin = createFilesUiPlugin();

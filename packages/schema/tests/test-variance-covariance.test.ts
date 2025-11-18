@@ -47,8 +47,8 @@ type BasePaths = DefinePaths<{
   };
 }>;
 
-const BASE_NODES: Schemas['config']['nodes'] = {
-  Entity: { discriminator: 'type', nodeType: CoreNodeType.TaggedUnion, variants: [] },
+const BASE_NODES = {
+  Entity: { discriminator: 'type' as const, nodeType: CoreNodeType.TaggedUnion, variants: [] },
 };
 
 type BaseConfig = DefineConfig<BaseComponents, BasePaths, DefineGeneratedNodes<typeof BASE_NODES>>;
@@ -82,10 +82,9 @@ type ExtendedPaths = DefinePaths<{
   };
 }>;
 
-const EXTENDED_NODES: Schemas['config']['nodes'] = {
-  Entity: { discriminator: 'type', nodeType: CoreNodeType.TaggedUnion, variants: [] },
+const EXTENDED_NODES = {
   FileMetadata: { nodeType: CoreNodeType.Object, properties: {}, required: [] },
-};
+} as const;
 
 type ExtendedConfig = DefineConfig<
   ExtendedComponents,
@@ -112,10 +111,13 @@ const baseClient = createClient<BaseConfig['paths']>({ baseUrl: 'http://localhos
 const extendedClient = createClient<ExtendedConfig['paths']>({ baseUrl: 'http://localhost:3000' });
 
 const baseSchema = stately<BaseSchemas>(mockOpenApiDoc, BASE_NODES);
-const extendedSchema = stately<ExtendedSchemas>(mockOpenApiDoc, EXTENDED_NODES);
+const extendedSchema = stately<ExtendedSchemas>(mockOpenApiDoc, {
+  ...EXTENDED_NODES,
+  ...BASE_NODES,
+});
 
 // This function simulates how @stately/ui and xeo4 use the schema
-function statelyUi<Schema extends Schemas>(
+function statelyUi<Schema extends Schemas<any, any>>(
   state: Stately<Schema>,
   client: Client<Schema['config']['paths']>,
 ) {

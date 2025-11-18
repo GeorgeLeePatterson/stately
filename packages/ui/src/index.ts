@@ -9,21 +9,38 @@ import type { Client } from 'openapi-fetch';
 import { StatelyUiProvider } from './base/context.js';
 import { callOperation, createHttpBundle, type DefineOperationMap } from './base/operations.js';
 import { makeRegistryKey, type PluginFunctionMap, type UiPluginAugment } from './base/plugin.js';
+import * as registry from './base/registry.js';
 import { createStatelyUi, type StatelyRuntime, type StatelyUiBuilder } from './base/runtime.js';
 import { createUseStatelyUi } from './context.js';
-import { type CoreUiAugment, createCoreUiPlugin } from './core/index.js';
+import { type CoreUiAugment, coreUiPlugin } from './core/index.js';
 
 export type { DefineOperationMap, HttpBundle, OperationMeta } from './base/operations.js';
-export { createHttpBundle };
-export type { PluginRuntime, RegistryKey, RegistryMode, UiPluginAugment } from './base/plugin.js';
+export type {
+  PluginRuntime,
+  RegistryKey,
+  RegistryMode,
+  RegistryType,
+  UiPluginAugment,
+} from './base/plugin.js';
 export type {
   ComponentRegistry,
+  Transformer,
+  TransformerRegistry,
+} from './base/registry.js';
+export type {
   StatelyRuntime,
   StatelyUiBuilder,
   StatelyUiPluginFactory,
   UiRegistry,
 } from './base/runtime.js';
-export { StatelyUiProvider, createUseStatelyUi, makeRegistryKey, callOperation };
+export {
+  registry,
+  createHttpBundle,
+  StatelyUiProvider,
+  createUseStatelyUi,
+  makeRegistryKey,
+  callOperation,
+};
 
 /**
  * Public helper for declaring a ui plugin augment.
@@ -65,11 +82,15 @@ export type StatelyUi<
  * runtime.plugins.core.api.operations // ✓ Intellisense works
  * ```
  */
-export function statelyUi<Schema extends Schemas<any, any>>(
+export function statelyUi<
+  Schema extends Schemas<any, any>,
+  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
+>(
   state: Stately<Schema>,
   client: Client<Schema['config']['paths']>,
-): StatelyUiBuilder<Schema, readonly [CoreUiAugment<Schema>]> {
-  return createStatelyUi<Schema, readonly [CoreUiAugment<Schema>]>(state, client).withPlugin(
-    createCoreUiPlugin<Schema>(),
-  );
+): StatelyUiBuilder<Schema, readonly [CoreUiAugment<Schema>, ...Augments]> {
+  return createStatelyUi<Schema, readonly [CoreUiAugment<Schema>, ...Augments]>(
+    state,
+    client,
+  ).withPlugin(coreUiPlugin());
 }

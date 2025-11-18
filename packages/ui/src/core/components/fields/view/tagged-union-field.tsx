@@ -2,12 +2,11 @@ import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { FieldItem } from '@/base/components/field';
 import type { ViewFieldProps } from '@/base/form/field-view';
-import type { CoreTaggedUnionNode } from '@/core';
 import { EnumFieldView } from './untagged-enum-field';
 
 export type TaggedUnionViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
   Schema,
-  CoreTaggedUnionNode<Schema>
+  Schema['plugin']['Nodes']['taggedUnion']
 >;
 
 export function TaggedUnionView<Schema extends Schemas = Schemas>({

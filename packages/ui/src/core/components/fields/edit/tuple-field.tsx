@@ -4,11 +4,10 @@ import { GlowingSave } from '@/base/components/glowing-save';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { FieldSet } from '@/base/ui/field';
-import type { CoreTupleNode } from '@/core';
 
 export type TupleEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
-  CoreTupleNode<Schema>,
+  Schema['plugin']['Nodes']['tuple'],
   unknown[]
 >;
 
@@ -70,7 +69,7 @@ export function TupleEdit<Schema extends Schemas = Schemas>({
       <div className="font-medium">{label}</div>
       {description && <p className="text-sm text-muted-foreground">{description}</p>}
       <div className="space-y-2">
-        <FieldEdit
+        <FieldEdit<Schema>
           formId={formId}
           label={twoTuple ? 'Key' : `${label} 1`}
           node={node.items[0]}

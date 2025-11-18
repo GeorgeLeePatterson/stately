@@ -5,12 +5,12 @@ import { FieldEdit } from '@/base/form/field-edit';
 import { Field, FieldGroup, FieldSet } from '@/base/ui/field';
 import { Separator } from '@/base/ui/separator';
 import { Skeleton } from '@/base/ui/skeleton';
-import type { CoreEntity, CoreObjectNode } from '@/core';
+import type { CoreEntity } from '@/core';
 import { useStatelyUi } from '@/core';
 import { EntityPropertyEdit } from './entity-property-edit';
 
 export interface EntityFormEditProps<Schema extends Schemas = Schemas> {
-  node: CoreObjectNode<Schema>;
+  node: Schema['plugin']['Nodes']['object'];
   value?: CoreEntity<Schema>['data'];
   onChange: (value: CoreEntity<Schema>['data']) => void;
   isRootEntity?: boolean;
@@ -79,12 +79,14 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
           const field = isLoading ? (
             <Skeleton className="h-20 w-full" />
           ) : (
-            <FieldEdit
+            <FieldEdit<Schema, typeof propNode>
               formId={fieldId}
               isRequired={isRequired}
               label={label}
               node={propNode}
-              onChange={newValue => onChange({ ...(value ?? {}), [fieldName]: newValue })}
+              onChange={newValue =>
+                onChange({ ...(value ?? {}), [fieldName]: newValue } as CoreEntity<Schema>['data'])
+              }
               value={fieldValue}
             />
           );
@@ -92,7 +94,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
           return (
             <div className="space-y-3" key={fieldName}>
               <EntityPropertyEdit fieldName={fieldName} isRequired={isRequired} node={propNode}>
-                {schema.plugins.core.isPrimitive(propNode) ? <Field>{field}</Field> : field}
+                {schema.plugins.core.isPrimitiveNode(propNode) ? <Field>{field}</Field> : field}
               </EntityPropertyEdit>
               {idx < arr.length - 1 && <Separator />}
             </div>

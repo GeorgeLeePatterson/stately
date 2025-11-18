@@ -6,7 +6,7 @@ import { Button } from '@/base/ui/button';
 import { ButtonGroup } from '@/base/ui/button-group';
 import { Field, FieldDescription, FieldLabel } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
-import type { CoreObjectNode, CoreStateEntry } from '@/core';
+import type { CoreStateEntry } from '@/core';
 import { useStatelyUi } from '@/core';
 import { ViewLinkControl } from '@/core/context/link-explore-context';
 
@@ -20,7 +20,7 @@ export interface EntitySelectEditProps<Schema extends Schemas = Schemas> {
   /** List of entity refs */
   available: Array<Schema['config']['components']['schemas']['Summary']>;
   /** Schema for the inline entity */
-  node: CoreObjectNode<Schema>;
+  node: Schema['plugin']['Nodes']['object'];
   /** Current value from parent (either ref or inline) */
   value: string | null;
   /** Called when save is clicked with new ref value */

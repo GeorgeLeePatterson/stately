@@ -1,8 +1,9 @@
 import type { Schemas } from '@stately/schema';
 import { FileText, Link as LinkIcon, Type } from 'lucide-react';
-import { useState } from 'react';
+import { type ComponentType, useMemo, useState } from 'react';
 import { Editor } from '@/base/components/editor';
 import type { EditFieldProps } from '@/base/form/field-edit';
+import { getEditTransformer } from '@/base/registry';
 import { ButtonGroup } from '@/base/ui/button-group';
 import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/base/ui/input-group';
 import {
@@ -13,101 +14,83 @@ import {
   SelectLabel,
   SelectTrigger,
 } from '@/base/ui/select';
-import type { CorePrimitiveNode } from '@/core';
 import { useStatelyUi } from '@/core';
+import { makeRegistryKey } from '@/index';
+
+export interface StringMode {
+  description: string;
+  icon: ComponentType<any>;
+  label: string;
+  value: string;
+}
 
 /// Core string input modes available by default
-const CORE_STRING_MODES = [
+const CORE_STRING_MODES: StringMode[] = [
   { description: 'Plain text', icon: Type, label: 'Text', value: 'text' },
   { description: 'Web address', icon: LinkIcon, label: 'URL', value: 'url' },
   { description: 'Multi-line text', icon: FileText, label: 'Editor', value: 'editor' },
 ];
 
+export type PrimitiveStringEditTransformerProps<Schema extends Schemas = Schemas> =
+  PrimitiveStringEditProps<Schema> & { extra?: PrimitiveStringExtra };
+
+export interface PrimitiveStringExtra {
+  mode?: string;
+  modes?: StringMode[];
+  currentMode?: StringMode;
+  component?: ComponentType<{
+    formId: string;
+    value: string | number | null | undefined;
+    onChange: (value: string | number | null | undefined) => void;
+  }>;
+  after?: React.ReactNode;
+}
+
 export type PrimitiveStringEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
-  CorePrimitiveNode,
+  Schema['plugin']['Nodes']['primitive'],
   string | number | null | undefined
 >;
 
-/**
- * PrimitiveStringField - Extensible string field component
- *
- * EXTENSION POINT DOCUMENTATION:
- * ================================
- * This component looks up `registry.transformers.get('primitive::edit::string')` for a prop transformer.
- *
- * The transformer receives (props + stately) and must return (props + stately).
- *
- * stately shape:
- *   - mode: current active mode (string)
- *   - setMode: function to change mode
- *   - modes: array of mode config objects to display in dropdown
- *   - component: optional React.ReactNode to render instead of default for current mode
- *   - after: optional React.ReactNode to append after core modes in dropdown
- *
- * Example usage (from @stately/files plugin):
- * ```typescript
- * registry.transformers.set('primitive::edit::string', (props) => ({
- *   ...props,
- *   stately: {
- *     ...props.stately,
- *     modes: [...props.stately.modes, {
- *       value: 'upload',
- *       icon: Upload,
- *       label: 'Upload',
- *       description: 'Browse/upload files'
- *     }],
- *     component: props.stately.mode === 'upload'
- *       ? <RelativePathField {...props} />
- *       : props.stately.component,
- *   }
- * }));
- * ```
- */
-export function PrimitiveStringEdit<Schema extends Schemas = Schemas>({
-  formId,
-  node,
-  value,
-  onChange,
-  placeholder,
-}: PrimitiveStringEditProps<Schema>) {
+export function PrimitiveStringEdit<Schema extends Schemas = Schemas>(
+  props: PrimitiveStringEditProps<Schema>,
+) {
   const { registry } = useStatelyUi();
   const [mode, setMode] = useState<string>('text');
 
-  // Initial props + state
-  let propsAndState = {
-    formId,
-    node,
-    onChange,
-    placeholder,
-    stately: {
-      after: null as React.ReactNode | null,
-      component: null as React.ReactNode | null,
-      mode,
-      modes: [] as typeof CORE_STRING_MODES,
-      setMode,
-    },
-    value,
-  };
-
   // Look up prop transformer for 'primitive::edit::string'
-  const propTransformer = registry.transformers.get('primitive::edit::string');
-  if (typeof propTransformer === 'function') {
-    try {
-      const transformed = propTransformer(propsAndState);
-      if (transformed) propsAndState = transformed;
-    } catch (e) {
-      console.warn('PrimitiveStringField prop transformer failed:', e);
+  const { formId, onChange, placeholder, value, extra } = useMemo(() => {
+    let propsAndExtra: PrimitiveStringEditTransformerProps = {
+      ...props,
+      extra: { mode, modes: CORE_STRING_MODES },
+    };
+
+    const propTransformer = getEditTransformer<
+      PrimitiveStringExtra,
+      Schema,
+      Schema['plugin']['Nodes']['primitive'],
+      string | number | null | undefined
+    >(registry.transformers, makeRegistryKey('primitive', 'edit', 'transformer', 'string'));
+
+    if (typeof propTransformer === 'function') {
+      try {
+        const transformed = propTransformer(propsAndExtra);
+        if (transformed) propsAndExtra = transformed;
+      } catch (e) {
+        console.warn('PrimitiveStringField prop transformer failed:', e);
+      }
     }
-  }
+
+    return propsAndExtra;
+  }, [props, mode, registry.transformers]);
 
   // Extract final state
-  const { stately } = propsAndState;
-  const currentMode = stately?.mode ?? mode;
-  const allModes = [...CORE_STRING_MODES, ...(stately?.modes ?? [])];
-  const customComponent = stately?.component;
-  const afterDropdown = stately?.after;
-
+  const ExtraComponent = extra?.component;
+  const currentMode = extra?.mode ?? mode;
+  const allModes = [
+    ...CORE_STRING_MODES,
+    ...(extra?.modes ?? []).filter(m => !CORE_STRING_MODES.includes(m)),
+  ];
   const currentModeConfig = allModes.find(m => m.value === currentMode);
   const Icon = currentModeConfig?.icon ?? Type;
 
@@ -137,15 +120,15 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>({
                 );
               })}
             </SelectGroup>
-            {afterDropdown}
+            {extra?.after}
           </SelectContent>
         </Select>
       </ButtonGroup>
 
       <ButtonGroup className="flex-1 min-h-min">
         {/* Custom component takes precedence */}
-        {customComponent ? (
-          customComponent
+        {ExtraComponent ? (
+          <ExtraComponent formId={formId} onChange={onChange} value={value} />
         ) : (
           <>
             {currentMode === 'editor' && (
@@ -157,8 +140,8 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>({
               />
             )}
 
-            {currentMode === 'text' && (
-              <InputGroup className="flex-1 min-h-min bg-background">
+            <InputGroup className="flex-1 min-h-min bg-background">
+              {currentMode === 'text' && (
                 <InputGroupTextarea
                   className="min-w-0 flex-1 bg-background resize-y max-h-64 min-h-1 px-3 py-1"
                   id={formId}
@@ -167,11 +150,9 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>({
                   rows={1}
                   value={value || ''}
                 />
-              </InputGroup>
-            )}
+              )}
 
-            {currentMode === 'url' && (
-              <InputGroup className="flex-1 min-h-min bg-background">
+              {currentMode === 'url' && (
                 <InputGroupInput
                   className="bg-background rounded-md"
                   id={formId}
@@ -180,8 +161,8 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>({
                   type="url"
                   value={value || ''}
                 />
-              </InputGroup>
-            )}
+              )}
+            </InputGroup>
           </>
         )}
       </ButtonGroup>
