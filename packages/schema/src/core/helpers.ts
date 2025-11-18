@@ -1,10 +1,5 @@
-import type { BaseConfig } from '../generated.js';
-import type { Schemas } from '../index.js';
-import type { NodeMap, NodeValues } from '../nodes.js';
-import type { AnyPluginAugment } from '../plugin.js';
-import type { DerivedPluginNodes } from '../schema.js';
+import type { NodeMap } from '../nodes.js';
 import type { CoreStatelyConfig } from './generated.js';
-import type { CoreNodes } from './nodes.js';
 
 /**
  * StateEntry type - represents entity state discriminator values.
@@ -14,7 +9,7 @@ import type { CoreNodes } from './nodes.js';
  * create invariance when used as Record keys, but conditional extraction with `infer`
  * maintains covariance because the conditional distributes over the constraint.
  */
-export type StateEntry<Config extends BaseConfig = BaseConfig> = Config extends {
+export type StateEntry<Config extends CoreStatelyConfig = CoreStatelyConfig> = Config extends {
   components: { schemas: { StateEntry: infer S } };
 }
   ? S
@@ -44,11 +39,3 @@ export type NodeValue<Config extends CoreStatelyConfig = CoreStatelyConfig> = Co
     ? N[keyof N]
     : unknown
   : unknown;
-
-export type CoreAnyNode<Augments extends AnyPluginAugment = []> = CoreNodes<
-  NodeValues<DerivedPluginNodes<Augments>>
->;
-
-export type CoreAnySchemaNode<Schema extends Schemas<any, any> = Schemas> = CoreNodes<
-  NodeValues<DerivedPluginNodes<Schema['augments']>>
->;

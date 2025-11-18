@@ -5,11 +5,11 @@
  */
 
 import type { BaseNode } from '../nodes.js';
-import type { AnyPluginAugment, DefineUtils } from '../plugin.js';
+import type { DefineUtils } from '../plugin.js';
 import { isNodeOfType } from '../schema.js';
-import type { CoreAnyNode } from './helpers.js';
 import {
   type ArrayNode,
+  type CoreNodes,
   CoreNodeType,
   type NullableNode,
   type ObjectNode,
@@ -32,22 +32,18 @@ function isSingletonId(id: string): boolean {
  * Schema type checking utilities
  */
 
-export function isNullable<Augments extends AnyPluginAugment = []>(
-  schema: CoreAnyNode<Augments> | BaseNode,
-): schema is NullableNode<CoreAnyNode<Augments>> {
-  return isNodeOfType<NullableNode<CoreAnyNode<Augments>>>(schema, CoreNodeType.Nullable);
+export function isNullable(
+  schema: CoreNodes<any> | BaseNode,
+): schema is NullableNode<CoreNodes<any>> {
+  return isNodeOfType<NullableNode<CoreNodes<any>>>(schema, CoreNodeType.Nullable);
 }
 
-export function isArray<Augments extends AnyPluginAugment = []>(
-  schema: CoreAnyNode<Augments> | BaseNode,
-): schema is ArrayNode<CoreAnyNode<Augments>> {
-  return isNodeOfType<ArrayNode<CoreAnyNode<Augments>>>(schema, CoreNodeType.Array);
+export function isArray(schema: CoreNodes<any> | BaseNode): schema is ArrayNode<CoreNodes<any>> {
+  return isNodeOfType<ArrayNode<CoreNodes<any>>>(schema, CoreNodeType.Array);
 }
 
-export function isObject<Augments extends AnyPluginAugment = []>(
-  schema: CoreAnyNode<Augments> | BaseNode,
-): schema is ObjectNode<CoreAnyNode<Augments>> {
-  return isNodeOfType<ObjectNode<CoreAnyNode<Augments>>>(schema, CoreNodeType.Object);
+export function isObject(schema: CoreNodes<any> | BaseNode): schema is ObjectNode<CoreNodes<any>> {
+  return isNodeOfType<ObjectNode<CoreNodes<any>>>(schema, CoreNodeType.Object);
 }
 
 export function isPrimitive(schema: BaseNode): schema is PrimitiveNode {
@@ -80,8 +76,9 @@ function extractNodeType(schema: BaseNode): CoreNodeName | string {
  * Entity validation helper
  */
 
-function isEntityValid(entity: any | null | undefined, schema: ObjectNode | undefined): boolean {
+function isEntityValid(entity: any | null | undefined, schema: BaseNode | undefined): boolean {
   if (!entity || !schema) return false;
+  if (!isObject(schema)) return false;
   if (typeof entity !== 'object') return false;
 
   const nameRequired = 'name' in schema.properties;

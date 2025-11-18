@@ -55,12 +55,9 @@
  */
 
 import type { OpenAPIV3_1 } from 'openapi-types';
-
-// Core
+import type { DefineOperations } from './api.js';
 import type { CorePlugin, CoreStatelyConfig, DefineCoreConfig } from './core/index.js';
 import { corePlugin } from './core/index.js';
-
-// Base
 import type {
   DefineComponents,
   DefineGeneratedNodes,
@@ -76,10 +73,11 @@ import type { StatelySchemas } from './schema.js';
 import { createStately } from './stately.js';
 
 // Re-exports
-export type { OpenAPIV3_1 };
 export type {
+  OpenAPIV3_1,
   DefineComponents,
   DefineGeneratedNodes,
+  DefineOperations,
   DefineOpenApi,
   DefinePaths,
   DefineStatelyConfig,
@@ -116,8 +114,9 @@ export type DefinePlugin<
 export type DefineConfig<
   C extends DefineComponents = DefineComponents,
   P extends DefinePaths = DefinePaths,
+  O extends DefineOperations = DefineOperations,
   N extends DefineGeneratedNodes<NodeMap> = DefineGeneratedNodes<NodeMap>,
-> = DefineCoreConfig<C, P, N>;
+> = DefineCoreConfig<C, P, O, N>;
 
 /**
  * Stately plugin types integration - Main API
@@ -129,7 +128,7 @@ export type DefineConfig<
 export type Schemas<
   out Config extends CoreStatelyConfig = CoreStatelyConfig,
   Augments extends readonly PluginAugment<string, NodeMap>[] = [],
-> = StatelySchemas<Config, readonly [CorePlugin<Config>, ...Augments]>;
+> = StatelySchemas<Config, readonly [CorePlugin<Config, Augments>, ...Augments]>;
 
 /**
  * Stately plugin functionality integration - Main API
@@ -143,7 +142,7 @@ export type Schemas<
  */
 export function stately<S extends Schemas<any, any> = Schemas>(
   openapi: DefineOpenApi<any>,
-  nodes: SchemaConfig<S>['nodes'],
+  nodes: S['config']['nodes'],
 ) {
   return createStately<S>(openapi, nodes).withPlugin(corePlugin<S>());
 }
@@ -156,5 +155,4 @@ export type SchemaConfig<S> = S extends Schemas<infer Config, any> ? Config : ne
 /**
  * Type helpers for referencing plugin node information
  */
-export type PluginNodeUnion<S extends StatelySchemas<any, any> = Schemas> =
-  PluginTypes.PluginNodeUnion<S>;
+export type PluginNodeUnion<S extends Schemas<any, any> = Schemas> = PluginTypes.PluginNodeUnion<S>;

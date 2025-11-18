@@ -11,22 +11,6 @@
       "types": "./dist/codegen.d.ts",
       "import": "./dist/codegen.js"
     },
-    "./context": {
-      "types": "./dist/context.d.ts",
-      "import": "./dist/context.js"
-    },
-    "./operations": {
-      "types": "./dist/operations.d.ts",
-      "import": "./dist/operations.js"
-    },
-    "./plugin": {
-      "types": "./dist/plugin.d.ts",
-      "import": "./dist/plugin.js"
-    },
-    "./schema": {
-      "types": "./dist/schema.d.ts",
-      "import": "./dist/schema.js"
-    },
     "./components": {
       "types": "./dist/components/index.d.ts",
       "import": "./dist/components/index.js"

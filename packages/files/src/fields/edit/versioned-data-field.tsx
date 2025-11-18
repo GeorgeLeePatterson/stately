@@ -50,7 +50,7 @@ export function VersionedDataField({ value, onChange }: VersionedDataProps) {
     enabled: !!filename && !!filesApi,
     queryFn: async () => {
       if (!filename || !filesApi) return null;
-      const { data, error } = await filesApi.call(filesApi.operations.listFiles, {
+      const { data, error } = await filesApi.list({
         params: { query: { path: `${filename}/__versions__` } },
       });
       if (error || !data) {

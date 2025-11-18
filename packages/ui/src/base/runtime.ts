@@ -2,7 +2,7 @@ import type { StatelySchemas } from '@stately/schema/schema';
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
 import type { ComponentType } from 'react';
-import type { AugmentPlugins, UiPluginAugment } from './plugin';
+import type { AnyUiPlugin, AugmentPlugins } from './plugin';
 import type { ComponentRegistry, FunctionRegistry, TransformerRegistry } from './registry';
 
 export interface UiRegistry {
@@ -24,7 +24,7 @@ export interface RuntimeUtils {
  */
 export interface StatelyRuntime<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
+  Augments extends readonly AnyUiPlugin[] = readonly [],
 > {
   schema: Stately<Schema>;
   client: Client<Schema['config']['paths']>;
@@ -42,14 +42,14 @@ export interface StatelyRuntime<
  */
 export type StatelyUiPluginFactory<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
+  Augments extends readonly AnyUiPlugin[] = readonly [],
 > = (runtime: StatelyRuntime<Schema, Augments>) => StatelyRuntime<Schema, Augments>;
 
 const DefaultIcon: ComponentType<any> = () => null;
 
 function createRuntimeUtils<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[],
+  Augments extends readonly AnyUiPlugin[],
 >(plugins: AugmentPlugins<Schema, Augments>): RuntimeUtils {
   return {
     getNodeTypeIcon(node: string): ComponentType<any> {
@@ -72,7 +72,7 @@ function createRuntimeUtils<
  */
 export interface StatelyUiBuilder<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
+  Augments extends readonly AnyUiPlugin[] = readonly [],
 > extends StatelyRuntime<Schema, Augments> {
   withPlugin(plugin: StatelyUiPluginFactory<Schema, Augments>): StatelyUiBuilder<Schema, Augments>;
 }
@@ -89,27 +89,11 @@ export interface StatelyUiBuilder<
  */
 export function createStatelyUi<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
+  Augments extends readonly AnyUiPlugin[] = readonly [],
 >(
   schema: Stately<Schema>,
   client: Client<Schema['config']['paths']>,
 ): StatelyUiBuilder<Schema, Augments> {
-  const registry: UiRegistry = {
-    components: new Map(),
-    functions: new Map(),
-    transformers: new Map(),
-  };
-
-  const basePlugins = {} as AugmentPlugins<Schema, Augments>;
-
-  const baseState: StatelyRuntime<Schema, Augments> = {
-    client,
-    plugins: basePlugins,
-    registry,
-    schema,
-    utils: createRuntimeUtils(basePlugins),
-  };
-
   function makeBuilder(
     state: StatelyRuntime<Schema, Augments>,
   ): StatelyUiBuilder<Schema, Augments> {
@@ -124,5 +108,11 @@ export function createStatelyUi<
     };
   }
 
-  return makeBuilder(baseState);
+  return makeBuilder({
+    client,
+    plugins: {} as AugmentPlugins<Schema, Augments>,
+    registry: { components: new Map(), functions: new Map(), transformers: new Map() },
+    schema,
+    utils: createRuntimeUtils({}),
+  });
 }

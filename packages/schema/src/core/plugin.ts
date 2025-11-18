@@ -1,10 +1,10 @@
 import type { DefinePlugin, Schemas } from '../index.js';
-import type { NodeMap } from '../nodes.js';
+import type { NodeMap, NodeValues } from '../nodes.js';
 import type { DefineTypes, PluginAugment } from '../plugin.js';
+import type { PluginAnyNode } from '../schema.js';
 import type { PluginFactory } from '../stately.js';
 import { type CoreData, generateCoreData } from './data.js';
 import type { CoreStatelyConfig } from './generated.js';
-import type { CoreAnyNode } from './helpers.js';
 import type { CoreNodeMap } from './nodes.js';
 import type { CoreUtils } from './utils.js';
 import { coreUtils } from './utils.js';
@@ -19,10 +19,10 @@ export type CoreTypes<Config extends CoreStatelyConfig> = DefineTypes<{
 
 export type CorePlugin<
   Config extends CoreStatelyConfig,
-  Augments extends readonly PluginAugment<string, NodeMap>[] = [],
+  Augments extends readonly PluginAugment<string, NodeMap>[],
 > = DefinePlugin<
   typeof CORE_PLUGIN_NAME,
-  CoreNodeMap<CoreAnyNode<Augments>>,
+  CoreNodeMap<NodeValues<PluginAnyNode<Augments>>>,
   CoreTypes<Config>,
   CoreData<Config>,
   CoreUtils

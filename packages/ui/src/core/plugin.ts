@@ -1,47 +1,33 @@
 import type { Schemas } from '@stately/schema';
-import type { CoreStatelyConfig } from '@stately/schema/core/generated';
+import { CORE_OPERATIONS, type CorePaths } from '@stately/schema/core/api';
 import { CoreNodeType } from '@stately/schema/core/nodes';
-import type { CorePlugin } from '@stately/schema/core/plugin';
 import { CORE_PLUGIN_NAME } from '@stately/schema/core/plugin';
-
+import type { BaseNode } from '@stately/schema/nodes';
 import type { ComponentType } from 'react';
-import type { PluginRuntime } from '@/base/plugin';
-import { makeRegistryKey, type UiPluginAugment } from '@/base/plugin';
-import type { ComponentRegistry, TransformerRegistry } from '@/base/registry';
+import { createOperations } from '@/base';
+import type { AnyUiPlugin } from '@/base/plugin';
+import { type ComponentRegistry, makeRegistryKey, type TransformerRegistry } from '@/base/registry';
 import type { StatelyRuntime, StatelyUiPluginFactory } from '@/base/runtime';
 import * as fields from '@/core/components/fields';
 import * as editFields from '@/core/components/fields/edit';
 import * as viewFields from '@/core/components/fields/view';
 import * as linkFields from '@/core/components/views/link';
 import type { DefineUiPlugin } from '..';
-import { buildCoreHttpBundle, type CoreOperationMap } from './operations';
-import {
-  getDefaultValue as computeDefaultValue,
-  generateFieldLabel,
-  getNodeTypeIcon,
-} from './utils';
+import { generateFieldLabel, getDefaultValue, getNodeTypeIcon } from './utils';
 
 const NodeType = CoreNodeType;
 
-export type CorePluginUtils<S extends Schemas<any, any> = Schemas<any, any>> = {
+export type CorePluginUtils = {
   getNodeTypeIcon: (nodeType: string) => ComponentType<any>;
   generateFieldLabel: (fieldName: string) => string;
-  getDefaultValue: (node: S['plugin']['AnyNode']) => any;
+  getDefaultValue: (node: BaseNode) => any;
 };
 
-export type CorePluginRuntime<S extends Schemas<any, any> = Schemas<any, any>> = PluginRuntime<
-  S,
-  CoreOperationMap,
-  CorePluginUtils<S>
->;
-
-export type CorePluginName = CorePlugin<CoreStatelyConfig>['name'];
-
-export type CoreUiAugment<S extends Schemas<any, any> = Schemas<any, any>> = DefineUiPlugin<
+export type CoreUiPlugin = DefineUiPlugin<
   typeof CORE_PLUGIN_NAME,
-  S,
-  CoreOperationMap,
-  CorePluginUtils<S>
+  CorePaths,
+  typeof CORE_OPERATIONS,
+  CorePluginUtils
 >;
 
 /**
@@ -51,35 +37,34 @@ export type CoreUiAugment<S extends Schemas<any, any> = Schemas<any, any>> = Def
  * Populates the runtime with core plugin data (components, api, utils).
  * The runtime type already declares CoreUiAugment; this factory fulfills it.
  */
-export function coreUiPlugin<
-  Schema extends Schemas = Schemas,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [
-    CoreUiAugment<Schema>,
-  ],
->(): StatelyUiPluginFactory<Schema, Augments> {
-  return (runtime: StatelyRuntime<Schema, Augments>) => {
+export function coreUiPlugin<Schema extends Schemas, Augments extends readonly AnyUiPlugin[]>({
+  pathPrefix = '',
+}: {
+  pathPrefix?: string;
+}): StatelyUiPluginFactory<Schema, readonly [CoreUiPlugin, ...Augments]> {
+  return (runtime: StatelyRuntime<Schema, readonly [CoreUiPlugin, ...Augments]>) => {
     // Register core components
     registerCoreComponents(runtime.registry.components);
 
-    // TODO: Register core transformers
+    // Register core transformers
     registerCoreTransformers(runtime.registry.transformers);
 
-    // Extract paths from OpenAPI document at runtime
-    const paths = runtime.schema.schema.document.paths as Schema['config']['paths'];
-    const api = buildCoreHttpBundle(runtime.client, paths);
-
-    const descriptor: CorePluginRuntime<Schema> = {
-      api,
-      utils: {
-        generateFieldLabel,
-        getDefaultValue: node => computeDefaultValue(node),
-        getNodeTypeIcon: nodeType => getNodeTypeIcon(nodeType),
-      },
-    };
+    // Create api bundle
+    const api = createOperations<CorePaths, typeof CORE_OPERATIONS>(
+      runtime.client,
+      CORE_OPERATIONS,
+      pathPrefix,
+    );
 
     return {
       client: runtime.client,
-      plugins: { ...runtime.plugins, [CORE_PLUGIN_NAME]: descriptor },
+      plugins: {
+        ...runtime.plugins,
+        [CORE_PLUGIN_NAME]: {
+          api,
+          utils: { generateFieldLabel, getDefaultValue, getNodeTypeIcon },
+        },
+      },
       registry: runtime.registry,
       schema: runtime.schema,
       utils: runtime.utils,

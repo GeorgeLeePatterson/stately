@@ -1,43 +1,28 @@
 import type { Schemas } from '@stately/schema';
 import type { StateEntry } from '@stately/schema/core/helpers';
 import type { CoreTypes } from '@stately/schema/core/plugin';
-import { createUseStatelyUi } from '@/context';
-import { CORE_OPERATION_IDS } from './operations';
 import { coreUiPlugin } from './plugin';
 import { generateFieldLabel, getDefaultValue, getNodeTypeIcon } from './utils';
 
-export type { CoreHttpBundle, CoreOperationMap } from './operations';
+// TODO: Revisit this file, might be mostly junk
+
+export type { CoreApi } from './api';
 export type {
-  CorePluginName,
-  CorePluginRuntime,
   CorePluginUtils,
-  CoreUiAugment,
+  CoreUiPlugin as CoreUiAugment,
 } from './plugin';
 export type { CoreUtils } from './utils';
 
-export { CORE_OPERATION_IDS, getDefaultValue, generateFieldLabel, getNodeTypeIcon, coreUiPlugin };
-
-/**
- * Default Core hook for core plugin usage.
- * For better type safety, use createUseStatelyUi with your specific schema.
- *
- * @example
- * ```typescript
- * const runtime = useStatelyUi();
- * // runtime.plugins has type Record<string, PluginRuntime<...>>
- * ```
- */
-export const useStatelyUi = createUseStatelyUi<Schemas>();
-
-// Re-exports
-export type { CorePlugin } from '@stately/schema/core/plugin';
+export { getDefaultValue, generateFieldLabel, getNodeTypeIcon, coreUiPlugin };
 
 type SchemaConfigOf<S extends Schemas<any, any>> = S['config'];
 type SchemaTypesOf<S extends Schemas<any, any>> = CoreTypes<SchemaConfigOf<S>>;
 type PluginInfoOf<S extends Schemas<any, any>> = S['plugin'];
 
-export type CorePaths<S extends Schemas<any, any> = Schemas<any, any>> = SchemaConfigOf<S>['paths'];
-export type CoreNodes<S extends Schemas<any, any> = Schemas<any, any>> = SchemaConfigOf<S>['nodes'];
+export type CoreSchemaPaths<S extends Schemas<any, any> = Schemas<any, any>> =
+  SchemaConfigOf<S>['paths'];
+export type CoreSchemaNodes<S extends Schemas<any, any> = Schemas<any, any>> =
+  SchemaConfigOf<S>['nodes'];
 
 // Use StateEntry from helpers instead of deriving from CoreTypes
 export type CoreStateEntry<S extends Schemas<any, any> = Schemas<any, any>> = StateEntry<

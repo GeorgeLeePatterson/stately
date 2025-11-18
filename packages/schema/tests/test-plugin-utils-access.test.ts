@@ -23,10 +23,6 @@ import type { Stately } from '../src/stately.js';
  * =============================================================================
  */
 
-type TestConfig = CoreStatelyConfig;
-type TestSchemas = Schemas<TestConfig>;
-type Nodes = TestConfig['nodes'];
-
 const mockOpenAPI = {
   components: {
     schemas: {
@@ -60,8 +56,17 @@ const mockNodes = {
       { schema: { nodeType: CoreNodeType.Object, properties: {}, required: [] }, tag: 'test' },
     ],
   },
-};
+} as const;
 
+type TestConfig = CoreStatelyConfig<
+  CoreStatelyConfig['components'] & { schemas: { StateEntry: 'test1' | 'test2' } },
+  CoreStatelyConfig['paths'],
+  CoreStatelyConfig['operations'],
+  typeof mockNodes
+>;
+
+type TestSchemas = Schemas<TestConfig>;
+type Nodes = TestConfig['nodes'];
 const runtime = stately<TestSchemas>(mockOpenAPI, mockNodes);
 
 /**

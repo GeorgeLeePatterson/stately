@@ -13,6 +13,7 @@ import {
   type DefineComponents,
   type DefineConfig,
   type DefineGeneratedNodes,
+  type DefineOperations,
   type DefinePaths,
   type Schemas,
   stately,
@@ -32,6 +33,18 @@ type MockPaths = DefinePaths<{
       responses: {
         200: { content: { 'application/json': { id: string; title: string; content: string } } };
       };
+    };
+  };
+}>;
+
+type MockOperations = DefineOperations<{
+  list_users: {
+    responses: { 200: { content: { 'application/json': Array<{ id: string; name: string }> } } };
+  };
+  get_post: {
+    parameters: { path: { id: string } };
+    responses: {
+      200: { content: { 'application/json': { id: string; title: string; content: string } } };
     };
   };
 }>;
@@ -59,6 +72,7 @@ const MOCK_PARSED_SCHEMAS = {
 type MockConfig = DefineConfig<
   MockComponents,
   MockPaths,
+  MockOperations,
   DefineGeneratedNodes<typeof MOCK_PARSED_SCHEMAS>
 >;
 type MockSchemas = Schemas<MockConfig>;

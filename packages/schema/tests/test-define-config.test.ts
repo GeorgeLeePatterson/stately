@@ -3,7 +3,12 @@
 
 import type { CoreStatelyConfig } from '../src/core/generated.js';
 import type { ObjectNode } from '../src/core/nodes.js';
-import type { DefineComponents, DefineGeneratedNodes, DefinePaths } from '../src/generated.js';
+import type {
+  DefineComponents,
+  DefineGeneratedNodes,
+  DefineOperations,
+  DefinePaths,
+} from '../src/generated.js';
 import type { AssertTrue } from '../src/helpers.js';
 import type { DefineConfig, Schemas } from '../src/index.js';
 import type { Stately } from '../src/stately.js';
@@ -16,9 +21,13 @@ type FilesPaths = DefinePaths<{
   };
 }>;
 
+type FilesOperations = DefineOperations<{
+  list_files: { responses: { 200: { content: { 'application/json': Array<{ id: string }> } } } };
+}>;
+
 type FilesNodes = DefineGeneratedNodes<{ FileEntity: ObjectNode }>;
 
-type FilesConfig = DefineConfig<FilesComponents, FilesPaths, FilesNodes>;
+type FilesConfig = DefineConfig<FilesComponents, FilesPaths, FilesOperations, FilesNodes>;
 
 type FilesSchemas = Schemas<FilesConfig>;
 

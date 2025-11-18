@@ -8,7 +8,7 @@ import type { BaseNode } from '@stately/schema/nodes';
 import type { PluginNodeUnion } from '@stately/schema/plugin';
 import type { StatelySchemas } from '@stately/schema/schema';
 import { getViewComponent } from '@/base/registry';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
 export interface ViewFieldProps<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
@@ -19,9 +19,7 @@ export interface ViewFieldProps<
   value: V;
 }
 
-export function FieldView<S extends StatelySchemas<any, any> = StatelySchemas<any, any>>(
-  props: ViewFieldProps<S>,
-) {
+export function FieldView<S extends StatelySchemas<any, any>>(props: ViewFieldProps<S>) {
   const { node, value } = props;
   const { registry } = useStatelyUi();
 

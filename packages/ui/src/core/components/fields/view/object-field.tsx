@@ -5,7 +5,7 @@ import { NotSet } from '@/base/components/not-set';
 import { SimpleLabel } from '@/base/components/simple-label';
 import type { ViewFieldProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
 export type ObjectViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
   Schema,
@@ -17,7 +17,7 @@ export function ObjectView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: ObjectViewProps<Schema>) {
-  const { schema, plugins } = useStatelyUi();
+  const { schema, plugins } = useStatelyUi<Schema, []>();
   const required = new Set(node.required || []);
   const objValue = value as AnyRecord;
 

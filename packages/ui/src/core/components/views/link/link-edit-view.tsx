@@ -8,8 +8,8 @@ import { Button } from '@/base/ui/button';
 import { ButtonGroup } from '@/base/ui/button-group';
 import { FieldGroup, FieldSet } from '@/base/ui/field';
 import type { CoreEntity, CoreStateEntry } from '@/core';
-import { useStatelyUi } from '@/core';
-import { useEditEntityData } from '@/core/hooks/use-edit-entity-data';
+import { useEntityDataInline } from '@/core/hooks/use-entity-data-inline';
+import { useStatelyUi } from '@/index';
 import { LinkInlineEdit } from './link-inline-edit-view';
 import { LinkRefEdit } from './link-ref-edit-view';
 
@@ -34,7 +34,7 @@ export function LinkEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: LinkEditProps<Schema>) {
-  const { plugins } = useStatelyUi();
+  const { plugins } = useStatelyUi<Schema, []>();
   const coreApi = plugins.core?.api;
   const targetType = node.targetType as CoreStateEntry<Schema>;
 
@@ -54,8 +54,8 @@ export function LinkEdit<Schema extends Schemas = Schemas>({
       if (!coreApi) {
         throw new Error('Core entity API is unavailable.');
       }
-      const { data, error } = await coreApi.call(coreApi.operations.listEntitiesByType, {
-        params: { query: { entity_type: targetType } },
+      const { data, error } = await coreApi.list_entities({
+        params: { path: { type: targetType } },
       });
       if (error) throw new Error(`Failed to fetch ${targetType} entities`);
       return data;
@@ -65,11 +65,11 @@ export function LinkEdit<Schema extends Schemas = Schemas>({
 
   // Enable editing an existing entity inline
   const {
-    editEntity: _,
-    setEditEntity,
-    editNote,
+    inlineEntity: _,
+    setInlineEntity: setEditEntity,
+    inlineNote: editNote,
     data: editData,
-  } = useEditEntityData<Schema>({ entity: targetType });
+  } = useEntityDataInline<Schema>({ entity: targetType });
 
   const availableEntities = entitiesData?.entities?.[targetType] ?? [];
   const hasEntities = availableEntities.length > 0;

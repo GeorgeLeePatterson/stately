@@ -1,5 +1,5 @@
 import type { Schemas } from '@stately/schema';
-import { createUseStatelyUi } from '@stately/ui';
+import { useStatelyUi } from '@stately/ui';
 import type { FilesUiPlugin } from './plugin';
 
 /**
@@ -9,7 +9,7 @@ import type { FilesUiPlugin } from './plugin';
  * Returns runtime with type-safe access to core and files plugins
  */
 export function createUseFilesStatelyUi<Schema extends Schemas<any, any> = Schemas<any, any>>() {
-  return createUseStatelyUi<Schema, readonly [FilesUiPlugin<Schema>]>();
+  return useStatelyUi<Schema, readonly [FilesUiPlugin]>;
 }
 
 /**

@@ -62,6 +62,7 @@ type XXX = X extends { nodeType: 'unknown' } ? X : never;
 type TestConfig = CoreStatelyConfig<
   CoreStatelyConfig['components'],
   CoreStatelyConfig['paths'],
+  CoreStatelyConfig['operations'],
   DefineGeneratedNodes<{ TestNode: { nodeType: 'test' } }>
 >;
 

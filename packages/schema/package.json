@@ -11,6 +11,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./api": {
+      "types": "./dist/api.d.ts",
+      "import": "./dist/api.js"
+    },
     "./generated": {
       "types": "./dist/generated.d.ts",
       "import": "./dist/generated.js"
@@ -34,6 +38,10 @@
     "./stately": {
       "types": "./dist/stately.d.ts",
       "import": "./dist/stately.js"
+    },
+    "./core/api": {
+      "types": "./dist/core/api.d.ts",
+      "import": "./dist/core/api.js"
     },
     "./core/augment": {
       "types": "./dist/core/augment.d.ts",
@@ -71,7 +79,7 @@
     "build": "tsc --build",
     "clean": "rm -rf dist .turbo",
     "typecheck": "tsc --noEmit",
-    "test": "tsc --noEmit tests/*.test.ts",
+    "test": "tsc --project tsconfig.test.json",
     "dev": "tsc --build --watch"
   },
   "keywords": [
@@ -91,6 +99,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "openapi-types": "^12.1.3"
+    "openapi-types": "^12.1.3",
+    "openapi-typescript-helpers": "^0.0.15"
   }
 }

@@ -20,6 +20,7 @@ import {
   type DefineComponents,
   type DefineConfig,
   type DefineGeneratedNodes,
+  type DefineOperations,
   type DefinePaths,
   type Schemas,
   stately,
@@ -47,11 +48,20 @@ type BasePaths = DefinePaths<{
   };
 }>;
 
+type BaseOperations = DefineOperations<{
+  list_entities: { responses: { 200: { content: { 'application/json': Array<{ id: string }> } } } };
+}>;
+
 const BASE_NODES = {
   Entity: { discriminator: 'type' as const, nodeType: CoreNodeType.TaggedUnion, variants: [] },
 };
 
-type BaseConfig = DefineConfig<BaseComponents, BasePaths, DefineGeneratedNodes<typeof BASE_NODES>>;
+type BaseConfig = DefineConfig<
+  BaseComponents,
+  BasePaths,
+  BaseOperations,
+  DefineGeneratedNodes<typeof BASE_NODES>
+>;
 
 type BaseSchemas = Schemas<BaseConfig>;
 
@@ -86,9 +96,17 @@ const EXTENDED_NODES = {
   FileMetadata: { nodeType: CoreNodeType.Object, properties: {}, required: [] },
 } as const;
 
+type ExtendedOperations = BaseOperations &
+  DefineOperations<{
+    list_files: {
+      responses: { 200: { content: { 'application/json': Array<{ path: string }> } } };
+    };
+  }>;
+
 type ExtendedConfig = DefineConfig<
   ExtendedComponents,
   ExtendedPaths,
+  ExtendedOperations,
   DefineGeneratedNodes<typeof EXTENDED_NODES>
 >;
 

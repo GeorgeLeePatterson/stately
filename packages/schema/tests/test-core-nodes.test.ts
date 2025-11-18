@@ -34,7 +34,12 @@ type SampleComponents = { schemas: SampleComponentSchemas };
 
 type SampleNodes = { Sample: ObjectNode };
 
-type SampleConfig = CoreStatelyConfig<SampleComponents, CoreStatelyConfig['paths'], SampleNodes>;
+type SampleConfig = CoreStatelyConfig<
+  SampleComponents,
+  CoreStatelyConfig['paths'],
+  CoreStatelyConfig['operations'],
+  SampleNodes
+>;
 type SampleSchemas = Schemas<SampleConfig, []>;
 
 // Helpers resolved from Schemas should be concrete types
@@ -77,6 +82,7 @@ type InvalidNodeNameCheck = AssertTrue<
 type UserConfig = CoreStatelyConfig<
   SampleComponents & { schemas: SampleComponents['schemas'] & { CustomField: string } },
   CoreStatelyConfig['paths'],
+  CoreStatelyConfig['operations'],
   SampleNodes & { CustomNode: ObjectNode }
 >;
 type UserSchemas = Schemas<UserConfig, []>;

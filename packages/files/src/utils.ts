@@ -1,13 +1,17 @@
-import type { DefineUtils } from '@stately/schema/plugin';
+import type { DefineUiUtils } from '@stately/ui/base';
 import { FileText, Folder, FolderOpen, History } from 'lucide-react';
 import type { ComponentType } from 'react';
-import { FILES_OPERATION_IDS, type FilesOperationMap } from './operations';
 import type { FileEntryType } from './types/api';
 
 /**
  * Files plugin utilities
  */
-export type FilesUtils = DefineUtils<{
+export type FilesUtils = Record<string, never>;
+
+/**
+ * Files UI plugin utilities
+ */
+export type FilesUiUtils = DefineUiUtils<{
   /**
    * Get icon component for a file entry type
    */
@@ -23,21 +27,9 @@ export type FilesUtils = DefineUtils<{
 }>;
 
 /**
- * Files UI plugin utilities
- */
-export type FilesUiPluginUtils = {
-  /**
-   * Get the configured operation IDs for the files plugin
-   */
-  getFilesOperationIds: () => FilesOperationMap;
-};
-
-export const filesUiUtils: FilesUiPluginUtils = { getFilesOperationIds: () => FILES_OPERATION_IDS };
-
-/**
  * Files plugin utilities implementation
  */
-export const filesUtils: FilesUtils = {
+export const filesUiUtils: FilesUiUtils = {
   formatFileSize(bytes: number): string {
     if (bytes < 1024) return `${bytes}B`;
     const kb = bytes / 1024;

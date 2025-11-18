@@ -3,44 +3,15 @@
  */
 
 import type { Schemas } from '@stately/schema';
+import type { AnyPaths, OperationBindings } from '@stately/schema/api';
 import type { RequireLiteral } from '@stately/schema/helpers';
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
-import { StatelyUiProvider } from './base/context.js';
-import { callOperation, createHttpBundle, type DefineOperationMap } from './base/operations.js';
-import { makeRegistryKey, type PluginFunctionMap, type UiPluginAugment } from './base/plugin.js';
-import * as registry from './base/registry.js';
+import { createStatelyUiProvider, createUseStatelyUi } from './base/context.js';
+import type { AnyUiPlugin, PluginFunctionMap, UiPlugin } from './base/plugin.js';
 import { createStatelyUi, type StatelyRuntime, type StatelyUiBuilder } from './base/runtime.js';
-import { createUseStatelyUi } from './context.js';
 import { type CoreUiAugment, coreUiPlugin } from './core/index.js';
-
-export type { DefineOperationMap, HttpBundle, OperationMeta } from './base/operations.js';
-export type {
-  PluginRuntime,
-  RegistryKey,
-  RegistryMode,
-  RegistryType,
-  UiPluginAugment,
-} from './base/plugin.js';
-export type {
-  ComponentRegistry,
-  Transformer,
-  TransformerRegistry,
-} from './base/registry.js';
-export type {
-  StatelyRuntime,
-  StatelyUiBuilder,
-  StatelyUiPluginFactory,
-  UiRegistry,
-} from './base/runtime.js';
-export {
-  registry,
-  createHttpBundle,
-  StatelyUiProvider,
-  createUseStatelyUi,
-  makeRegistryKey,
-  callOperation,
-};
+import type { CoreUiPlugin } from './core/plugin.js';
 
 /**
  * Public helper for declaring a ui plugin augment.
@@ -50,15 +21,14 @@ export {
  */
 export type DefineUiPlugin<
   Name extends string,
-  Schema extends Schemas<any, any> = Schemas,
-  Ops extends DefineOperationMap = DefineOperationMap,
+  Paths extends AnyPaths,
+  Ops extends OperationBindings<any, any>,
   Utils extends PluginFunctionMap = PluginFunctionMap,
-> = UiPluginAugment<
-  RequireLiteral<Name, 'Plugin names must be string literals'>,
-  Schema,
-  Ops,
-  Utils
->;
+> = UiPlugin<RequireLiteral<Name, 'Plugin names must be string literals'>, Paths, Ops, Utils>;
+
+export interface StatelyUiOptions {
+  pathPrefix?: string;
+}
 
 /**
  * Runtime with core plugin installed.
@@ -66,8 +36,8 @@ export type DefineUiPlugin<
  */
 export type StatelyUi<
   S extends Schemas<any, any> = Schemas,
-  ExtraAugments extends readonly UiPluginAugment<string, S, any, any>[] = readonly [],
-> = StatelyRuntime<S, readonly [CoreUiAugment<S>, ...ExtraAugments]>;
+  ExtraAugments extends readonly AnyUiPlugin[] = readonly [],
+> = StatelyRuntime<S, readonly [CoreUiAugment, ...ExtraAugments]>;
 
 /**
  * Create StatelyUi runtime with core plugin pre-installed.
@@ -84,13 +54,45 @@ export type StatelyUi<
  */
 export function statelyUi<
   Schema extends Schemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
+  Augments extends readonly AnyUiPlugin[] = readonly [],
 >(
   state: Stately<Schema>,
   client: Client<Schema['config']['paths']>,
-): StatelyUiBuilder<Schema, readonly [CoreUiAugment<Schema>, ...Augments]> {
-  return createStatelyUi<Schema, readonly [CoreUiAugment<Schema>, ...Augments]>(
-    state,
-    client,
-  ).withPlugin(coreUiPlugin());
+  options?: StatelyUiOptions,
+): StatelyUiBuilder<Schema, readonly [CoreUiAugment, ...Augments]> {
+  return createStatelyUi<Schema, readonly [CoreUiAugment, ...Augments]>(state, client).withPlugin(
+    coreUiPlugin<Schema, Augments>(options ?? {}),
+  );
+}
+
+/**
+ * Stately UI Context Provider with core included
+ *
+ * This hook is both used in core's plugin code but also serves as an example for how to customize
+ * the application's Stately context with any plugin augmentations.
+ */
+export function useStatelyUi<
+  Schema extends Schemas<any, any>,
+  ExtraAugments extends readonly AnyUiPlugin[],
+>() {
+  return createUseStatelyUi<Schema, readonly [CoreUiPlugin, ...ExtraAugments]>()();
+}
+
+/**
+ * Create a typed StatelyUi provider.
+ *
+ * @example
+ * ```typescript
+ * const MyProvider = createStatelyUiProvider<MySchemas, [CoreUiAugment<MySchemas>]>();
+ *
+ * <MyProvider value={runtime}>
+ *   <App />
+ * </MyProvider>
+ * ```
+ */
+export function statelyUiProvider<
+  Schema extends Schemas<any, any>,
+  Augments extends readonly AnyUiPlugin[] = readonly [],
+>() {
+  return createStatelyUiProvider<Schema, readonly [CoreUiAugment, ...Augments]>();
 }

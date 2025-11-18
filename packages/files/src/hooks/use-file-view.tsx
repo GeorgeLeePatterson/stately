@@ -31,7 +31,7 @@ export function useFileView({
     queryFn: async () => {
       if (!filesApi) throw new Error('Files API is unavailable');
 
-      const { data, error } = await filesApi.call(filesApi.operations.listFiles, {
+      const { data, error } = await filesApi.list({
         params: { query: { path: currentPath || undefined } },
       });
 

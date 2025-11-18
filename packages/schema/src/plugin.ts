@@ -16,8 +16,7 @@ import type { StatelySchemas } from './schema.js';
 /**
  * Plugin helper types for nodes
  */
-export type PluginNodeUnion<S extends StatelySchemas<any, any> = StatelySchemas<any, any>> =
-  S['plugin']['AnyNode'];
+export type PluginNodeUnion<S extends StatelySchemas<any, any>> = S['plugin']['AnyNode'];
 
 /**
  * Define the node map for your plugin augment.
@@ -31,7 +30,9 @@ export type PluginNodeUnion<S extends StatelySchemas<any, any> = StatelySchemas<
  * }>;
  * ```
  */
-export type DefineNodeMap<T extends NodeMap = NodeMap> = T & { [UnknownNodeType]: UnknownNode };
+export type DefineNodeMap<T extends NodeMap = NodeMap> = { [K in keyof T]: T[K] } & {
+  [UnknownNodeType]: UnknownNode;
+};
 
 /**
  * Define additional types to expose from your plugin.

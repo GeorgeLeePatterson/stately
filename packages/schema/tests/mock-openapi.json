@@ -1,0 +1,5145 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "xeo4 API",
+    "description": "xeo4 Control API for managing data pipelines",
+    "contact": {
+      "name": "Lumirate, Inc"
+    },
+    "license": {
+      "name": ""
+    },
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/admin/cancel": {
+      "get": {
+        "tags": ["admin"],
+        "operationId": "cancel",
+        "responses": {
+          "200": {
+            "description": "Pipeline cancel initiated"
+          }
+        }
+      }
+    },
+    "/admin/quit": {
+      "get": {
+        "tags": ["admin"],
+        "operationId": "quit",
+        "responses": {
+          "200": {
+            "description": "Shutdown signal sent"
+          }
+        }
+      }
+    },
+    "/admin/shutdown": {
+      "get": {
+        "tags": ["admin"],
+        "operationId": "shutdown",
+        "responses": {
+          "200": {
+            "description": "Graceful shutdown initiated"
+          }
+        }
+      }
+    },
+    "/api/v1/entity": {
+      "put": {
+        "tags": ["entity"],
+        "summary": "Create a new entity",
+        "operationId": "create_entity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Entity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Entity created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entity/list/{type}": {
+      "get": {
+        "tags": ["entity"],
+        "summary": "List entity summaries",
+        "operationId": "list_entities",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "description": "Entity type to list",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/StateEntry"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List entities by type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entity/{entry}/{id}": {
+      "delete": {
+        "tags": ["entity"],
+        "summary": "Remove an entity",
+        "operationId": "remove_entity",
+        "parameters": [
+          {
+            "name": "entry",
+            "in": "path",
+            "description": "Entity type",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/StateEntry"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Entity ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/entity/{id}": {
+      "get": {
+        "tags": ["entity"],
+        "summary": "Get entity by ID and type",
+        "operationId": "get_entity_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Entity ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/StateEntry"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEntityResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found"
+          }
+        }
+      },
+      "post": {
+        "tags": ["entity"],
+        "summary": "Update an existing entity (full replacement)",
+        "operationId": "update_entity",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Entity ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Entity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Entity updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["entity"],
+        "summary": "Patch an existing entity (same as update)",
+        "operationId": "patch_entity_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Entity ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Entity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Entity patched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/list": {
+      "get": {
+        "tags": ["files"],
+        "summary": "List files and directories",
+        "description": "Lists all files and directories in the specified path (or root data directory if no path\nspecified). Returns both files and directories with a flag indicating which is which.\n\nVersioned files are stored as: `{filename}/__versions__/{uuid}`\nThe UI is responsible for aggregating versions for display.",
+        "operationId": "list",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "description": "Optional path relative to data directory (e.g., 'uploads'). Defaults to root data directory if not specified.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Files and directories listed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/files/save": {
+      "post": {
+        "tags": ["files"],
+        "summary": "Save file content directly (without multipart upload)",
+        "description": "This endpoint allows saving file content from a text input.",
+        "operationId": "save",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "File saved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/files/upload": {
+      "post": {
+        "tags": ["files"],
+        "summary": "Upload a file to the data directory",
+        "description": "Files are stored in a versioned structure:\n`data/uploads/{name}/{uuid}`\n\nThis allows automatic versioning without conflicts.",
+        "operationId": "upload",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/history": {
+      "get": {
+        "tags": ["history"],
+        "operationId": "get_history",
+        "responses": {
+          "200": {
+            "description": "Get all history records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/History"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["history"],
+        "operationId": "filter_history",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistoryFilter"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Filter history records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/History"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/history/pipeline/config": {
+      "post": {
+        "tags": ["history"],
+        "operationId": "get_pipeline_config_by_filter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HistoryFilter"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Get pipeline config by filter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineConfigResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/history/pipeline/config/{run_uid}": {
+      "get": {
+        "tags": ["history"],
+        "operationId": "get_pipeline_config",
+        "parameters": [
+          {
+            "name": "run_uid",
+            "in": "path",
+            "description": "Run UID",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/u64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get pipeline config by run_uid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineConfigResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/history/search/{needle}": {
+      "get": {
+        "tags": ["history"],
+        "operationId": "search_history",
+        "parameters": [
+          {
+            "name": "needle",
+            "in": "path",
+            "description": "Search string",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search history records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/History"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pipeline/dispatch": {
+      "post": {
+        "tags": ["pipeline"],
+        "operationId": "dispatch_pipeline",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Pipeline"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Pipeline dispatched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pipeline/dispatch/{id}": {
+      "get": {
+        "tags": ["pipeline"],
+        "operationId": "dispatch_pipeline_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Pipeline configuration ID or name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pipeline dispatched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PipelineResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pipeline/subscribe": {
+      "post": {
+        "tags": ["pipeline"],
+        "operationId": "event_stream",
+        "responses": {
+          "200": {
+            "description": "SSE stream of pipeline metrics",
+            "content": {
+              "text/event-stream": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/viewer/catalogs": {
+      "get": {
+        "tags": ["arrow-ui"],
+        "summary": "List all available connectors",
+        "description": "# Errors\n- Internal server error",
+        "operationId": "list_catalogs",
+        "responses": {
+          "200": {
+            "description": "List of registered catalogs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/viewer/connectors": {
+      "get": {
+        "tags": ["arrow-ui"],
+        "summary": "List all available connectors",
+        "description": "# Errors\n- Internal server error",
+        "operationId": "list_connectors",
+        "responses": {
+          "200": {
+            "description": "List of available connectors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConnectionMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/viewer/connectors/{connector_id}": {
+      "get": {
+        "tags": ["arrow-ui"],
+        "summary": "List files available in a connector's object store",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "stat",
+        "parameters": [
+          {
+            "name": "connector_id",
+            "in": "path",
+            "description": "Connector ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "catalog",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": ["string", "null"]
+            }
+          },
+          {
+            "name": "database",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": ["string", "null"]
+            }
+          },
+          {
+            "name": "schema",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": ["string", "null"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/viewer/query": {
+      "post": {
+        "tags": ["arrow-ui"],
+        "summary": "Execute a SQL query using URL tables",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "execute_query",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Query results as Arrow IPC stream",
+            "content": {
+              "application/vnd.apache.arrow.stream": {}
+            }
+          },
+          "400": {
+            "description": "Invalid query"
+          },
+          "404": {
+            "description": "Connector not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/viewer/register/{connector_id}": {
+      "get": {
+        "tags": ["arrow-ui"],
+        "summary": "Register a connector. Useful when federating queries since registration is lazy",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "register",
+        "parameters": [
+          {
+            "name": "connector_id",
+            "in": "path",
+            "description": "Connector ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registered Connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionMetadata"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": ["health"],
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Health check status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AppParallelism": {
+        "type": "object",
+        "required": ["writers"],
+        "properties": {
+          "main": {
+            "type": ["integer", "null"],
+            "minimum": 0
+          },
+          "sink_workers": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "minimum": 0
+          },
+          "source_workers": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "minimum": 0
+          },
+          "writers": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
+      "ArrowSchemaOptions": {
+        "type": "object",
+        "description": "Configuration options for moving between internal schema representations and arrow.",
+        "properties": {
+          "string_as_utf8": {
+            "type": "boolean",
+            "description": "Whether to represent [`crate::values::DataValue::String`] as binary or UTF8"
+          }
+        }
+      },
+      "BufferSettings": {
+        "type": "object",
+        "description": "Configuration related to parsing streaming json",
+        "properties": {
+          "arrow_buffer_size": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "description": "Set the size of the arrow buffer before flushing",
+            "minimum": 0
+          },
+          "buffer_size": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "description": "Set record flush threshold",
+            "minimum": 0
+          },
+          "flush_at_root": {
+            "type": "boolean",
+            "description": "Whether parsed nested data should flush rows when returning to the root of the\ndata"
+          },
+          "max_buffer_count": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "description": "Set flush cache threshold",
+            "minimum": 0
+          },
+          "min_buffer_count": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "description": "Set min flush cache threshold",
+            "minimum": 0
+          }
+        }
+      },
+      "Capability": {
+        "type": "string",
+        "description": "Capabilities a connector can expose to the viewer.",
+        "enum": ["execute_sql", "list"]
+      },
+      "CardinalitySize": {
+        "type": "string",
+        "description": "The maximum key size of low cardinality values",
+        "enum": ["Int8", "Int16", "Int32"]
+      },
+      "CatalogName": {
+        "type": "string",
+        "description": "Wrapper around a [`StaticStr`] to ensure proper formatting"
+      },
+      "ClickHouseCompression": {
+        "type": "string",
+        "description": "Compression options for `ClickHouse` tables.",
+        "enum": ["none", "lz4", "zstd"]
+      },
+      "ClickHouseConfig": {
+        "type": "object",
+        "description": "Additional ClickHouse-specific configuration.",
+        "properties": {
+          "compression": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ClickHouseCompression"
+              }
+            ]
+          },
+          "settings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CollectionConfig": {
+        "type": "object",
+        "description": "Catalog schema options",
+        "properties": {
+          "additional": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SchemaField_String"
+            },
+            "description": "Additional fields to add to schema"
+          },
+          "exclude": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Filter fields for schema, pass a regex to be compiled statically"
+          },
+          "overrides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SchemaField_String"
+            },
+            "description": "Provide field overrides (from automatic schema creation)"
+          },
+          "primary_keys": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "string"
+            },
+            "description": "List of field names that are primary keys and thus will be forced non-nullable",
+            "uniqueItems": true
+          }
+        }
+      },
+      "CollectionConfigs": {
+        "type": "object",
+        "description": "Collection override configuration",
+        "required": ["collections"],
+        "properties": {
+          "collections": {
+            "type": "object",
+            "description": "Configuration per collection, modifying the schema of the collection",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/CollectionConfig"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Comparator": {
+        "type": "string",
+        "enum": ["and", "or"]
+      },
+      "CompressionSettings": {
+        "type": "object",
+        "description": "Compression formats supported by `async_compression`",
+        "properties": {
+          "multiple_members": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "CompressionType": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["options", "type"],
+            "properties": {
+              "options": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CompressionSettings"
+                  }
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": ["gzip"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["options", "type"],
+            "properties": {
+              "options": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CompressionSettings"
+                  }
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": ["brotli"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["options", "type"],
+            "properties": {
+              "options": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CompressionSettings"
+                  }
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": ["zstd"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["options", "type"],
+            "properties": {
+              "options": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CompressionSettings"
+                  }
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": ["deflate"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["options", "type"],
+            "properties": {
+              "options": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CompressionSettings"
+                  }
+                ]
+              },
+              "type": {
+                "type": "string",
+                "enum": ["xz"]
+              }
+            }
+          }
+        ],
+        "description": "Compression formats supported by `async_compression`"
+      },
+      "Connection": {
+        "type": "object",
+        "description": "Main configuration for a connection",
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/ConnectorType"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this connection."
+          }
+        }
+      },
+      "ConnectionKind": {
+        "oneOf": [
+          {
+            "type": "null",
+            "default": null
+          },
+          {
+            "type": "null",
+            "default": null
+          },
+          {
+            "type": "string"
+          }
+        ],
+        "description": "Capabilities a connector can expose to the viewer."
+      },
+      "ConnectionMetadata": {
+        "type": "object",
+        "description": "Static metadata describing a connector instance.",
+        "required": ["id", "name", "kind", "capabilities"],
+        "properties": {
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Capability"
+            },
+            "description": "A list of capabilities the connector supports."
+          },
+          "catalog": {
+            "type": ["string", "null"],
+            "description": "The datafusion catalog the connector is registered in."
+          },
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ConnectionKind",
+            "description": "The 'kind' of connector"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ConnectorDebugConfig": {
+        "type": "string",
+        "enum": ["print", "blackhole"]
+      },
+      "ConnectorType": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["debug"],
+            "properties": {
+              "debug": {
+                "$ref": "#/components/schemas/ConnectorDebugConfig"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["object_store"],
+            "properties": {
+              "object_store": {
+                "$ref": "#/components/schemas/ObjectStoreConfiguration"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["database"],
+            "properties": {
+              "database": {
+                "$ref": "#/components/schemas/DatabaseConfig"
+              }
+            }
+          }
+        ]
+      },
+      "DataType": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["Primitive"],
+            "properties": {
+              "Primitive": {
+                "$ref": "#/components/schemas/PrimitiveDataType"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["Array"],
+            "properties": {
+              "Array": {
+                "$ref": "#/components/schemas/PrimitiveDataType"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["Dictionary"],
+            "properties": {
+              "Dictionary": {
+                "type": "object",
+                "required": ["key_size", "data_type"],
+                "properties": {
+                  "data_type": {
+                    "$ref": "#/components/schemas/PrimitiveDataType"
+                  },
+                  "key_size": {
+                    "$ref": "#/components/schemas/CardinalitySize"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["LowCardinality"],
+            "properties": {
+              "LowCardinality": {
+                "$ref": "#/components/schemas/CardinalitySize"
+              }
+            }
+          }
+        ],
+        "description": "Wrapper type for [`PrimitiveDataType`]s"
+      },
+      "Database": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["click_house"],
+            "properties": {
+              "click_house": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ClickHouseConfig"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "description": "Supported databases for the default backend lineup."
+      },
+      "DatabaseConfig": {
+        "type": "object",
+        "description": "Configuration for database-backed connectors.",
+        "required": ["connection"],
+        "properties": {
+          "connection": {
+            "$ref": "#/components/schemas/DatabaseConfiguration"
+          },
+          "migration": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DatabaseMigration"
+              }
+            ]
+          }
+        }
+      },
+      "DatabaseConfiguration": {
+        "type": "object",
+        "description": "Configuration for database-backed connectors.",
+        "required": ["options", "driver"],
+        "properties": {
+          "driver": {
+            "$ref": "#/components/schemas/Database"
+          },
+          "options": {
+            "$ref": "#/components/schemas/DatabaseOptions"
+          },
+          "pool": {
+            "$ref": "#/components/schemas/PoolOptions"
+          }
+        }
+      },
+      "DatabaseMigration": {
+        "type": "object",
+        "description": "Table migration overrides for `ClickHouse` connectors.",
+        "properties": {
+          "default_engine": {
+            "type": ["string", "null"],
+            "description": "The default table engine to use if not specified for a particular table."
+          },
+          "engines": {
+            "type": ["object", "null"],
+            "description": "The types of tables created, keyed by table name.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          },
+          "order_by": {
+            "type": ["object", "null"],
+            "description": "Optionally provide order by if the underlying database supports it.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          },
+          "settings": {
+            "type": ["object", "null"],
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "propertyNames": {
+                "type": "string"
+              }
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DatabaseOptions": {
+        "type": "object",
+        "description": "Common connection options shared by database connectors.",
+        "required": ["endpoint", "username"],
+        "properties": {
+          "check": {
+            "type": "boolean",
+            "description": "Whether the connector should validate connections before use",
+            "default": false
+          },
+          "endpoint": {
+            "type": "string",
+            "description": "Endpoint, url, or path to the database"
+          },
+          "password": {
+            "type": "string",
+            "description": "Optional password for the database"
+          },
+          "tls": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TlsOptions",
+                "description": "TLS configuration if the database requires it"
+              }
+            ]
+          },
+          "username": {
+            "type": "string",
+            "description": "Username used to connect to the database"
+          }
+        }
+      },
+      "DriverOptions": {
+        "type": "object",
+        "description": "Configuration hints and buffer settings for transport drivers",
+        "properties": {
+          "buffer_size": {
+            "type": ["integer", "null"],
+            "description": "Configure the buffer size of the driver's underlying buffer if applicable",
+            "minimum": 0
+          },
+          "max_size": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "description": "Configure the max size of the sources read",
+            "minimum": 0
+          },
+          "size_hint": {
+            "$ref": "#/components/schemas/SizeHint",
+            "description": "Identify whether the input is expected to be \"large\". This is subjective but can\ndrive behavior in the driver. A driver can choose whether to behave\ndifferently if the expected input size is large, such as trying range requests\nin the case of the Http driver."
+          }
+        }
+      },
+      "DynamicConfig": {
+        "type": "object",
+        "description": "Configuration related to dynamic parsing of data. The \"paths\" defined represent nested levels of\nparent/child data.",
+        "required": ["paths"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this dynamic config."
+          },
+          "paths": {
+            "type": "object",
+            "description": "A key => value map of how and where in the file data is broken up into collections",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ParsePathsConfig"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          },
+          "root": {
+            "type": ["string", "null"],
+            "description": "Configure the name of the collection that stores the file information itself."
+          }
+        }
+      },
+      "EntitiesMap": {
+        "type": "object",
+        "required": ["entities"],
+        "properties": {
+          "entities": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/Entity"
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "Entity identifier type - wraps String for flexibility with UUID v7 generation. Use the singleton ID '00000000-0000-0000-0000-000000000000' for singleton entities.",
+                "example": "00000000-0000-0000-0000-000000000000"
+              }
+            },
+            "propertyNames": {
+              "type": "string",
+              "enum": [
+                "pipeline",
+                "source_config",
+                "sink_config",
+                "source_driver_config",
+                "input_config",
+                "migration_config",
+                "migration_driver_config",
+                "connection",
+                "collection_configs",
+                "script_config",
+                "operation_task",
+                "predicates",
+                "dynamic_config",
+                "buffer_settings",
+                "parse_schema_settings",
+                "sink_settings"
+              ]
+            }
+          }
+        }
+      },
+      "EntitiesResponse": {
+        "type": "object",
+        "description": "Response for full entity queries",
+        "required": ["entities"],
+        "properties": {
+          "entities": {
+            "$ref": "#/components/schemas/EntitiesMap"
+          }
+        }
+      },
+      "Entity": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Pipeline"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["pipeline"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SourceConfig"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["source_config"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SinkConfig"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["sink_config"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SourceDriverConfig"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["source_driver_config"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/InputConfig"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["input_config"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/MigrationConfig"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["migration_config"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/MigrationDriverConfig"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["migration_driver_config"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Connection"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["connection"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/CollectionConfigs"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["collection_configs"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/ScriptConfig"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["script_config"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/OperationTask"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["operation_task"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Predicates"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["predicates"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/DynamicConfig"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["dynamic_config"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/BufferSettings"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["buffer_settings"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SchemaSettings"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["parse_schema_settings"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["data", "type"],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SinkSettings"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["sink_settings"]
+              }
+            }
+          }
+        ]
+      },
+      "EntityId": {
+        "type": "string",
+        "description": "Entity identifier type - wraps String for flexibility with UUID v7 generation. Use the singleton ID '00000000-0000-0000-0000-000000000000' for singleton entities.",
+        "example": "00000000-0000-0000-0000-000000000000"
+      },
+      "FieldPredicate": {
+        "type": "object",
+        "required": ["operators"],
+        "properties": {
+          "comparator": {
+            "$ref": "#/components/schemas/Comparator",
+            "description": "Compare \"and\" or \"or\""
+          },
+          "operators": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OperatorCompareDef"
+            },
+            "description": "The value comparision operators"
+          }
+        }
+      },
+      "FileConfiguration": {
+        "type": "object",
+        "description": "File access configuration for File transports",
+        "properties": {
+          "base_path": {
+            "type": ["string", "null"],
+            "description": "Configure the base path where files are referenced from"
+          },
+          "cleanup": {
+            "type": "boolean",
+            "description": "Cleanup any files read from the filesystem"
+          }
+        }
+      },
+      "FileEntryType": {
+        "type": "string",
+        "enum": ["directory", "file", "versioned_file"]
+      },
+      "FileInfo": {
+        "type": "object",
+        "required": ["name", "size", "type"],
+        "properties": {
+          "created": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "description": "Creation timestamp (Unix epoch seconds) - oldest version for versioned files",
+            "minimum": 0
+          },
+          "modified": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "description": "Last modified timestamp (Unix epoch seconds) - newest version for versioned files",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "description": "File name (relative path from target directory)"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64",
+            "description": "File size in bytes",
+            "minimum": 0
+          },
+          "type": {
+            "$ref": "#/components/schemas/FileEntryType",
+            "description": "Entry type: `directory`, `file`, or `versioned_file`"
+          },
+          "versions": {
+            "type": ["array", "null"],
+            "items": {
+              "$ref": "#/components/schemas/FileVersion"
+            },
+            "description": "List of all versions (only populated for versioned files)"
+          }
+        }
+      },
+      "FileListQuery": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": ["string", "null"],
+            "description": "Optional path to list files from (relative to data directory)"
+          }
+        }
+      },
+      "FileListResponse": {
+        "type": "object",
+        "required": ["files"],
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileInfo"
+            },
+            "description": "List of files"
+          }
+        }
+      },
+      "FileSaveRequest": {
+        "type": "object",
+        "required": ["content"],
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "File content as string"
+          },
+          "name": {
+            "type": ["string", "null"],
+            "description": "Optional filename"
+          }
+        }
+      },
+      "FileUploadResponse": {
+        "type": "object",
+        "required": ["success", "path", "uuid", "full_path"],
+        "properties": {
+          "full_path": {
+            "type": "string",
+            "description": "Full absolute path on the server"
+          },
+          "path": {
+            "type": "string",
+            "description": "Relative path from data directory (e.g., \"uploads/config.json\")"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation was successful"
+          },
+          "uuid": {
+            "type": "string",
+            "description": "The UUID version identifier"
+          }
+        }
+      },
+      "FileVersion": {
+        "type": "object",
+        "required": ["uuid", "size"],
+        "properties": {
+          "created": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "description": "Creation timestamp (Unix epoch seconds)",
+            "minimum": 0
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Size of this specific version in bytes",
+            "minimum": 0
+          },
+          "uuid": {
+            "type": "string",
+            "description": "UUID identifier for this version"
+          }
+        }
+      },
+      "GetEntityResponse": {
+        "type": "object",
+        "description": "Query parameters for getting a single entity by ID and type",
+        "required": ["id", "entity"],
+        "properties": {
+          "entity": {
+            "$ref": "#/components/schemas/Entity"
+          },
+          "id": {
+            "$ref": "#/components/schemas/EntityId"
+          }
+        }
+      },
+      "HealthStatus": {
+        "type": "object",
+        "required": ["status", "version", "uptime", "parallelism"],
+        "properties": {
+          "parallelism": {
+            "$ref": "#/components/schemas/AppParallelism"
+          },
+          "status": {
+            "type": "string"
+          },
+          "uptime": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      },
+      "History": {
+        "type": "object",
+        "required": [
+          "process_uid",
+          "run_uid",
+          "pipeline_name",
+          "status",
+          "source_status",
+          "sink_status",
+          "started_at",
+          "source_metrics",
+          "sink_metrics"
+        ],
+        "properties": {
+          "completed_at": {
+            "type": ["integer", "null"],
+            "format": "int64"
+          },
+          "error": {
+            "type": ["string", "null"]
+          },
+          "pipeline_name": {
+            "type": "string"
+          },
+          "process_uid": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "run_uid": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "sink_metrics": {
+            "$ref": "#/components/schemas/Metrics"
+          },
+          "sink_status": {
+            "$ref": "#/components/schemas/SinkStage"
+          },
+          "source_metrics": {
+            "$ref": "#/components/schemas/Metrics"
+          },
+          "source_status": {
+            "$ref": "#/components/schemas/SourceStage"
+          },
+          "started_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PipelineStage"
+          }
+        }
+      },
+      "HistoryFilter": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["value", "filter"],
+            "properties": {
+              "filter": {
+                "type": "string",
+                "enum": ["ByProcessUid"]
+              },
+              "value": {
+                "$ref": "#/components/schemas/u64"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["value", "filter"],
+            "properties": {
+              "filter": {
+                "type": "string",
+                "enum": ["ByName"]
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["value", "filter"],
+            "properties": {
+              "filter": {
+                "type": "string",
+                "enum": ["ByRunUid"]
+              },
+              "value": {
+                "$ref": "#/components/schemas/u64"
+              }
+            }
+          }
+        ]
+      },
+      "Http2Options": {
+        "type": "object",
+        "properties": {
+          "disable_adaptive_window": {
+            "type": "boolean"
+          },
+          "initial_connection_window_size": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "minimum": 0
+          },
+          "initial_stream_window_size": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "minimum": 0
+          },
+          "max_frame_size": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
+      "HttpConfiguration": {
+        "type": "object",
+        "description": "Request configuration for HTTP transports",
+        "properties": {
+          "headers": {
+            "type": ["object", "null"],
+            "description": "Include any additional headers in the requests",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          },
+          "range_options": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/RangeOptions",
+                "description": "Used when reading ranges if the remote endpoint supports it."
+              }
+            ]
+          },
+          "request": {
+            "$ref": "#/components/schemas/RequestConfig",
+            "description": "Common request configuration"
+          }
+        }
+      },
+      "Ignore": {
+        "type": "string",
+        "enum": ["children", "collection"]
+      },
+      "InputConfig": {
+        "type": "object",
+        "description": "The type of input that will provide source locations for Source drivers.",
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/InputType",
+            "description": "The type of the input driver"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this input."
+          }
+        }
+      },
+      "InputType": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Read the source locations from a database.",
+            "required": ["database"],
+            "properties": {
+              "database": {
+                "type": "object",
+                "description": "Read the source locations from a database.",
+                "required": ["sql", "connector"],
+                "properties": {
+                  "catalog": {
+                    "type": "string"
+                  },
+                  "connector": {
+                    "$ref": "#/components/schemas/LinkConnection_Connection"
+                  },
+                  "database": {
+                    "type": ["string", "null"]
+                  },
+                  "schema": {
+                    "type": ["string", "null"]
+                  },
+                  "sql": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Run a shell command or script to generate source locations.",
+            "required": ["shell"],
+            "properties": {
+              "shell": {
+                "$ref": "#/components/schemas/ShellConfig",
+                "description": "Run a shell command or script to generate source locations."
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Provide a static list of source locations.",
+            "required": ["list"],
+            "properties": {
+              "list": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Provide a static list of source locations."
+              }
+            }
+          },
+          {
+            "type": "string",
+            "description": "Skip generating source locations.",
+            "enum": ["empty"]
+          }
+        ],
+        "description": "Configuration for an input driver."
+      },
+      "KeepAliveOptions": {
+        "type": "object",
+        "properties": {
+          "keep_alive": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "minimum": 0
+          },
+          "keep_alive_interval": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "minimum": 0
+          },
+          "keep_alive_timeout": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "minimum": 0
+          },
+          "keep_alive_while_idle": {
+            "type": ["boolean", "null"]
+          }
+        }
+      },
+      "Level": {
+        "type": "string"
+      },
+      "LineDelim": {
+        "type": "string",
+        "enum": ["new_line", "space", "comma", "tab", "pipe"]
+      },
+      "LinkCollectionConfigs": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["collection_configs"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["collection_configs"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/CollectionConfigs"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkCollectionConfigs_CollectionConfigs": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["collection_configs"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["collection_configs"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/CollectionConfigs"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkConnection": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["connection"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["connection"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/Connection"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkConnection_Connection": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["connection"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["connection"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/Connection"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkDynamicConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["dynamic_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["dynamic_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/DynamicConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkDynamicConfig_DynamicConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["dynamic_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["dynamic_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/DynamicConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkInputConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["input_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["input_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/InputConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkInputConfig_InputConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["input_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["input_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/InputConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkMigrationConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["migration_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["migration_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/MigrationConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkMigrationConfig_MigrationConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["migration_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["migration_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/MigrationConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkMigrationDriverConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["migration_driver_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["migration_driver_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/MigrationDriverConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkMigrationDriverConfig_MigrationDriverConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["migration_driver_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["migration_driver_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/MigrationDriverConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkOperationTask": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["operation_task"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["operation_task"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/OperationTask"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkOperationTask_OperationTask": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["operation_task"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["operation_task"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/OperationTask"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkPipeline": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["pipeline"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["pipeline"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/Pipeline"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkPredicates": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["predicates"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["predicates"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/Predicates"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkPredicates_Predicates": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["predicates"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["predicates"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/Predicates"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkScriptConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["script_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["script_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/ScriptConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkScriptConfig_ScriptConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["script_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["script_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/ScriptConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkSinkConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["sink_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["sink_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/SinkConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkSinkConfig_SinkConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["sink_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["sink_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/SinkConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkSourceConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["source_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["source_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/SourceConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkSourceConfig_SourceConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["source_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["source_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/SourceConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkSourceDriverConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["source_driver_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["source_driver_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/SourceDriverConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "LinkSourceDriverConfig_SourceDriverConfig": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["entity_type", "ref"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["source_driver_config"]
+              },
+              "ref": {
+                "type": "string",
+                "description": "Reference to an entity by ID"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["entity_type", "inline"],
+            "properties": {
+              "entity_type": {
+                "type": "string",
+                "description": "The entity type this Link references",
+                "enum": ["source_driver_config"]
+              },
+              "inline": {
+                "$ref": "#/components/schemas/SourceDriverConfig"
+              }
+            }
+          }
+        ],
+        "description": "Reference configuration either by ID or inline, with entity type metadata"
+      },
+      "ListResponse": {
+        "type": "object",
+        "description": "Response for entity summary list queries",
+        "required": ["entities"],
+        "properties": {
+          "entities": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Summary"
+              }
+            },
+            "propertyNames": {
+              "type": "string",
+              "enum": [
+                "pipeline",
+                "source_config",
+                "sink_config",
+                "source_driver_config",
+                "input_config",
+                "migration_config",
+                "migration_driver_config",
+                "connection",
+                "collection_configs",
+                "script_config",
+                "operation_task",
+                "predicates",
+                "dynamic_config",
+                "buffer_settings",
+                "parse_schema_settings",
+                "sink_settings"
+              ]
+            },
+            "example": {
+              "pipeline": [
+                {
+                  "description": "Example pipeline",
+                  "id": "my-pipeline",
+                  "name": "My Pipeline"
+                }
+              ],
+              "source": [
+                {
+                  "description": "Example source",
+                  "id": "my-source",
+                  "name": "My Source"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "ListSummary": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["summary", "type"],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": ["databases"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["summary", "type"],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TableSummary"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": ["files"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["summary", "type"],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TableSummary"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": ["tables"]
+              }
+            }
+          }
+        ],
+        "description": "Summaries provided by listing"
+      },
+      "Metrics": {
+        "type": "object",
+        "description": "Common metrics captured during streaming",
+        "required": ["batches", "rows", "bytes"],
+        "properties": {
+          "batches": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "rows": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "MigrationConfig": {
+        "type": "object",
+        "description": "Configuration for source migrations during streaming",
+        "required": ["source", "input"],
+        "properties": {
+          "arrow": {
+            "$ref": "#/components/schemas/ArrowSchemaOptions",
+            "description": "Arrow schema configuration"
+          },
+          "input": {
+            "$ref": "#/components/schemas/LinkInputConfig_InputConfig",
+            "description": "Optional input for migration sources"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this migration."
+          },
+          "source": {
+            "$ref": "#/components/schemas/LinkMigrationDriverConfig_MigrationDriverConfig",
+            "description": "A key referring to a source configuration or the source configuration inline."
+          }
+        }
+      },
+      "MigrationDriverConfig": {
+        "type": "object",
+        "description": "Configuration for migration drivers, which read data to generate a schema for the source",
+        "required": ["config"],
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/MigrationSource",
+            "description": "The type of the migration driver"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this migration driver."
+          }
+        }
+      },
+      "MigrationSource": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Local files, one per table.\n\nNOTE: If the schema is in a single file as \"example\" data, use `MigrationSource::Json`. This\nassumes a DESERIALIZABLE set of arrow schemas.",
+            "required": ["files"],
+            "properties": {
+              "files": {
+                "type": "object",
+                "description": "Local files, one per table.\n\nNOTE: If the schema is in a single file as \"example\" data, use `MigrationSource::Json`. This\nassumes a DESERIALIZABLE set of arrow schemas.",
+                "required": ["tables"],
+                "properties": {
+                  "tables": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "propertyNames": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Remote or local file containing full serialized arrow schema",
+            "required": ["file"],
+            "properties": {
+              "file": {
+                "$ref": "#/components/schemas/TransportType",
+                "description": "Remote or local file containing full serialized arrow schema"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Http or File containing json data to parse",
+            "required": ["json"],
+            "properties": {
+              "json": {
+                "type": "object",
+                "description": "Http or File containing json data to parse",
+                "required": ["options"],
+                "properties": {
+                  "dynamic": {
+                    "oneOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/components/schemas/LinkDynamicConfig_DynamicConfig"
+                      }
+                    ]
+                  },
+                  "force_parse": {
+                    "type": "boolean",
+                    "description": "If true, no stored schemas will be used, parsing will be forced"
+                  },
+                  "options": {
+                    "$ref": "#/components/schemas/TransportOptions"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Fetch the schema from a database",
+            "required": ["database"],
+            "properties": {
+              "database": {
+                "type": "object",
+                "description": "Fetch the schema from a database",
+                "required": ["connector"],
+                "properties": {
+                  "connector": {
+                    "$ref": "#/components/schemas/LinkConnection_Connection"
+                  },
+                  "database": {
+                    "type": "string"
+                  },
+                  "schema": {
+                    "type": ["string", "null"]
+                  },
+                  "tables": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Fetch a schema stored in state. NOTE: Not currently supported.",
+            "required": ["state"],
+            "properties": {
+              "state": {
+                "type": "object",
+                "description": "Fetch a schema stored in state. NOTE: Not currently supported.",
+                "required": ["catalog", "tables"],
+                "properties": {
+                  "catalog": {
+                    "type": "string"
+                  },
+                  "tables": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "description": "Special type of schema source where a file is deserialized into an arrow schema"
+      },
+      "ObjectStore": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["aws"],
+            "properties": {
+              "aws": {
+                "$ref": "#/components/schemas/ObjectStoreConfig"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["gcp"],
+            "properties": {
+              "gcp": {
+                "$ref": "#/components/schemas/ObjectStoreConfig"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["azure"],
+            "properties": {
+              "azure": {
+                "$ref": "#/components/schemas/ObjectStoreConfig"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["local"],
+            "properties": {
+              "local": {
+                "$ref": "#/components/schemas/ObjectStoreConfig"
+              }
+            }
+          }
+        ],
+        "description": "Supported object store providers."
+      },
+      "ObjectStoreConfig": {
+        "type": "object",
+        "description": "Provider-agnostic object store settings.",
+        "required": ["bucket"],
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "description": "*Required* bucket name (or base directory for local stores)."
+          },
+          "from_env": {
+            "type": "boolean",
+            "description": "Whether credentials should be resolved from environment variables."
+          },
+          "options": {
+            "type": "object",
+            "description": "Additional provider-specific configuration parameters.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ObjectStoreConfiguration": {
+        "type": "object",
+        "description": "Configuration for an object store-backed connector.",
+        "properties": {
+          "format": {
+            "$ref": "#/components/schemas/ObjectStoreFormat",
+            "description": "The format to read/write within the store."
+          },
+          "store": {
+            "$ref": "#/components/schemas/ObjectStore",
+            "description": "Provider specific configuration for the store itself."
+          }
+        }
+      },
+      "ObjectStoreFormat": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Apache Parquet format with optional key/value overrides.",
+            "required": ["parquet"],
+            "properties": {
+              "parquet": {
+                "type": ["object", "null"],
+                "description": "Apache Parquet format with optional key/value overrides.",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "propertyNames": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "description": "Supported file formats for object-store connectors."
+      },
+      "OperationResponse": {
+        "type": "object",
+        "description": "Standard operation response with ID and optional message",
+        "required": ["id", "message"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "OperationTask": {
+        "type": "object",
+        "description": "Operation task",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this operation."
+          },
+          "once": {
+            "type": "boolean"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "OperatorCompareDef": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ParseValue"
+          },
+          {
+            "type": "object",
+            "required": ["op"],
+            "properties": {
+              "not": {
+                "type": "boolean"
+              },
+              "op": {
+                "$ref": "#/components/schemas/OperatorDef"
+              }
+            }
+          }
+        ]
+      },
+      "OperatorDef": {
+        "type": "string",
+        "description": "Internal representation of an [`Operator`]. Used for deserialization and thus is the\nformat used in configuration. Follow this to see the format used in configuration.",
+        "enum": ["regex", "eq", "lt", "gt", "in", "contains", "null", "bool"]
+      },
+      "ParsePathsConfig": {
+        "type": "object",
+        "description": "`ParsePaths` represent parent/child relationships in data.\n\nConfiguration for parsing paths in data.",
+        "properties": {
+          "identifier": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The path that identifies this *variant* of a schema. When present, this configuration is\nidentified as the configuration being used for the parsing."
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Paths accounting for each \"table\" the nested data represents, use dot syntax to specify the\nnesting path."
+          }
+        },
+        "example": {
+          "identifier": ["provider_references"],
+          "paths": [
+            "provider_references",
+            "provider_references.provider_groups",
+            "in_network",
+            "in_network.negotiated_rates",
+            "in_network.negotiated_rates.negotiated_prices"
+          ]
+        }
+      },
+      "ParseValue": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["Int8"]
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["Int16"]
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["Int32"]
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["Int64"]
+              },
+              "value": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["Float32"]
+              },
+              "value": {
+                "type": "number",
+                "format": "float"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["Float64"]
+              },
+              "value": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["UInt8"]
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["UInt16"]
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["UInt32"]
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["UInt64"]
+              },
+              "value": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["Null"]
+              },
+              "value": {
+                "$ref": "#/components/schemas/DataType"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["Bool"]
+              },
+              "value": {
+                "type": "boolean"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["String"]
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["Array"]
+              },
+              "value": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ParseValue"
+                }
+              }
+            }
+          }
+        ],
+        "description": "Represents values for various parsing configuration"
+      },
+      "Pipeline": {
+        "type": "object",
+        "required": ["source", "sink"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this pipeline."
+          },
+          "script": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/LinkScriptConfig_ScriptConfig",
+                "description": "Script settings for the pipeline."
+              }
+            ]
+          },
+          "sink": {
+            "$ref": "#/components/schemas/LinkSinkConfig_SinkConfig",
+            "description": "The sink configuration for the pipeline."
+          },
+          "source": {
+            "$ref": "#/components/schemas/LinkSourceConfig_SourceConfig",
+            "description": "The source configuration for the pipeline."
+          }
+        }
+      },
+      "PipelineConfig": {
+        "type": "object",
+        "required": ["name", "config"],
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/Pipeline"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "PipelineConfigResponse": {
+        "type": "object",
+        "required": ["success"],
+        "properties": {
+          "data": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PipelineConfig"
+              }
+            ]
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PipelineMetrics": {
+        "type": "object",
+        "description": "Pipeline metrics with separated event channels for UI consumption",
+        "required": ["process_uid", "event", "history"],
+        "properties": {
+          "event": {
+            "$ref": "#/components/schemas/PipelineMetricsEvent"
+          },
+          "history": {
+            "$ref": "#/components/schemas/History"
+          },
+          "process_uid": {
+            "$ref": "#/components/schemas/u64"
+          }
+        }
+      },
+      "PipelineMetricsEvent": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["event", "type"],
+            "properties": {
+              "event": {
+                "$ref": "#/components/schemas/PipelineStage"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["pipeline"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["event", "type"],
+            "properties": {
+              "event": {
+                "$ref": "#/components/schemas/SourceStage"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["source"]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["event", "type"],
+            "properties": {
+              "event": {
+                "$ref": "#/components/schemas/SinkStage"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["sink"]
+              }
+            }
+          }
+        ]
+      },
+      "PipelineResponse": {
+        "type": "object",
+        "description": "Standard API response",
+        "required": ["success", "message"],
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PipelineStage": {
+        "type": "string",
+        "enum": ["started", "finished", "running", "error", "cancelled"]
+      },
+      "PoolOptions": {
+        "type": "object",
+        "description": "Common configuration options shared across connector types.",
+        "properties": {
+          "connect_timeout": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "minimum": 0
+          },
+          "pool_size": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "description": "Configure the maximum number of connections to the database. Note, not all connectors\nsupport pools.",
+            "minimum": 0
+          },
+          "transaction_timeout": {
+            "type": ["integer", "null"],
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
+      "Predicate": {
+        "type": "object",
+        "properties": {
+          "comparator": {
+            "$ref": "#/components/schemas/Comparator",
+            "description": "Compare \"and\" or \"or\""
+          },
+          "filters": {
+            "type": "object",
+            "description": "The operator to apply\n\nThis guarantees the each operator is applied to a unique field",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/FieldPredicate"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          },
+          "ignore": {
+            "$ref": "#/components/schemas/Ignore",
+            "description": "Whether to ignore children in addition to the collection or just collection"
+          }
+        }
+      },
+      "Predicates": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this filter."
+          },
+          "predicates": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Predicate"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PrimitiveDataType": {
+        "type": "string",
+        "enum": [
+          "Bool",
+          "String",
+          "Timestamp",
+          "Date",
+          "Object",
+          "UInt8",
+          "UInt16",
+          "UInt32",
+          "UInt64",
+          "Int8",
+          "Int16",
+          "Int32",
+          "Int64",
+          "Float32",
+          "Float64"
+        ]
+      },
+      "QueryRequest": {
+        "type": "object",
+        "description": "Request to execute a SQL query",
+        "required": ["sql"],
+        "properties": {
+          "connector_id": {
+            "type": ["string", "null"],
+            "description": "ID of the connector to use"
+          },
+          "sql": {
+            "type": "string",
+            "description": "SQL query to execute (can use URL tables like `s3://bucket/path/*.parquet`)"
+          }
+        }
+      },
+      "RangeOptions": {
+        "type": "object",
+        "properties": {
+          "chunk_size": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "initial_retry_delay": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "validate_etag": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RelativePath": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Path relative to the cache directory",
+            "required": ["path", "dir"],
+            "properties": {
+              "dir": {
+                "type": "string",
+                "enum": ["cache"]
+              },
+              "path": {
+                "type": "string",
+                "description": "Path relative to the cache directory"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Path relative to the data directory (non-versioned files)",
+            "required": ["path", "dir"],
+            "properties": {
+              "dir": {
+                "type": "string",
+                "enum": ["data"]
+              },
+              "path": {
+                "type": "string",
+                "description": "Path relative to the data directory (non-versioned files)"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Path to uploaded file with version resolution support (in uploads/ directory)",
+            "required": ["path", "dir"],
+            "properties": {
+              "dir": {
+                "type": "string",
+                "enum": ["upload"]
+              },
+              "path": {
+                "$ref": "#/components/schemas/VersionedPath",
+                "description": "Path to uploaded file with version resolution support (in uploads/ directory)"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Path relative to the config directory",
+            "required": ["path", "dir"],
+            "properties": {
+              "dir": {
+                "type": "string",
+                "enum": ["config"]
+              },
+              "path": {
+                "type": "string",
+                "description": "Path relative to the config directory"
+              }
+            }
+          }
+        ],
+        "description": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead."
+      },
+      "RequestCompression": {
+        "type": "string",
+        "enum": ["none", "gzip", "brotli"]
+      },
+      "RequestConfig": {
+        "type": "object",
+        "properties": {
+          "compression": {
+            "$ref": "#/components/schemas/RequestCompression",
+            "description": "Compression options"
+          },
+          "connect_timeout": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "minimum": 0
+          },
+          "http2": {
+            "$ref": "#/components/schemas/Http2Options",
+            "description": "HTTP2 options"
+          },
+          "keep_alive": {
+            "$ref": "#/components/schemas/KeepAliveOptions",
+            "description": "Keep alive"
+          },
+          "pool_idle_timeout": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "minimum": 0
+          },
+          "pool_max_idle_per_host": {
+            "type": ["integer", "null"],
+            "minimum": 0
+          },
+          "read_timeout": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "minimum": 0
+          },
+          "timeout": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "minimum": 0
+          },
+          "tls": {
+            "$ref": "#/components/schemas/TlsOptions",
+            "description": "TLS options"
+          }
+        }
+      },
+      "SchemaConfig": {
+        "type": "object",
+        "description": "Load schema configuration and overrides for the migration phase.",
+        "required": ["catalog", "load"],
+        "properties": {
+          "catalog": {
+            "type": "string",
+            "description": "Source Catalog"
+          },
+          "load": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkCollectionConfigs_CollectionConfigs"
+            },
+            "description": "Which schema configurations to load"
+          }
+        }
+      },
+      "SchemaField": {
+        "type": "object",
+        "description": "(Column name, [`FieldKey`], [`datatypes::DataType`])",
+        "required": ["name"],
+        "properties": {
+          "data_type": {
+            "$ref": "#/components/schemas/DataType"
+          },
+          "frozen": {
+            "type": "boolean"
+          },
+          "inner_nullable": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nullable": {
+            "type": "boolean"
+          },
+          "system": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SchemaField_String": {
+        "type": "object",
+        "description": "(Column name, [`FieldKey`], [`datatypes::DataType`])",
+        "required": ["name"],
+        "properties": {
+          "data_type": {
+            "$ref": "#/components/schemas/DataType"
+          },
+          "frozen": {
+            "type": "boolean"
+          },
+          "inner_nullable": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nullable": {
+            "type": "boolean"
+          },
+          "system": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SchemaSettings": {
+        "type": "object",
+        "description": "Parse Schema settings",
+        "properties": {
+          "ignore_saved_schemas": {
+            "type": "boolean",
+            "description": "Whether to ignore any saved schemas"
+          },
+          "save_location": {
+            "type": ["string", "null"],
+            "description": "Where to store generated serialized schemas"
+          },
+          "schema_file_prefix": {
+            "type": ["string", "null"],
+            "description": "Prefix the stored schema"
+          }
+        },
+        "deprecated": true
+      },
+      "ScriptConfig": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "variables": {
+            "type": "object",
+            "description": "Variables to be interpolated in various places",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Secret": {
+        "type": "string",
+        "description": "Newtype to protect secrets from being logged\nA wrapper type for sensitive string data like passwords.\n\nThis type provides protection against accidental exposure of sensitive data\nin logs, debug output, or error messages. The inner value is not displayed\nin `Debug` implementations.\n\n# Example\n```\nuse clickhouse_arrow::prelude::Secret;\n\nlet password = Secret::new(\"my_password\");\nprintln!(\"{:?}\", password); // Prints: Secret(*******)\n```"
+      },
+      "SessionCapability": {
+        "type": "string",
+        "description": "Session capabilities a `QuerySession` can expose to the `QueryContext`.",
+        "enum": ["execute_without_connector"]
+      },
+      "ShellConfig": {
+        "type": "object",
+        "required": ["source"],
+        "properties": {
+          "current_dir": {
+            "type": ["string", "null"]
+          },
+          "delim": {
+            "$ref": "#/components/schemas/LineDelim"
+          },
+          "env": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          },
+          "log_level": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Level"
+              }
+            ]
+          },
+          "shell": {
+            "$ref": "#/components/schemas/ShellType"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ShellSource"
+          }
+        }
+      },
+      "ShellSource": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["cmd"],
+            "properties": {
+              "cmd": {
+                "type": "object",
+                "required": ["command"],
+                "properties": {
+                  "command": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["script"],
+            "properties": {
+              "script": {
+                "type": "object",
+                "required": ["path", "args"],
+                "properties": {
+                  "args": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "path": {
+                    "$ref": "#/components/schemas/UserDefinedPath"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "ShellType": {
+        "type": "string",
+        "enum": ["bash", "sh", "zsh", "fish", "nu"]
+      },
+      "SinkAutoAdjust": {
+        "type": "object",
+        "properties": {
+          "disable_worker_auto_load": {
+            "type": "boolean",
+            "description": "Whether the workers should disable auto adjusting",
+            "default": false
+          },
+          "worker_auto_load_batches": {
+            "type": "integer",
+            "description": "If workers auto adjust, set the minimum number of unbuffered batches before adjusting",
+            "default": 10,
+            "minimum": 0
+          },
+          "worker_auto_load_step": {
+            "type": "number",
+            "format": "float",
+            "description": "If workers auto adjust, set the amount it adjust by",
+            "default": 1.2000000476837158
+          },
+          "worker_auto_load_threshold": {
+            "type": "number",
+            "format": "float",
+            "description": "If workers auto adjust, set the threshold of buffered/batches for adjusting",
+            "default": 0.10000000149011612
+          },
+          "workers_max": {
+            "type": "integer",
+            "format": "int32",
+            "description": "If workers auto adjust, set the maximum number of workers",
+            "minimum": 0
+          }
+        }
+      },
+      "SinkConfig": {
+        "type": "object",
+        "required": ["catalog", "connector"],
+        "properties": {
+          "catalog": {
+            "type": "string",
+            "description": "Allows specifying a separate \"catalog\" for management operations and tasks"
+          },
+          "cleanup": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/LinkOperationTask_OperationTask",
+                "description": "List of queries to run after data transfer"
+              }
+            ]
+          },
+          "connector": {
+            "$ref": "#/components/schemas/LinkConnection_Connection",
+            "description": "The connector to sink the data to"
+          },
+          "manage": {
+            "type": ["string", "null"],
+            "description": "Allows specifying a separate \"catalog\" for management operations and tasks"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this sink."
+          },
+          "provision": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/LinkOperationTask_OperationTask",
+                "description": "Any operational tasks that should be performed before sinking data"
+              }
+            ]
+          },
+          "workers": {
+            "type": ["integer", "null"],
+            "description": "Override the default starting parallelism for sink workers",
+            "minimum": 0
+          }
+        }
+      },
+      "SinkSettings": {
+        "type": "object",
+        "properties": {
+          "auto_adjust": {
+            "$ref": "#/components/schemas/SinkAutoAdjust",
+            "description": "Sink worker auto adjust settings"
+          }
+        }
+      },
+      "SinkStage": {
+        "type": "string",
+        "enum": [
+          "started",
+          "preflight_finished",
+          "cleanup_finished",
+          "finished",
+          "error",
+          "unknown"
+        ]
+      },
+      "SizeHint": {
+        "type": "string",
+        "description": "Size hint can be provided by configuration and used by a driver implementation.",
+        "enum": ["large", "small", "unknown"]
+      },
+      "SourceConfig": {
+        "type": "object",
+        "required": ["schema", "source", "input"],
+        "properties": {
+          "disable_default_empty_input": {
+            "type": "boolean",
+            "description": "Prevent one empty list of inputs (which is the default) if no inputs are provided. Some\nsources may not require inputs to function (like a Database, or set of Parquet files). But\nother times you may want an error to occur if the inputs are empty."
+          },
+          "input": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkInputConfig_InputConfig"
+            },
+            "description": "A key referring to an input configuration or input configuration inline"
+          },
+          "migration": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/LinkMigrationConfig_MigrationConfig",
+                "description": "Configuration for generating or accessing schemas for this source"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this source."
+          },
+          "options": {
+            "$ref": "#/components/schemas/SourceConfigOptions",
+            "description": "Various configurations for an individual source stream"
+          },
+          "schema": {
+            "$ref": "#/components/schemas/SchemaConfig",
+            "description": "Configuration for loading schema overrides for this source"
+          },
+          "source": {
+            "$ref": "#/components/schemas/LinkSourceDriverConfig_SourceDriverConfig",
+            "description": "A key referring to a source driver or source driver configuration inline"
+          }
+        }
+      },
+      "SourceConfigOptions": {
+        "type": "object",
+        "description": "Various configurations for an individual source stream",
+        "properties": {
+          "buffer": {
+            "type": ["integer", "null"],
+            "description": "Buffer the inputs to sources. This is helpful if the individual sources are tiny, which\nallows buffering sources into larger `RecordBatch`es which can be more efficient.",
+            "minimum": 0
+          },
+          "limit": {
+            "type": ["integer", "null"],
+            "description": "Limit the number of inputs to be sourced",
+            "minimum": 0
+          },
+          "workers": {
+            "type": ["integer", "null"],
+            "description": "If sources should be run in parallel (the default), configure the number of workers to use.",
+            "minimum": 0
+          }
+        }
+      },
+      "SourceDriverConfig": {
+        "type": "object",
+        "description": "Configuration for a source driver",
+        "required": ["config"],
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/SourceFormat",
+            "description": "The type of the source driver"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this source driver."
+          }
+        }
+      },
+      "SourceFormat": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["json"],
+            "properties": {
+              "json": {
+                "type": "object",
+                "required": ["options"],
+                "properties": {
+                  "filter": {
+                    "oneOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/components/schemas/LinkPredicates_Predicates"
+                      }
+                    ]
+                  },
+                  "options": {
+                    "$ref": "#/components/schemas/TransportOptions"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["connector"],
+            "properties": {
+              "connector": {
+                "type": "object",
+                "required": ["connector"],
+                "properties": {
+                  "connector": {
+                    "$ref": "#/components/schemas/LinkConnection_Connection"
+                  },
+                  "database": {
+                    "oneOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "$ref": "#/components/schemas/CatalogName"
+                      }
+                    ]
+                  },
+                  "schema": {
+                    "type": ["string", "null"]
+                  },
+                  "tables": {
+                    "type": ["array", "null"],
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "description": "Source drivers that are designed to stream `RecordBatch`es to a sink."
+      },
+      "SourceStage": {
+        "type": "string",
+        "enum": ["migrate_started", "migrate_finished", "started", "finished", "error", "unknown"]
+      },
+      "StatQuery": {
+        "type": "object",
+        "properties": {
+          "catalog": {
+            "type": ["string", "null"]
+          },
+          "database": {
+            "type": ["string", "null"]
+          },
+          "schema": {
+            "type": ["string", "null"]
+          }
+        }
+      },
+      "StateEntry": {
+        "type": "string",
+        "enum": [
+          "pipeline",
+          "source_config",
+          "sink_config",
+          "source_driver_config",
+          "input_config",
+          "migration_config",
+          "migration_driver_config",
+          "connection",
+          "collection_configs",
+          "script_config",
+          "operation_task",
+          "predicates",
+          "dynamic_config",
+          "buffer_settings",
+          "parse_schema_settings",
+          "sink_settings"
+        ]
+      },
+      "Summary": {
+        "type": "object",
+        "description": "Summary of an entity for listings",
+        "required": ["id", "name"],
+        "properties": {
+          "description": {
+            "type": ["string", "null"],
+            "description": "Optional description"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier of the entity"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name"
+          }
+        }
+      },
+      "TableSummary": {
+        "type": "object",
+        "description": "Lightweight description of a table/file exposed by a connector.",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "rows": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "minimum": 0
+          },
+          "size_bytes": {
+            "type": ["integer", "null"],
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "TlsOptions": {
+        "type": "object",
+        "properties": {
+          "disable_tls13": {
+            "type": "boolean"
+          },
+          "native_tls": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TransportOptions": {
+        "type": "object",
+        "description": "Options provided to transport drivers during runtime",
+        "required": ["transport"],
+        "properties": {
+          "compression": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CompressionType"
+              }
+            ]
+          },
+          "options": {
+            "$ref": "#/components/schemas/DriverOptions",
+            "description": "Options passed to drivers, context dependent"
+          },
+          "transport": {
+            "$ref": "#/components/schemas/TransportType"
+          }
+        }
+      },
+      "TransportType": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Read data from a remote HTTP endpoint",
+            "required": ["http"],
+            "properties": {
+              "http": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HttpConfiguration",
+                    "description": "Read data from a remote HTTP endpoint"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Read files on disk",
+            "required": ["file"],
+            "properties": {
+              "file": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/FileConfiguration",
+                    "description": "Read files on disk"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Read data from a remote endpoint, download locally, and read from the local file",
+            "required": ["download"],
+            "properties": {
+              "download": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HttpConfiguration",
+                    "description": "Read data from a remote endpoint, download locally, and read from the local file"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "description": "Configuration for reading byte streams, like files on disk"
+      },
+      "UserDefinedPath": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/RelativePath",
+            "description": "Application-managed path with optional version resolution"
+          },
+          {
+            "type": "string",
+            "description": "User-provided external path (filesystem path or URL)"
+          }
+        ],
+        "description": "Path that can be either managed by the application or user-defined.\n\nUse this type when a path could be either:\n- An uploaded file managed by the app (with version resolution)\n- A user-provided path on the filesystem\n\n# Examples\n```\n// Managed: uploads/config.json (resolved to latest UUID)\nUserDefinedPath::Managed(RelativePath::Data(VersionedPath::new(\"uploads/config.json\")))\n\n// External: /usr/local/bin/script.sh\nUserDefinedPath::External(\"/usr/local/bin/script.sh\".to_string())\n```"
+      },
+      "VersionedPath": {
+        "type": "string",
+        "description": "Newtype wrapper for versioned file paths.\n\nRepresents a logical file name that resolves to the latest UUID-versioned\nfile in a directory (e.g., \"config.json\" → \"uploads/config.json/{latest-uuid}\").\n\nThe inner string is not directly accessible to prevent bypassing version resolution."
+      },
+      "u64": {
+        "type": "integer",
+        "format": "int64",
+        "minimum": 0
+      }
+    },
+    "responses": {
+      "AppParallelism": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["writers"],
+              "properties": {
+                "main": {
+                  "type": ["integer", "null"],
+                  "minimum": 0
+                },
+                "sink_workers": {
+                  "type": ["integer", "null"],
+                  "format": "int32",
+                  "minimum": 0
+                },
+                "source_workers": {
+                  "type": ["integer", "null"],
+                  "format": "int32",
+                  "minimum": 0
+                },
+                "writers": {
+                  "type": "integer",
+                  "format": "int32",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "ConnectionMetadata": {
+        "description": "Static metadata describing a connector instance.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Static metadata describing a connector instance.",
+              "required": ["id", "name", "kind", "capabilities"],
+              "properties": {
+                "capabilities": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Capability"
+                  },
+                  "description": "A list of capabilities the connector supports."
+                },
+                "catalog": {
+                  "type": ["string", "null"],
+                  "description": "The datafusion catalog the connector is registered in."
+                },
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "$ref": "#/components/schemas/ConnectionKind",
+                  "description": "The 'kind' of connector"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "EntitiesResponse": {
+        "description": "Response for full entity queries",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Response for full entity queries",
+              "required": ["entities"],
+              "properties": {
+                "entities": {
+                  "$ref": "#/components/schemas/EntitiesMap"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FileListResponse": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["files"],
+              "properties": {
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FileInfo"
+                  },
+                  "description": "List of files"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FileUploadResponse": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["success", "path", "uuid", "full_path"],
+              "properties": {
+                "full_path": {
+                  "type": "string",
+                  "description": "Full absolute path on the server"
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Relative path from data directory (e.g., \"uploads/config.json\")"
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Whether the operation was successful"
+                },
+                "uuid": {
+                  "type": "string",
+                  "description": "The UUID version identifier"
+                }
+              }
+            }
+          }
+        }
+      },
+      "GetEntityResponse": {
+        "description": "Query parameters for getting a single entity by ID and type",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Query parameters for getting a single entity by ID and type",
+              "required": ["id", "entity"],
+              "properties": {
+                "entity": {
+                  "$ref": "#/components/schemas/Entity"
+                },
+                "id": {
+                  "$ref": "#/components/schemas/EntityId"
+                }
+              }
+            }
+          }
+        }
+      },
+      "HealthStatus": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["status", "version", "uptime", "parallelism"],
+              "properties": {
+                "parallelism": {
+                  "$ref": "#/components/schemas/AppParallelism"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "uptime": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": 0
+                },
+                "version": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ListResponse": {
+        "description": "Response for entity summary list queries",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Response for entity summary list queries",
+              "required": ["entities"],
+              "properties": {
+                "entities": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Summary"
+                    }
+                  },
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "pipeline",
+                      "source_config",
+                      "sink_config",
+                      "source_driver_config",
+                      "input_config",
+                      "migration_config",
+                      "migration_driver_config",
+                      "connection",
+                      "collection_configs",
+                      "script_config",
+                      "operation_task",
+                      "predicates",
+                      "dynamic_config",
+                      "buffer_settings",
+                      "parse_schema_settings",
+                      "sink_settings"
+                    ]
+                  },
+                  "example": {
+                    "pipeline": [
+                      {
+                        "description": "Example pipeline",
+                        "id": "my-pipeline",
+                        "name": "My Pipeline"
+                      }
+                    ],
+                    "source": [
+                      {
+                        "description": "Example source",
+                        "id": "my-source",
+                        "name": "My Source"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ListSummary": {
+        "description": "Summaries provided by listing",
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "required": ["summary", "type"],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["databases"]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": ["summary", "type"],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TableSummary"
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["files"]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": ["summary", "type"],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TableSummary"
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": ["tables"]
+                    }
+                  }
+                }
+              ],
+              "description": "Summaries provided by listing"
+            }
+          }
+        }
+      },
+      "OperationResponse": {
+        "description": "Standard operation response with ID and optional message",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Standard operation response with ID and optional message",
+              "required": ["id", "message"],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PipelineConfig": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["name", "config"],
+              "properties": {
+                "config": {
+                  "$ref": "#/components/schemas/Pipeline"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PipelineConfigResponse": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["success"],
+              "properties": {
+                "data": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PipelineConfig"
+                    }
+                  ]
+                },
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PipelineResponse": {
+        "description": "Standard API response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Standard API response",
+              "required": ["success", "message"],
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "TableSummary": {
+        "description": "Lightweight description of a table/file exposed by a connector.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Lightweight description of a table/file exposed by a connector.",
+              "required": ["name"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "rows": {
+                  "type": ["integer", "null"],
+                  "format": "int64",
+                  "minimum": 0
+                },
+                "size_bytes": {
+                  "type": ["integer", "null"],
+                  "format": "int64",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "entity",
+      "description": "Entity management endpoints"
+    },
+    {
+      "name": "history",
+      "description": "History and execution tracking endpoints"
+    },
+    {
+      "name": "pipeline",
+      "description": "Pipeline dispatch and monitoring endpoints"
+    },
+    {
+      "name": "files",
+      "description": "File upload and management endpoints"
+    },
+    {
+      "name": "admin",
+      "description": "Administrative control endpoints"
+    },
+    {
+      "name": "health",
+      "description": "Health check endpoints"
+    },
+    {
+      "name": "arrow-ui",
+      "description": "Viewer endpoints"
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { Card, CardContent } from '@/base/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
 export type TaggedUnionEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
@@ -31,7 +31,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: TaggedUnionEditProps<Schema>) {
-  const { plugins } = useStatelyUi();
+  const { plugins } = useStatelyUi<Schema, []>();
   const discriminatorField = node.discriminator;
 
   // Local state for current data
@@ -109,7 +109,6 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
       {currentVariant && currentTag && (
         <Card>
           <CardContent className="space-y-4">
-            {/* TODO: Remove - why is this only handling objects? */}
             {currentVariant.schema.nodeType === 'object' &&
               Object.entries(currentVariant.schema.properties || {}).map(
                 ([fieldName, fieldSchema]) => {

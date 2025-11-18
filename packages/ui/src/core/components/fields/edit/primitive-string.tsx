@@ -3,7 +3,7 @@ import { FileText, Link as LinkIcon, Type } from 'lucide-react';
 import { type ComponentType, useMemo, useState } from 'react';
 import { Editor } from '@/base/components/editor';
 import type { EditFieldProps } from '@/base/form/field-edit';
-import { getEditTransformer } from '@/base/registry';
+import { getEditTransformer, makeRegistryKey } from '@/base/registry';
 import { ButtonGroup } from '@/base/ui/button-group';
 import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/base/ui/input-group';
 import {
@@ -14,8 +14,7 @@ import {
   SelectLabel,
   SelectTrigger,
 } from '@/base/ui/select';
-import { useStatelyUi } from '@/core';
-import { makeRegistryKey } from '@/index';
+import { useStatelyUi } from '@/index';
 
 export interface StringMode {
   description: string;

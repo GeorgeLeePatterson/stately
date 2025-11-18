@@ -4,7 +4,7 @@ import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { FieldSet } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
 export type UntaggedEnumEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
@@ -26,7 +26,7 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: UntaggedEnumEditProps<Schema>) {
-  const { plugins } = useStatelyUi();
+  const { plugins } = useStatelyUi<Schema, []>();
 
   // Extract current tag from the single property key
   let currentTag: string | null = null;

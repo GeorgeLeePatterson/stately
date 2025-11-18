@@ -2,7 +2,7 @@ import type { Schemas } from '@stately/schema';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import { Field } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
 export type EnumEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
@@ -21,7 +21,7 @@ export function EnumEdit<Schema extends Schemas = Schemas>({
   onChange,
   placeholder,
 }: EnumEditProps<Schema>) {
-  const { plugins } = useStatelyUi();
+  const { plugins } = useStatelyUi<Schema, []>();
 
   return (
     <Field>

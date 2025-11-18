@@ -23,7 +23,8 @@ export interface UnknownNode extends BaseNode {
 }
 
 /** Node map helper used internally for fallbacks. */
-export type NodeMap = Record<string, BaseNode>;
+// // biome-ignore lint/complexity/noBannedTypes: no other alternative
+export type NodeMap = Record<string, BaseNode>; // TODO: Remove - does this cause an issue?
 
 export type NodeValues<N> = [LiteralKeys<N>] extends [never] ? UnknownNode : N[LiteralKeys<N>];
 export type NodeValuesWithUnknown<N> = NodeValues<N & { [UnknownNodeType]: UnknownNode }>;

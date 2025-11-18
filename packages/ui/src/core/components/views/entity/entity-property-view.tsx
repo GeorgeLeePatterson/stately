@@ -2,7 +2,7 @@ import type { Schemas } from '@stately/schema';
 import type { ComponentProps } from 'react';
 import { cn } from '@/base/lib/utils';
 import { Item, ItemContent } from '@/base/ui/item';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
 export type EntityPropertyMode = 'edit' | 'view';
 
@@ -18,8 +18,7 @@ export function EntityPropertyLabel<Schema extends Schemas = Schemas>({
   node,
   isRequired,
 }: Omit<EntityPropertyProps<Schema>, 'compact'>) {
-  const { schema, plugins, utils: runtimeUtils } = useStatelyUi();
-  // TODO: Remove - this is wrong
+  const { schema, plugins, utils: runtimeUtils } = useStatelyUi<Schema, []>();
   const NodeTypeIcon = runtimeUtils.getNodeTypeIcon(schema.plugins.core.extractNodeType(node));
   return (
     <div className="flex items-center gap-2 min-w-0">

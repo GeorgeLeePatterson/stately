@@ -1,8 +1,8 @@
 import { Button } from '@stately/ui/base/ui';
-import { useMutation } from '@tanstack/react-query';
 import { Loader2, Upload as UploadIcon } from 'lucide-react';
 import { useCallback, useId } from 'react';
 import { toast } from 'sonner';
+import { useUpload } from '@/hooks';
 import { useFileView } from '@/hooks/use-file-view';
 import type { FileInfo } from '@/types/api';
 import { FileExplorer } from './file-explorer';
@@ -41,23 +41,10 @@ export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
   const files = queryResults.data?.files || [];
 
   // Upload mutation
-  const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      // const { data, error } = await filesApi.upload({ body: formData });
-      // if (!data || error) throw new Error('Upload failed');
-      // return data;
-      return {};
-    },
-    onError: error => {
-      console.error('File upload error:', error);
-      toast.error('Failed to upload file');
-    },
-    onSuccess: _data => {
+  const uploadMutation = useUpload({
+    onSuccess: data => {
       toast.success('File uploaded successfully');
-      // queryClient.invalidateQueries({ queryKey: filesApi.key.list(currentPath) });
-      // onSelect(data.path);
+      onSelect(data.path);
       onClose?.();
     },
   });

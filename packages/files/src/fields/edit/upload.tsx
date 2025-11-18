@@ -1,9 +1,7 @@
 import { InputGroupAddon, InputGroupButton, InputGroupInput, Spinner } from '@stately/ui/base/ui';
-import { useMutation } from '@tanstack/react-query';
 import { Upload as UploadIcon } from 'lucide-react';
 import { useRef } from 'react';
-import { toast } from 'sonner';
-import { useFilesStatelyUi } from '@/context';
+import { useUpload } from '@/hooks/use-upload';
 
 export interface UploadProps {
   formId: string;
@@ -14,32 +12,10 @@ export interface UploadProps {
 
 function UploadField({ formId, onChange, value, placeholder }: UploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const runtime = useFilesStatelyUi();
-  const filesApi = runtime.plugins.files?.api;
-
-  // Upload mutation
-  const uploadMutation = useMutation({
-    mutationFn: async (file: File) => {
-      if (!filesApi) throw new Error('Files API is unavailable');
-
-      const formData = new FormData();
-      formData.append('file', file);
-      const { data, error } = await filesApi.call(filesApi.operations.uploadFile, {
-        body: formData,
-      });
-      if (!data || error) throw new Error('Upload failed');
-      return data;
-    },
-    onError: error => {
-      console.error('File upload error:', error);
-      toast.error('Failed to upload file');
-    },
-    onSuccess: data => {
-      // Store managed path object
-      onChange({ dir: 'data', path: data.path });
-      toast.success('File uploaded successfully');
-    },
+  const uploadMutation = useUpload({
+    onSuccess: data => onChange({ dir: 'data', path: data.path }),
   });
+
   return (
     <>
       <InputGroupInput

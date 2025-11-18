@@ -9,9 +9,9 @@ import { FieldEdit } from '@/base/form/field-edit';
 import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
 import { Field, FieldSet } from '@/base/ui/field';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
-export type ArrayEditProps<Schema extends Schemas<any, any> = Schemas> = EditFieldProps<
+export type ArrayEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
   Schema['plugin']['Nodes']['array'],
   unknown[]
@@ -29,7 +29,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
   isRequired,
   isWizard,
 }: ArrayEditProps<Schema>) {
-  const { schema, plugins } = useStatelyUi();
+  const { schema, plugins } = useStatelyUi<Schema, []>();
 
   // Defensive: ensure value is actually an array
   const safeValue = Array.isArray(value) ? value : [];

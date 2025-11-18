@@ -1,6 +1,6 @@
 import type { StatelySchemas } from '@stately/schema/schema';
 import { createContext, type PropsWithChildren, useContext } from 'react';
-import type { UiPluginAugment } from '@/base/plugin';
+import type { AnyUiPlugin } from '@/base/plugin';
 import type { StatelyRuntime } from '@/base/runtime';
 
 /**
@@ -9,9 +9,9 @@ import type { StatelyRuntime } from '@/base/runtime';
  */
 const StatelyUiContext = createContext<StatelyRuntime<any, any> | null>(null);
 
-type ProviderProps<
+export type StatelyProviderProps<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[],
+  Augments extends readonly AnyUiPlugin[],
 > = PropsWithChildren<{ value: StatelyRuntime<Schema, Augments> }>;
 
 /**
@@ -28,9 +28,9 @@ type ProviderProps<
  */
 export function createStatelyUiProvider<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
+  Augments extends readonly AnyUiPlugin[] = readonly [],
 >() {
-  return function StatelyUiProvider({ value, children }: ProviderProps<Schema, Augments>) {
+  return function StatelyUiProvider({ value, children }: StatelyProviderProps<Schema, Augments>) {
     return <StatelyUiContext.Provider value={value}>{children}</StatelyUiContext.Provider>;
   };
 }
@@ -46,7 +46,7 @@ export const StatelyUiProvider = createStatelyUiProvider();
  *
  * @example
  * ```typescript
- * const useMyStatelyUi = createUseStatelyUi<MySchemas, [CoreUiAugment<MySchemas>]>();
+ * const useMyStatelyUi = createUseStatelyUi<MySchemas, [CoreUiAugment]>();
  *
  * function MyComponent() {
  *   const runtime = useMyStatelyUi();
@@ -54,9 +54,9 @@ export const StatelyUiProvider = createStatelyUiProvider();
  * }
  * ```
  */
-export function createUseBaseStatelyUi<
+export function createUseStatelyUi<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[] = readonly [],
+  Augments extends readonly AnyUiPlugin[],
 >() {
   return function useTypedStatelyUi(): StatelyRuntime<Schema, Augments> {
     const ctx = useContext(StatelyUiContext);

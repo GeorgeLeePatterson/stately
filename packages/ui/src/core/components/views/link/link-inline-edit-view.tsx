@@ -3,7 +3,7 @@ import type { ObjectNode } from '@stately/schema/core/nodes';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { FieldLegend } from '@/base/ui/field';
 import type { CoreEntity, CoreStateEntry } from '@/core';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 import { EditMode, EntityEditView } from '../entity/entity-edit-view';
 import type { LinkFor } from './link-edit-view';
 
@@ -39,7 +39,7 @@ export function LinkInlineEdit<Schema extends Schemas = Schemas>({
   after,
   isWizard,
 }: LinkInlineEditProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema } = useStatelyUi<Schema, []>();
   const entityValue: CoreEntity<Schema>['data'] =
     value && 'inline' in value ? value.inline : ({} as CoreEntity<Schema>['data']);
 

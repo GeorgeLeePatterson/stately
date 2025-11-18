@@ -28,3 +28,8 @@ export type {
 } from './nodes.js';
 export type { CorePlugin } from './plugin.js';
 export { corePlugin, CORE_PLUGIN_NAME };
+
+// API operations
+import { CORE_OPERATIONS } from './api.js';
+
+export { CORE_OPERATIONS };

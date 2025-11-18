@@ -71,7 +71,7 @@ export interface EnumNode extends BaseNode {
 /**
  * Object: struct with named properties
  */
-export interface ObjectNode<ChildNode extends BaseNode = BaseNode> extends BaseNode {
+export interface ObjectNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.Object;
   properties: Readonly<Record<string, CoreNodes<ChildNode>>>;
   required: readonly string[];
@@ -81,7 +81,7 @@ export interface ObjectNode<ChildNode extends BaseNode = BaseNode> extends BaseN
 /**
  * Array: Vec<T> in Rust
  */
-export interface ArrayNode<ChildNode extends BaseNode = BaseNode> extends BaseNode {
+export interface ArrayNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.Array;
   items: CoreNodes<ChildNode>;
 }
@@ -89,7 +89,7 @@ export interface ArrayNode<ChildNode extends BaseNode = BaseNode> extends BaseNo
 /**
  * Map/Dictionary: HashMap<String, T> in Rust
  */
-export interface MapNode<ChildNode extends BaseNode = BaseNode> extends BaseNode {
+export interface MapNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.Map;
   valueSchema: CoreNodes<ChildNode>;
   keyPattern?: string;
@@ -98,7 +98,7 @@ export interface MapNode<ChildNode extends BaseNode = BaseNode> extends BaseNode
 /**
  * Tuple: Fixed-length heterogeneous array
  */
-export interface TupleNode<ChildNode extends BaseNode = BaseNode> extends BaseNode {
+export interface TupleNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.Tuple;
   items: readonly CoreNodes<ChildNode>[];
 }
@@ -107,7 +107,7 @@ export interface TupleNode<ChildNode extends BaseNode = BaseNode> extends BaseNo
  * Tagged Union: Rust enum with explicit discriminator
  */
 export interface TaggedUnionNode<
-  ChildNode extends BaseNode = BaseNode,
+  ChildNode extends BaseNode = never,
   Discriminator extends string = string,
 > extends BaseNode {
   nodeType: typeof CoreNodeType.TaggedUnion;
@@ -118,7 +118,7 @@ export interface TaggedUnionNode<
 /**
  * Untagged Enum: Rust enum with inferred discriminator
  */
-export interface UntaggedEnumNode<ChildNode extends BaseNode = BaseNode> extends BaseNode {
+export interface UntaggedEnumNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.UntaggedEnum;
   variants: ReadonlyArray<{ tag: string; schema: CoreNodes<ChildNode> }>;
 }
@@ -127,7 +127,7 @@ export interface UntaggedEnumNode<ChildNode extends BaseNode = BaseNode> extends
  * Link<T>: Either an EntityId string OR inline entity data
  * Generic over EntityType to preserve the discriminator type
  */
-export interface LinkNode<ChildNode extends BaseNode = BaseNode> extends BaseNode {
+export interface LinkNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.Link;
   targetType: string;
   inlineSchema: ObjectNode<ChildNode>;
@@ -136,7 +136,7 @@ export interface LinkNode<ChildNode extends BaseNode = BaseNode> extends BaseNod
 /**
  * Nullable: Option<T> in Rust
  */
-export interface NullableNode<ChildNode extends BaseNode = BaseNode> extends BaseNode {
+export interface NullableNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.Nullable;
   innerSchema: CoreNodes<ChildNode>;
 }
@@ -150,7 +150,7 @@ export interface RecursiveRefNode extends BaseNode {
   refName: string;
 }
 
-export type CoreNodeMap<ChildNode extends BaseNode = BaseNode> = DefineNodeMap<{
+export type CoreNodeMap<ChildNode extends BaseNode = never> = DefineNodeMap<{
   [CoreNodeType.Primitive]: PrimitiveNode;
   [CoreNodeType.Enum]: EnumNode;
   [CoreNodeType.Object]: ObjectNode<ChildNode>;
@@ -164,7 +164,7 @@ export type CoreNodeMap<ChildNode extends BaseNode = BaseNode> = DefineNodeMap<{
   [CoreNodeType.RecursiveRef]: RecursiveRefNode;
 }>;
 
-export type CoreNodes<ChildNode extends BaseNode = BaseNode> =
+export type CoreNodes<ChildNode extends BaseNode = never> =
   | PrimitiveNode
   | EnumNode
   | ObjectNode<ChildNode>
@@ -175,4 +175,5 @@ export type CoreNodes<ChildNode extends BaseNode = BaseNode> =
   | UntaggedEnumNode<ChildNode>
   | LinkNode<ChildNode>
   | NullableNode<ChildNode>
-  | RecursiveRefNode;
+  | RecursiveRefNode
+  | ChildNode;

@@ -2,8 +2,9 @@ import type { Schemas } from '@stately/schema';
 import type { LinkNode } from '@stately/schema/core/nodes';
 import type { ViewFieldProps } from '@/base/form/field-view';
 import { Skeleton } from '@/base/ui/skeleton';
-import { type CoreStateEntry, useStatelyUi } from '@/core';
+import type { CoreStateEntry } from '@/core';
 import { useEntityData } from '@/core/hooks/use-entity-data';
+import { useStatelyUi } from '@/index';
 import type { LinkFor } from './link-edit-view';
 import { LinkInlineView } from './link-inline-view';
 import { LinkRefView } from './link-ref-view';
@@ -15,7 +16,7 @@ export type LinkViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
 >;
 
 export function LinkView<Schema extends Schemas = Schemas>({ value, node }: LinkViewProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema } = useStatelyUi<Schema, []>();
   const inlineSchema = node.inlineSchema;
 
   // Extract entity_type and actual value

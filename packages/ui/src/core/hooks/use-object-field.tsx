@@ -1,7 +1,7 @@
 import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { useCallback, useEffect, useState } from 'react';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
 export interface ObjectFieldState<S extends Schemas = Schemas> {
   formData: Record<string, any>;
@@ -24,7 +24,7 @@ export function useObjectField<S extends Schemas = Schemas>({
   value: any;
   onSave: (formData: AnyRecord) => void;
 }): ObjectFieldState {
-  const { schema } = useStatelyUi();
+  const { schema } = useStatelyUi<S, []>();
   const [formData, setFormData] = useState<Record<string, any>>(value ?? {});
   const [isDirty, setIsDirty] = useState(false);
 

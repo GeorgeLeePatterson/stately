@@ -5,13 +5,34 @@
  */
 
 import type { BaseNode } from '@stately/schema/nodes';
+import type { DefineData, DefineTypes } from '@stately/schema/plugin';
+import type { FileEntryType, FileInfo, FileSaveRequest, FileVersion } from './types/api';
+
+/**
+ * Files plugin types
+ *
+ * Currently no additional types needed beyond the node types.
+ */
+export type FilesTypes = DefineTypes<{
+  FileSaveRequest: FileSaveRequest;
+  FileEntryType: FileEntryType;
+  FileVersion: FileVersion;
+  FileInfo: FileInfo;
+}>;
+
+/**
+ * Files plugin data
+ *
+ * Currently no runtime data needed (no caches or registries).
+ */
+export type FilesData = DefineData;
 
 /**
  * Node type for relative paths
  */
 export const FilesNodeType = { RelativePath: 'relativePath' } as const;
 
-export type FilesNodeType = (typeof FilesNodeType)[keyof typeof FilesNodeType];
+export type TFilesNodeType = (typeof FilesNodeType)[keyof typeof FilesNodeType];
 
 /**
  * RelativePath: Path relative to app directory

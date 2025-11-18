@@ -1,5 +1,6 @@
 import type { OpenAPIV3_1 } from 'openapi-types';
-import type { AnyRecord, EmptyRecord, StringKeys } from './helpers';
+import type { AnyPaths, DefineOperations, OperationMap } from './api';
+import type { AnyRecord, StringKeys } from './helpers';
 import type { BaseNode, NodeMap } from './nodes';
 
 /**
@@ -13,19 +14,23 @@ import type { BaseNode, NodeMap } from './nodes';
  * This prevents accidentally using patterns like `keyof Config['nodes']` which create
  * invariant constraints and break subtype compatibility.
  */
+
 export interface StatelyConfig<
   out Components = { schemas?: AnyRecord },
-  out Paths extends {} = EmptyRecord,
+  out Paths extends AnyPaths = AnyPaths,
+  out Operations extends OperationMap = OperationMap,
   out Nodes extends NodeMap = NodeMap,
 > {
   components: Components;
   paths: Paths;
+  operations: Operations;
   nodes: Nodes;
 }
 
 export interface BaseConfig {
   components: { schemas?: AnyRecord };
   paths: AnyRecord;
+  operations: OperationMap;
   nodes: NodeMap;
 }
 
@@ -44,8 +49,9 @@ export interface BaseConfig {
 export type DefineStatelyConfig<
   C extends DefineComponents = DefineComponents,
   P extends DefinePaths = DefinePaths,
+  O extends DefineOperations = DefineOperations,
   N extends DefineGeneratedNodes<NodeMap> = DefineGeneratedNodes<NodeMap>,
-> = StatelyConfig<C, P, N>;
+> = StatelyConfig<C, P, O, N>;
 
 /**
  * =============================================================================
@@ -102,7 +108,7 @@ export type DefineComponentSchemas<T extends Record<string, any> = Record<string
  * }>;
  * ```
  */
-export type DefinePaths<T extends Record<string, any> = Record<string, any>> = T;
+export type DefinePaths<T extends Record<string, any> = AnyPaths> = T;
 
 /**
  * Define the generated node structure your plugin expects.

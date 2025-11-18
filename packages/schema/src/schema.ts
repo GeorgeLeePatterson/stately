@@ -8,7 +8,7 @@
 import type { GeneratedNodeMap, StatelyConfig } from './generated';
 import type { AnyRecord, EmptyRecord, NeverRecord, UnionToIntersection } from './helpers';
 import type { BaseNode, NodeInformation, NodeMap } from './nodes';
-import type { PluginAugment } from './plugin';
+import type { AnyPluginAugment, PluginAugment } from './plugin';
 
 /**
  * Type guard for narrowing plugin node unions by nodeType.
@@ -35,6 +35,7 @@ export function isNodeOfType<N extends BaseNode>(
 }
 
 export type DerivedPluginNodes<Augments> = AugmentPluginNodes<Augments>;
+export type PluginAnyNode<Augments extends AnyPluginAugment> = DerivedPluginNodes<Augments>;
 
 type AugmentPluginNodes<Augments> = Augments extends readonly PluginAugment<
   any,
@@ -89,7 +90,7 @@ type PluginUtilsOf<Augment> = Augment extends PluginAugment<infer Name, any, any
  */
 export type StatelySchemas<
   out Config extends StatelyConfig,
-  Augments extends readonly PluginAugment<string, NodeMap>[] = [],
+  Augments extends readonly PluginAugment<string, NodeMap>[],
 > = {
   /** Store raw configuration and plugin augmentations */
   config: Config;

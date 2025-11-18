@@ -7,8 +7,8 @@ import { ButtonGroup } from '@/base/ui/button-group';
 import { Field, FieldDescription, FieldLabel } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
 import type { CoreStateEntry } from '@/core';
-import { useStatelyUi } from '@/core';
 import { ViewLinkControl } from '@/core/context/link-explore-context';
+import { useStatelyUi } from '@/index';
 
 export interface EntitySelectEditProps<Schema extends Schemas = Schemas> {
   /** Whether the form is readonly */
@@ -45,7 +45,7 @@ export function EntitySelectEdit<Schema extends Schemas = Schemas>({
   isReadOnly,
   isLoading,
 }: EntitySelectEditProps<Schema>) {
-  const { schema, plugins } = useStatelyUi();
+  const { schema, plugins } = useStatelyUi<Schema, []>();
   const entityDisplayName = schema.data.entityDisplayNames?.[targetType] ?? String(targetType);
   const label = plugins.core.utils?.generateFieldLabel(targetType);
   const formId = useId();

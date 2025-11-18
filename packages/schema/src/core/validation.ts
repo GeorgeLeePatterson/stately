@@ -11,8 +11,8 @@ import type {
   ValidationOptions,
   ValidationResult,
 } from '../validation.js';
-import type { ObjectNode } from './nodes.js';
 import { CoreNodeType } from './nodes.js';
+import { isObject } from './utils.js';
 
 export type ValidatorCallback = (value: unknown, schema: unknown) => boolean;
 
@@ -185,7 +185,7 @@ export function validateNode<S extends Schemas = Schemas>({
         break;
       }
 
-      result = validateObject({ data, options: nextOptions, path, schema: variant.schema });
+      result = validateObject<S>({ data, options: nextOptions, path, schema: variant.schema });
       break;
     }
 
@@ -221,9 +221,13 @@ export function validateNode<S extends Schemas = Schemas>({
 /**
  * Validate an object against an ObjectNode schema
  */
-export function validateObject(
-  args: Omit<ValidateArgs<Schemas>, 'schema'> & { schema: ObjectNode },
-): ValidationResult {
+export function validateObject<S extends Schemas>(args: ValidateArgs<S>): ValidationResult {
+  if (!isObject(args.schema))
+    return {
+      errors: [{ message: 'Expected an object schema', path: args.path, value: args.schema }],
+      valid: false,
+    };
+
   const { path, data, schema, options } = args;
   const { debug = false } = options || {};
 
@@ -235,14 +239,14 @@ export function validateObject(
     return { errors: [{ message: 'Expected an object', path, value: data }], valid: false };
   }
 
-  const required = new Set(schema.required || []);
+  const required = new Set(('required' in schema.required && schema.required) || []);
   const errors: ValidationError[] = [];
 
   for (const [propertyName, propertySchema] of Object.entries(schema.properties)) {
     const fieldRequired = required.has(propertyName);
     const fieldValue = data[propertyName];
 
-    const fieldResult = validateObjectField(
+    const fieldResult = validateObjectField<S>(
       propertyName,
       { data: fieldValue, options, path, schema: propertySchema },
       fieldRequired,
@@ -259,9 +263,9 @@ export function validateObject(
 /**
  * Validate a single object field
  */
-export function validateObjectField(
+export function validateObjectField<S extends Schemas>(
   name: string,
-  args: ValidateArgs<Schemas>,
+  args: ValidateArgs<S>,
   isRequired: boolean,
 ): ValidationResult {
   const { path: parentPath, data, schema } = args;

@@ -1,16 +1,46 @@
 import type { PluginNodeUnion } from '@stately/schema';
+import type { StatelyConfig } from '@stately/schema/generated';
 import type { BaseNode } from '@stately/schema/nodes';
 import type { StatelySchemas } from '@stately/schema/schema';
 import type { ComponentType } from 'react';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import type { ViewFieldProps } from '@/base/form/field-view';
-import { makeRegistryKey } from '@/base/plugin';
 
 export type ComponentRegistry = Map<string, ComponentType<any>>;
 export type TransformerRegistry = Map<string, Transformer<any>>;
 export type FunctionRegistry = Map<string, (...args: any[]) => any>;
 
 export type Transformer<T, U = T> = (value: T) => U extends never ? T : U;
+
+/**
+ * REGISTRY TYPES
+ */
+
+/** Registry modes */
+export type RegistryMode = 'edit' | 'view';
+export type RegistryType = 'component' | 'transformer';
+/** Registry keys */
+export type RegistryKey =
+  | `${string}::${RegistryMode}` // Same as w/ 'component'
+  | `${string}::${RegistryMode}::${RegistryType}`
+  | `${string}::${RegistryMode}::${RegistryType}::${string}`;
+
+/** The types of components registered into the component registry */
+export type NodeTypeComponent<
+  S extends StatelySchemas<any, any> = StatelySchemas<StatelyConfig, []>,
+> = ComponentType<EditFieldProps<S>> | ComponentType<ViewFieldProps<S>>;
+
+/** Helper to easily create a registry key */
+export function makeRegistryKey(
+  node: string,
+  mode: RegistryMode,
+  discriminator: RegistryType = 'component',
+  state?: string,
+): RegistryKey {
+  let key: RegistryKey = `${node}::${mode}::${discriminator}`;
+  if (state) key = `${key}::${state}`;
+  return key;
+}
 
 export function getComponent(registry: ComponentRegistry, key: string): unknown | undefined {
   const comp = registry.get(key);

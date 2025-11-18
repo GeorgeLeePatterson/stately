@@ -1,8 +1,7 @@
 import type { Schemas } from '@stately/schema';
-import type { PluginNodeUnion } from '@stately/schema/plugin';
 import type { EditFieldProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
-import { type CoreNodeUnion, useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
 export type RecursiveRefEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
@@ -13,9 +12,10 @@ export function RecursiveRefEdit<Schema extends Schemas = Schemas>({
   node,
   ...rest
 }: RecursiveRefEditProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema } = useStatelyUi<Schema, []>();
   // Look up the referenced schema and recurse
-  const referencedSchema = schema.schema.nodes[node.refName] as CoreNodeUnion<Schema>;
+  const referencedSchema = schema.schema.nodes[node.refName as keyof Schemas['config']['nodes']];
+
   if (!referencedSchema) {
     return (
       <div className="p-4 bg-muted rounded-md text-sm text-destructive">
@@ -24,5 +24,5 @@ export function RecursiveRefEdit<Schema extends Schemas = Schemas>({
     );
   }
   // Recursively render with the looked-up schema
-  return <FieldEdit<Schema, PluginNodeUnion<Schema>> {...rest} node={referencedSchema} />;
+  return <FieldEdit {...rest} node={referencedSchema} />;
 }

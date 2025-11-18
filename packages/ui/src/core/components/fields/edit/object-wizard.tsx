@@ -9,9 +9,9 @@ import { Button } from '@/base/ui/button';
 import { Field, FieldGroup } from '@/base/ui/field';
 import { Progress } from '@/base/ui/progress';
 import { Skeleton } from '@/base/ui/skeleton';
-import { useStatelyUi } from '@/core';
 import { EntityPropertyView } from '@/core/components/views/entity/entity-property-view';
 import { useObjectField } from '@/core/hooks/use-object-field';
+import { useStatelyUi } from '@/index';
 import type { ObjectEditNode, ObjectEditProps } from './object-field';
 
 export interface ObjectWizardBaseProps {
@@ -40,7 +40,7 @@ export const ObjectWizardEdit = <
   isLoading,
   isEmbedded,
 }: ObjectWizardEditProps<Schema, Node, V>) => {
-  const { schema, plugins } = useStatelyUi();
+  const { schema, plugins } = useStatelyUi<Schema, []>();
   const corePlugin = plugins.core;
 
   const onSave = useCallback(

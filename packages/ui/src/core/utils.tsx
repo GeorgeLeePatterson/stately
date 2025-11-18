@@ -1,5 +1,18 @@
-import { type CoreNodeMap, CoreNodeType } from '@stately/schema/core/nodes';
+import {
+  type ArrayNode,
+  CoreNodeType,
+  type EnumNode,
+  type LinkNode,
+  type MapNode,
+  type NullableNode,
+  type ObjectNode,
+  type PrimitiveNode,
+  type TaggedUnionNode,
+  type TupleNode,
+  type UntaggedEnumNode,
+} from '@stately/schema/core/nodes';
 import type { BaseNode } from '@stately/schema/nodes';
+import { isNodeOfType } from '@stately/schema/schema';
 import { Braces, Brackets, Cog, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
 import type { ComponentType } from 'react';
 
@@ -23,7 +36,6 @@ export function generateFieldLabel(field: string): string {
  * Get icon component for a node type
  */
 export function getNodeTypeIcon(nodeType: string): ComponentType<any> {
-  // TODO: Support custom icons from registry
   switch (nodeType) {
     case CoreNodeType.Object:
       return Braces;
@@ -47,9 +59,9 @@ export function getNodeTypeIcon(nodeType: string): ComponentType<any> {
  * Generates sensible default values for core node types.
  * Returns null for unknown/plugin node types (graceful degradation).
  */
-export function getDefaultValue(node: CoreNodeMap[keyof CoreNodeMap]): any {
-  switch (node.nodeType) {
-    case CoreNodeType.Primitive:
+export function getDefaultValue(node: BaseNode): any {
+  switch (true) {
+    case isNodeOfType<PrimitiveNode>(node, CoreNodeType.Primitive):
       switch (node.primitiveType) {
         case 'string':
           return '';
@@ -62,19 +74,19 @@ export function getDefaultValue(node: CoreNodeMap[keyof CoreNodeMap]): any {
           return null;
       }
 
-    case CoreNodeType.Enum:
+    case isNodeOfType<EnumNode>(node, CoreNodeType.Enum):
       return node.values[0] || '';
 
-    case CoreNodeType.Array:
+    case isNodeOfType<ArrayNode<any>>(node, CoreNodeType.Array):
       return [];
 
-    case CoreNodeType.Map:
+    case isNodeOfType<MapNode<any>>(node, CoreNodeType.Map):
       return {};
 
-    case CoreNodeType.Tuple:
+    case isNodeOfType<TupleNode>(node, CoreNodeType.Tuple):
       return node.items.map(getDefaultValue);
 
-    case CoreNodeType.Object: {
+    case isNodeOfType<ObjectNode<any>>(node, CoreNodeType.Object): {
       const obj: any = {};
       const requiredFields = new Set(node.required || []);
       for (const [name, propNode] of Object.entries(node.properties)) {
@@ -85,14 +97,14 @@ export function getDefaultValue(node: CoreNodeMap[keyof CoreNodeMap]): any {
       return obj;
     }
 
-    case CoreNodeType.Link:
+    case isNodeOfType<LinkNode<any>>(node, CoreNodeType.Link):
       return '';
 
-    case CoreNodeType.TaggedUnion:
-    case CoreNodeType.UntaggedEnum:
+    case isNodeOfType<TaggedUnionNode<any>>(node, CoreNodeType.TaggedUnion):
+    case isNodeOfType<UntaggedEnumNode<any>>(node, CoreNodeType.UntaggedEnum):
       return null;
 
-    case CoreNodeType.Nullable:
+    case isNodeOfType<NullableNode<any>>(node, CoreNodeType.Nullable):
       return null;
 
     default:

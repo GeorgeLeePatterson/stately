@@ -38,7 +38,6 @@ export type PluginFactory<S extends StatelySchemas<any, any>> = (runtime: Statel
 
 export interface Stately<S extends StatelySchemas<any, any>> {
   schema: { document: DefineOpenApi<any>; nodes: StatelySchemaConfig<S>['nodes'] };
-  types: S['types'];
   data: S['data'];
   plugins: S['utils'];
   validate: (args: ValidateArgs<S>) => ValidationResult;
@@ -48,15 +47,16 @@ export interface StatelyBuilder<S extends StatelySchemas<any, any>> extends Stat
   withPlugin(plugin: PluginFactory<S>): StatelyBuilder<S>;
 }
 
+// export type StatelySchemaConfig<S> = S extends StatelySchemas<infer Config, any> ? Config : never;
+
 export function createStately<S extends StatelySchemas<any, any>>(
   openapi: DefineOpenApi<any>,
-  generatedNodes: StatelySchemaConfig<S>['nodes'],
+  generatedNodes: S['config']['nodes'],
 ): StatelyBuilder<S> {
   const baseState: Stately<S> = {
     data: {} as S['data'],
     plugins: {} as S['utils'],
     schema: { document: openapi, nodes: generatedNodes },
-    types: {} as S['types'],
     validate: args => runValidationPipeline(baseState, args),
   };
 

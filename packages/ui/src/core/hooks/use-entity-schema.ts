@@ -1,13 +1,15 @@
 import type { Schemas } from '@stately/schema';
+import { CoreNodeType } from '@stately/schema/core/nodes';
+import { isNodeOfType } from '@stately/schema/schema';
 import type { CoreStateEntry } from '@/core';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 
 export function useEntitySchema<Schema extends Schemas>(
   entityType: CoreStateEntry<Schema>,
   entitySchema?: Schema['plugin']['Nodes']['object'],
 ): { node: Schema['plugin']['Nodes']['object']; error?: never } | { error: string; node?: never } {
   const { schema } = useStatelyUi();
-  const cache = schema.data.entitySchemaCache || schema.schema.nodes[entityType];
+  const cache = schema.data.entitySchemaCache || schema.schema.nodes;
   const node = entitySchema || cache[entityType];
 
   if (!node) {
@@ -21,7 +23,7 @@ export function useEntitySchema<Schema extends Schemas>(
     return { error: `Schema not found for entity type: ${entityType}` };
   }
 
-  if (node.nodeType !== 'object') {
+  if (!isNodeOfType<Schema['plugin']['Nodes']['object']>(node, CoreNodeType.Object)) {
     return {
       error: `Expected object schema for entity type: ${entityType}, got: ${node.nodeType}`,
     };

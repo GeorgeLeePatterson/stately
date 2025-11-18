@@ -7,8 +7,8 @@ import { FieldView } from '@/base/form/field-view';
 import { JsonView } from '@/base/form/json-view';
 import { Separator } from '@/base/ui/separator';
 import type { CoreEntity, CoreStateEntry } from '@/core';
-import { useStatelyUi } from '@/core';
 import { EntityPropertyView } from '@/core/components/views/entity/entity-property-view';
+import { useStatelyUi } from '@/index';
 
 export interface EntityDetailViewProps<Schema extends Schemas = Schemas> {
   entityType: CoreStateEntry<Schema>;
@@ -25,7 +25,7 @@ export function EntityDetailView<Schema extends Schemas = Schemas>({
   entityId,
   disableJsonView,
 }: EntityDetailViewProps<Schema>) {
-  const { schema } = useStatelyUi();
+  const { schema } = useStatelyUi<Schema, []>();
   const [isJsonOpen, setIsJsonOpen] = useState(false);
 
   const required = new Set(node.required || []);

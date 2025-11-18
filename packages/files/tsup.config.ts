@@ -5,10 +5,6 @@ export default defineConfig({
     index: "src/index.ts",
     // Plugin
     codegen: "src/codegen.ts",
-    context: "src/context.tsx",
-    operations: "src/operations.ts",
-    plugin: "src/plugin.ts",
-    schema: "src/schema.ts",
     // React
     "components/index": "src/components/index.ts",
     "dialogs/index": "src/dialogs/index.ts",

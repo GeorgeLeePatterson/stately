@@ -25,18 +25,6 @@ import type { ValidateArgs, ValidationResult } from '../src/validation.js';
 // Step 1: Define the generated nodes structure using the helper
 type CustomGeneratedNodes = DefineGeneratedNodes<{ CustomNode: ObjectNode }>;
 
-// Step 2: Create the config type
-type CustomConfig = CoreStatelyConfig<
-  CoreStatelyConfig['components'] & { schemas: { StateEntry: 'test1' | 'test2' } },
-  CoreStatelyConfig['paths'],
-  CustomGeneratedNodes
->;
-
-// Step 3: Create the schemas type
-type CustomSchemas = Schemas<CustomConfig>;
-
-type X = CustomSchemas['config']['components']['schemas']['StateEntry'];
-
 /**
  * Plugin factory function - this is what plugin authors export.
  *
@@ -121,14 +109,28 @@ const mockOpenAPI = {
 };
 
 // Mock generated nodes
-const mockNodes: CustomConfig['nodes'] = {
+const mockNodes = {
   CustomNode: {
-    nodeType: 'object',
-    properties: { id: { nodeType: 'primitive', primitiveType: 'string' } },
+    nodeType: 'object' as const,
+    properties: { id: { nodeType: 'primitive' as const, primitiveType: 'string' } },
     required: ['id'],
   },
-  Entity: { discriminator: 'type', nodeType: 'taggedUnion', variants: [] },
-};
+  Entity: { discriminator: 'type' as const, nodeType: 'taggedUnion' as const, variants: [] },
+} as const;
+
+// Step 2: Create the config type
+type CustomConfig = CoreStatelyConfig<
+  CoreStatelyConfig['components'] & { schemas: { StateEntry: 'test1' | 'test2' } },
+  CoreStatelyConfig['paths'],
+  CoreStatelyConfig['operations'],
+  typeof mockNodes
+>;
+
+// Step 3: Create the schemas type
+type CustomSchemas = Schemas<CustomConfig>;
+
+type X = CustomSchemas['config']['components']['schemas']['StateEntry'];
+type XX = CustomSchemas['config']['nodes'];
 
 // Test: Can create runtime with custom plugin
 const runtime = stately<CustomSchemas>(mockOpenAPI, mockNodes).withPlugin(createCustomPlugin());

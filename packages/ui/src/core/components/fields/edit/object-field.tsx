@@ -16,8 +16,8 @@ import {
   FieldSet,
 } from '@/base/ui/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/base/ui/tabs';
-import { useStatelyUi } from '@/core';
 import { useObjectField } from '@/core/hooks/use-object-field';
+import { useStatelyUi } from '@/index';
 import { ObjectWizardEdit } from './object-wizard';
 
 export enum ObjectEditMode {
@@ -103,7 +103,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: ObjectFormProps<Schema>) {
-  const { plugins } = useStatelyUi();
+  const { plugins } = useStatelyUi<Schema, []>();
   const corePlugin = plugins.core;
 
   const { formData, handleFieldChange, handleSave, handleCancel, fields, isDirty, isValid } =

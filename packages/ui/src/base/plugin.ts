@@ -1,64 +1,13 @@
-import type { StatelyConfig } from '@stately/schema/generated';
+import type { AnyPaths, OperationBindings } from '@stately/schema/api';
 import type { AnyRecord, NeverRecord } from '@stately/schema/helpers';
 import type { StatelySchemas } from '@stately/schema/schema';
 import type { ComponentType } from 'react';
-import type { EditFieldProps } from '@/base/form/field-edit';
-import type { ViewFieldProps } from '@/base/form/field-view';
-import type { DefineOperationMap, HttpBundle } from './operations';
-
-/**
- * =============================================================================
- * REGISTRY TYPES
- * =============================================================================
- */
-
-/** Registry modes */
-export type RegistryMode = 'edit' | 'view';
-export type RegistryType = 'component' | 'transformer';
-/** Registry keys */
-export type RegistryKey =
-  | `${string}::${RegistryMode}` // Same as w/ 'component'
-  | `${string}::${RegistryMode}::${RegistryType}`
-  | `${string}::${RegistryMode}::${RegistryType}::${string}`;
-
-/** The types of components registered into the component registry */
-export type NodeTypeComponent<
-  S extends StatelySchemas<any, any> = StatelySchemas<StatelyConfig, []>,
-> = ComponentType<EditFieldProps<S>> | ComponentType<ViewFieldProps<S>>;
-
-/** Helper to easily create a registry key */
-export function makeRegistryKey(
-  node: string,
-  mode: RegistryMode,
-  discriminator: RegistryType = 'component',
-  state?: string,
-): RegistryKey {
-  let key: RegistryKey = `${node}::${mode}::${discriminator}`;
-  if (state) key = `${key}::${state}`;
-  return key;
-}
-
-/**
- * =============================================================================
- * PLUGIN AUTHOR HELPERS
- * =============================================================================
- */
-
-/**
- * Define operation map for a plugin.
- */
-export type DefineUiOperations<T extends DefineOperationMap = DefineOperationMap> = T;
+import type { TypedOperations } from './api';
 
 /**
  * Define utility functions for a plugin.
  */
 export type DefineUiUtils<T extends PluginFunctionMap = PluginFunctionMap> = T;
-
-/**
- * =============================================================================
- * PLUGIN RUNTIME DESCRIPTOR
- * =============================================================================
- */
 
 /**
  * Generic plugin function
@@ -80,18 +29,16 @@ export type PluginUtils<Utils extends PluginFunctionMap = PluginFunctionMap> = U
 };
 
 export interface PluginRuntime<
-  Schema extends StatelySchemas<any, any> = StatelySchemas<any, any>,
-  Ops extends DefineOperationMap = DefineOperationMap,
+  Paths extends AnyPaths,
+  Ops extends OperationBindings<Paths, any>,
   Utils extends PluginFunctionMap = PluginFunctionMap,
 > {
-  api?: HttpBundle<Schema, Ops>;
+  api?: TypedOperations<Paths, Ops>;
   utils?: PluginUtils<Utils>;
 }
 
 /**
- * =============================================================================
- * UI AUGMENT - Plugin Type Distribution
- * =============================================================================
+ * UI PLUGIN - Plugin Type Distribution
  *
  * IMPORTANT: Prefer `DefineUiPlugin` if declaring a UI plugin's augment.
  *
@@ -103,36 +50,40 @@ export interface PluginRuntime<
  * a property. The type parameter is used for type distribution (infer Name),
  * while the property provides structural consistency. Plugin authors must use
  * the SAME constant for both PluginAugment and UiAugment.
+ *
+ * Does NOT reference Schema or Paths - describes what the plugin contributes.
+ * The runtime instantiates PluginRuntime with the user's Paths via MergeUiAugments.
  */
-
-export type UiPluginAugment<
+export type UiPlugin<
   Name extends string,
-  Schema extends StatelySchemas<any, any> = StatelySchemas<any, any>,
-  Ops extends DefineOperationMap = DefineOperationMap,
+  Paths extends AnyPaths,
+  Ops extends OperationBindings<any, any>,
   Utils extends PluginFunctionMap = PluginFunctionMap,
-> = { name: Name; api?: HttpBundle<Schema, Ops>; utils?: PluginUtils<Utils> };
+> = { name: Name; paths: Paths; ops: Ops; utils?: PluginUtils<Utils> };
+
+export type AnyUiPlugin = UiPlugin<string, any, any, any>;
 
 /**
  * Merge augments into a type-safe plugin map.
  * Extracts the Name from each UiAugment and uses it as a key in the result.
  *
- * CRITICAL: Processes right-to-left (...Rest, Last) instead of left-to-right
- * (First, ...Rest). This enables TypeScript to see that appending an augment
- * to the tuple produces an incremental type addition, allowing plugin factories
- * to type-check without assertions.
+ * Takes Schema to extract Paths, then instantiates PluginRuntime with those Paths.
+ * Processes right-to-left (...Rest, Last) to enable incremental type addition.
  *
- * MergeUiAugments<[...Base, New]> = MergeUiAugments<Base> & { [New.name]: ... }
+ * MergeUiAugments<Schema, [...Base, New]> = MergeUiAugments<Schema, Base> & { [New.name]: ... }
  */
 export type MergeUiAugments<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[],
+  Augments extends readonly AnyUiPlugin[],
 > = Augments extends readonly [
-  ...infer Rest extends readonly UiPluginAugment<string, Schema, any, any>[],
-  infer Last extends UiPluginAugment<string, Schema, any, any>,
+  ...infer Rest extends readonly AnyUiPlugin[],
+  infer Last extends AnyUiPlugin,
 ]
   ? MergeUiAugments<Schema, Rest> &
-      (Last extends UiPluginAugment<infer Name, Schema, infer Ops, infer Utils>
-        ? { [K in Name]: PluginRuntime<Schema, Ops, Utils> }
+      (Last extends UiPlugin<infer Name, infer Paths, infer Ops, infer Utils>
+        ? {
+            [K in Name]: PluginRuntime<Paths, Ops, Utils>;
+          }
         : AnyRecord)
   : NeverRecord;
 
@@ -142,5 +93,5 @@ export type MergeUiAugments<
  */
 export type AugmentPlugins<
   Schema extends StatelySchemas<any, any>,
-  Augments extends readonly UiPluginAugment<string, Schema, any, any>[],
+  Augments extends readonly AnyUiPlugin[],
 > = MergeUiAugments<Schema, Augments>;

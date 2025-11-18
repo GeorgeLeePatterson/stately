@@ -6,7 +6,7 @@ import { Field, FieldGroup, FieldSet } from '@/base/ui/field';
 import { Separator } from '@/base/ui/separator';
 import { Skeleton } from '@/base/ui/skeleton';
 import type { CoreEntity } from '@/core';
-import { useStatelyUi } from '@/core';
+import { useStatelyUi } from '@/index';
 import { EntityPropertyEdit } from './entity-property-edit';
 
 export interface EntityFormEditProps<Schema extends Schemas = Schemas> {
@@ -24,7 +24,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
   isRootEntity,
   isLoading,
 }: EntityFormEditProps<Schema>) {
-  const { schema, plugins } = useStatelyUi();
+  const { schema, plugins } = useStatelyUi<Schema, []>();
   const formId = useId();
 
   const formEnabled = !('name' in node.properties) || (isRootEntity && !!value?.name);

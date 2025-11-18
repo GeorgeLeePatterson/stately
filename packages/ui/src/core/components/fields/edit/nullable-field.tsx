@@ -1,5 +1,4 @@
 import type { Schemas } from '@stately/schema';
-import type { NullableNode } from '@stately/schema/core/nodes';
 import { useId, useState } from 'react';
 import { DescriptionLabel } from '@/base/components/description';
 import type { EditFieldProps } from '@/base/form/field-edit';
@@ -17,7 +16,7 @@ function isValueNulled(value?: any) {
 
 export type NullableEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
   Schema,
-  NullableNode<Schema['plugin']['AnyNode']>
+  Schema['plugin']['Nodes']['nullable']
 >;
 
 /**
