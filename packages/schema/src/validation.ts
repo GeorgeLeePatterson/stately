@@ -45,6 +45,9 @@ export function runValidationPipeline<S extends StatelySchemas<any, any>>(
   state: Stately<S>,
   args: ValidateArgs<S>,
 ): ValidationResult {
+  // TODO: Remove
+  console.debug('[stately/schema] validation pipeline', { args, state });
+
   // Handle unknown nodeTypes from codegen - skip validation
   if (args.schema.nodeType === UnknownNodeType) {
     if (args.options?.debug) {

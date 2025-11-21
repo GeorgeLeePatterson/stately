@@ -45,12 +45,15 @@ export function validateNode<S extends Schemas = Schemas>({
   schema,
   options = {},
 }: ValidateArgs<S>): ValidationResult {
+  // TODO: Remove
+  console.debug('[stately/schema/core] validation', { data, options, path, schema });
+
   // Check cache first
   const cacheKey = createValidationCacheKey(path, data);
   const cached = validationCache.get(cacheKey);
   if (cached) return cached;
 
-  const { depth = 0, warnDepth = 15, maxDepth = 20, debug = false, onDepthWarning } = options;
+  const { depth = 0, warnDepth = 15, maxDepth = 20, debug = true, onDepthWarning } = options;
 
   if (debug) {
     console.debug(`[Validation] ${path} at depth ${depth}`, { data, nodeType: schema.nodeType });
