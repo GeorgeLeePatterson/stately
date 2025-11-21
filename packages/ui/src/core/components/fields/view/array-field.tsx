@@ -35,7 +35,7 @@ export function ArrayView<Schema extends Schemas = Schemas>({
           >
             <ArrayIndex index={index + 1} />
             <ItemContent>
-              <FieldView<Schema> node={node} value={item} />
+              <FieldView<Schema> node={node.items} value={item} />
             </ItemContent>
           </Item>
         );

@@ -23,8 +23,14 @@ export function FieldView<S extends StatelySchemas<any, any>>(props: ViewFieldPr
   const { node, value } = props;
   const { registry } = useStatelyUi();
 
+  console.debug('FieldView rendering:', node.nodeType, { value });
+
   if (value === null || value === undefined) return null;
   const View = getViewComponent<S>(registry.components, node.nodeType);
-  if (!View) return null;
+  if (!View) {
+    console.warn('FieldView: No view component found for nodeType:', node.nodeType);
+    return null;
+  }
+  console.debug('FieldView found View component for:', node.nodeType);
   return <View {...props} />;
 }

@@ -49,6 +49,7 @@ export function EntityDetailView<Schema extends Schemas = Schemas>({
   );
 
   console.debug('EntityDetailView: ', { entity, entityType, schema: node });
+  console.debug('EntityDetailView sortedProperties: ', sortedProperties);
 
   return (
     <div className="space-y-4">
@@ -79,25 +80,32 @@ export function EntityDetailView<Schema extends Schemas = Schemas>({
             fieldName: string;
             fieldSchema: Schema['plugin']['AnyNode'];
             fieldValue: unknown;
-          } => ({
-            fieldName,
-            fieldSchema,
-            fieldValue: entity[fieldName as keyof typeof entity] as unknown,
-          }),
+          } => {
+            const fieldValue = entity[fieldName as keyof typeof entity] as unknown;
+            console.debug('EntityDetailView rendering field:', fieldName, { fieldValue, fieldSchema });
+            return {
+              fieldName,
+              fieldSchema,
+              fieldValue,
+            };
+          },
         )
         .filter(property => property.fieldValue !== undefined && property.fieldValue !== null)
-        .map((property, idx, arr) => (
-          <Fragment key={property.fieldName}>
-            <EntityPropertyView
-              fieldName={property.fieldName}
-              isRequired={required.has(property.fieldName)}
-              node={property.fieldSchema}
-            >
-              <FieldView node={property.fieldSchema} value={property.fieldValue} />
-            </EntityPropertyView>
-            {idx < arr.length - 1 && <Separator />}
-          </Fragment>
-        ))}
+        .map((property, idx, arr) => {
+          console.debug('EntityDetailView about to render JSX for field:', property.fieldName);
+          return (
+            <Fragment key={property.fieldName}>
+              <EntityPropertyView
+                fieldName={property.fieldName}
+                isRequired={required.has(property.fieldName)}
+                node={property.fieldSchema}
+              >
+                <FieldView node={property.fieldSchema} value={property.fieldValue} />
+              </EntityPropertyView>
+              {idx < arr.length - 1 && <Separator />}
+            </Fragment>
+          );
+        })}
 
       {/* Json view */}
       {!disableJsonView && <JsonView data={entity} isOpen={isJsonOpen} setIsOpen={setIsJsonOpen} />}
