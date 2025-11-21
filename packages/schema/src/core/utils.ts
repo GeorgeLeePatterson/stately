@@ -152,16 +152,16 @@ function toSpaceCase(str: string): string {
   return str.replace(/[-_]/g, ' ');
 }
 
-const coreUtils = {
+const coreUtils: CoreUtils = {
   extractNodeType,
   isEntityValid,
-  isPrimitive: isPrimitiveNode,
+  isPrimitiveNode,
   isSingletonId,
   sortEntityProperties,
   toKebabCase,
-  toSpaceCase,
   toTitleCase,
-} as const;
+  toSpaceCase,
+} as const satisfies CoreUtils;
 
 type CoreUtils = DefineUtils<{
   isSingletonId: typeof isSingletonId;

@@ -18,10 +18,11 @@ import { toast } from 'sonner';
 import { useSaveFile } from '@/hooks/use-save-file';
 import type { FileUploadResponse } from '@/types/api';
 import { VersionedDataField } from './versioned-data-field';
+import { StringMode } from '@stately/ui/core/components/fields/edit';
 
 export type RelativePathMode = 'external' | 'managed' | 'compose';
 
-export const RELATIVE_PATH_MODES = [
+export const RELATIVE_PATH_MODES: StringMode[] = [
   {
     description: 'External path',
     icon: ExternalLink,
