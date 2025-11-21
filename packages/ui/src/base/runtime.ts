@@ -18,19 +18,6 @@ export interface UiOptions {
 export const defaultUiOptions: UiOptions = { api: {} };
 
 /**
- * Helper to merge Ui options, does a shallow merge of the top level keys only.
- */
-export const mergeUiOptions = (options: UiOptions, overrides: Partial<UiOptions>): UiOptions => {
-  for (const k in Object.keys(overrides)) {
-    const key = k as keyof UiOptions;
-    if (key in options) {
-      options[key] = { ...options[key], ...overrides[key] };
-    }
-  }
-  return options;
-};
-
-/**
  * Core StatelyRuntime type with augment-based plugin distribution.
  *
  * The Augments array drives type-safe plugin access via AugmentPlugins.
@@ -77,6 +64,8 @@ export function createStatelyUi<
   client: Client<Schema['config']['paths']>,
   options: UiOptions,
 ): StatelyUiBuilder<Schema, Augments> {
+  console.debug('[stately/ui] initializing w/ options: ', { defaultUiOptions, options });
+
   function makeBuilder(
     state: StatelyRuntime<Schema, Augments>,
   ): StatelyUiBuilder<Schema, Augments> {
@@ -84,6 +73,7 @@ export function createStatelyUi<
       ...state,
       withPlugin(plugin: UiPluginFactory<Schema, Augments>): StatelyUiBuilder<Schema, Augments> {
         const nextState = plugin(state);
+        console.debug('[stately/ui] merged w/ state: ', { state: nextState });
         return makeBuilder({ ...nextState, utils: runtimeUtils(nextState.plugins) });
       },
     };
@@ -91,7 +81,7 @@ export function createStatelyUi<
 
   return makeBuilder({
     client,
-    options: mergeUiOptions(defaultUiOptions, options),
+    options: { ...defaultUiOptions, ...options },
     plugins: {} as AllPlugins<Schema, Augments>,
     registry: { components: new Map(), functions: new Map(), transformers: new Map() },
     schema,

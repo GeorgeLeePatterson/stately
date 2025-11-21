@@ -28,11 +28,14 @@ export function createOperations<
   bindings: Bindings,
   prefix = '',
 ): TypedOperations<Paths, Bindings, Media> {
+  const strippedPrefix = prefix?.endsWith('/') ? prefix.slice(0, -1) : prefix;
+
+  console.debug('[stately/ui] creating operations: ', { bindings, prefix: strippedPrefix });
   const result = {} as TypedOperations<Paths, Bindings, Media>;
 
   for (const key of Object.keys(bindings) as (keyof Bindings)[]) {
     const { method, path } = bindings[key];
-    const prefixedPath = prefix ? `${prefix}${path}` : path; // Apply prefix;
+    const prefixedPath = strippedPrefix ? `${strippedPrefix}${path}` : path; // Apply prefix;
     const upperMethod = method.toUpperCase() as Uppercase<HttpMethod>;
 
     // Bind the client method with the path pre-filled

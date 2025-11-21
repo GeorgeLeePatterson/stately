@@ -5,12 +5,7 @@ import { CORE_PLUGIN_NAME } from '@stately/schema/core/plugin';
 import type { BaseNode } from '@stately/schema/nodes';
 import type { ComponentType } from 'react';
 import { createOperations } from '@/base';
-import type {
-  AnyUiPlugin,
-  DefineOptions,
-  DefineUiPlugin,
-  UiPluginFactory,
-} from '@/base/plugin';
+import type { AnyUiPlugin, DefineOptions, DefineUiPlugin, UiPluginFactory } from '@/base/plugin';
 import { type ComponentRegistry, makeRegistryKey, type TransformerRegistry } from '@/base/registry';
 import type { StatelyRuntime } from '@/base/runtime';
 import * as fields from '@/core/components/fields';
@@ -55,11 +50,13 @@ export function coreUiPlugin<Schema extends Schemas, Augments extends readonly A
     registerCoreTransformers(runtime.registry.transformers);
 
     // Create api bundle
+    const pathPrefix = options?.api?.pathPrefix ?? runtime.options?.api?.pathPrefix;
     const api = createOperations<CorePaths, typeof CORE_OPERATIONS>(
       runtime.client,
       CORE_OPERATIONS,
-      runtime.options.api.pathPrefix,
+      pathPrefix,
     );
+    console.debug('[stately/ui] registered core plugin', { options, pathPrefix, runtime });
 
     const plugin = {
       api,
