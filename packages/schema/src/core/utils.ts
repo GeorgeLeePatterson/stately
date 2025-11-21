@@ -159,8 +159,8 @@ const coreUtils: CoreUtils = {
   isSingletonId,
   sortEntityProperties,
   toKebabCase,
-  toTitleCase,
   toSpaceCase,
+  toTitleCase,
 } as const satisfies CoreUtils;
 
 type CoreUtils = DefineUtils<{

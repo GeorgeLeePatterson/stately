@@ -4,11 +4,15 @@ import * as registry from './registry.js';
 
 export type { TypedOperations } from './api';
 export type {
+  AnyUiAugments,
+  AnyUiPlugin,
+  DefineOptions,
+  DefineUiPlugin,
   DefineUiUtils,
   PluginFunction,
   PluginFunctionMap,
   PluginRuntime,
-  UiPlugin as UiPluginAugment,
+  UiPluginFactory,
 } from './plugin.js';
 export type {
   ComponentRegistry,
@@ -17,14 +21,15 @@ export type {
   RegistryType,
   Transformer,
   TransformerRegistry,
+  UiRegistry,
 } from './registry.js';
 export type {
-  RuntimeUtils,
+  defaultUiOptions,
   StatelyRuntime,
   StatelyUiBuilder,
-  StatelyUiPluginFactory,
-  UiRegistry,
+  UiOptions,
 } from './runtime.js';
+export type { UiUtils } from './utils.js';
 
 export {
   createOperations,

@@ -12,13 +12,13 @@ import {
   SelectTrigger,
   Spinner,
 } from '@stately/ui/base/ui';
+import type { StringMode } from '@stately/ui/core/components/fields/edit';
 import { ExternalLink, FilePlus2, FileSearch2, FileText } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useSaveFile } from '@/hooks/use-save-file';
 import type { FileUploadResponse } from '@/types/api';
 import { VersionedDataField } from './versioned-data-field';
-import { StringMode } from '@stately/ui/core/components/fields/edit';
 
 export type RelativePathMode = 'external' | 'managed' | 'compose';
 

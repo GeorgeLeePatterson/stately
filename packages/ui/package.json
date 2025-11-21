@@ -82,6 +82,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "check": "tsc --noEmit",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit"
   },

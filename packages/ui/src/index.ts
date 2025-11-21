@@ -3,32 +3,19 @@
  */
 
 import type { Schemas } from '@stately/schema';
-import type { AnyPaths, OperationBindings } from '@stately/schema/api';
-import type { RequireLiteral } from '@stately/schema/helpers';
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
 import { createStatelyUiProvider, createUseStatelyUi } from './base/context.js';
-import type { AnyUiPlugin, PluginFunctionMap, UiPlugin } from './base/plugin.js';
-import { createStatelyUi, type StatelyRuntime, type StatelyUiBuilder } from './base/runtime.js';
+import type { AnyUiPlugin } from './base/plugin.js';
+import {
+  createStatelyUi,
+  defaultUiOptions,
+  type StatelyRuntime,
+  type StatelyUiBuilder,
+  type UiOptions,
+} from './base/runtime.js';
 import { type CoreUiAugment, coreUiPlugin } from './core/index.js';
 import type { CoreUiPlugin } from './core/plugin.js';
-
-/**
- * Public helper for declaring a ui plugin augment.
- *
- * Enforces string-literal names so downstream utilities preserve keyed plugins.
- * Plugin authors should export their augments defined with this type
- */
-export type DefineUiPlugin<
-  Name extends string,
-  Paths extends AnyPaths,
-  Ops extends OperationBindings<any, any>,
-  Utils extends PluginFunctionMap = PluginFunctionMap,
-> = UiPlugin<RequireLiteral<Name, 'Plugin names must be string literals'>, Paths, Ops, Utils>;
-
-export interface StatelyUiOptions {
-  pathPrefix?: string;
-}
 
 /**
  * Runtime with core plugin installed.
@@ -58,11 +45,13 @@ export function statelyUi<
 >(
   state: Stately<Schema>,
   client: Client<Schema['config']['paths']>,
-  options?: StatelyUiOptions,
+  options: UiOptions = defaultUiOptions,
 ): StatelyUiBuilder<Schema, readonly [CoreUiAugment, ...Augments]> {
-  return createStatelyUi<Schema, readonly [CoreUiAugment, ...Augments]>(state, client).withPlugin(
-    coreUiPlugin<Schema, Augments>(options ?? {}),
-  );
+  return createStatelyUi<Schema, readonly [CoreUiAugment, ...Augments]>(
+    state,
+    client,
+    options,
+  ).withPlugin(coreUiPlugin<Schema, Augments>());
 }
 
 /**

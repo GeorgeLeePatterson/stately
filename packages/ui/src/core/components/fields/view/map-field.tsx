@@ -27,7 +27,7 @@ export function KeyValue({
 
   return (
     <Collapsible onOpenChange={setIsOpen} open={open || isOpen}>
-      <Item size="sm" variant="outline">
+      <Item className="px-3 py-2" size="sm" variant="outline">
         <ItemContent
           className={cn('flex flex-nowrap flex-1 items-start', 'w-full', 'text-xs font-mono')}
         >

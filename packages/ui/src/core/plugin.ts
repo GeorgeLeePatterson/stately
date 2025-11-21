@@ -5,17 +5,24 @@ import { CORE_PLUGIN_NAME } from '@stately/schema/core/plugin';
 import type { BaseNode } from '@stately/schema/nodes';
 import type { ComponentType } from 'react';
 import { createOperations } from '@/base';
-import type { AnyUiPlugin } from '@/base/plugin';
+import type {
+  AnyUiPlugin,
+  DefineOptions,
+  DefineUiPlugin,
+  UiPluginFactory,
+} from '@/base/plugin';
 import { type ComponentRegistry, makeRegistryKey, type TransformerRegistry } from '@/base/registry';
-import type { StatelyRuntime, StatelyUiPluginFactory } from '@/base/runtime';
+import type { StatelyRuntime } from '@/base/runtime';
 import * as fields from '@/core/components/fields';
 import * as editFields from '@/core/components/fields/edit';
 import * as viewFields from '@/core/components/fields/view';
 import * as linkFields from '@/core/components/views/link';
-import type { DefineUiPlugin } from '..';
 import { generateFieldLabel, getDefaultValue, getNodeTypeIcon } from './utils';
 
 const NodeType = CoreNodeType;
+
+// NOTE: Common headers not used yet
+export type CoreUiOptions = DefineOptions<{ api: { headers?: Record<string, string> } }>;
 
 export type CorePluginUtils = {
   getNodeTypeIcon: (nodeType: string) => ComponentType<any>;
@@ -37,11 +44,9 @@ export type CoreUiPlugin = DefineUiPlugin<
  * Populates the runtime with core plugin data (components, api, utils).
  * The runtime type already declares CoreUiAugment; this factory fulfills it.
  */
-export function coreUiPlugin<Schema extends Schemas, Augments extends readonly AnyUiPlugin[]>({
-  pathPrefix = '',
-}: {
-  pathPrefix?: string;
-}): StatelyUiPluginFactory<Schema, readonly [CoreUiPlugin, ...Augments]> {
+export function coreUiPlugin<Schema extends Schemas, Augments extends readonly AnyUiPlugin[]>(
+  options?: CoreUiOptions,
+): UiPluginFactory<Schema, readonly [CoreUiPlugin, ...Augments]> {
   return (runtime: StatelyRuntime<Schema, readonly [CoreUiPlugin, ...Augments]>) => {
     // Register core components
     registerCoreComponents(runtime.registry.components);
@@ -53,22 +58,15 @@ export function coreUiPlugin<Schema extends Schemas, Augments extends readonly A
     const api = createOperations<CorePaths, typeof CORE_OPERATIONS>(
       runtime.client,
       CORE_OPERATIONS,
-      pathPrefix,
+      runtime.options.api.pathPrefix,
     );
 
-    return {
-      client: runtime.client,
-      plugins: {
-        ...runtime.plugins,
-        [CORE_PLUGIN_NAME]: {
-          api,
-          utils: { generateFieldLabel, getDefaultValue, getNodeTypeIcon },
-        },
-      },
-      registry: runtime.registry,
-      schema: runtime.schema,
-      utils: runtime.utils,
+    const plugin = {
+      api,
+      options,
+      utils: { generateFieldLabel, getDefaultValue, getNodeTypeIcon },
     };
+    return { ...runtime, plugins: { ...runtime.plugins, [CORE_PLUGIN_NAME]: plugin } };
   };
 }
 

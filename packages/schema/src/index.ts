@@ -54,7 +54,6 @@
  * ```
  */
 
-import type { OpenAPIV3_1 } from 'openapi-types';
 import type { DefineOperations } from './api.js';
 import type { CorePlugin, CoreStatelyConfig, DefineCoreConfig } from './core/index.js';
 import { corePlugin } from './core/index.js';
@@ -63,25 +62,25 @@ import type {
   DefineGeneratedNodes,
   DefineOpenApi,
   DefinePaths,
-  DefineStatelyConfig,
 } from './generated.js';
 import type { AnyRecord, EmptyRecord, NeverRecord, RequireLiteral } from './helpers.js';
 import type { NodeMap } from './nodes.js';
 import type * as PluginTypes from './plugin.js';
-import type { PluginAugment } from './plugin.js';
+import type { AnySchemaAugments, PluginAugment } from './plugin.js';
 import type { StatelySchemas } from './schema.js';
 import { createStately } from './stately.js';
 
 // Re-exports
+export type { OpenAPIV3_1 } from 'openapi-types';
 export type {
-  OpenAPIV3_1,
   DefineComponents,
   DefineGeneratedNodes,
   DefineOperations,
   DefineOpenApi,
   DefinePaths,
-  DefineStatelyConfig,
 };
+export type { DefineStatelyConfig } from './generated.js';
+export type { AnySchemaPlugin } from './plugin.js';
 
 /**
  * Public helper for declaring a plugin augment.
@@ -127,7 +126,7 @@ export type DefineConfig<
  */
 export type Schemas<
   out Config extends CoreStatelyConfig = CoreStatelyConfig,
-  Augments extends readonly PluginAugment<string, NodeMap>[] = [],
+  Augments extends AnySchemaAugments = [],
 > = StatelySchemas<Config, readonly [CorePlugin<Config, Augments>, ...Augments]>;
 
 /**

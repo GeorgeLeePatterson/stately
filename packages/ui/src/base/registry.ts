@@ -12,6 +12,13 @@ export type FunctionRegistry = Map<string, (...args: any[]) => any>;
 
 export type Transformer<T, U = T> = (value: T) => U extends never ? T : U;
 
+export interface UiRegistry {
+  components: ComponentRegistry;
+  // TODO: Important! Allow specifying transformer `types`
+  transformers: TransformerRegistry;
+  functions: FunctionRegistry;
+}
+
 /**
  * REGISTRY TYPES
  */

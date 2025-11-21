@@ -8,14 +8,11 @@
 // Plugin
 import { FILES_PLUGIN_NAME, filesPlugin, filesUiPlugin } from './plugin.js';
 
-export type { FilesPlugin, FilesUiPlugin } from './plugin.js';
+export type { FilesOptions, FilesPlugin, FilesUiPlugin } from './plugin.js';
 export { filesPlugin, filesUiPlugin, FILES_PLUGIN_NAME };
 
 // API operations
-import { FILES_OPERATIONS } from './api.js';
-
 export type { FilesApi, FilesOperations, FilesPaths } from './api.js';
-export { FILES_OPERATIONS };
 
 // Schema extensions
 import { FilesNodeType } from './schema.js';

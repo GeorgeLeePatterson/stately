@@ -89,4 +89,5 @@ export type PluginAugment<
   Utils extends DefineUtils<AnyRecord> = AnyRecord,
 > = { name: Name; nodes: Nodes; types?: Types; data?: Data; utils?: Utils };
 
-export type AnyPluginAugment = readonly PluginAugment<string, NodeMap, any, any>[];
+export type AnySchemaPlugin = PluginAugment<string, NodeMap, any, any, any>;
+export type AnySchemaAugments = readonly AnySchemaPlugin[];

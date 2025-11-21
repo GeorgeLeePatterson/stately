@@ -8,13 +8,14 @@
 import type { DefinePlugin, Schemas } from '@stately/schema';
 import { CoreNodeType } from '@stately/schema/core/nodes';
 import type { PluginFactory } from '@stately/schema/stately';
-import type { DefineUiPlugin } from '@stately/ui';
 import {
+  type AnyUiAugments,
   registry as baseRegistry,
   createOperations,
+  type DefineOptions,
+  type DefineUiPlugin,
   type StatelyRuntime,
-  type StatelyUiPluginFactory,
-  type UiPluginAugment,
+  type UiPluginFactory,
 } from '@stately/ui/base';
 import { FILES_OPERATIONS, type FilesPaths } from './api';
 import { primitiveStringTransformer } from './fields/edit/primitive-string';
@@ -29,6 +30,8 @@ import { type FilesUiUtils, type FilesUtils, filesUiUtils } from './utils';
 // =============================================================================
 
 export const FILES_PLUGIN_NAME = 'files' as const;
+
+export type FilesOptions = DefineOptions<{ api: { pathPrefix?: string } }>;
 
 /**
  * Files schema plugin augment type
@@ -67,7 +70,8 @@ export type FilesUiPlugin = DefineUiPlugin<
   typeof FILES_PLUGIN_NAME,
   FilesPaths,
   typeof FILES_OPERATIONS,
-  FilesUiUtils
+  FilesUiUtils,
+  FilesOptions
 >;
 
 /**
@@ -77,8 +81,8 @@ export type FilesUiPlugin = DefineUiPlugin<
  */
 export function filesUiPlugin<
   Schema extends Schemas<any, any> = Schemas,
-  Augments extends readonly UiPluginAugment<string, any, any, any>[] = [],
->({ pathPrefix }: { pathPrefix?: string }): StatelyUiPluginFactory<Schema, Augments> {
+  Augments extends AnyUiAugments = [],
+>(options?: FilesOptions): UiPluginFactory<Schema, Augments> {
   return (runtime: StatelyRuntime<Schema, Augments>) => {
     const { registry, client } = runtime;
 
@@ -102,9 +106,9 @@ export function filesUiPlugin<
     const api = createOperations<FilesPaths, typeof FILES_OPERATIONS>(
       client,
       FILES_OPERATIONS,
-      pathPrefix,
+      options?.api?.pathPrefix ?? runtime.options.api.pathPrefix,
     );
-    const plugin = { [FILES_PLUGIN_NAME]: { api, utils: filesUiUtils } };
+    const plugin = { [FILES_PLUGIN_NAME]: { api, options, utils: filesUiUtils } };
     return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };
   };
 }

@@ -77,8 +77,8 @@
   ],
   "scripts": {
     "build": "tsc --build",
+    "check": "tsc --noEmit",
     "clean": "rm -rf dist .turbo",
-    "typecheck": "tsc --noEmit",
     "test": "tsc --project tsconfig.test.json",
     "dev": "tsc --build --watch"
   },

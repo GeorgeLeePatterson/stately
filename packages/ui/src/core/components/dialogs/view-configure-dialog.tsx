@@ -79,25 +79,23 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
 
         {/* Breadcrumb Navigation */}
         {breadcrumbs.length > 1 && (
-          <>
-            <div className="flex items-center gap-1 text-sm overflow-x-auto pb-2">
-              {breadcrumbs.map((crumb, idx) => (
-                <Fragment key={`${crumb.entityName}-${idx}`}>
-                  {idx > 0 && <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />}
-                  <Button
-                    className="shrink-0 cursor-pointer"
-                    disabled={idx === breadcrumbs.length - 1}
-                    onClick={() => onNavigateToBreadcrumb?.(idx)}
-                    size="sm"
-                    type="button"
-                    variant="ghost"
-                  >
-                    <span className="truncate max-w-[150px]">{crumb.entityType}</span>
-                  </Button>
-                </Fragment>
-              ))}
-            </div>
-          </>
+          <div className="flex items-center gap-1 text-sm overflow-x-auto pb-2 shrink-0">
+            {breadcrumbs.map((crumb, idx) => (
+              <Fragment key={`${crumb.entityName}-${idx}`}>
+                {idx > 0 && <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />}
+                <Button
+                  className="shrink-0 cursor-pointer"
+                  disabled={idx === breadcrumbs.length - 1}
+                  onClick={() => onNavigateToBreadcrumb?.(idx)}
+                  size="sm"
+                  type="button"
+                  variant="ghost"
+                >
+                  <span className="truncate max-w-[150px]">{crumb.entityType}</span>
+                </Button>
+              </Fragment>
+            ))}
+          </div>
         )}
 
         <Separator />
