@@ -1,6 +1,9 @@
-/* biome-ignore-all lint/suspicious/noUnknownAtRules: "" */
-@import "tailwindcss";
-@import "tw-animate-css";
+/**
+ * @stately/ui base styles
+ *
+ * Note: This file contains CSS variables and custom styles.
+ * The consuming app must have Tailwind CSS configured separately.
+ */
 
 @custom-variant dark (&:is(.dark *));
 

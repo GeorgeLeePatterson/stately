@@ -7,6 +7,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./styles.css": "./dist/styles.css",
     "./base": {
       "types": "./dist/base/index.d.ts",
       "import": "./dist/base/index.js"

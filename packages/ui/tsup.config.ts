@@ -31,4 +31,9 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: ["react", "react-dom"],
+  async onSuccess() {
+    // Copy CSS file to dist
+    const fs = await import('fs/promises');
+    await fs.copyFile('src/base/index.css', 'dist/styles.css');
+  },
 });
