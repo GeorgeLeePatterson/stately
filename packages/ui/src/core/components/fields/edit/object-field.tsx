@@ -103,8 +103,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: ObjectFormProps<Schema>) {
-  const { plugins } = useStatelyUi<Schema, []>();
-  const corePlugin = plugins.core;
+  const { utils } = useStatelyUi<Schema, []>();
 
   const { formData, handleFieldChange, handleSave, handleCancel, fields, isDirty, isValid } =
     useObjectField<Schema>({ label, node, onSave: onChange, value });
@@ -115,7 +114,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
         <FieldSet className="min-w-0">
           {fields.map(([propName, propNode], index, arr) => {
             const isRequired = node.required.includes(propName);
-            const propLabel = corePlugin.utils?.generateFieldLabel(propName) || '';
+            const propLabel = utils?.generateFieldLabel(propName) || '';
             const propDescription = propNode.description;
             const propValue = formData?.[propName];
 

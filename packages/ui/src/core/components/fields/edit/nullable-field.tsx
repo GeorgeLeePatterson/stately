@@ -72,7 +72,7 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
           formId={nullableFormId}
           isWizard={isWizard}
           label={label}
-          node={node}
+          node={node.innerSchema}
           onChange={onChange}
           value={value}
         />

@@ -12,13 +12,9 @@
  */
 
 import type { DefineOpenApi } from './generated.js';
+import { UnknownNodeType } from './nodes.js';
 import type { StatelySchemaConfig, StatelySchemas } from './schema.js';
-import {
-  runValidationPipeline,
-  type ValidateArgs,
-  type ValidateHook,
-  type ValidationResult,
-} from './validation.js';
+import type { ValidateArgs, ValidateHook, ValidationResult } from './validation.js';
 
 export interface SchemaRegistry {
   utils: Map<string, (...args: any[]) => unknown>;
@@ -47,8 +43,6 @@ export interface StatelyBuilder<S extends StatelySchemas<any, any>> extends Stat
   withPlugin(plugin: PluginFactory<S>): StatelyBuilder<S>;
 }
 
-// export type StatelySchemaConfig<S> = S extends StatelySchemas<infer Config, any> ? Config : never;
-
 export function createStately<S extends StatelySchemas<any, any>>(
   openapi: DefineOpenApi<any>,
   generatedNodes: S['config']['nodes'],
@@ -57,16 +51,50 @@ export function createStately<S extends StatelySchemas<any, any>>(
     data: {} as S['data'],
     plugins: {} as S['utils'],
     schema: { document: openapi, nodes: generatedNodes },
-    validate: args => runValidationPipeline(baseState, args),
+    validate: args => runValidationPipeline(baseState.plugins, args),
   };
 
   return (function makeBuilder(state: Stately<S>): StatelyBuilder<S> {
     return {
       ...state,
-      validate: args => runValidationPipeline({ ...state }, args),
+      validate: args => runValidationPipeline(state.plugins, args),
       withPlugin(plugin: PluginFactory<S>): StatelyBuilder<S> {
         return makeBuilder(plugin({ ...state }));
       },
     };
   })(baseState);
+}
+
+export function runValidationPipeline<
+  P extends { [key: string]: { validate?: ValidateHook<any> } },
+>(plugins: P, args: ValidateArgs<any>): ValidationResult {
+  const pluginNames = Object.keys(plugins);
+  const hooks = Object.values(plugins)
+    .filter(plugin => !!plugin?.validate)
+    .map(plugin => plugin.validate)
+    .filter((hook): hook is ValidateHook<any> => Boolean(hook));
+
+  const { schema, options } = args ?? {};
+  const debug = options?.debug;
+  if (debug) console.debug('[stately/schema] (Validation) validating:', { args, pluginNames });
+
+  // Handle unknown nodeTypes from codegen - skip validation
+  if (schema.nodeType === UnknownNodeType) {
+    if (debug) console.debug(`[Validation] Skipping unknown nodeType: ${args.schema.nodeType}`);
+    return { errors: [], valid: true };
+  }
+
+  if (hooks.length === 0) {
+    console.debug('[Validation] no validations registered', { args });
+    return { errors: [], valid: true };
+  }
+
+  for (const hook of hooks) {
+    const result = hook(args);
+    if (result) {
+      return result;
+    }
+  }
+
+  return { errors: [], valid: true };
 }

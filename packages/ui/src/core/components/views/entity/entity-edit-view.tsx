@@ -73,7 +73,7 @@ export function EntityEditView<Schema extends Schemas = Schemas>({
         </div>
       </TabsContent>
       <TabsContent value={EditMode.JSON}>
-        <FieldGroup className="min-w-0">
+        <FieldGroup className="min-w-0 py-3">
           <JsonEdit onSave={onChange} value={value} />
         </FieldGroup>
       </TabsContent>

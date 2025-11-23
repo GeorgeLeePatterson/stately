@@ -13,7 +13,7 @@ import type { CoreStatelyConfig } from '../src/core/generated.js';
 import type { ObjectNode, PrimitiveNode } from '../src/core/nodes.js';
 import type { AssertTrue } from '../src/helpers.js';
 import type { DefineGeneratedNodes, DefinePlugin, PluginNodeUnion, Schemas } from '../src/index.js';
-import type { DefineData, DefineNodeMap } from '../src/plugin.js';
+import type { DefineData, DefineNodeMap, DefineUtils } from '../src/plugin.js';
 import { isNodeOfType, type StatelySchemas } from '../src/schema.js';
 
 /**
@@ -170,7 +170,7 @@ function processMultiPluginNode(schema: AllNodeUnion): string {
 
 type FilesData = DefineData<{ fileRegistry: Map<string, string> }>;
 type FilesTypes = { FileMetadata: { size: number; created: Date } };
-type FilesUtils = { resolveFilePath: (path: string) => string };
+type FilesUtils = DefineUtils<{ resolveFilePath: (path: string) => string }>;
 
 type FilesAugmentWithExtras = DefinePlugin<
   'files',
@@ -179,6 +179,9 @@ type FilesAugmentWithExtras = DefinePlugin<
   FilesData,
   FilesUtils
 >;
+
+type FUtils = FilesAugmentWithExtras['utils'];
+type F = FUtils extends Record<string, any> ? FUtils['files'] : never;
 
 type SchemasWithExtras = Schemas<TestConfig, readonly [FilesAugmentWithExtras]>;
 

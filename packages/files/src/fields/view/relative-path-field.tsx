@@ -50,6 +50,7 @@ export function RelativePathFieldView({ value }: { value: any }) {
     return makeLabel(extIcon, value, `Full path: ${value}`, 'External');
   }
 
+  // If not external and not managed, not set
   if (!isManaged) {
     return <NotSet />;
   }

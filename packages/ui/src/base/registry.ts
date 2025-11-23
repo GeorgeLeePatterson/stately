@@ -129,7 +129,7 @@ export function getEditTransformer<
   V = unknown,
 >(
   registry: TransformerRegistry,
-  node: string,
+  node: N['nodeType'],
   state?: string,
 ): Transformer<TransformerEditProps<T, S, N, V>> | undefined {
   return getTransformer<TransformerEditProps<T, S, N, V>>(

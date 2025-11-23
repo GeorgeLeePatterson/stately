@@ -11,6 +11,7 @@ export default defineConfig({
     "base/form/index": "src/base/form/index.ts",
     "base/hooks/index": "src/base/hooks/index.ts",
     "base/lib/utils": "src/base/lib/utils.ts",
+    "base/layout/index": "src/base/layout/index.ts",
     "base/ui/index": "src/base/ui/index.ts",
     // Core
     "core/index": "src/core/index.ts",
@@ -32,7 +33,7 @@ export default defineConfig({
   clean: true,
   external: ["react", "react-dom"],
   async onSuccess() {
-    // Copy CSS file to dist
+    // Copy source CSS file to dist (not compiled - consuming app will process it)
     const fs = await import('fs/promises');
     await fs.copyFile('src/base/index.css', 'dist/styles.css');
   },

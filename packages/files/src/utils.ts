@@ -23,7 +23,7 @@ export type FilesUiUtils = DefineUiUtils<{
   /**
    * Format Unix timestamp to date string
    */
-  formatTimestamp: (timestamp?: number, withTime?: boolean) => string | null;
+  formatTimestamp: (timestamp?: number | string | null, withTime?: boolean) => string | null;
 }>;
 
 /**
@@ -38,9 +38,9 @@ export const filesUiUtils: FilesUiUtils = {
     return `${mb.toFixed(1)}MB`;
   },
 
-  formatTimestamp(timestamp?: number, withTime = false): string | null {
-    if (timestamp === undefined) return null;
-    const date = new Date(timestamp * 1000);
+  formatTimestamp(timestamp?: number | string | null, withTime = false): string | null {
+    if (timestamp === undefined || timestamp === null) return null;
+    const date = typeof timestamp === 'number' ? new Date(timestamp * 1000) : new Date(timestamp);
     if (Number.isNaN(date.getTime())) return null;
     return withTime ? date.toLocaleString() : date.toLocaleDateString();
   },

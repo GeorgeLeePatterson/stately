@@ -2,6 +2,7 @@ import type { Schemas } from '@stately/schema';
 import { SINGLETON_ID } from '@stately/schema/core/utils';
 import { Tuple } from '@stately/schema/helpers';
 import { Fragment, useMemo, useState } from 'react';
+import { devLog } from '@/base';
 import { SimpleLabel } from '@/base/components/simple-label';
 import { FieldView } from '@/base/form/field-view';
 import { JsonView } from '@/base/form/json-view';
@@ -48,8 +49,7 @@ export function EntityDetailView<Schema extends Schemas = Schemas>({
     [entityProperties, entity, node.required, schema.plugins.core.sortEntityProperties],
   );
 
-  console.debug('EntityDetailView: ', { entity, entityType, schema: node });
-  console.debug('EntityDetailView sortedProperties: ', sortedProperties);
+  devLog.debug('Core', 'EntityDetailView', { entity, entityType, node, sortedProperties });
 
   return (
     <div className="space-y-4">
@@ -82,12 +82,11 @@ export function EntityDetailView<Schema extends Schemas = Schemas>({
             fieldValue: unknown;
           } => {
             const fieldValue = entity[fieldName as keyof typeof entity] as unknown;
-            console.debug('EntityDetailView rendering field:', fieldName, { fieldValue, fieldSchema });
-            return {
-              fieldName,
+            console.debug('EntityDetailView rendering field:', fieldName, {
               fieldSchema,
               fieldValue,
-            };
+            });
+            return { fieldName, fieldSchema, fieldValue };
           },
         )
         .filter(property => property.fieldValue !== undefined && property.fieldValue !== null)

@@ -40,8 +40,7 @@ export const ObjectWizardEdit = <
   isLoading,
   isEmbedded,
 }: ObjectWizardEditProps<Schema, Node, V>) => {
-  const { schema, plugins } = useStatelyUi<Schema, []>();
-  const corePlugin = plugins.core;
+  const { schema, utils } = useStatelyUi<Schema, []>();
 
   const onSave = useCallback(
     (data: any) => {
@@ -69,7 +68,7 @@ export const ObjectWizardEdit = <
 
   const [fieldName, propNode] = currentField;
   const isRequired = requiredFields.has(fieldName);
-  const fieldLabel = corePlugin?.utils?.generateFieldLabel?.(fieldName) ?? fieldName;
+  const fieldLabel = utils?.generateFieldLabel?.(fieldName) ?? fieldName;
   const fieldValue = formData?.[fieldName];
 
   const isFirstStep = currentStep === 0;

@@ -7,17 +7,23 @@
 import type { DefineData } from '../plugin.js';
 import type { CoreStatelyConfig } from './generated.js';
 import type { NodeValue, StateEntry } from './helpers.js';
-import { coreUtils } from './utils.js';
 
-// TODO: Remove - include this in data
-// // Generate entity types from metadata
-// const entityTypes = (Object.keys(xeo4Schema.data.entityDisplayNames) as StateEntry[]).map(
-//   entry => ({
-//     description: `${xeo4Schema.data.entityDisplayNames[entry]} configurations`,
-//     label: xeo4Schema.data.entityDisplayNames[entry],
-//     type: xeo4Schema.data.stateEntryToUrl[entry],
-//   }),
-// );
+/**
+ * Generate kebab-case label from string
+ */
+function toKebabCase(str: string): string {
+  return str.replace(/_/g, '-');
+}
+
+/**
+ * Generate title-case label from string
+ */
+function toTitleCase(str: string): string {
+  return str
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 /**
  * Parse entity mappings from the Entity schema's oneOf variants
@@ -74,7 +80,7 @@ function buildUrlToStateEntry<Config extends CoreStatelyConfig = CoreStatelyConf
   entityMappings: Array<{ stateEntry: StateEntry<Config>; schemaName: string }>,
 ): Record<string, StateEntry<Config>> {
   return Object.fromEntries(
-    entityMappings.map(({ stateEntry }) => [coreUtils.toKebabCase(stateEntry), stateEntry]),
+    entityMappings.map(({ stateEntry }) => [toKebabCase(stateEntry), stateEntry]),
   ) as Record<string, StateEntry<Config>>;
 }
 
@@ -85,7 +91,7 @@ function buildStateEntryToUrl<Config extends CoreStatelyConfig = CoreStatelyConf
   entityMappings: Array<{ stateEntry: StateEntry<Config>; schemaName: string }>,
 ): Record<StateEntry<Config>, string> {
   return Object.fromEntries(
-    entityMappings.map(({ stateEntry }) => [stateEntry, coreUtils.toKebabCase(stateEntry)]),
+    entityMappings.map(({ stateEntry }) => [stateEntry, toKebabCase(stateEntry)]),
   ) as Record<StateEntry<Config>, string>;
 }
 
@@ -96,7 +102,7 @@ function buildEntityDisplayNames<Config extends CoreStatelyConfig = CoreStatelyC
   entityMappings: Array<{ stateEntry: StateEntry<Config>; schemaName: string }>,
 ): Record<StateEntry<Config>, string> {
   return Object.fromEntries(
-    entityMappings.map(({ stateEntry }) => [stateEntry, coreUtils.toTitleCase(stateEntry)]),
+    entityMappings.map(({ stateEntry }) => [stateEntry, toTitleCase(stateEntry)]),
   ) as Record<StateEntry<Config>, string>;
 }
 
@@ -107,11 +113,13 @@ function generateCoreData<Config extends CoreStatelyConfig = CoreStatelyConfig>(
   if (!document) return {};
 
   const entityMappings = parseEntityMappings<Config>(document);
+  console.debug('[stately/schema] generated entity mappings: ', { entityMappings });
 
   let entitySchemaCache = {};
   if (generatedNodes) {
     entitySchemaCache = buildEntitySchemaCache<Config>(entityMappings, generatedNodes);
   }
+  console.debug('[stately/schema] generated entity schema cache: ', { entitySchemaCache });
 
   return {
     entityDisplayNames: buildEntityDisplayNames<Config>(entityMappings),

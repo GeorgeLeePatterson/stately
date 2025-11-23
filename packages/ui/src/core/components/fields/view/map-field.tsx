@@ -77,7 +77,9 @@ export function MapView<Schema extends Schemas = Schemas>({ node, value }: MapVi
     <ItemGroup className="space-y-3">
       {entries.map(([key, val]) => (
         <KeyValue itemKey={key} key={key}>
-          <FieldView<Schema> node={node} value={val} />
+          <div className="py-3 px-2">
+            <FieldView<Schema> node={node.valueSchema} value={val} />
+          </div>
         </KeyValue>
       ))}
 

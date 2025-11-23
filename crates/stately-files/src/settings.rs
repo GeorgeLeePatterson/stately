@@ -21,6 +21,8 @@ pub struct Dirs {
 }
 
 impl Dirs {
+    pub fn new(cache: PathBuf, data: PathBuf) -> Self { Self { cache, data } }
+
     // TODO: Improve
     pub fn get() -> &'static Dirs { DIRS.get_or_init(Dirs::default) }
 

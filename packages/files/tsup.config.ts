@@ -11,6 +11,7 @@ export default defineConfig({
     "fields/edit": "src/fields/edit/index.ts",
     "fields/view": "src/fields/view/index.ts",
     "hooks/index": "src/hooks/index.ts",
+    "pages/index": "src/pages/index.ts",
     "types/api": "src/types/api.ts",
     "views/index": "src/views/index.ts",
   },

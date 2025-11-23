@@ -3,7 +3,7 @@ import { Loader2, Upload as UploadIcon } from 'lucide-react';
 import { useCallback, useId } from 'react';
 import { toast } from 'sonner';
 import { useUpload } from '@/hooks';
-import { useFileView } from '@/hooks/use-file-view';
+import { useFileExplore } from '@/hooks/use-file-explore';
 import type { FileInfo } from '@/types/api';
 import { FileExplorer } from './file-explorer';
 
@@ -32,10 +32,9 @@ export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
     [onSelect],
   );
 
-  const { queryResults, currentPath, selectedEntry, handleEntryClick, navigateUp } = useFileView({
-    isDisabled: mode !== 'browse',
-    onSelectFile,
-  });
+  const { queryResults, currentPath, selectedEntry, handleEntryClick, navigateUp } = useFileExplore(
+    { isDisabled: mode !== 'browse', onSelectFile },
+  );
 
   const isLoading = queryResults.isLoading;
   const files = queryResults.data?.files || [];

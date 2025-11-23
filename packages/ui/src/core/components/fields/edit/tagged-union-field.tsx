@@ -31,7 +31,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: TaggedUnionEditProps<Schema>) {
-  const { plugins } = useStatelyUi<Schema, []>();
+  const { plugins, utils } = useStatelyUi<Schema, []>();
   const discriminatorField = node.discriminator;
 
   // Local state for current data
@@ -82,7 +82,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
     onChange(newValue);
   };
 
-  const discriminatorLabel = plugins.core.utils?.generateFieldLabel(discriminatorField);
+  const discriminatorLabel = utils?.generateFieldLabel(discriminatorField);
 
   return (
     <div className="space-y-3 min-w-0">
@@ -96,7 +96,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
           <SelectContent>
             {node.variants.map((variant: (typeof node.variants)[number]) => (
               <SelectItem key={variant.tag} value={variant.tag}>
-                {plugins.core.utils?.generateFieldLabel(variant.tag)}
+                {utils?.generateFieldLabel(variant.tag)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -122,7 +122,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
                         formId={fieldFormId}
                         isRequired={isRequired}
                         isWizard={isWizard}
-                        label={plugins.core.utils?.generateFieldLabel(fieldName)}
+                        label={utils?.generateFieldLabel(fieldName)}
                         node={fieldSchema}
                         onChange={newValue => handleFieldChange(fieldName, newValue)}
                         value={fieldValue}

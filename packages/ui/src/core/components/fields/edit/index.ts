@@ -14,6 +14,7 @@ export type {
   PrimitiveStringEditTransformerProps,
   PrimitiveStringExtra,
   StringMode,
+  StringModeGroup,
 } from './primitive-string';
 
 export {

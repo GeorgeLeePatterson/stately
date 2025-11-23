@@ -1,35 +1,45 @@
 import type { Schemas } from '@stately/schema';
 import { CORE_OPERATIONS, type CorePaths } from '@stately/schema/core/api';
+import type { StateEntry } from '@stately/schema/core/helpers';
 import { CoreNodeType } from '@stately/schema/core/nodes';
 import { CORE_PLUGIN_NAME } from '@stately/schema/core/plugin';
-import type { BaseNode } from '@stately/schema/nodes';
-import type { ComponentType } from 'react';
-import { createOperations } from '@/base';
+import { Cog, Dot } from 'lucide-react';
+import { createOperations, devLog } from '@/base';
 import type { AnyUiPlugin, DefineOptions, DefineUiPlugin, UiPluginFactory } from '@/base/plugin';
 import { type ComponentRegistry, makeRegistryKey, type TransformerRegistry } from '@/base/registry';
-import type { StatelyRuntime } from '@/base/runtime';
+import type { StatelyUiRuntime, UiNavigationOptions } from '@/base/runtime';
 import * as fields from '@/core/components/fields';
 import * as editFields from '@/core/components/fields/edit';
 import * as viewFields from '@/core/components/fields/view';
 import * as linkFields from '@/core/components/views/link';
-import { generateFieldLabel, getDefaultValue, getNodeTypeIcon } from './utils';
+import type { CoreStateEntry } from '.';
+import {
+  type CoreUiUtils,
+  generateEntityTypeDisplay,
+  getDefaultValue,
+  getNodeTypeIcon,
+} from './utils';
 
 const NodeType = CoreNodeType;
 
-// NOTE: Common headers not used yet
-export type CoreUiOptions = DefineOptions<{ api: { headers?: Record<string, string> } }>;
+export interface CoreEntityOptions {
+  // Accept any icon component type - consumers may use lucide-react (ForwardRefExoticComponent),
+  // or other icon libraries. We only render them as <Icon />, so runtime safety is guaranteed.
+  icons: Record<StateEntry, React.ComponentType<any>>;
+}
 
-export type CorePluginUtils = {
-  getNodeTypeIcon: (nodeType: string) => ComponentType<any>;
-  generateFieldLabel: (fieldName: string) => string;
-  getDefaultValue: (node: BaseNode) => any;
-};
+// NOTE: Common headers not used yet
+export type CoreUiOptions = DefineOptions<{
+  api?: { pathPrefix?: string };
+  entities: CoreEntityOptions;
+}>;
 
 export type CoreUiPlugin = DefineUiPlugin<
   typeof CORE_PLUGIN_NAME,
   CorePaths,
   typeof CORE_OPERATIONS,
-  CorePluginUtils
+  CoreUiUtils,
+  CoreUiOptions
 >;
 
 /**
@@ -37,12 +47,12 @@ export type CoreUiPlugin = DefineUiPlugin<
  *
  * Create the core UI plugin factory.
  * Populates the runtime with core plugin data (components, api, utils).
- * The runtime type already declares CoreUiAugment; this factory fulfills it.
+ * The runtime type already declares CoreUiPlugin; this factory fulfills it.
  */
 export function coreUiPlugin<Schema extends Schemas, Augments extends readonly AnyUiPlugin[]>(
   options?: CoreUiOptions,
 ): UiPluginFactory<Schema, readonly [CoreUiPlugin, ...Augments]> {
-  return (runtime: StatelyRuntime<Schema, readonly [CoreUiPlugin, ...Augments]>) => {
+  return (runtime: StatelyUiRuntime<Schema, readonly [CoreUiPlugin, ...Augments]>) => {
     // Register core components
     registerCoreComponents(runtime.registry.components);
 
@@ -56,13 +66,22 @@ export function coreUiPlugin<Schema extends Schemas, Augments extends readonly A
       CORE_OPERATIONS,
       pathPrefix,
     );
-    console.debug('[stately/ui] registered core plugin', { options, pathPrefix, runtime });
+    devLog.debug('Core', 'registered core plugin', { options, pathPrefix, runtime });
 
-    const plugin = {
-      api,
-      options,
-      utils: { generateFieldLabel, getDefaultValue, getNodeTypeIcon },
+    const entityIcons = options?.entities?.icons || {};
+    const utils: CoreUiUtils = {
+      generateEntityTypeDisplay,
+      getDefaultValue,
+      getEntityIcon<S extends Schema>(entity: CoreStateEntry<S>) {
+        return entityIcons?.[entity] ?? Dot;
+      },
+      getNodeTypeIcon,
     };
+
+    const entityRoutes = createEntityRoutes(runtime.schema.data, utils);
+    devLog.debug('Core', 'created entity routes', { entityIcons, entityRoutes });
+
+    const plugin = { api, options, routes: entityRoutes, utils };
     return { ...runtime, plugins: { ...runtime.plugins, [CORE_PLUGIN_NAME]: plugin } };
   };
 }
@@ -108,4 +127,19 @@ function registerCoreTransformers(registry: TransformerRegistry) {
     makeRegistryKey(NodeType.Primitive, 'edit', 'transformer', 'string'),
     fields.defaultPrimitiveStringTransformer,
   );
+}
+
+function createEntityRoutes<Schema extends Schemas = Schemas>(
+  data: Schema['data'],
+  utils: CoreUiUtils,
+): UiNavigationOptions['routes'] {
+  const sidebarItems = utils
+    .generateEntityTypeDisplay(data)
+    .map(({ entity, label, type }) => ({
+      icon: utils.getEntityIcon(entity),
+      label,
+      to: `/entities/${type}`,
+    }));
+
+  return { icon: Cog, items: sidebarItems, label: 'Configuration', to: '/entities' };
 }

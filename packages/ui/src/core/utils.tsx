@@ -1,3 +1,4 @@
+import type { Schemas } from '@stately/schema';
 import {
   type ArrayNode,
   CoreNodeType,
@@ -13,29 +14,26 @@ import {
 } from '@stately/schema/core/nodes';
 import type { BaseNode } from '@stately/schema/nodes';
 import { isNodeOfType } from '@stately/schema/schema';
-import { Braces, Brackets, Cog, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
+import type { Stately } from '@stately/schema/stately';
+import { Braces, Brackets, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
 import type { ComponentType } from 'react';
+import type { CoreStateEntry } from '.';
 
-export interface CoreUtils {
-  generateFieldLabel(field: string): string;
-  getNodeTypeIcon(nodeType: string): ComponentType<any>;
+export interface CoreUiUtils {
+  // Base overrides
+  getNodeTypeIcon(nodeType: string): ComponentType<any> | null;
   getDefaultValue(node: BaseNode): any;
-}
-
-/**
- * Generate kebab-case label from field name
- */
-export function generateFieldLabel(field: string): string {
-  return field
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .replace(/_/g, '-')
-    .toLowerCase();
+  // Core specific
+  generateEntityTypeDisplay<S extends Schemas = Schemas>(
+    data: Stately<S>['data'],
+  ): { description: string; label: string; type: string; entity: CoreStateEntry<S> }[];
+  getEntityIcon<S extends Schemas = Schemas>(entity: CoreStateEntry<S>): ComponentType<any>;
 }
 
 /**
  * Get icon component for a node type
  */
-export function getNodeTypeIcon(nodeType: string): ComponentType<any> {
+export function getNodeTypeIcon(nodeType: string): ComponentType<any> | null {
   switch (nodeType) {
     case CoreNodeType.Object:
       return Braces;
@@ -49,7 +47,7 @@ export function getNodeTypeIcon(nodeType: string): ComponentType<any> {
     case CoreNodeType.RecursiveRef:
       return SendToBack;
     default:
-      return Cog;
+      return null;
   }
 }
 
@@ -110,4 +108,16 @@ export function getDefaultValue(node: BaseNode): any {
     default:
       return null;
   }
+}
+
+// Generate entity types from metadata
+export function generateEntityTypeDisplay<S extends Schemas = Schemas>(
+  data: Stately<S>['data'],
+): { description: string; label: string; type: string; entity: CoreStateEntry<S> }[] {
+  return (Object.keys(data.entityDisplayNames) as CoreStateEntry<S>[]).map(entry => ({
+    description: `${data.entityDisplayNames[entry]} configurations`,
+    entity: entry,
+    label: data.entityDisplayNames[entry],
+    type: data.stateEntryToUrl[entry],
+  }));
 }

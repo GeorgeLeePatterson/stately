@@ -1,9 +1,10 @@
 import type { AnyPaths, OperationBindings } from '@stately/schema/api';
-import type { AnyRecord, EmptyRecord, NeverRecord, RequireLiteral } from '@stately/schema/helpers';
+import type { AnyRecord, EmptyRecord, RequireLiteral } from '@stately/schema/helpers';
 import type { StatelySchemas } from '@stately/schema/schema';
 import type { ComponentType } from 'react';
 import type { TypedOperations } from './api';
-import type { StatelyRuntime, UiOptions } from './runtime';
+import type { StatelyUiRuntime, UiNavigationOptions } from './runtime';
+import type { UiUtils } from './utils';
 
 /**
  * Plugin factory function signature.
@@ -15,18 +16,26 @@ import type { StatelyRuntime, UiOptions } from './runtime';
 export type UiPluginFactory<
   Schema extends StatelySchemas<any, any>,
   Augments extends readonly AnyUiPlugin[] = readonly [],
-> = (runtime: StatelyRuntime<Schema, Augments>) => StatelyRuntime<Schema, Augments>;
+> = (runtime: StatelyUiRuntime<Schema, Augments>) => StatelyUiRuntime<Schema, Augments>;
+
+export type DeepPartialExtends<T extends object> = T extends ComponentType<any>
+  ? T
+  : T extends Record<string, any>
+    ? {
+        [K in keyof T]: DeepPartialExtends<T[K]>;
+      } & Record<string, any>
+    : T;
 
 /**
  * Specify options for a plugin
  */
-export type DeepPartialExtends<T extends object> = T extends Record<string, any>
-  ? {
-      [K in keyof T]?: DeepPartialExtends<T[K]>;
-    } & Record<string, any>
-  : T;
+export type DefineOptions<T extends object = EmptyRecord> = T;
 
-export type DefineOptions<T extends object> = DeepPartialExtends<UiOptions> & T;
+/**
+ * Specify routes for a plugin
+ */
+export type DefineRoutes<T extends UiNavigationOptions['routes'] = UiNavigationOptions['routes']> =
+  T;
 
 /**
  * Public helper for declaring a ui plugin augment.
@@ -38,20 +47,17 @@ export type DefineUiPlugin<
   Name extends string,
   Paths extends AnyPaths,
   Ops extends OperationBindings<any, any>,
-  Utils extends PluginFunctionMap = PluginFunctionMap,
+  Utils extends DefineUiUtils<object> = DefineUiUtils<any>,
   Options extends DefineOptions<any> = EmptyRecord,
+  Routes extends DefineRoutes = DefineRoutes,
 > = UiPlugin<
   RequireLiteral<Name, 'Plugin names must be string literals'>,
   Paths,
   Ops,
   Utils,
-  Options
+  Options,
+  Routes
 >;
-
-/**
- * Define utility functions for a plugin.
- */
-export type DefineUiUtils<T extends PluginFunctionMap = PluginFunctionMap> = T;
 
 /**
  * Generic plugin function
@@ -64,23 +70,21 @@ export type PluginFunction = (...args: any[]) => unknown;
 export type PluginFunctionMap = Record<string, PluginFunction>;
 
 /**
- * Base plugin utilities.
- *
- * The utilities here will delegate to each plugin's runtime.
+ * Define utility functions for a plugin.
  */
-export type PluginUtils<Utils extends PluginFunctionMap = PluginFunctionMap> = Utils & {
-  getNodeTypeIcon?: (node: string) => ComponentType<any> | null;
-};
+export type DefineUiUtils<T extends object = PluginFunctionMap> = T & Partial<UiUtils>;
 
 export interface PluginRuntime<
   Paths extends AnyPaths,
   Ops extends OperationBindings<Paths, any>,
-  Utils extends PluginFunctionMap = PluginFunctionMap,
+  Utils extends DefineUiUtils<any> = PluginFunctionMap,
   Options extends DefineOptions<any> = EmptyRecord,
+  Routes extends DefineRoutes = DefineRoutes,
 > {
   api?: TypedOperations<Paths, Ops>;
-  utils?: PluginUtils<Utils>;
+  utils?: Utils;
   options?: Options;
+  routes?: Routes;
 }
 
 /**
@@ -104,21 +108,17 @@ type UiPlugin<
   Name extends string,
   Paths extends AnyPaths,
   Ops extends OperationBindings<any, any>,
-  Utils extends PluginFunctionMap = PluginFunctionMap,
+  Utils extends DefineUiUtils<any> = PluginFunctionMap,
   Options extends DefineOptions<any> = EmptyRecord,
-> = { name: Name; paths: Paths; ops: Ops; utils?: PluginUtils<Utils>; options?: Options };
+  Routes extends DefineRoutes = DefineRoutes,
+> = { name: Name; paths: Paths; ops: Ops; utils?: Utils; options?: Options; routes?: Routes };
 
-export type AnyUiPlugin = UiPlugin<string, any, any, any, any>;
-export type AnyUiAugments = readonly UiPlugin<string, any, any, any, any>[];
+export type AnyUiPlugin = UiPlugin<string, any, any, any, any, any>;
+export type AnyUiAugments = readonly UiPlugin<string, any, any, any, any, any>[];
 
 /**
  * Merge augments into a type-safe plugin map.
  * Extracts the Name from each UiAugment and uses it as a key in the result.
- *
- * Takes Schema to extract Paths, then instantiates PluginRuntime with those Paths.
- * Processes right-to-left (...Rest, Last) to enable incremental type addition.
- *
- * MergeUiAugments<Schema, [...Base, New]> = MergeUiAugments<Schema, Base> & { [New.name]: ... }
  */
 export type MergeUiAugments<
   Schema extends StatelySchemas<any, any>,
@@ -128,18 +128,25 @@ export type MergeUiAugments<
   infer Last extends AnyUiPlugin,
 ]
   ? MergeUiAugments<Schema, Rest> &
-      (Last extends UiPlugin<infer Name, infer Paths, infer Ops, infer Utils, infer Options>
+      (Last extends UiPlugin<
+        infer Name,
+        infer Paths,
+        infer Ops,
+        infer Utils,
+        infer Options,
+        infer Routes
+      >
         ? {
-            [K in Name]: PluginRuntime<Paths, Ops, Utils, Options>;
+            [K in Name]: PluginRuntime<Paths, Ops, Utils, Options, Routes>;
           }
         : AnyRecord)
-  : NeverRecord;
+  : Record<string, PluginRuntime<any, any>>;
 
 /**
  * Extract the merged plugin record type from an augments array.
  * Distributes each augment's contribution into a single type-safe record.
  */
-export type AllPlugins<
+export type AllUiPlugins<
   Schema extends StatelySchemas<any, any>,
   Augments extends readonly AnyUiPlugin[],
 > = MergeUiAugments<Schema, Augments>;

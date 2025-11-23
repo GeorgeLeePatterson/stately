@@ -1,19 +1,27 @@
+import { Moon, Sun } from 'lucide-react';
 import { createContext, useContext, useEffect, useState } from 'react';
-
-type Theme = 'dark' | 'light' | 'system';
-
-type ThemeProviderProps = { children: React.ReactNode; defaultTheme?: Theme; storageKey?: string };
+import { cn } from './lib/utils';
 
 type ThemeProviderState = { theme: Theme; setTheme: (theme: Theme) => void };
 
 const initialState: ThemeProviderState = { setTheme: () => null, theme: 'system' };
-
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
+
+export type Theme = 'dark' | 'light' | 'system';
+
+export type ThemeProviderProps = {
+  children: React.ReactNode;
+  defaultTheme?: Theme;
+  storageKey?: string;
+};
+
+export const defaultThemeOption: Theme = 'system';
+export const defaultStorageKey = 'stately-ui-theme';
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
-  storageKey = 'xeo4-ui-theme',
+  defaultTheme = defaultThemeOption,
+  storageKey = defaultStorageKey,
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
@@ -59,3 +67,32 @@ export const useTheme = () => {
 
   return context;
 };
+
+export function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+
+  // Determine the effective theme (handles 'system' mode)
+  const isDark =
+    theme === 'dark' ||
+    (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  const toggleTheme = () => {
+    // Toggle between light and dark (always set explicit theme, not system)
+    setTheme(isDark ? 'light' : 'dark');
+  };
+
+  return (
+    <button
+      aria-label="Toggle theme"
+      className={cn(
+        'flex items-center justify-center w-9 h-9 rounded-md',
+        'hover:bg-accent hover:text-accent-foreground transition-colors',
+        'text-muted-foreground cursor-pointer',
+      )}
+      onClick={toggleTheme}
+      type="button"
+    >
+      {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+    </button>
+  );
+}

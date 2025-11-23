@@ -45,9 +45,9 @@ export function EntitySelectEdit<Schema extends Schemas = Schemas>({
   isReadOnly,
   isLoading,
 }: EntitySelectEditProps<Schema>) {
-  const { schema, plugins } = useStatelyUi<Schema, []>();
+  const { schema, utils } = useStatelyUi<Schema, []>();
   const entityDisplayName = schema.data.entityDisplayNames?.[targetType] ?? String(targetType);
-  const label = plugins.core.utils?.generateFieldLabel(targetType);
+  const label = utils?.generateFieldLabel(targetType);
   const formId = useId();
   const fieldId = `select-${targetType}-${formId}`;
   const selected = value ? available.find(entity => entity.id === value) : null;

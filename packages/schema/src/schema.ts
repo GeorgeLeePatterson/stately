@@ -6,9 +6,32 @@
  * views are assembled while still presenting a clean surface at the package root.
  */
 import type { GeneratedNodeMap, StatelyConfig } from './generated';
-import type { AnyRecord, EmptyRecord, NeverRecord, UnionToIntersection } from './helpers';
+import type { AnyRecord, EmptyRecord, UnionToIntersection } from './helpers';
 import type { BaseNode, NodeInformation, NodeMap } from './nodes';
 import type { AnySchemaAugments, PluginAugment } from './plugin';
+import type { ValidateHook } from './validation';
+
+/**
+ * Base schema builder – derives shared surface area without core additions.
+ *
+ * This type helper is the core type helper, without any assumptions baked in, not even "core".
+ * Prefer the exported `Schemas` in the entrypoint of the package.
+ *
+ * Variance annotation enforces that Config can only be used covariantly, preventing
+ * invariant-causing patterns like `keyof Config['nodes']` from being introduced.
+ */
+export type StatelySchemas<out Config extends StatelyConfig, Augments extends AnySchemaAugments> = {
+  /** Store raw configuration and plugin augmentations */
+  config: Config;
+  augments: Augments;
+  generated: NodeInformation<GeneratedNodeMap<Config>>;
+  plugin: NodeInformation<AugmentPluginNodes<Augments>>;
+  types: AugmentPluginTypes<Augments>;
+  data: AugmentPluginData<Augments>;
+  utils: AugmentPluginUtils<Augments>;
+};
+
+export type StatelySchemaConfig<S> = S extends StatelySchemas<infer Config, any> ? Config : never;
 
 /**
  * Type guard for narrowing plugin node unions by nodeType.
@@ -73,30 +96,8 @@ type AugmentPluginUtils<Augments> = Augments extends readonly [
   infer Last extends PluginAugment<string>,
 ]
   ? AugmentPluginUtils<Rest> & PluginUtilsOf<Last>
-  : NeverRecord;
+  : EmptyRecord;
 
 type PluginUtilsOf<Augment> = Augment extends PluginAugment<infer Name, any, any, any, infer Utils>
-  ? { [K in Name]: Utils }
+  ? { [K in Name]: Utils extends Record<string, any> ? Utils & { validate?: ValidateHook } : Utils }
   : AnyRecord;
-
-/**
- * Base schema builder – derives shared surface area without core additions.
- *
- * This type helper is the core type helper, without any assumptions baked in, not even "core".
- * Prefer the exported `Schemas` in the entrypoint of the package.
- *
- * Variance annotation enforces that Config can only be used covariantly, preventing
- * invariant-causing patterns like `keyof Config['nodes']` from being introduced.
- */
-export type StatelySchemas<out Config extends StatelyConfig, Augments extends AnySchemaAugments> = {
-  /** Store raw configuration and plugin augmentations */
-  config: Config;
-  augments: Augments;
-  generated: NodeInformation<GeneratedNodeMap<Config>>;
-  plugin: NodeInformation<AugmentPluginNodes<Augments>>;
-  types: AugmentPluginTypes<Augments>;
-  data: AugmentPluginData<Augments>;
-  utils: AugmentPluginUtils<Augments>;
-};
-
-export type StatelySchemaConfig<S> = S extends StatelySchemas<infer Config, any> ? Config : never;

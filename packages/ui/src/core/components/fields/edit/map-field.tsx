@@ -208,11 +208,11 @@ export function MapEdit<Schema extends Schemas = Schemas>({
                       isWizard={isWizard}
                       label={saveLabels.edit}
                       newValue={editValue}
-                      node={node}
+                      node={node.valueSchema}
                       setNewValue={setEditValue}
                     />
                   ) : (
-                    <FieldView<Schema> node={node} value={itemValue} />
+                    <FieldView<Schema> node={node.valueSchema} value={itemValue} />
                   )}
                 </KeyValue>
               ))}
@@ -266,7 +266,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
             isWizard={isWizard}
             label={saveLabels.save}
             newValue={newValue}
-            node={node}
+            node={node.valueSchema}
             setNewValue={setNewValue}
           />
         </div>

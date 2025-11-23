@@ -122,7 +122,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
                   <div className="flex-auto">
                     <FieldEdit
                       formId={`${arrayFormId}-${index}`}
-                      node={node}
+                      node={itemNode}
                       onChange={newValue => handleChange(index, newValue)}
                       value={item}
                     />
@@ -145,7 +145,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
                   </div>
                 </Field>
               ) : (
-                <Field key={`${node.nodeType}-${index}`}>
+                <Field key={`${itemNode.nodeType}-${index}`}>
                   <div className="flex items-center justify-between px-3 pt-2">
                     <h6 className="text-sm">{getItemLabel(index, item)}</h6>
                     <Button
@@ -164,7 +164,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
                     formId={`${arrayFormId}-${index}`}
                     isWizard={isWizard}
                     label={''}
-                    node={node}
+                    node={itemNode}
                     onChange={newValue => handleChange(index, newValue)}
                     value={item}
                   />

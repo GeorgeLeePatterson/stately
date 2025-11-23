@@ -1,4 +1,4 @@
-import { RemoveDialog } from './remove-dialog';
+import { ConfirmDialog, modeClasses } from './confirm-dialog';
 
-export type { RemoveDialogProps } from './remove-dialog';
-export { RemoveDialog };
+export type { ConfirmDialogProps } from './confirm-dialog';
+export { ConfirmDialog, modeClasses };

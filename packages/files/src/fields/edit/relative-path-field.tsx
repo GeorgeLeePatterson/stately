@@ -14,7 +14,7 @@ import {
 } from '@stately/ui/base/ui';
 import type { StringMode } from '@stately/ui/core/components/fields/edit';
 import { ExternalLink, FilePlus2, FileSearch2, FileText } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 import { useSaveFile } from '@/hooks/use-save-file';
 import type { FileUploadResponse } from '@/types/api';
@@ -93,35 +93,33 @@ export function RelativePathEdit({
   }, [filename, content, saveMutation]);
 
   // Mode selector dropdown (same for all cases)
-  const modeSelector = useMemo(() => {
-    const Icon = currentModeConfig?.icon ?? FileText;
-    return (
-      <ButtonGroup>
-        <Select onValueChange={v => setMode(v as RelativePathMode)} value={mode}>
-          <SelectTrigger className="w-auto min-w-12 gap-1.5 bg-background" id={`select-${formId}`}>
-            <Icon />
-          </SelectTrigger>
-          <SelectContent className="min-w-40">
-            <SelectGroup>
-              <SelectLabel>Path Type</SelectLabel>
-              {RELATIVE_PATH_MODES.map(m => {
-                const ModeIcon = m.icon;
-                return (
-                  <SelectItem key={m.value} value={m.value}>
-                    <div className="flex items-center gap-2">
-                      <ModeIcon />
-                      <span>{m.label}</span>
-                      <span className="text-muted-foreground text-xs">• {m.description}</span>
-                    </div>
-                  </SelectItem>
-                );
-              })}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </ButtonGroup>
-    );
-  }, [mode, formId, currentModeConfig?.icon]);
+  const Icon = currentModeConfig?.icon ?? FileText;
+  const modeSelector = (
+    <ButtonGroup>
+      <Select onValueChange={v => setMode(v as RelativePathMode)} value={mode}>
+        <SelectTrigger className="w-auto min-w-12 gap-1.5 bg-background" id={`select-${formId}`}>
+          <Icon />
+        </SelectTrigger>
+        <SelectContent className="min-w-40">
+          <SelectGroup>
+            <SelectLabel>Path Type</SelectLabel>
+            {RELATIVE_PATH_MODES.map(m => {
+              const ModeIcon = m.icon;
+              return (
+                <SelectItem key={m.value} value={m.value}>
+                  <div className="flex items-center gap-2">
+                    <ModeIcon />
+                    <span>{m.label}</span>
+                    <span className="text-muted-foreground text-xs">• {m.description}</span>
+                  </div>
+                </SelectItem>
+              );
+            })}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </ButtonGroup>
+  );
 
   // For all other cases (external, or undefined, or switching modes)
   return (

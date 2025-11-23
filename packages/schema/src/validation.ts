@@ -1,6 +1,5 @@
-import { type BaseNode, UnknownNodeType } from './nodes.js';
+import type { BaseNode } from './nodes.js';
 import type { StatelySchemas } from './schema.js';
-import type { Stately } from './stately.js';
 
 export interface ValidationError {
   path: string;
@@ -40,38 +39,3 @@ export interface ValidateArgs<
 export type ValidateHook<S extends StatelySchemas<any, any> = StatelySchemas<any, any>> = (
   args: ValidateArgs<S>,
 ) => ValidationResult | undefined;
-
-export function runValidationPipeline<S extends StatelySchemas<any, any>>(
-  state: Stately<S>,
-  args: ValidateArgs<S>,
-): ValidationResult {
-  // TODO: Remove
-  console.debug('[stately/schema] validation pipeline', { args, state });
-
-  // Handle unknown nodeTypes from codegen - skip validation
-  if (args.schema.nodeType === UnknownNodeType) {
-    if (args.options?.debug) {
-      console.debug(`[Validation] Skipping unknown nodeType: ${args.schema.nodeType}`);
-    }
-    return { errors: [], valid: true };
-  }
-
-  const hooks = Object.values(state.plugins as Record<string, any>)
-    .map(plugin => plugin?.validate)
-    .filter((hook): hook is ValidateHook<S> => Boolean(hook));
-
-  if (hooks.length === 0) {
-    throw new Error(
-      'No schema validators registered. Apply at least one plugin before using validate().',
-    );
-  }
-
-  for (const hook of hooks) {
-    const result = hook(args);
-    if (result) {
-      return result;
-    }
-  }
-
-  return { errors: [], valid: true };
-}

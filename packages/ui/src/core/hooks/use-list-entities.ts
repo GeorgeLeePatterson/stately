@@ -1,5 +1,6 @@
 import type { Schemas } from '@stately/schema';
 import { useQuery } from '@tanstack/react-query';
+import { devLog } from '@/base';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
 
@@ -14,7 +15,8 @@ export function useListEntities<Schema extends Schemas = Schemas>({
     queryFn: async () => {
       if (!coreApi) throw new Error('Core entity API is unavailable.');
       const { data, error } = await coreApi.list_entities({ params: { path: { type: entity } } });
-      if (error) throw new Error('Failed to fetch entities');
+      if (error) throw new Error('Failed to list entities');
+      devLog.debug('Core', 'Successfully listed entities', { data, entity });
       return data;
     },
     queryKey: ['entities', entity],

@@ -26,7 +26,7 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: UntaggedEnumEditProps<Schema>) {
-  const { plugins } = useStatelyUi<Schema, []>();
+  const { plugins, utils } = useStatelyUi<Schema, []>();
 
   // Extract current tag from the single property key
   let currentTag: string | null = null;
@@ -67,7 +67,7 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
           <SelectContent>
             {node.variants.map((variant: (typeof node.variants)[number]) => (
               <SelectItem key={variant.tag} value={variant.tag}>
-                {plugins.core.utils?.generateFieldLabel(variant.tag)}
+                {utils?.generateFieldLabel(variant.tag)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -83,7 +83,7 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
           <FieldEdit<Schema>
             formId={`untagged-enum-${currentTag}-${formId}`}
             isWizard={isWizard}
-            label={`${plugins.core.utils?.generateFieldLabel(currentTag)} Configuration`}
+            label={`${utils?.generateFieldLabel(currentTag)} Configuration`}
             node={currentVariant.schema}
             onChange={newValue => handleFieldChange(currentTag, newValue)}
             value={value[currentTag]}

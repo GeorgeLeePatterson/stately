@@ -1,8 +1,18 @@
 /**
  * @stately/ui base styles
  *
- * Note: This file contains CSS variables and custom styles.
- * The consuming app must have Tailwind CSS configured separately.
+ * REQUIRED SETUP for Tailwind CSS v4:
+ *
+ * In your app's main CSS file, add the following in this exact order:
+ *
+ * @import "tailwindcss";
+ * @source "../node_modules/@stately/** /dist";
+ * @import "@stately/ui/styles.css";
+ *
+ * The wildcard @source pattern automatically includes all Stately packages
+ * (core UI + plugins). This is required because node_modules is automatically
+ * excluded from Tailwind's class detection. Without it, utility classes
+ * used in Stately components won't be generated.
  */
 
 @custom-variant dark (&:is(.dark *));

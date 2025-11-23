@@ -1,4 +1,5 @@
 import type { Schemas } from '@stately/schema';
+import { Cog } from 'lucide-react';
 import type { ComponentProps } from 'react';
 import { cn } from '@/base/lib/utils';
 import { Item, ItemContent } from '@/base/ui/item';
@@ -18,15 +19,16 @@ export function EntityPropertyLabel<Schema extends Schemas = Schemas>({
   node,
   isRequired,
 }: Omit<EntityPropertyProps<Schema>, 'compact'>) {
-  const { schema, plugins, utils: runtimeUtils } = useStatelyUi<Schema, []>();
-  const NodeTypeIcon = runtimeUtils.getNodeTypeIcon(schema.plugins.core.extractNodeType(node));
+  const { schema, utils: runtimeUtils } = useStatelyUi<Schema, []>();
+  const NodeTypeIcon =
+    runtimeUtils.getNodeTypeIcon(schema.plugins.core.extractNodeType(node)) ?? Cog;
   return (
     <div className="flex items-center gap-2 min-w-0">
       <NodeTypeIcon className="w-4 h-4 text-primary shrink-0" />
       <div className="font-semibold text-sm">
         {typeof fieldName === 'string' ? (
           <>
-            {plugins.core.utils?.generateFieldLabel(fieldName)}
+            {runtimeUtils?.generateFieldLabel(fieldName)}
             {isRequired && <span className="text-destructive ml-1">*</span>}
           </>
         ) : (

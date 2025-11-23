@@ -9,14 +9,16 @@ import type { DefinePlugin, Schemas } from '@stately/schema';
 import { CoreNodeType } from '@stately/schema/core/nodes';
 import type { PluginFactory } from '@stately/schema/stately';
 import {
-  type AnyUiAugments,
+  type AnyUiPlugin,
   registry as baseRegistry,
   createOperations,
   type DefineOptions,
   type DefineUiPlugin,
-  type StatelyRuntime,
+  devLog,
   type UiPluginFactory,
 } from '@stately/ui/base';
+import type { SidebarItem } from '@stately/ui/base/layout';
+import { Files } from 'lucide-react';
 import { FILES_OPERATIONS, type FilesPaths } from './api';
 import { primitiveStringTransformer } from './fields/edit/primitive-string';
 import { RelativePathEdit } from './fields/edit/relative-path-field';
@@ -31,7 +33,7 @@ import { type FilesUiUtils, type FilesUtils, filesUiUtils } from './utils';
 
 export const FILES_PLUGIN_NAME = 'files' as const;
 
-export type FilesOptions = DefineOptions<{ api: { pathPrefix?: string } }>;
+export type FilesOptions = DefineOptions<{ api?: { pathPrefix?: string } }>;
 
 /**
  * Files schema plugin augment type
@@ -43,6 +45,8 @@ export type FilesPlugin = DefinePlugin<
   FilesData,
   FilesUtils
 >;
+
+export const filesRoutes: SidebarItem = { icon: Files, label: 'Files', to: '/files' };
 
 /**
  * Create files schema plugin
@@ -81,15 +85,17 @@ export type FilesUiPlugin = DefineUiPlugin<
  */
 export function filesUiPlugin<
   Schema extends Schemas<any, any> = Schemas,
-  Augments extends AnyUiAugments = [],
+  Augments extends readonly AnyUiPlugin[] = [],
 >(options?: FilesOptions): UiPluginFactory<Schema, Augments> {
-  return (runtime: StatelyRuntime<Schema, Augments>) => {
+  return runtime => {
+    devLog.debug('Files', 'registering', { options, runtime });
+
     const { registry, client } = runtime;
 
     // Register components
     registry.components.set(
       baseRegistry.makeRegistryKey(FilesNodeType.RelativePath, 'edit'),
-      RelativePathEdit,
+      props => <RelativePathEdit {...props} standalone />,
     );
     registry.components.set(
       baseRegistry.makeRegistryKey(FilesNodeType.RelativePath, 'view'),
@@ -103,12 +109,18 @@ export function filesUiPlugin<
     );
 
     // Create typed operations with user's prefix
+    const pathPrefix = options?.api?.pathPrefix ?? runtime.options.api?.pathPrefix;
     const api = createOperations<FilesPaths, typeof FILES_OPERATIONS>(
       client,
       FILES_OPERATIONS,
-      options?.api?.pathPrefix ?? runtime.options.api.pathPrefix,
+      pathPrefix,
     );
-    const plugin = { [FILES_PLUGIN_NAME]: { api, options, utils: filesUiUtils } };
+    devLog.debug('Files', 'registered plugin', { options, pathPrefix, runtime });
+
+    const routes = filesRoutes;
+    devLog.debug('Files', 'registered routes', { filesRoutes });
+
+    const plugin = { [FILES_PLUGIN_NAME]: { api, options, routes, utils: filesUiUtils } };
     return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };
   };
 }

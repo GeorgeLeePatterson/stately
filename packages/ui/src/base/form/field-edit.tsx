@@ -9,6 +9,7 @@ import type { BaseNode } from '@stately/schema/nodes';
 import type { StatelySchemas } from '@stately/schema/schema';
 import { getEditComponent } from '@/base/registry';
 import { useStatelyUi } from '@/index';
+import { devLog } from '../lib/utils';
 
 export interface EditFieldProps<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
@@ -35,9 +36,14 @@ export function FieldEdit<
   const { registry } = useStatelyUi();
   const Edit = getEditComponent<S, N, V>(registry.components, node.nodeType);
 
+  devLog.debug('FieldEdit', 'rendering', { node, value: props.value });
+
   if (!Edit) {
+    console.warn('FieldEdit: No view component found for nodeType:', node.nodeType);
     return <div className="text-destructive text-sm">Unknown node type: {node.nodeType}</div>;
   }
+
+  devLog.debug('FieldEdit', 'found Edit component for:', node.nodeType);
 
   return <Edit {...props} />;
 }

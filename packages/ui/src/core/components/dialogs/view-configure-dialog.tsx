@@ -62,6 +62,7 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
   });
 
   // Extract the entity data and remove id for display
+  const entityId = data?.id;
   const entityData = data?.entity?.data;
 
   return (
@@ -123,6 +124,7 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
           ) : (
             <EntityDetailView
               entity={entityData}
+              entityId={entityId}
               entityType={entityType}
               node={entitySchema.node}
             />

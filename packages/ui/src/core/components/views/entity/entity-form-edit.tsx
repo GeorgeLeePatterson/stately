@@ -24,7 +24,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
   isRootEntity,
   isLoading,
 }: EntityFormEditProps<Schema>) {
-  const { schema, plugins } = useStatelyUi<Schema, []>();
+  const { schema, utils } = useStatelyUi<Schema, []>();
   const formId = useId();
 
   const formEnabled = !('name' in node.properties) || (isRootEntity && !!value?.name);
@@ -72,7 +72,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
       <FieldSet className="group disabled:opacity-40 min-w-0" disabled={!formEnabled}>
         {propertiesWithoutName.map(([fieldName, propNode], idx, arr) => {
           const isRequired = required.has(fieldName);
-          const label = plugins.core.utils?.generateFieldLabel(fieldName);
+          const label = utils?.generateFieldLabel(fieldName);
           const fieldValue = entityData[fieldName];
           const fieldId = `${fieldName}-${formId}`;
 

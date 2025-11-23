@@ -12,6 +12,7 @@
 import type { AnyRecord, EmptyRecord, NeverRecord } from './helpers.js';
 import type { NodeMap, UnknownNode, UnknownNodeType } from './nodes.js';
 import type { StatelySchemas } from './schema.js';
+import type { ValidateHook } from './validation.js';
 
 /**
  * Plugin helper types for nodes
@@ -71,7 +72,7 @@ export type DefineData<T extends AnyRecord = AnyRecord> = T;
  * }>;
  * ```
  */
-export type DefineUtils<T extends AnyRecord = EmptyRecord> = T;
+export type DefineUtils<T extends AnyRecord = EmptyRecord> = T & { validate?: ValidateHook };
 
 /**
  * Describes the structural shape of any plugin augment.

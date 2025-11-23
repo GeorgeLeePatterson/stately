@@ -31,6 +31,10 @@
       "types": "./dist/hooks/index.d.ts",
       "import": "./dist/hooks/index.js"
     },
+    "./pages": {
+      "types": "./dist/pages/index.d.ts",
+      "import": "./dist/pages/index.js"
+    },
     "./types/api": {
       "types": "./dist/types/api.d.ts",
       "import": "./dist/types/api.js"
@@ -54,6 +58,8 @@
     "@stately/schema": "workspace:*",
     "@stately/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.10",
+    "@types/react": "^18.0.0 || ^19.0.0",
+    "@types/react-dom": "^18.0.0 || ^19.0.0",
     "lucide-react": "^0.554.0",
     "openapi-fetch": "^0.15",
     "react": "^18.0.0 || ^19.0.0",

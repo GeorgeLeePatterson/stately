@@ -17,51 +17,25 @@ import {
   MenubarTrigger,
   Skeleton,
 } from '@stately/ui/base/ui';
-import { useQuery } from '@tanstack/react-query';
 import { FileSearch, MoreVertical, Upload, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useFilesStatelyUi } from '@/context';
+import { useFileVersions, type VersionedDataValue } from '@/hooks/use-file-versions';
 import { FileSelector } from '@/views/file-selector';
 
-export interface VersionedDataValue {
-  dir: 'upload';
-  path: string;
-}
-
-export interface VersionedDataProps {
+export interface VersionedDataFieldProps {
   formId: string;
   value?: VersionedDataValue;
   onChange: (value: VersionedDataValue | null) => void;
 }
 
-export function VersionedDataField({ value, onChange }: VersionedDataProps) {
-  const runtime = useFilesStatelyUi();
-  const filesApi = runtime.plugins.files?.api;
+export function VersionedDataField({ value, onChange }: VersionedDataFieldProps) {
   const [showBrowseSelector, setShowBrowseSelector] = useState(false);
   const [showUploadSelector, setShowUploadSelector] = useState(false);
 
-  // The path should just be the filename (e.g., "cigna.sh")
-  // No need to strip "uploads/" since dir: 'upload' already indicates the uploads directory
-  const filename = value?.path || null;
+  const { filename, data, error, isLoading } = useFileVersions({ value });
 
-  // Fetch versions for the current file
-  const { data: versionsData, isLoading: isLoadingVersions } = useQuery({
-    enabled: !!filename && !!filesApi,
-    queryFn: async () => {
-      if (!filename || !filesApi) return null;
-      const { data, error } = await filesApi.list({
-        params: { query: { path: `${filename}/__versions__` } },
-      });
-      if (error || !data) {
-        throw new Error('Failed to load file versions');
-      }
-      return data;
-    },
-    queryKey: ['files', 'versions', filename],
-  });
-
-  const versions = versionsData?.files || [];
+  const versions = data?.files || [];
 
   const handleBrowseSelect = (path: string) => {
     onChange({ dir: 'upload', path });
@@ -78,6 +52,10 @@ export function VersionedDataField({ value, onChange }: VersionedDataProps) {
     toast.success('File removed');
   };
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   // When file is selected
   return (
     <>
@@ -91,7 +69,7 @@ export function VersionedDataField({ value, onChange }: VersionedDataProps) {
             value={filename || ''}
           />
           <InputGroupAddon align="inline-end">
-            {isLoadingVersions ? (
+            {isLoading ? (
               <Skeleton className="h-3 w-20" />
             ) : versions.length > 0 ? (
               <div className="text-xs text-muted-foreground">

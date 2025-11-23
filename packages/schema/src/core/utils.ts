@@ -133,34 +133,12 @@ function sortEntityProperties<N extends BaseNode = BaseNode>(
   });
 }
 
-/**
- * String utilities
- */
-
-function toKebabCase(str: string): string {
-  return str.replace(/_/g, '-');
-}
-
-function toTitleCase(str: string): string {
-  return str
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
-
-function toSpaceCase(str: string): string {
-  return str.replace(/[-_]/g, ' ');
-}
-
 const coreUtils: CoreUtils = {
   extractNodeType,
   isEntityValid,
   isPrimitiveNode,
   isSingletonId,
   sortEntityProperties,
-  toKebabCase,
-  toSpaceCase,
-  toTitleCase,
 } as const satisfies CoreUtils;
 
 type CoreUtils = DefineUtils<{
@@ -169,9 +147,6 @@ type CoreUtils = DefineUtils<{
   extractNodeType: typeof extractNodeType;
   isEntityValid: typeof isEntityValid;
   sortEntityProperties: typeof sortEntityProperties;
-  toKebabCase: typeof toKebabCase;
-  toTitleCase: typeof toTitleCase;
-  toSpaceCase: typeof toSpaceCase;
 }>;
 
 export type { CoreUtils };

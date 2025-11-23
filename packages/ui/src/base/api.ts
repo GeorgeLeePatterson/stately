@@ -1,5 +1,6 @@
 import type { Client, FetchResponse, MaybeOptionalInit } from 'openapi-fetch';
 import type { HttpMethod, MediaType } from 'openapi-typescript-helpers';
+import { devLog } from './lib/utils';
 
 // Extract operation type using the key, not the path
 export type TypedOperations<
@@ -30,7 +31,7 @@ export function createOperations<
 ): TypedOperations<Paths, Bindings, Media> {
   const strippedPrefix = prefix?.endsWith('/') ? prefix.slice(0, -1) : prefix;
 
-  console.debug('[stately/ui] creating operations: ', { bindings, prefix: strippedPrefix });
+  devLog.debug('creating operations: ', { bindings, prefix: strippedPrefix });
   const result = {} as TypedOperations<Paths, Bindings, Media>;
 
   for (const key of Object.keys(bindings) as (keyof Bindings)[]) {

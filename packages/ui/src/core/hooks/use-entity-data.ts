@@ -1,5 +1,6 @@
 import type { Schemas } from '@stately/schema';
 import { useQuery } from '@tanstack/react-query';
+import { devLog } from '@/base';
 import type { CoreEntity, CoreStateEntry } from '@/core';
 import { useStatelyUi } from '@/index';
 
@@ -26,7 +27,7 @@ export function useEntityData<Schema extends Schemas = Schemas>({
 
       if (!entity) {
         console.warn('Entity type is required', { identifier });
-        throw new Error(`Unknown entity type: ${entity}`);
+        throw new Error('Entity type is required');
       }
 
       const { data, error } = await coreApi.get_entity_by_id({
@@ -38,8 +39,8 @@ export function useEntityData<Schema extends Schemas = Schemas>({
         throw new Error('Failed to fetch entity');
       }
 
-      console.debug('Successfully fetched entity', { data });
-      return data as CoreEntity<Schema>['data'];
+      devLog.debug('Core', 'Successfully fetched entity', { data });
+      return data as { entity: CoreEntity<Schema>['data']; id: string } | undefined;
     },
     queryKey: ['entity', entity, identifier],
   });

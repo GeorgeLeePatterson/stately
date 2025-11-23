@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import { useFilesStatelyUi } from '../context';
-import type { FileInfo, FileListResponse } from '../types/api';
+import type { FileInfo } from '../types/api';
 
-export function useFileView({
+export function useFileExplore({
   initialPath,
   onSelectFile,
   isDisabled,
@@ -35,10 +35,8 @@ export function useFileView({
         params: { query: { path: currentPath || undefined } },
       });
 
-      if (error || !data) {
-        throw new Error('Failed to load files');
-      }
-      return data as FileListResponse;
+      if (error || !data) throw new Error('Failed to load files');
+      return data;
     },
     queryKey: ['files', 'list', currentPath],
   });

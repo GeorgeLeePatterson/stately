@@ -21,7 +21,7 @@ export function EnumEdit<Schema extends Schemas = Schemas>({
   onChange,
   placeholder,
 }: EnumEditProps<Schema>) {
-  const { plugins } = useStatelyUi<Schema, []>();
+  const { utils } = useStatelyUi<Schema, []>();
 
   return (
     <Field>
@@ -34,7 +34,7 @@ export function EnumEdit<Schema extends Schemas = Schemas>({
         <SelectContent>
           {node.values.map((option: string) => (
             <SelectItem key={option} value={option}>
-              {plugins.core.utils?.generateFieldLabel(option)}
+              {utils?.generateFieldLabel(option)}
             </SelectItem>
           ))}
         </SelectContent>

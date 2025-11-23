@@ -9,6 +9,7 @@ import type { PluginNodeUnion } from '@stately/schema/plugin';
 import type { StatelySchemas } from '@stately/schema/schema';
 import { getViewComponent } from '@/base/registry';
 import { useStatelyUi } from '@/index';
+import { devLog } from '../lib/utils';
 
 export interface ViewFieldProps<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
@@ -23,7 +24,7 @@ export function FieldView<S extends StatelySchemas<any, any>>(props: ViewFieldPr
   const { node, value } = props;
   const { registry } = useStatelyUi();
 
-  console.debug('FieldView rendering:', node.nodeType, { value });
+  devLog.debug('FieldView', 'rendering', { node, value });
 
   if (value === null || value === undefined) return null;
   const View = getViewComponent<S>(registry.components, node.nodeType);
@@ -31,6 +32,6 @@ export function FieldView<S extends StatelySchemas<any, any>>(props: ViewFieldPr
     console.warn('FieldView: No view component found for nodeType:', node.nodeType);
     return null;
   }
-  console.debug('FieldView found View component for:', node.nodeType);
+  devLog.debug('FieldView', 'found View component for:', node.nodeType);
   return <View {...props} />;
 }

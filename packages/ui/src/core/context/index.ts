@@ -1,4 +1,4 @@
-import { LinkExplorerProvider, useLinkExplorer } from './link-explore-context';
+import { LinkExplorerProvider, useLinkExplorer, ViewLinkControl } from './link-explore-context';
 
 export type { LinkExplorerContextValue } from './link-explore-context';
-export { LinkExplorerProvider, useLinkExplorer };
+export { LinkExplorerProvider, useLinkExplorer, ViewLinkControl };

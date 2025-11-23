@@ -45,34 +45,26 @@ export function validateNode<S extends Schemas = Schemas>({
   schema,
   options = {},
 }: ValidateArgs<S>): ValidationResult {
-  // TODO: Remove
-  console.debug('[stately/schema/core] validation', { data, options, path, schema });
+  const { debug = true } = options;
+  if (debug) console.debug('[stately/schema/core] (Validation)', { data, options, path, schema });
 
   // Check cache first
   const cacheKey = createValidationCacheKey(path, data);
   const cached = validationCache.get(cacheKey);
   if (cached) return cached;
 
-  const { depth = 0, warnDepth = 15, maxDepth = 20, debug = true, onDepthWarning } = options;
+  const { depth = 0, warnDepth = 15, maxDepth = 20, onDepthWarning } = options;
 
-  if (debug) {
-    console.debug(`[Validation] ${path} at depth ${depth}`, { data, nodeType: schema.nodeType });
-  }
+  if (debug) console.debug(`[Validation] ${path} at depth ${depth}`, { data, schema });
 
   // Check depth limits
   if (depth >= maxDepth) {
-    if (debug) {
-      console.warn(
-        `[Validation] Maximum depth (${maxDepth}) reached at ${path}. Skipping deeper validation.`,
-      );
-    }
+    if (debug) console.warn(`[Validation] Maximum depth (${maxDepth}) reached at ${path}`);
     onDepthWarning?.(path, depth);
     return { errors: [], valid: true };
   }
 
-  if (depth >= warnDepth) {
-    onDepthWarning?.(path, depth);
-  }
+  if (depth >= warnDepth) onDepthWarning?.(path, depth);
 
   const nextOptions: ValidationOptions = { ...options, depth: depth + 1 };
 

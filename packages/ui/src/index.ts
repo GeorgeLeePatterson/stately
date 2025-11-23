@@ -3,28 +3,43 @@
  */
 
 import type { Schemas } from '@stately/schema';
-import type { Stately } from '@stately/schema/stately';
-import type { Client } from 'openapi-fetch';
-import { createStatelyUiProvider, createUseStatelyUi } from './base/context.js';
+import { createUseStatelyUi } from './base/context.js';
+import { ThemeProvider, ThemeToggle, useTheme } from './base/index.js';
 import type { AnyUiPlugin } from './base/plugin.js';
 import {
   createStatelyUi,
   defaultUiOptions,
-  type StatelyRuntime,
   type StatelyUiBuilder,
-  type UiOptions,
+  type StatelyUiConfiguration,
+  type StatelyUiRuntime,
 } from './base/runtime.js';
-import { type CoreUiAugment, coreUiPlugin } from './core/index.js';
-import type { CoreUiPlugin } from './core/plugin.js';
+import { statelyUiProvider as coreStatelyUiProvider } from './core/context.js';
+import { type CoreUiOptions, type CoreUiPlugin, coreUiPlugin } from './core/index.js';
+
+// Re-exports
+export type { Theme, ThemeProviderProps } from './base/index.js';
+export type { UiOptions } from './base/runtime.js';
+export { ThemeProvider, ThemeToggle, useTheme, defaultUiOptions };
+
+export type StatelyConfiguration<Schema extends Schemas<any, any> = Schemas> = Readonly<
+  StatelyUiConfiguration<Schema>
+> & { core?: CoreUiOptions };
+
+/**
+ * Core Ui options.
+ *
+ * TODO: Remove - Explain shape
+ */
+export type StatelyOptions = CoreUiOptions;
 
 /**
  * Runtime with core plugin installed.
- * The augments array includes CoreUiAugment plus any additional plugins.
+ * The augments array includes CoreUiPlugin plus any additional plugins.
  */
 export type StatelyUi<
   S extends Schemas<any, any> = Schemas,
   ExtraAugments extends readonly AnyUiPlugin[] = readonly [],
-> = StatelyRuntime<S, readonly [CoreUiAugment, ...ExtraAugments]>;
+> = StatelyUiRuntime<S, readonly [CoreUiPlugin, ...ExtraAugments]>;
 
 /**
  * Create StatelyUi runtime with core plugin pre-installed.
@@ -42,16 +57,13 @@ export type StatelyUi<
 export function statelyUi<
   Schema extends Schemas<any, any>,
   Augments extends readonly AnyUiPlugin[] = readonly [],
->(
-  state: Stately<Schema>,
-  client: Client<Schema['config']['paths']>,
-  options: UiOptions = defaultUiOptions,
-): StatelyUiBuilder<Schema, readonly [CoreUiAugment, ...Augments]> {
-  return createStatelyUi<Schema, readonly [CoreUiAugment, ...Augments]>(
-    state,
-    client,
-    options,
-  ).withPlugin(coreUiPlugin<Schema, Augments>());
+>({
+  core,
+  ...stately
+}: StatelyConfiguration<Schema>): StatelyUiBuilder<Schema, readonly [CoreUiPlugin, ...Augments]> {
+  return createStatelyUi<Schema, readonly [CoreUiPlugin, ...Augments]>(stately).withPlugin(
+    coreUiPlugin<Schema, Augments>(core),
+  );
 }
 
 /**
@@ -72,16 +84,11 @@ export function useStatelyUi<
  *
  * @example
  * ```typescript
- * const MyProvider = createStatelyUiProvider<MySchemas, [CoreUiAugment<MySchemas>]>();
+ * const MyProvider = createStatelyUiProvider<MySchemas, [CoreUiPlugin<MySchemas>]>();
  *
  * <MyProvider value={runtime}>
  *   <App />
  * </MyProvider>
  * ```
  */
-export function statelyUiProvider<
-  Schema extends Schemas<any, any>,
-  Augments extends readonly AnyUiPlugin[] = readonly [],
->() {
-  return createStatelyUiProvider<Schema, readonly [CoreUiAugment, ...Augments]>();
-}
+export const statelyUiProvider = coreStatelyUiProvider;

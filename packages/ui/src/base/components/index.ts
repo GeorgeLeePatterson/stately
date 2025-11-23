@@ -7,7 +7,6 @@ import { GlowingSave } from './glowing-save';
 import { NotSet } from './not-set';
 import { Note } from './note';
 import { SimpleLabel } from './simple-label';
-import { ThemeToggle } from './theme-toggle';
 
 export type { EditorProps } from './editor';
 export {
@@ -18,7 +17,6 @@ export {
   NotSet,
   SimpleLabel,
   Note,
-  ThemeToggle,
   DescriptionLabel,
   Explain,
   Editor,

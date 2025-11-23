@@ -1,9 +1,11 @@
 import type { Schemas } from '@stately/schema';
+import { CoreNodeType } from '@stately/schema/core/nodes';
 import { FileText, Link as LinkIcon, Type } from 'lucide-react';
 import { type ComponentType, useMemo, useState } from 'react';
+import { devLog } from '@/base';
 import { Editor } from '@/base/components/editor';
 import type { EditFieldProps } from '@/base/form/field-edit';
-import { getEditTransformer, makeRegistryKey } from '@/base/registry';
+import { getEditTransformer } from '@/base/registry';
 import { ButtonGroup } from '@/base/ui/button-group';
 import { InputGroup, InputGroupInput, InputGroupTextarea } from '@/base/ui/input-group';
 import {
@@ -23,26 +25,32 @@ export interface StringMode {
   value: string;
 }
 
+export interface StringModeGroup {
+  name: string;
+  modes: StringMode[];
+}
+
 /// Core string input modes available by default
-const CORE_STRING_MODES: StringMode[] = [
-  { description: 'Plain text', icon: Type, label: 'Text', value: 'text' },
-  { description: 'Web address', icon: LinkIcon, label: 'URL', value: 'url' },
-  { description: 'Multi-line text', icon: FileText, label: 'Editor', value: 'editor' },
-];
+const CORE_STRING_MODES: StringModeGroup = {
+  modes: [
+    { description: 'Plain text', icon: Type, label: 'Text', value: 'text' },
+    { description: 'Web address', icon: LinkIcon, label: 'URL', value: 'url' },
+    { description: 'Multi-line text', icon: FileText, label: 'Editor', value: 'editor' },
+  ],
+  name: 'Text Entry',
+};
 
 export type PrimitiveStringEditTransformerProps<Schema extends Schemas = Schemas> =
   PrimitiveStringEditProps<Schema> & { extra?: PrimitiveStringExtra };
 
 export interface PrimitiveStringExtra {
   mode?: string;
-  modes?: StringMode[];
-  currentMode?: StringMode;
+  modeGroups?: StringModeGroup[];
   component?: ComponentType<{
     formId: string;
     value: string | number | null | undefined;
     onChange: (value: string | number | null | undefined) => void;
   }>;
-  after?: React.ReactNode;
 }
 
 export type PrimitiveStringEditProps<Schema extends Schemas = Schemas> = EditFieldProps<
@@ -61,7 +69,7 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>(
   const { formId, onChange, placeholder, value, extra } = useMemo(() => {
     let propsAndExtra: PrimitiveStringEditTransformerProps = {
       ...props,
-      extra: { mode, modes: CORE_STRING_MODES },
+      extra: { mode, modeGroups: [CORE_STRING_MODES] },
     };
 
     const propTransformer = getEditTransformer<
@@ -69,7 +77,7 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>(
       Schema,
       Schema['plugin']['Nodes']['primitive'],
       string | number | null | undefined
-    >(registry.transformers, makeRegistryKey('primitive', 'edit', 'transformer', 'string'));
+    >(registry.transformers, CoreNodeType.Primitive, 'string');
 
     if (typeof propTransformer === 'function') {
       try {
@@ -86,12 +94,22 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>(
   // Extract final state
   const ExtraComponent = extra?.component;
   const currentMode = extra?.mode ?? mode;
+  const modeGroups = [CORE_STRING_MODES, ...(extra?.modeGroups || [])];
   const allModes = [
-    ...CORE_STRING_MODES,
-    ...(extra?.modes ?? []).filter(m => !CORE_STRING_MODES.includes(m)),
+    ...CORE_STRING_MODES.modes,
+    ...(extra?.modeGroups?.flatMap(group => group.modes) || []),
   ];
   const currentModeConfig = allModes.find(m => m.value === currentMode);
   const Icon = currentModeConfig?.icon ?? Type;
+
+  devLog.debug('Core', 'PrimitiveString resolved: ', {
+    currentMode,
+    ExtraComponent,
+    extra,
+    mode,
+    props,
+    value,
+  });
 
   return (
     <ButtonGroup className="flex-1 min-w-0 w-full">
@@ -102,69 +120,67 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>(
             <Icon />
           </SelectTrigger>
           <SelectContent className="min-w-40">
-            <SelectGroup>
-              <SelectLabel>Text Entry</SelectLabel>
-              {allModes.map(modeConfig => {
-                const ModeIcon = modeConfig.icon;
-                return (
-                  <SelectItem key={modeConfig.value} value={modeConfig.value}>
-                    <div className="flex items-center gap-2">
-                      <ModeIcon />
-                      <span>{modeConfig.label}</span>
-                      <span className="text-muted-foreground text-xs">
-                        • {modeConfig.description}
-                      </span>
-                    </div>
-                  </SelectItem>
-                );
-              })}
-            </SelectGroup>
-            {extra?.after}
+            {/* Mode groups */}
+            {modeGroups.map(({ name, modes }) => (
+              <SelectGroup key={`select-mode-group-${name}`}>
+                <SelectLabel>{name}</SelectLabel>
+                {modes.map(modeConfig => {
+                  const ModeIcon = modeConfig.icon;
+                  return (
+                    <SelectItem key={modeConfig.value} value={modeConfig.value}>
+                      <div className="flex items-center gap-2">
+                        <ModeIcon />
+                        <span>{modeConfig.label}</span>
+                        <span className="text-muted-foreground text-xs">
+                          • {modeConfig.description}
+                        </span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectGroup>
+            ))}
           </SelectContent>
         </Select>
       </ButtonGroup>
 
-      <ButtonGroup className="flex-1 min-h-min">
-        {/* Custom component takes precedence */}
-        {ExtraComponent ? (
-          <ExtraComponent formId={formId} onChange={onChange} value={value} />
-        ) : (
-          <>
-            {currentMode === 'editor' && (
-              <Editor
-                content={value ? (typeof value === 'string' ? value : String(value)) : ''}
-                formId={formId}
-                onContent={onChange}
-                placeholder={placeholder || 'Type or paste content here...'}
+      {/* Custom component takes precedence */}
+      {ExtraComponent ? (
+        <ExtraComponent formId={formId} onChange={onChange} value={value} />
+      ) : currentMode === 'editor' ? (
+        <Editor
+          content={value ? (typeof value === 'string' ? value : String(value)) : ''}
+          formId={formId}
+          onContent={onChange}
+          placeholder={placeholder || 'Type or paste content here...'}
+        />
+      ) : (
+        <ButtonGroup className="flex-1 min-h-min">
+          <InputGroup className="flex-1 min-h-min bg-background">
+            {currentMode === 'text' && (
+              <InputGroupTextarea
+                className="min-w-0 flex-1 bg-background resize-y max-h-64 min-h-1 px-3 py-1"
+                id={formId}
+                onChange={e => onChange(e.target.value)}
+                placeholder={`${placeholder || 'Enter value'}...`}
+                rows={1}
+                value={value || ''}
               />
             )}
 
-            <InputGroup className="flex-1 min-h-min bg-background">
-              {currentMode === 'text' && (
-                <InputGroupTextarea
-                  className="min-w-0 flex-1 bg-background resize-y max-h-64 min-h-1 px-3 py-1"
-                  id={formId}
-                  onChange={e => onChange(e.target.value)}
-                  placeholder={`${placeholder || 'Enter value'}...`}
-                  rows={1}
-                  value={value || ''}
-                />
-              )}
-
-              {currentMode === 'url' && (
-                <InputGroupInput
-                  className="bg-background rounded-md"
-                  id={formId}
-                  onChange={e => onChange(e.target.value)}
-                  placeholder={`${placeholder || 'https://example.com'}...`}
-                  type="url"
-                  value={value || ''}
-                />
-              )}
-            </InputGroup>
-          </>
-        )}
-      </ButtonGroup>
+            {currentMode === 'url' && (
+              <InputGroupInput
+                className="bg-background rounded-md"
+                id={formId}
+                onChange={e => onChange(e.target.value)}
+                placeholder={`${placeholder || 'https://example.com'}...`}
+                type="url"
+                value={value || ''}
+              />
+            )}
+          </InputGroup>
+        </ButtonGroup>
+      )}
     </ButtonGroup>
   );
 }

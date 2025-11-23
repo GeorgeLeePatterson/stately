@@ -39,8 +39,7 @@ export function corePlugin<S extends Schemas<any, any> = Schemas>(): PluginFacto
     return {
       ...runtime,
       data: { ...runtime.data, ...coreData },
-      plugins: { ...runtime.plugins, [CORE_PLUGIN_NAME]: coreUtils },
-      validate: args => validateNode(args),
+      plugins: { ...runtime.plugins, [CORE_PLUGIN_NAME]: { ...coreUtils, validate: validateNode } },
     };
   };
 }

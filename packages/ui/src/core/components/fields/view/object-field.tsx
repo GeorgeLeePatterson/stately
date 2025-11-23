@@ -17,7 +17,7 @@ export function ObjectView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: ObjectViewProps<Schema>) {
-  const { schema, plugins } = useStatelyUi<Schema, []>();
+  const { schema, utils } = useStatelyUi<Schema, []>();
   const required = new Set(node.required || []);
   const objValue = value as AnyRecord;
 
@@ -27,7 +27,7 @@ export function ObjectView<Schema extends Schemas = Schemas>({
         const typedSchema = propSchema as Schema['plugin']['AnyNode'];
         const propValue = objValue[propName];
         const valueDefined = propValue !== undefined && propValue !== null;
-        const label = `${plugins.core.utils?.generateFieldLabel(propName)}:`;
+        const label = `${utils?.generateFieldLabel(propName)}:`;
         const description = typedSchema.description;
         const singleLine = !valueDefined || schema.plugins.core.isPrimitiveNode(typedSchema);
         const valueDisplay = valueDefined ? (

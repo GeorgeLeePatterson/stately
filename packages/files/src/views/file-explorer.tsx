@@ -58,7 +58,10 @@ export function FileExplorer({
         />
       </InputGroup>
       <div className="flex-1 flex flex-col sm:flex-row h-full">
-        <ScrollArea {...rest} className={cn('flex-1 border border-border', rest?.className)}>
+        <ScrollArea
+          {...rest}
+          className={cn('flex-1 border border-border rounded-sm', rest?.className)}
+        >
           {isLoading ? (
             <div className="flex items-center justify-center h-full">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
