@@ -3,15 +3,13 @@ import { Button } from '../ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import { Item, ItemActions, ItemContent } from '../ui/item';
 
-export function JsonView({
-  data,
-  isOpen,
-  setIsOpen,
-}: {
+export interface JsonViewProps {
   data: any;
   isOpen?: boolean;
   setIsOpen: (open: boolean) => void;
-}) {
+}
+
+export function JsonView({ data, isOpen, setIsOpen }: JsonViewProps) {
   return (
     <Collapsible onOpenChange={setIsOpen} open={isOpen}>
       <CollapsibleTrigger asChild>

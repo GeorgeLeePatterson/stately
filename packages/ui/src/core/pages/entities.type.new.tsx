@@ -1,12 +1,12 @@
 import type { Schemas } from '@stately/schema';
-import { Note } from '@stately/ui/base/components';
-import { FormActions } from '@stately/ui/base/form';
-import { EntityEditView } from '@stately/ui/core/components/views/entity';
-import { useCreateEntity, useEntityData, useEntitySchema } from '@stately/ui/core/hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { devLog } from '@/base';
-import { Page } from '@/base/layout/page';
+import { Note } from '@/base/components/note';
+import { BaseForm } from '@/base/form';
+import { Layout, type PageProps } from '@/base/layout';
+import { useCreateEntity, useEntityData, useEntitySchema, useEntityUrl } from '@/core/hooks';
+import { EntityEditView } from '@/core/views/entity';
 import { useStatelyUi } from '@/index';
 import type { CoreEntityData, CoreStateEntry } from '..';
 
@@ -19,15 +19,16 @@ import type { CoreEntityData, CoreStateEntry } from '..';
 //   },
 // });
 
-export function EntityCreate<Schema extends Schemas = Schemas>({
+export function EntityNewPage<Schema extends Schemas = Schemas>({
   entity,
-}: {
-  entity: CoreStateEntry<Schema>;
-}) {
-  const template = new URLSearchParams(window.location.search).get('template') || undefined;
+  templateId,
+  ...rest
+}: { entity: CoreStateEntry<Schema>; templateId?: string } & Partial<PageProps>) {
+  const template =
+    templateId || new URLSearchParams(window.location.search).get('template') || undefined;
 
   const { schema, plugins } = useStatelyUi<Schema>();
-  const stateEntry = plugins.core.utils?.resolveEntityType(entity, schema.data) ?? entity;
+  const stateEntry = plugins.core.utils?.resolveEntityType(entity) ?? entity;
   const entityPath = schema.data.stateEntryToUrl[stateEntry] ?? entity;
   const typeName = schema.data.entityDisplayNames[stateEntry];
 
@@ -37,6 +38,7 @@ export function EntityCreate<Schema extends Schemas = Schemas>({
   const [isDirty, setIsDirty] = useState(false);
 
   const queryClient = useQueryClient();
+  const resolveEntityUrl = useEntityUrl();
   const entitySchema = useEntitySchema(stateEntry);
   const createMutation = useCreateEntity({ entity, queryClient });
 
@@ -58,18 +60,19 @@ export function EntityCreate<Schema extends Schemas = Schemas>({
     }
   }, [templateData]);
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     if (!formData) return;
     createMutation.mutate(formData, {
       onSuccess: data => {
+        const parts = { type: entityPath };
         if (data?.id) {
-          window.location.href = `/entities/${entityPath}/${data.id}`;
+          window.location.href = resolveEntityUrl({ ...parts, id: data.id });
         } else {
-          window.location.href = `/entities/${entityPath}`;
+          window.location.href = resolveEntityUrl(parts);
         }
       },
     });
-  };
+  }, [createMutation, entityPath, formData, resolveEntityUrl]);
 
   const onChange = useCallback((newConfig: CoreEntityData<Schema>) => {
     setFormData(newConfig);
@@ -77,7 +80,7 @@ export function EntityCreate<Schema extends Schemas = Schemas>({
   }, []);
 
   const handleCancel = () => {
-    window.location.href = `/entities/${entityPath}`;
+    window.location.href = resolveEntityUrl({ type: entityPath });
   };
 
   if (entitySchema.error || !entitySchema.node) {
@@ -103,25 +106,30 @@ export function EntityCreate<Schema extends Schemas = Schemas>({
   });
 
   return (
-    <Page
+    <Layout.Page
+      {...rest}
       actions={
-        <FormActions
-          isDirty={isDirty}
-          isDisabled={!isValid}
-          isPending={createMutation.isPending}
-          onCancel={handleCancel}
-          onSave={handleSave}
-        />
+        rest?.actions ?? (
+          <BaseForm.FormActions
+            isDirty={isDirty}
+            isDisabled={!isValid}
+            isPending={createMutation.isPending}
+            onCancel={handleCancel}
+            onSave={handleSave}
+          />
+        )
       }
-      backLabel="Cancel"
-      backTo={`/entities/${entityPath}`}
-      breadcrumbs={[
-        { href: '/entities', label: 'Configurations' },
-        { href: `/entities/${entityPath}`, label: `${typeName}s` },
-        { label: 'New' },
-      ]}
-      description={`Create a new ${typeName.toLowerCase()} configuration`}
-      title={`Create ${typeName}`}
+      backLabel={rest?.backLabel ?? 'Cancel'}
+      backTo={rest?.backTo ?? resolveEntityUrl({ type: entityPath })}
+      breadcrumbs={
+        rest?.breadcrumbs ?? [
+          { href: resolveEntityUrl({}), label: 'Configurations' },
+          { href: resolveEntityUrl({ type: entityPath }), label: `${typeName}s` },
+          { label: 'New' },
+        ]
+      }
+      description={rest?.description ?? `Create a new ${typeName.toLowerCase()} configuration`}
+      title={rest?.title ?? `Create ${typeName}`}
     >
       <form className="flex flex-col gap-3">
         <>
@@ -151,6 +159,6 @@ export function EntityCreate<Schema extends Schemas = Schemas>({
           value={formData}
         />
       </form>
-    </Page>
+    </Layout.Page>
   );
 }

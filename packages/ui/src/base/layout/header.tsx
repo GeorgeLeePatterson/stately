@@ -1,6 +1,6 @@
+import { useBaseStatelyUi } from '@/base/context';
 import { ThemeToggle } from '@/base/theme';
 import { Separator } from '@/base/ui/separator';
-import { useBaseStatelyUi } from '../context';
 
 export interface HeaderProps {
   before?: React.ReactNode;

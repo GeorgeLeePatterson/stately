@@ -7,6 +7,7 @@ import type { AllUiPlugins, AnyUiPlugin } from './plugin';
 export interface UiUtils {
   // Universal
   generateFieldLabel(field: string): string;
+  stripLeadingSlash(path: string): string;
   stripTrailingSlash(path: string): string;
   toKebabCase: typeof toKebabCase;
   toTitleCase: typeof toTitleCase;
@@ -15,6 +16,11 @@ export interface UiUtils {
   getNodeTypeIcon(node: string): ComponentType<any> | null;
   getDefaultValue(node: BaseNode): any;
 }
+
+/**
+ * Strip a leading slash
+ */
+export const stripLeadingSlash = (path: string) => (path?.startsWith('/') ? path.slice(1) : path);
 
 /**
  * Strip a trailing slash
@@ -82,6 +88,7 @@ export function runtimeUtils<
       }
       return Dot;
     },
+    stripLeadingSlash,
     stripTrailingSlash,
     toKebabCase,
     toSpaceCase,

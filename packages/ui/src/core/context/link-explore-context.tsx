@@ -2,10 +2,7 @@ import type { Schemas } from '@stately/schema';
 import { Eye } from 'lucide-react';
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { Button } from '@/base/ui/button';
-import {
-  type LinkEntityProps,
-  ViewLinkDialog,
-} from '@/core/components/dialogs/view-configure-dialog';
+import { type LinkEntityProps, ViewLinkDialog } from '@/core/dialogs/view-configure-dialog';
 
 export function ViewLinkControl<Schema extends Schemas = Schemas>(props: LinkEntityProps<Schema>) {
   const { openLinkExplorer } = useLinkExplorer();

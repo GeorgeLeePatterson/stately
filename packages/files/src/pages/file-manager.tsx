@@ -1,3 +1,5 @@
+import { Layout } from '@stately/ui';
+import type { PageProps } from '@stately/ui/base';
 import { Button } from '@stately/ui/base/ui';
 import { ChevronRight } from 'lucide-react';
 import { useFileExplore } from '@/hooks/use-file-explore';
@@ -6,6 +8,22 @@ import { FileExplorer } from '@/views/file-explorer';
 
 export interface FileManagerProps {
   initialPath?: string;
+}
+
+/**
+ * FileManagerPage - Convenience wrapper for FileManager with @stately/ui Layout.Page
+ */
+export function FileManagerPage({ initialPath, ...rest }: FileManagerProps & Partial<PageProps>) {
+  return (
+    <Layout.Page
+      {...rest}
+      breadcrumbs={rest?.breadcrumbs ?? [{ label: 'Files' }]}
+      description={rest?.description ?? 'Manage uploaded files and versions'}
+      title={rest?.title ?? 'File Manager'}
+    >
+      <FileManager initialPath={initialPath} />
+    </Layout.Page>
+  );
 }
 
 /**

@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   Spinner,
 } from '@stately/ui/base/ui';
-import type { StringMode } from '@stately/ui/core/components/fields/edit';
+import type { StringMode } from '@stately/ui/core/fields/edit';
 import { ExternalLink, FilePlus2, FileSearch2, FileText } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';

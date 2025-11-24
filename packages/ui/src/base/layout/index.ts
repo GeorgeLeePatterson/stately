@@ -1,17 +1,13 @@
 import { Header } from './header';
-import { Layout } from './layout';
-import { LayoutSidebar } from './layout-sidebar';
+import { Navigation } from './navigation';
 import { Page } from './page';
 import { PageHeader } from './page-header';
+import { Root } from './root';
 
-export type { HeaderProps } from './header';
-export type {
-  LayoutSidebarBaseProps,
-  LayoutSidebarProps,
-  SidebarItem,
-  SidebarOptions,
-} from './layout-sidebar';
-export type { PageProps } from './page';
-export type { PageHeaderProps } from './page-header';
+export type * from './header';
+export type * from './navigation';
+export type * from './page';
+export type * from './page-header';
+export type * from './root';
 
-export { Header, Layout, LayoutSidebar, Page, PageHeader };
+export const Layout = { Header, Navigation, Page, PageHeader, Root };

@@ -44,41 +44,41 @@
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
     },
-    "./core/components/dialogs": {
-      "types": "./dist/core/components/dialogs/index.d.ts",
-      "import": "./dist/core/components/dialogs/index.js"
-    },
-    "./core/components/fields": {
-      "types": "./dist/core/components/fields/index.d.ts",
-      "import": "./dist/core/components/fields/index.js"
-    },
-    "./core/components/fields/edit": {
-      "types": "./dist/core/components/fields/edit/index.d.ts",
-      "import": "./dist/core/components/fields/edit/index.js"
-    },
-    "./core/components/fields/view": {
-      "types": "./dist/core/components/fields/view/index.d.ts",
-      "import": "./dist/core/components/fields/view/index.js"
-    },
-    "./core/components/views": {
-      "types": "./dist/core/components/views/index.d.ts",
-      "import": "./dist/core/components/views/index.js"
-    },
-    "./core/components/views/entity": {
-      "types": "./dist/core/components/views/entity/index.d.ts",
-      "import": "./dist/core/components/views/entity/index.js"
-    },
-    "./core/components/views/link": {
-      "types": "./dist/core/components/views/link/index.d.ts",
-      "import": "./dist/core/components/views/link/index.js"
-    },
     "./core/context": {
       "types": "./dist/core/context/index.d.ts",
       "import": "./dist/core/context/index.js"
     },
+    "./core/dialogs": {
+      "types": "./dist/core/dialogs/index.d.ts",
+      "import": "./dist/core/dialogs/index.js"
+    },
+    "./core/fields": {
+      "types": "./dist/core/fields/index.d.ts",
+      "import": "./dist/core/fields/index.js"
+    },
+    "./core/fields/edit": {
+      "types": "./dist/core/fields/edit/index.d.ts",
+      "import": "./dist/core/fields/edit/index.js"
+    },
+    "./core/fields/view": {
+      "types": "./dist/core/fields/view/index.d.ts",
+      "import": "./dist/core/fields/view/index.js"
+    },
     "./core/hooks": {
       "types": "./dist/core/hooks/index.d.ts",
       "import": "./dist/core/hooks/index.js"
+    },
+    "./core/pages": {
+      "types": "./dist/core/pages/index.d.ts",
+      "import": "./dist/core/pages/index.js"
+    },
+    "./core/views/entity": {
+      "types": "./dist/core/views/entity/index.d.ts",
+      "import": "./dist/core/views/entity/index.js"
+    },
+    "./core/views/link": {
+      "types": "./dist/core/views/link/index.d.ts",
+      "import": "./dist/core/views/link/index.js"
     }
   },
   "files": [

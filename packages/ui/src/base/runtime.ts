@@ -1,7 +1,7 @@
 import type { StatelySchemas } from '@stately/schema/schema';
 import type { Stately } from '@stately/schema/stately';
 import type { Client } from 'openapi-fetch';
-import type { SidebarItem } from './layout/layout-sidebar';
+import type { RouteOption } from './layout/navigation';
 import { devLog } from './lib/utils';
 import type { AllUiPlugins, AnyUiPlugin, UiPluginFactory } from './plugin';
 import type { UiRegistry } from './registry';
@@ -51,12 +51,12 @@ export interface UiNavigationOptions {
   /**
    * Any non-plugin routes to include throughout the application
    */
-  routes?: { items?: SidebarItem[] } & SidebarItem;
+  routes?: { items?: RouteOption[] } & RouteOption;
   /**
    * Override any route configuration by specifying new mapping keyed by 'to', aka link.
    * This is useful for overriding automatic plugin provided routes.
    */
-  routeOverrides?: Record<string, SidebarItem>;
+  routeOverrides?: Record<string, RouteOption>;
 }
 
 /**

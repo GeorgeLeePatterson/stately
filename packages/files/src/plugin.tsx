@@ -17,7 +17,7 @@ import {
   devLog,
   type UiPluginFactory,
 } from '@stately/ui/base';
-import type { SidebarItem } from '@stately/ui/base/layout';
+import type { RouteOption } from '@stately/ui/base/layout';
 import { Files } from 'lucide-react';
 import { FILES_OPERATIONS, type FilesPaths } from './api';
 import { primitiveStringTransformer } from './fields/edit/primitive-string';
@@ -46,7 +46,7 @@ export type FilesPlugin = DefinePlugin<
   FilesUtils
 >;
 
-export const filesRoutes: SidebarItem = { icon: Files, label: 'Files', to: '/files' };
+export const filesRoutes: RouteOption = { icon: Files, label: 'Files', to: '/files' };
 
 /**
  * Create files schema plugin

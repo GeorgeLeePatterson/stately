@@ -2,6 +2,7 @@ import { useCreateEntity } from './use-create-entity';
 import { useEntityData } from './use-entity-data';
 import { useEntityDataInline } from './use-entity-data-inline';
 import { useEntitySchema } from './use-entity-schema';
+import { useEntityUrl } from './use-entity-url';
 import { useListEntities } from './use-list-entities';
 import { useObjectField } from './use-object-field';
 import { useRemoveEntity } from './use-remove-entity';
@@ -13,6 +14,7 @@ export {
   useEntityData,
   useObjectField,
   useEntitySchema,
+  useEntityUrl,
   useUpdateEntity,
   useCreateEntity,
   useRemoveEntity,

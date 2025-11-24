@@ -1,4 +1,4 @@
-import type { DefineUiUtils } from '@stately/ui/base';
+import type { DefineUiUtils } from '@stately/ui';
 import { FileText, Folder, FolderOpen, History } from 'lucide-react';
 import type { ComponentType } from 'react';
 import type { FileEntryType } from './types/api';

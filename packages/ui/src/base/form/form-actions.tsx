@@ -3,6 +3,15 @@ import { Explain } from '../components/explain';
 import { GlowingSave } from '../components/glowing-save';
 import { Button } from '../ui/button';
 
+export interface FormActionsProps {
+  isDirty?: boolean;
+  isPending?: boolean;
+  isLoading?: boolean;
+  isDisabled?: boolean;
+  onSave: () => void;
+  onCancel: () => void;
+}
+
 export function FormActions({
   isDirty,
   isPending,
@@ -10,14 +19,7 @@ export function FormActions({
   isDisabled,
   onSave,
   onCancel,
-}: {
-  isDirty?: boolean;
-  isPending?: boolean;
-  isLoading?: boolean;
-  isDisabled?: boolean;
-  onSave: () => void;
-  onCancel: () => void;
-}) {
+}: FormActionsProps) {
   return (
     <div className="flex items-center gap-2">
       {isDirty && !isDisabled ? (

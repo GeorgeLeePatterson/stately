@@ -8,7 +8,7 @@ import { Label } from '@/base/ui/label';
 
 type JsonStatus = { valid: boolean; error?: string; msg?: string };
 
-interface JsonEditViewProps {
+interface JsonEditProps {
   value: any;
   label?: string;
   onSave: (value: any) => void;
@@ -17,7 +17,7 @@ interface JsonEditViewProps {
 /**
  * Component for editing entity configuration as raw JSON
  */
-export function JsonEdit({ value, onSave, label = 'Configuration (JSON)' }: JsonEditViewProps) {
+export function JsonEdit({ value, onSave, label = 'Configuration (JSON)' }: JsonEditProps) {
   const formId = useId();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [json, setJson] = useState<string>(JSON.stringify(value || {}, null, 2));

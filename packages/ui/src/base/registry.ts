@@ -3,8 +3,8 @@ import type { StatelyConfig } from '@stately/schema/generated';
 import type { BaseNode } from '@stately/schema/nodes';
 import type { StatelySchemas } from '@stately/schema/schema';
 import type { ComponentType } from 'react';
-import type { EditFieldProps } from '@/base/form/field-edit';
-import type { ViewFieldProps } from '@/base/form/field-view';
+import type { FieldEditProps } from '@/base/form/field-edit';
+import type { FieldViewProps } from '@/base/form/field-view';
 
 export type ComponentRegistry = Map<string, ComponentType<any>>;
 export type TransformerRegistry = Map<string, Transformer<any>>;
@@ -35,7 +35,7 @@ export type RegistryKey =
 /** The types of components registered into the component registry */
 export type NodeTypeComponent<
   S extends StatelySchemas<any, any> = StatelySchemas<StatelyConfig, []>,
-> = ComponentType<EditFieldProps<S>> | ComponentType<ViewFieldProps<S>>;
+> = ComponentType<FieldEditProps<S>> | ComponentType<FieldViewProps<S>>;
 
 /** Helper to easily create a registry key */
 export function makeRegistryKey(
@@ -95,9 +95,9 @@ export function getEditComponent<
   node: string,
 
   state?: string,
-): ComponentType<EditFieldProps<S, N, V>> | undefined {
+): ComponentType<FieldEditProps<S, N, V>> | undefined {
   return getComponent(registry, makeRegistryKey(node, 'edit', 'component', state)) as ComponentType<
-    EditFieldProps<S, N, V>
+    FieldEditProps<S, N, V>
   >;
 }
 
@@ -109,9 +109,9 @@ export function getViewComponent<
   registry: ComponentRegistry,
   node: string,
   state?: string,
-): ComponentType<ViewFieldProps<S, N, V>> | undefined {
+): ComponentType<FieldViewProps<S, N, V>> | undefined {
   return getComponent(registry, makeRegistryKey(node, 'view', 'component', state)) as ComponentType<
-    ViewFieldProps<S, N, V>
+    FieldViewProps<S, N, V>
   >;
 }
 
@@ -120,7 +120,7 @@ export type TransformerEditProps<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
   N extends BaseNode = PluginNodeUnion<S>,
   V = unknown,
-> = EditFieldProps<S, N, V> & { extra?: T };
+> = FieldEditProps<S, N, V> & { extra?: T };
 
 export function getEditTransformer<
   T extends {} = Record<string, any>,
@@ -143,7 +143,7 @@ export type TransformerViewProps<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
   N extends BaseNode = PluginNodeUnion<S>,
   V = unknown,
-> = ViewFieldProps<S, N, V> & { extra?: T };
+> = FieldViewProps<S, N, V> & { extra?: T };
 
 export function getViewTransformer<
   T extends {} = Record<string, any>,

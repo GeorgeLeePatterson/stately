@@ -1,27 +1,29 @@
 import type { Schemas } from '@stately/schema';
-import { Page } from '@/base/layout/page';
+import { Layout, type PageProps } from '@/base/layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/base/ui/card';
 import { useStatelyUi } from '@/index';
+import { useEntityUrl } from '../hooks';
 
 // TODO: Move to stately/tanstack
 // export const Route = createFileRoute('/entities/')({ component: EntitiesIndex });
 
-export function EntitiesIndex<Schema extends Schemas = Schemas>() {
-  const { schema, plugins } = useStatelyUi<Schema>();
+export function EntitiesIndexPage<Schema extends Schemas = Schemas>(props: Partial<PageProps>) {
+  const { plugins } = useStatelyUi<Schema>();
 
-  const entityTypes = plugins.core.utils?.generateEntityTypeDisplay(schema.data) || [];
+  const resolveEntityUrl = useEntityUrl();
+  const resolveUrl = (urlPath: string) => resolveEntityUrl({ type: urlPath });
+
+  const breadcrumbs = props?.breadcrumbs ?? [{ label: 'Configurations' }];
+  const description = props?.description ?? 'Browse configuration types used by the application';
+  const title = props?.title ?? 'Configurations';
 
   return (
-    <Page
-      breadcrumbs={[{ label: 'Configurations' }]}
-      description="Browse configuration types used by the application"
-      title="Configurations"
-    >
+    <Layout.Page breadcrumbs={breadcrumbs} description={description} title={title}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {entityTypes
+        {(plugins.core.utils?.generateEntityTypeDisplay() || [])
           .sort((a, b) => a.label.localeCompare(b.label))
-          .map(({ type, label, description }) => (
-            <a href={`/entities/${type}`} key={type}>
+          .map(({ urlPath, label, description }) => (
+            <a href={resolveUrl(urlPath)} key={urlPath}>
               <Card className="h-full hover:border-primary transition-colors cursor-pointer">
                 <CardHeader>
                   <CardTitle>{label}</CardTitle>
@@ -36,6 +38,6 @@ export function EntitiesIndex<Schema extends Schemas = Schemas>() {
             </a>
           ))}
       </div>
-    </Page>
+    </Layout.Page>
   );
 }

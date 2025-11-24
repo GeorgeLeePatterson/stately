@@ -15,20 +15,59 @@ import {
 import type { BaseNode } from '@stately/schema/nodes';
 import { isNodeOfType } from '@stately/schema/schema';
 import type { Stately } from '@stately/schema/stately';
-import { Braces, Brackets, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
+import { Braces, Brackets, Dot, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
 import type { ComponentType } from 'react';
+import type { AnyUiPlugin, StatelyUiRuntime } from '@/base';
 import type { CoreStateEntry } from '.';
+import { CoreRouteBasePath, type CoreUiOptions, type CoreUiPlugin } from './plugin';
+
+export type EntityUrlParts =
+  | { type?: string; id?: never; mode?: never }
+  | { type: string; id?: string; mode?: never }
+  | { type: string; mode?: string; id?: never } // `new`
+  | { type: string; id: string; mode?: string };
 
 export interface CoreUiUtils {
   // Base overrides
   getNodeTypeIcon(nodeType: string): ComponentType<any> | null;
   getDefaultValue(node: BaseNode): any;
   // Core specific
-  generateEntityTypeDisplay<S extends Schemas = Schemas>(
-    data: Stately<S>['data'],
-  ): { description: string; label: string; type: string; entity: CoreStateEntry<S> }[];
+  generateEntityTypeDisplay<S extends Schemas = Schemas>(): {
+    description: string;
+    label: string;
+    urlPath: string;
+    entity: CoreStateEntry<S>;
+  }[];
   getEntityIcon<S extends Schemas = Schemas>(entity: CoreStateEntry<S>): ComponentType<any>;
-  resolveEntityType<S extends Schemas = Schemas>(entity: string, data: Stately<S>['data']): string;
+  resolveEntityType(entity: string): string;
+  resolveEntityUrl(
+    entityParts?: EntityUrlParts,
+    params?: Record<string, string>,
+    omitBasePath?: boolean,
+  ): string;
+}
+
+export function createCoreUtils<S extends Schemas = Schemas, A extends readonly AnyUiPlugin[] = []>(
+  runtime: StatelyUiRuntime<S, readonly [CoreUiPlugin, ...A]>,
+  options?: CoreUiOptions,
+): CoreUiUtils {
+  const entityIcons = options?.entities?.icons || {};
+  return {
+    generateEntityTypeDisplay() {
+      return generateEntityTypeDisplay(runtime.schema.data);
+    },
+    getDefaultValue,
+    getEntityIcon<Schema extends S>(entity: CoreStateEntry<Schema>) {
+      return entityIcons?.[entity] ?? Dot;
+    },
+    getNodeTypeIcon,
+    resolveEntityType(entity: string) {
+      return resolveEntityType(entity, runtime.schema.data);
+    },
+    resolveEntityUrl(entityParts, params): string {
+      return resolveEntityUrl(runtime, entityParts, params);
+    },
+  };
 }
 
 /**
@@ -111,28 +150,84 @@ export function getDefaultValue(node: BaseNode): any {
   }
 }
 
-// Generate entity types from metadata
+/**
+ * Generate entity types from metadata
+ *
+ * @param data Stately['data']
+ * @returns {description: string; label: string; urlPath: string; entity: CoreStateEntry<S>}[]
+ */
 export function generateEntityTypeDisplay<S extends Schemas = Schemas>(
   data: Stately<S>['data'],
-): { description: string; label: string; type: string; entity: CoreStateEntry<S> }[] {
+): { description: string; label: string; urlPath: string; entity: CoreStateEntry<S> }[] {
   return (Object.keys(data.entityDisplayNames) as CoreStateEntry<S>[]).map(entry => ({
     description: `${data.entityDisplayNames[entry]} configurations`,
     entity: entry,
     label: data.entityDisplayNames[entry],
-    type: data.stateEntryToUrl[entry],
+    urlPath: data.stateEntryToUrl[entry],
   }));
 }
 
+/**
+ * Attempts to resolve a string signifying an entity type into a proper `StateEntry`.
+ *
+ * @param entity
+ * @param data
+ * @returns
+ */
 export function resolveEntityType<S extends Schemas = Schemas>(
   entity: string,
   data: Stately<S>['data'],
 ): string {
-  if (entity in data.urlToStateEntry) {
-    return data.urlToStateEntry[entity];
+  return entity in data.urlToStateEntry
+    ? data.urlToStateEntry[entity]
+    : (Object.entries(data.entityDisplayNames).find(
+        ([_, displayName]) => displayName === entity,
+      )?.[0] ?? entity);
+}
+
+/**
+ * Resolve an entity URL, respecting base path
+ */
+export function resolveEntityUrl<
+  S extends Schemas = Schemas,
+  A extends readonly AnyUiPlugin[] = [],
+>(
+  runtime: StatelyUiRuntime<S, readonly [CoreUiPlugin, ...A]>,
+  entityParts?: EntityUrlParts,
+  params?: Record<string, string>,
+  omitBasePath?: boolean,
+): string {
+  const data = runtime.schema.data;
+  const utils = runtime.utils;
+  const basePath = omitBasePath ? '' : (runtime.options?.navigation?.basePath ?? '');
+  const entitiesBasePath = `${utils.stripTrailingSlash(basePath || '')}${CoreRouteBasePath}`;
+
+  const pathParts = [entitiesBasePath];
+
+  // Entity state entry
+  if (entityParts?.type) {
+    const { type: entityType, mode, id: entityId } = entityParts;
+    // Ensure entityType is resolveable as url path
+    let entityUrlPath = utils.stripLeadingSlash(utils.stripTrailingSlash(entityType));
+    if (!(entityType in data.urlToStateEntry)) {
+      entityUrlPath = resolveEntityType(entityUrlPath, data);
+    }
+    pathParts.push(`/${entityUrlPath}`);
+
+    // Entity ID
+    const strippedEntityId = utils.stripLeadingSlash(utils.stripTrailingSlash(entityId || ''));
+    if (strippedEntityId) pathParts.push(`/${strippedEntityId}`);
+
+    // Mode, ie `edit` or 'new'
+    const strippedMode = utils.stripLeadingSlash(utils.stripTrailingSlash(mode || ''));
+    if (strippedMode) pathParts.push(`/${strippedMode}`);
   }
-  return (
-    Object.entries(data.entityDisplayNames).find(
-      ([_, displayName]) => displayName === entity,
-    )?.[0] ?? entity
-  );
+
+  // Params
+  let qs = '';
+  if (params && Object.keys(params).length > 0) {
+    qs = `?${new URLSearchParams(params).toString()}`;
+  }
+
+  return `${pathParts.join('')}${qs}`;
 }

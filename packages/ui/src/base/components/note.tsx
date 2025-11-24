@@ -1,7 +1,7 @@
 import { AlertCircle, CheckCircle, Info, MessageCircleWarning } from 'lucide-react';
 import { Alert, AlertDescription } from '../ui/alert';
 
-const modeColors = {
+export const modeColors = {
   error: '',
   info: 'text-blue-600',
   note: '',
@@ -9,7 +9,7 @@ const modeColors = {
   warning: 'text-orange-600',
 };
 
-const modeIcons = {
+export const modeIcons = {
   error: AlertCircle,
   info: Info,
   note: Info,

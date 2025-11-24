@@ -1,14 +1,18 @@
 /**
  * @stately/ui - Main exports
+ *
+ * TODO: Docs:
+ * 1. Base
+ * 2. Core
+ * 3. Users
+ * 4. Plugin authors
  */
 
 import type { Schemas } from '@stately/schema';
 import { createUseStatelyUi } from './base/context.js';
-import { ThemeProvider, ThemeToggle, useTheme } from './base/index.js';
 import type { AnyUiPlugin } from './base/plugin.js';
 import {
   createStatelyUi,
-  defaultUiOptions,
   type StatelyUiBuilder,
   type StatelyUiConfiguration,
   type StatelyUiRuntime,
@@ -16,21 +20,58 @@ import {
 import { statelyUiProvider as coreStatelyUiProvider } from './core/context.js';
 import { type CoreUiOptions, type CoreUiPlugin, coreUiPlugin } from './core/index.js';
 
-// Re-exports
-export type { Theme, ThemeProviderProps } from './base/index.js';
-export type { UiOptions } from './base/runtime.js';
-export { ThemeProvider, ThemeToggle, useTheme, defaultUiOptions };
+// Plugin re-exports
+export type {
+  AnyUiAugments,
+  DefineOptions,
+  DefineRoutes,
+  DefineUiPlugin,
+  DefineUiUtils,
+  UiPluginFactory,
+} from './base/plugin.js';
+export type { RegistryKey, RegistryMode, UiRegistry } from './base/registry.js';
+export type { AnyUiPlugin };
 
+// Schema re-exports
+import { stately } from '@stately/schema';
+
+export type {
+  DefineComponents,
+  DefineConfig,
+  DefineGeneratedNodes,
+  DefineOperations,
+  DefinePaths,
+  DefinePlugin,
+  Schemas,
+} from '@stately/schema';
+export { stately };
+
+// Options re-exports
+import { defaultUiOptions } from './base/runtime.js';
+
+export type { UiNavigationOptions, UiOptions } from './base/runtime.js';
+export { defaultUiOptions };
+
+// Theme re-exports
+import { ThemeProvider, ThemeToggle, useTheme } from './base/index.js';
+
+export type { Theme, ThemeProviderProps } from './base/index.js';
+export { ThemeProvider, ThemeToggle, useTheme };
+
+// Layout re-exports
+import { Layout } from './base/layout';
+export { Layout };
+
+// ------------------------
+// Root level stately ui definitions
+// ------------------------
+
+/**
+ * Runtime configuration with core configuration included.
+ */
 export type StatelyConfiguration<Schema extends Schemas<any, any> = Schemas> = Readonly<
   StatelyUiConfiguration<Schema>
 > & { core?: CoreUiOptions };
-
-/**
- * Core Ui options.
- *
- * TODO: Remove - Explain shape
- */
-export type StatelyOptions = CoreUiOptions;
 
 /**
  * Runtime with core plugin installed.
@@ -45,12 +86,12 @@ export type StatelyUi<
  * Create StatelyUi runtime with core plugin pre-installed.
  * Returns a fully-typed runtime with "core" plugin accessible.
  *
- * Augments are declared upfront as a type parameter, matching schema pattern.
+ * Plugin augments are declared upfront. This allows all plugins visibility into what is available.
  *
  * @example
  * ```typescript
- * const runtime = createStatelyUi(schema, client);
- * runtime.plugins.core // ✓ Fully typed CorePluginRuntime
+ * const runtime = statelyUi({ schema, client, options, core: coreOptions });
+ * runtime.plugins.core // ✓ Fully typed Core PluginRuntime
  * runtime.plugins.core.api.operations // ✓ Intellisense works
  * ```
  */
@@ -84,7 +125,7 @@ export function useStatelyUi<
  *
  * @example
  * ```typescript
- * const MyProvider = createStatelyUiProvider<MySchemas, [CoreUiPlugin<MySchemas>]>();
+ * const MyProvider = statelyUiProvider<MySchemas, [CoreUiPlugin<MySchemas>]>();
  *
  * <MyProvider value={runtime}>
  *   <App />
