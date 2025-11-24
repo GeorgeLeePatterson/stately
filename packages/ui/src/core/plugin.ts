@@ -18,6 +18,7 @@ import {
   generateEntityTypeDisplay,
   getDefaultValue,
   getNodeTypeIcon,
+  resolveEntityType,
 } from './utils';
 
 const NodeType = CoreNodeType;
@@ -76,6 +77,7 @@ export function coreUiPlugin<Schema extends Schemas, Augments extends readonly A
         return entityIcons?.[entity] ?? Dot;
       },
       getNodeTypeIcon,
+      resolveEntityType,
     };
 
     const entityRoutes = createEntityRoutes(runtime.schema.data, utils);

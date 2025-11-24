@@ -17,7 +17,7 @@ export function ObjectView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: ObjectViewProps<Schema>) {
-  const { schema, utils } = useStatelyUi<Schema, []>();
+  const { schema, utils } = useStatelyUi<Schema>();
   const required = new Set(node.required || []);
   const objValue = value as AnyRecord;
 

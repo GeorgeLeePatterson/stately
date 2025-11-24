@@ -26,7 +26,7 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: UntaggedEnumEditProps<Schema>) {
-  const { plugins, utils } = useStatelyUi<Schema, []>();
+  const { plugins, utils } = useStatelyUi<Schema>();
 
   // Extract current tag from the single property key
   let currentTag: string | null = null;

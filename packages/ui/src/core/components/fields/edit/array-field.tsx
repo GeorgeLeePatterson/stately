@@ -29,7 +29,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
   isRequired,
   isWizard,
 }: ArrayEditProps<Schema>) {
-  const { schema, plugins } = useStatelyUi<Schema, []>();
+  const { schema, plugins } = useStatelyUi<Schema>();
 
   // Defensive: ensure value is actually an array
   const safeValue = Array.isArray(value) ? value : [];

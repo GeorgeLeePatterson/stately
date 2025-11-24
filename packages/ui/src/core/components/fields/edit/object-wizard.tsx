@@ -40,7 +40,7 @@ export const ObjectWizardEdit = <
   isLoading,
   isEmbedded,
 }: ObjectWizardEditProps<Schema, Node, V>) => {
-  const { schema, utils } = useStatelyUi<Schema, []>();
+  const { schema, utils } = useStatelyUi<Schema>();
 
   const onSave = useCallback(
     (data: any) => {

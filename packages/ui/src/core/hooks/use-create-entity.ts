@@ -11,7 +11,7 @@ export function useCreateEntity<Schema extends Schemas = Schemas>({
   entity: CoreStateEntry<Schema>;
   queryClient?: QueryClient;
 }) {
-  const runtime = useStatelyUi<Schema, []>();
+  const runtime = useStatelyUi<Schema>();
   const coreApi = runtime.plugins.core?.api;
 
   return useMutation({

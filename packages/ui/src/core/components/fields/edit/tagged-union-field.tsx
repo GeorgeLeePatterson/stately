@@ -31,7 +31,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: TaggedUnionEditProps<Schema>) {
-  const { plugins, utils } = useStatelyUi<Schema, []>();
+  const { plugins, utils } = useStatelyUi<Schema>();
   const discriminatorField = node.discriminator;
 
   // Local state for current data

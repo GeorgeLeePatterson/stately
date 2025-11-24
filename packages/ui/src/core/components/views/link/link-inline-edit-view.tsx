@@ -39,7 +39,7 @@ export function LinkInlineEdit<Schema extends Schemas = Schemas>({
   after,
   isWizard,
 }: LinkInlineEditProps<Schema>) {
-  const { schema } = useStatelyUi<Schema, []>();
+  const { schema } = useStatelyUi<Schema>();
   const entityValue: CoreEntity<Schema>['data'] =
     value && 'inline' in value ? value.inline : ({} as CoreEntity<Schema>['data']);
 

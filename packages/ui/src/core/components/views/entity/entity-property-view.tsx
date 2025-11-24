@@ -19,7 +19,7 @@ export function EntityPropertyLabel<Schema extends Schemas = Schemas>({
   node,
   isRequired,
 }: Omit<EntityPropertyProps<Schema>, 'compact'>) {
-  const { schema, utils: runtimeUtils } = useStatelyUi<Schema, []>();
+  const { schema, utils: runtimeUtils } = useStatelyUi<Schema>();
   const NodeTypeIcon =
     runtimeUtils.getNodeTypeIcon(schema.plugins.core.extractNodeType(node)) ?? Cog;
   return (

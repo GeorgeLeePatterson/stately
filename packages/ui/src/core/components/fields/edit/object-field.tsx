@@ -103,7 +103,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: ObjectFormProps<Schema>) {
-  const { utils } = useStatelyUi<Schema, []>();
+  const { utils } = useStatelyUi<Schema>();
 
   const { formData, handleFieldChange, handleSave, handleCancel, fields, isDirty, isValid } =
     useObjectField<Schema>({ label, node, onSave: onChange, value });

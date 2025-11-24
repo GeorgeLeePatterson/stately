@@ -26,7 +26,7 @@ export function EntityDetailView<Schema extends Schemas = Schemas>({
   entityId,
   disableJsonView,
 }: EntityDetailViewProps<Schema>) {
-  const { schema } = useStatelyUi<Schema, []>();
+  const { schema } = useStatelyUi<Schema>();
   const [isJsonOpen, setIsJsonOpen] = useState(false);
 
   const required = new Set(node.required || []);

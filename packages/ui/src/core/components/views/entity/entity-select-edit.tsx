@@ -45,7 +45,7 @@ export function EntitySelectEdit<Schema extends Schemas = Schemas>({
   isReadOnly,
   isLoading,
 }: EntitySelectEditProps<Schema>) {
-  const { schema, utils } = useStatelyUi<Schema, []>();
+  const { schema, utils } = useStatelyUi<Schema>();
   const entityDisplayName = schema.data.entityDisplayNames?.[targetType] ?? String(targetType);
   const label = utils?.generateFieldLabel(targetType);
   const formId = useId();

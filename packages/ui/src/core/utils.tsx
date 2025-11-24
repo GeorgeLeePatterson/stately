@@ -28,6 +28,7 @@ export interface CoreUiUtils {
     data: Stately<S>['data'],
   ): { description: string; label: string; type: string; entity: CoreStateEntry<S> }[];
   getEntityIcon<S extends Schemas = Schemas>(entity: CoreStateEntry<S>): ComponentType<any>;
+  resolveEntityType<S extends Schemas = Schemas>(entity: string, data: Stately<S>['data']): string;
 }
 
 /**
@@ -120,4 +121,18 @@ export function generateEntityTypeDisplay<S extends Schemas = Schemas>(
     label: data.entityDisplayNames[entry],
     type: data.stateEntryToUrl[entry],
   }));
+}
+
+export function resolveEntityType<S extends Schemas = Schemas>(
+  entity: string,
+  data: Stately<S>['data'],
+): string {
+  if (entity in data.urlToStateEntry) {
+    return data.urlToStateEntry[entity];
+  }
+  return (
+    Object.entries(data.entityDisplayNames).find(
+      ([_, displayName]) => displayName === entity,
+    )?.[0] ?? entity
+  );
 }

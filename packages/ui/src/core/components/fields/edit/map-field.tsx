@@ -25,6 +25,8 @@ import { Separator } from '@/base/ui/separator';
 import type { CoreNodeUnion } from '@/core';
 import { KeyValue } from '../view/map-field';
 
+const MAX_ITEMS_VIEW_DEFAULT = 3;
+
 const generateSaveLabels = (
   label?: string,
   formData?: any,
@@ -79,7 +81,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
 
   const formId = useId();
 
-  const [existingView, viewMore, setViewMore] = useViewMore(formData, 3);
+  const [existing, viewMore, setViewMore] = useViewMore(formData, MAX_ITEMS_VIEW_DEFAULT);
 
   // Validate map and create save label
   const isValid = !isRequired || Object.keys(formData).length > 0;
@@ -152,7 +154,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
           // View and Edit Existing Items
           <div className="space-y-2">
             <ItemGroup className="space-y-3 min-w-0 flex-1">
-              {existingView.map(([key, itemValue]) => (
+              {existing.map(([key, itemValue]) => (
                 <KeyValue
                   active={newKeys.includes(key)}
                   after={
@@ -217,25 +219,27 @@ export function MapEdit<Schema extends Schemas = Schemas>({
                 </KeyValue>
               ))}
 
-              {/* View More */}
-              <Item className="p-1" size="sm" variant="muted">
-                <ItemContent
-                  className={cn(
-                    'flex flex-nowrap flex-1 justify-center w-full',
-                    'text-xs font-mono',
-                  )}
-                >
-                  <Button
-                    className="cursor-pointer font-mono text-sm"
-                    onClick={() => setViewMore(v => !v)}
-                    type="button"
-                    variant="link"
+              {/* View More/Less */}
+              {(existing || []).length > MAX_ITEMS_VIEW_DEFAULT && (
+                <Item className="p-1" size="sm" variant="muted">
+                  <ItemContent
+                    className={cn(
+                      'flex flex-nowrap flex-1 justify-center w-full',
+                      'text-xs font-mono',
+                    )}
                   >
-                    {viewMore ? <ChevronsDownUp /> : <ChevronsUpDown />}
-                    View {viewMore ? 'Less' : 'More'}
-                  </Button>
-                </ItemContent>
-              </Item>
+                    <Button
+                      className="cursor-pointer font-mono text-sm"
+                      onClick={() => setViewMore(v => !v)}
+                      type="button"
+                      variant="link"
+                    >
+                      {viewMore ? <ChevronsDownUp /> : <ChevronsUpDown />}
+                      View {viewMore ? 'Less' : 'More'}
+                    </Button>
+                  </ItemContent>
+                </Item>
+              )}
             </ItemGroup>
           </div>
         )}

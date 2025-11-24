@@ -34,7 +34,7 @@ export function LinkEdit<Schema extends Schemas = Schemas>({
   onChange,
   isWizard,
 }: LinkEditProps<Schema>) {
-  const { plugins } = useStatelyUi<Schema, []>();
+  const { plugins } = useStatelyUi<Schema>();
   const coreApi = plugins.core?.api;
   const targetType = node.targetType as CoreStateEntry<Schema>;
 

@@ -12,7 +12,7 @@ export function RecursiveRefEdit<Schema extends Schemas = Schemas>({
   node,
   ...rest
 }: RecursiveRefEditProps<Schema>) {
-  const { schema } = useStatelyUi<Schema, []>();
+  const { schema } = useStatelyUi<Schema>();
   // Look up the referenced schema and recurse
   const referencedSchema = schema.schema.nodes[node.refName as keyof Schemas['config']['nodes']];
 

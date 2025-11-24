@@ -12,7 +12,7 @@ export function RecursiveRefView<Schema extends Schemas = Schemas>({
   value,
   node,
 }: RecursiveRefViewProps<Schema>) {
-  const { schema } = useStatelyUi<Schema, []>();
+  const { schema } = useStatelyUi<Schema>();
   // Look up the referenced schema and recurse
   const referencedSchema = schema.schema.nodes[node.refName] as any;
 

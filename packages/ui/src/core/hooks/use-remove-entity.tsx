@@ -15,7 +15,7 @@ export function useRemoveEntity<Schema extends Schemas = Schemas>({
   queryClient?: QueryClient;
   onConfirmed?: (id: string) => void;
 }) {
-  const runtime = useStatelyUi<Schema, []>();
+  const runtime = useStatelyUi<Schema>();
   const coreApi = runtime.plugins.core?.api;
 
   const [removeEntityId, setRemoveEntityId] = useState<string>();

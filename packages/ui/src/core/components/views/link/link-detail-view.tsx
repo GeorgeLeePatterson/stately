@@ -16,7 +16,7 @@ export type LinkViewProps<Schema extends Schemas = Schemas> = ViewFieldProps<
 >;
 
 export function LinkView<Schema extends Schemas = Schemas>({ value, node }: LinkViewProps<Schema>) {
-  const { schema } = useStatelyUi<Schema, []>();
+  const { schema } = useStatelyUi<Schema>();
   const inlineSchema = node.inlineSchema;
 
   // Extract entity_type and actual value

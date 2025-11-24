@@ -13,7 +13,7 @@ export function useUpdateEntity<Schema extends Schemas = Schemas>({
   id: string;
   queryClient?: QueryClient;
 }) {
-  const runtime = useStatelyUi<Schema, []>();
+  const runtime = useStatelyUi<Schema>();
   const coreApi = runtime.plugins.core?.api;
 
   return useMutation({

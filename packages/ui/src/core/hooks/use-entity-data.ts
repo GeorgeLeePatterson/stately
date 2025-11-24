@@ -13,7 +13,7 @@ export function useEntityData<Schema extends Schemas = Schemas>({
   identifier?: string;
   disabled?: boolean;
 }) {
-  const runtime = useStatelyUi<Schema, []>();
+  const runtime = useStatelyUi<Schema>();
   const coreApi = runtime.plugins.core?.api;
   const fetchEnabled = !!entity && !disabled && !!identifier;
   return useQuery({

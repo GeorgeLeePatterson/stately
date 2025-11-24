@@ -21,7 +21,7 @@ export function EnumEdit<Schema extends Schemas = Schemas>({
   onChange,
   placeholder,
 }: EnumEditProps<Schema>) {
-  const { utils } = useStatelyUi<Schema, []>();
+  const { utils } = useStatelyUi<Schema>();
 
   return (
     <Field>

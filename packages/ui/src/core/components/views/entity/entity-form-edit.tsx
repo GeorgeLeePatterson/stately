@@ -24,7 +24,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
   isRootEntity,
   isLoading,
 }: EntityFormEditProps<Schema>) {
-  const { schema, utils } = useStatelyUi<Schema, []>();
+  const { schema, utils } = useStatelyUi<Schema>();
   const formId = useId();
 
   const formEnabled = !('name' in node.properties) || (isRootEntity && !!value?.name);

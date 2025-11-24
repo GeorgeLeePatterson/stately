@@ -74,7 +74,7 @@ export function statelyUi<
  */
 export function useStatelyUi<
   Schema extends Schemas<any, any>,
-  ExtraAugments extends readonly AnyUiPlugin[],
+  ExtraAugments extends readonly AnyUiPlugin[] = [],
 >() {
   return createUseStatelyUi<Schema, readonly [CoreUiPlugin, ...ExtraAugments]>()();
 }
