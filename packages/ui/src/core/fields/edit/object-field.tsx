@@ -134,6 +134,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
 
             return (
               <Fragment key={propName}>
+                {/* Nullable takes care of its own label */}
                 {(propLabel || propDescription) && !isWrappedNullable && (
                   <FieldContent>
                     {propLabel && (
@@ -149,6 +150,8 @@ function ObjectForm<Schema extends Schemas = Schemas>({
                     )}
                   </FieldContent>
                 )}
+
+                {/* Property field */}
                 <FieldEdit<Schema>
                   formId={fieldFormId}
                   isRequired={isRequired}
@@ -191,7 +194,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
         <GlowingSave
           disabledExplain="Fill in all required fields."
           isDisabled={!isValid}
-          label={label ? `${label} Object` : 'Object'}
+          label={label ? `'${label}' Object` : 'Object'}
           mode="edit"
           onCancel={handleCancel}
           onSave={handleSave}

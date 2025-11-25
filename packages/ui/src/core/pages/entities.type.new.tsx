@@ -94,8 +94,7 @@ export function EntityNewPage<Schema extends Schemas = Schemas>({
   const schemaNode = entitySchema.node;
   const requiredFields = new Set(schemaNode.required || []);
 
-  // TODO: Remove - fix 'as any' cast
-  const isValid = schema.plugins.core.isEntityValid(formData, entitySchema.node as any);
+  const isValid = schema.plugins.core.isEntityValid(formData, entitySchema.node);
 
   devLog.debug('Core', 'Entity new: ', {
     formData,
@@ -119,8 +118,6 @@ export function EntityNewPage<Schema extends Schemas = Schemas>({
           />
         )
       }
-      backLabel={rest?.backLabel ?? 'Cancel'}
-      backTo={rest?.backTo ?? resolveEntityUrl({ type: entityPath })}
       breadcrumbs={
         rest?.breadcrumbs ?? [
           { href: resolveEntityUrl({}), label: 'Configurations' },

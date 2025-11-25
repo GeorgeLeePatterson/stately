@@ -130,6 +130,13 @@ export function VersionedDataField({ value, onChange }: VersionedDataFieldProps)
       {/* Upload New Dialog */}
       <Dialog onOpenChange={setShowUploadSelector} open={showUploadSelector}>
         <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Upload File</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Select a file to upload. It will be referenced in the versioned field.
+            </DialogDescription>
+          </DialogHeader>
+
           <div className="flex justify-center p-2">
             <FileSelector
               mode="upload"

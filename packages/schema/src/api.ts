@@ -7,11 +7,6 @@
 
 import type { HttpMethod, PathsWithMethod } from 'openapi-typescript-helpers';
 
-// TODO: Remove
-// export type AnyPaths = Record<string, Record<HttpMethod, {}>>;
-// export type PathMap<K extends string = ''> = { [Key in K]: Record<HttpMethod, {}> };
-// Record<K, Record<HttpMethod, {}>>;
-
 export type AnyPaths = object;
 
 export type OperationEntry = {

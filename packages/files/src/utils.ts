@@ -1,6 +1,7 @@
 import type { DefineUiUtils } from '@stately/ui';
-import { FileText, Folder, FolderOpen, History } from 'lucide-react';
+import { Files, FileText, Folder, FolderOpen, History } from 'lucide-react';
 import type { ComponentType } from 'react';
+import { FilesNodeType } from './schema';
 import type { FileEntryType } from './types/api';
 
 /**
@@ -54,5 +55,9 @@ export const filesUiUtils: FilesUiUtils = {
       default:
         return FileText;
     }
+  },
+
+  getNodeTypeIcon(nodeType: string): ComponentType<any> | null {
+    return nodeType === FilesNodeType.RelativePath ? Files : null;
   },
 };

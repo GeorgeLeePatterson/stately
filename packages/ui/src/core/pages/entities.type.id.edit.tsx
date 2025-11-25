@@ -93,12 +93,10 @@ export function EntityEditPage<Schema extends Schemas = Schemas>({
           />
         )
       }
-      backLabel={rest?.backLabel ?? `Back to ${displayName.toLowerCase()}`}
-      backTo={rest?.backTo ?? resolveEntityUrl({ id, type: entityPath })}
       breadcrumbs={
         rest?.breadcrumbs ?? [
           { href: resolveEntityUrl({}), label: 'Configurations' },
-          { href: resolveEntityUrl({ type: entityPath }), label: `${displayName}` },
+          { href: resolveEntityUrl({ type: entityPath }), label: displayName },
           {
             href: resolveEntityUrl({ id, type: entityPath }),
             label: (entityData && 'name' in entityData ? entityData.name : 'default') || 'default',

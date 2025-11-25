@@ -23,9 +23,7 @@ import {
 import { Item, ItemContent, ItemGroup } from '@/base/ui/item';
 import { Separator } from '@/base/ui/separator';
 import type { CoreNodeUnion } from '@/core';
-import { KeyValue } from '../view/map-field';
-
-const MAX_ITEMS_VIEW_DEFAULT = 3;
+import { KeyValue, MAX_ITEMS_VIEW_DEFAULT } from '../view/map-field';
 
 const generateSaveLabels = (
   label?: string,
@@ -38,8 +36,8 @@ const generateSaveLabels = (
   const hasNewVariables = newVariables.length > 1;
   const pluralize = (hasNewVariable && isEditDirty) || hasNewVariables;
 
-  const saveFormLabel = label ? `New ${label} Variable` : 'New Variable';
-  const editFormLabel = label ? `Edited ${label} Variable` : 'Edited Variable';
+  const saveFormLabel = label ? `New '${label}' Variable` : 'New Variable';
+  const editFormLabel = label ? `Edited '${label}'' Variable` : 'Edited Variable';
 
   let saveLabelPrefix = '';
   if (!!formData && !!value && (hasNewVariable || isEditDirty)) {
@@ -79,7 +77,8 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   const [isDirty, setIsDirty] = useState(false);
   const [isEditDirty, setIsEditDirty] = useState(false);
 
-  const formId = useId();
+  const formId_ = useId();
+  const formId = parentFormId ? `${parentFormId}-${formId_}` : formId_;
 
   const [existing, viewMore, setViewMore] = useViewMore(formData, MAX_ITEMS_VIEW_DEFAULT);
 
@@ -138,8 +137,11 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   return (
     <>
       <div
-        className={cn('flex flex-col gap-2', 'border-l-3 border-l-border border-dotted ', 'pl-3')}
-        id={parentFormId}
+        className={cn(
+          'flex flex-col gap-2',
+          'border-l-3 border-l-border border-dotted ',
+          'pl-3 space-y-2',
+        )}
       >
         {/*View Existing Items*/}
         {Object.entries(formData).length === 0 ? (
@@ -220,7 +222,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
               ))}
 
               {/* View More/Less */}
-              {(existing || []).length > MAX_ITEMS_VIEW_DEFAULT && (
+              {existing.length > MAX_ITEMS_VIEW_DEFAULT && (
                 <Item className="p-1" size="sm" variant="muted">
                   <ItemContent
                     className={cn(
@@ -366,7 +368,7 @@ function ValueEdit<Schema extends Schemas = Schemas>({
               )}
             >
               <span>Value... </span>
-              {!hasKey && <span className="text-xs italic">(Set the key first)</span>}
+              {!hasKey && <span className="text-xs text-primary italic">(Set the key first)</span>}
             </div>
             {node.description && (
               <div className="bg-muted text-xs italic p-2">{node.description}</div>

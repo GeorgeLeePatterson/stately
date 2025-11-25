@@ -77,9 +77,6 @@ function extractNodeType(schema: BaseNode): CoreNodeName | string {
  */
 
 function isEntityValid(entity: any | null | undefined, schema: BaseNode | undefined): boolean {
-  // TODO: Remove
-  console.debug('[stately/schema] isEntityValid', { entity, schema });
-
   if (!entity || !schema) return false;
   if (!isObject(schema)) return false;
   if (typeof entity !== 'object') return false;
@@ -88,9 +85,6 @@ function isEntityValid(entity: any | null | undefined, schema: BaseNode | undefi
   const nameValid = !nameRequired || ('name' in entity && !!entity?.name);
 
   if (!nameValid || !entity || !schema) return false;
-
-  // TODO: Remove
-  console.debug('[stately/schema] isEntityValid: checking required');
 
   if (schema.required) {
     const entityObj = entity as Record<string, any>;

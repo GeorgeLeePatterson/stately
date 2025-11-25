@@ -8,6 +8,7 @@ import { Field, FieldDescription, FieldLabel } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
 import type { CoreStateEntry } from '@/core';
 import { ViewLinkControl } from '@/core/context/link-explore-context';
+import { useEntityUrl } from '@/core/hooks';
 import { useStatelyUi } from '@/index';
 
 export interface EntitySelectEditProps<Schema extends Schemas = Schemas> {
@@ -46,9 +47,12 @@ export function EntitySelectEdit<Schema extends Schemas = Schemas>({
   isLoading,
 }: EntitySelectEditProps<Schema>) {
   const { schema, utils } = useStatelyUi<Schema>();
+  const formId = useId();
+  const resolveEntityUrl = useEntityUrl();
+
   const entityDisplayName = schema.data.entityDisplayNames?.[targetType] ?? String(targetType);
   const label = utils?.generateFieldLabel(targetType);
-  const formId = useId();
+
   const fieldId = `select-${targetType}-${formId}`;
   const selected = value ? available.find(entity => entity.id === value) : null;
   return (
@@ -149,7 +153,10 @@ export function EntitySelectEdit<Schema extends Schemas = Schemas>({
                 variant="secondary"
               >
                 <a
-                  href={`/${schema.data.stateEntryToUrl?.[targetType] ?? targetType}/${selected.id}`}
+                  href={resolveEntityUrl({
+                    id: selected.id,
+                    type: schema.data.stateEntryToUrl?.[targetType] ?? targetType,
+                  })}
                   target="_blank"
                 >
                   <ExternalLink className="w-4 h-4" />

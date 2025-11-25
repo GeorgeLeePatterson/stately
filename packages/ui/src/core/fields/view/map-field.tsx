@@ -11,6 +11,8 @@ import { Button } from '@/base/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/base/ui/collapsible';
 import { Item, ItemActions, ItemContent, ItemGroup, ItemTitle } from '@/base/ui/item';
 
+export const MAX_ITEMS_VIEW_DEFAULT = 3;
+
 export function KeyValue({
   active,
   itemKey,
@@ -61,7 +63,7 @@ export type MapViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
 >;
 
 export function MapView<Schema extends Schemas = Schemas>({ node, value }: MapViewProps<Schema>) {
-  const [entries, viewMore, setViewMore] = useViewMore(value, 3);
+  const [entries, viewMore, setViewMore] = useViewMore(value, MAX_ITEMS_VIEW_DEFAULT);
 
   if (typeof value !== 'object') {
     return null;
@@ -84,21 +86,23 @@ export function MapView<Schema extends Schemas = Schemas>({ node, value }: MapVi
       ))}
 
       {/* View More */}
-      <Item className="p-1" size="sm" variant="muted">
-        <ItemContent
-          className={cn('flex flex-nowrap flex-1 justify-center w-full', 'text-xs font-mono')}
-        >
-          <Button
-            className="cursor-pointer font-mono text-sm"
-            onClick={() => setViewMore(v => !v)}
-            type="button"
-            variant="link"
+      {entries.length > MAX_ITEMS_VIEW_DEFAULT && (
+        <Item className="p-1" size="sm" variant="muted">
+          <ItemContent
+            className={cn('flex flex-nowrap flex-1 justify-center w-full', 'text-xs font-mono')}
           >
-            {viewMore ? <ChevronsDownUp /> : <ChevronsUpDown />}
-            View {viewMore ? 'Less' : 'More'}
-          </Button>
-        </ItemContent>
-      </Item>
+            <Button
+              className="cursor-pointer font-mono text-sm"
+              onClick={() => setViewMore(v => !v)}
+              type="button"
+              variant="link"
+            >
+              {viewMore ? <ChevronsDownUp /> : <ChevronsUpDown />}
+              View {viewMore ? 'Less' : 'More'}
+            </Button>
+          </ItemContent>
+        </Item>
+      )}
     </ItemGroup>
   );
 }

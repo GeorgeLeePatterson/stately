@@ -16,7 +16,7 @@ export function Page({ children, ...rest }: PageProps) {
 
           {/* Bottom actions - always put actions at top and bottom */}
           {rest?.actions && (
-            <div className="flex justify-start gap-2 pt-6 border-t">{rest.actions}</div>
+            <div className="flex justify-start gap-2 pt-3 mt-3 border-t">{rest.actions}</div>
           )}
         </div>
       </div>

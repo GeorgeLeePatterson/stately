@@ -12,6 +12,7 @@ export interface UiUtils {
   toKebabCase: typeof toKebabCase;
   toTitleCase: typeof toTitleCase;
   toSpaceCase: typeof toSpaceCase;
+  camelCaseToKebabCase(field: string): string;
   // Delegates to plugins
   getNodeTypeIcon(node: string): ComponentType<any> | null;
   getDefaultValue(node: BaseNode): any;
@@ -29,11 +30,19 @@ export const stripTrailingSlash = (path: string) =>
   path?.endsWith('/') ? path.slice(0, -1) : path;
 
 /**
- * Generate field label from string
+ * Generate a field label from a string
  */
 export function generateFieldLabel(field: string): string {
+  return toSpaceCase(camelCaseToKebabCase(field));
+}
+
+/**
+ * Convert camelCase to kebab-case
+ */
+export function camelCaseToKebabCase(field: string): string {
   return field
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2') // Handle acronyms: XMLParser → XML-Parser
+    .replace(/([a-z])([A-Z])/g, '$1-$2') // Handle camelCase: userId → user-Id
     .replace(/_/g, '-')
     .toLowerCase();
 }
@@ -68,6 +77,7 @@ export function runtimeUtils<
   Augments extends readonly AnyUiPlugin[],
 >(plugins: AllUiPlugins<Schema, Augments>): UiUtils {
   return {
+    camelCaseToKebabCase,
     generateFieldLabel,
     getDefaultValue(node: BaseNode): any {
       for (const plugin of Object.values(plugins)) {

@@ -15,7 +15,7 @@ import {
 import type { BaseNode } from '@stately/schema/nodes';
 import { isNodeOfType } from '@stately/schema/schema';
 import type { Stately } from '@stately/schema/stately';
-import { Braces, Brackets, Dot, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
+import { Braces, Brackets, Cog, Dot, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
 import type { ComponentType } from 'react';
 import type { AnyUiPlugin, StatelyUiRuntime } from '@/base';
 import type { CoreStateEntry } from '.';
@@ -77,15 +77,19 @@ export function getNodeTypeIcon(nodeType: string): ComponentType<any> | null {
   switch (nodeType) {
     case CoreNodeType.Object:
       return Braces;
+    case CoreNodeType.Tuple:
     case CoreNodeType.Array:
       return Brackets;
     case CoreNodeType.Primitive:
       return TextCursorInput;
+    case CoreNodeType.Enum:
     case CoreNodeType.TaggedUnion:
     case CoreNodeType.UntaggedEnum:
       return Shapes;
-    case CoreNodeType.RecursiveRef:
+    case CoreNodeType.Map:
       return SendToBack;
+    case CoreNodeType.Link:
+      return Cog;
     default:
       return null;
   }

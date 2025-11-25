@@ -101,7 +101,7 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
         ]
       }
       description={rest?.description ?? `Manage ${typeName.toLowerCase()} configurations`}
-      title={rest?.title ?? `${typeName}s`}
+      title={rest?.title ?? typeName}
     >
       {deleteMutation.error && (
         <Note

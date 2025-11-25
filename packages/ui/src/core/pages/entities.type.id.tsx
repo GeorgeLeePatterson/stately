@@ -52,7 +52,6 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
     queryClient,
   });
 
-  // TODO: Remove
   devLog.debug('Core', 'EntityDetail', {
     data,
     entity,
@@ -86,12 +85,10 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
           </div>
         )
       }
-      backLabel={rest?.backLabel ?? `Back to ${typeName}s`}
-      backTo={rest?.backTo ?? resolveEntityUrl({ type: entityPath })}
       breadcrumbs={
         rest?.breadcrumbs ?? [
           { href: resolveEntityUrl({}), label: 'Configurations' }, // TODO: Make label configurable
-          { href: resolveEntityUrl({ type: entityPath }), label: `${typeName}s` },
+          { href: resolveEntityUrl({ type: entityPath }), label: typeName },
           { label: entityName },
         ]
       }

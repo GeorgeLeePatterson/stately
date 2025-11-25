@@ -4,6 +4,7 @@ import {
   Button,
   ButtonGroup,
   Input,
+  InputGroup,
   Select,
   SelectContent,
   SelectGroup,
@@ -128,13 +129,15 @@ export function RelativePathEdit({
 
       {/* External mode - text input */}
       {mode === 'external' && (
-        <Input
-          className="min-w-0 flex-1 bg-background min-h-1 rounded-md"
-          id={formId}
-          onChange={e => onChange(e.target.value)}
-          placeholder={placeholder || 'Enter external path...'}
-          value={isExternalPath ? value : ''}
-        />
+        <InputGroup className="bg-background border-0">
+          <Input
+            className="min-w-0 flex-1 bg-background min-h-1 rounded-md"
+            id={formId}
+            onChange={e => onChange(e.target.value)}
+            placeholder={placeholder || 'Enter external path...'}
+            value={isExternalPath ? value : ''}
+          />
+        </InputGroup>
       )}
 
       {/* Browse mode - file browser popover */}

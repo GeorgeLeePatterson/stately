@@ -1,6 +1,7 @@
 import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { useId, useMemo } from 'react';
+import { devLog } from '@/base';
 import { FieldEdit } from '@/base/form/field-edit';
 import { Field, FieldGroup, FieldSet } from '@/base/ui/field';
 import { Separator } from '@/base/ui/separator';
@@ -27,7 +28,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
   const { schema, utils } = useStatelyUi<Schema>();
   const formId = useId();
 
-  const formEnabled = !('name' in node.properties) || (isRootEntity && !!value?.name);
+  const formDisabled = 'name' in node.properties && isRootEntity && !value?.name;
   const entityData = (value ?? {}) as AnyRecord;
 
   const required = useMemo(() => new Set<string>(node.required || []), [node.required]);
@@ -42,6 +43,8 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
       ) as Array<[string, Schema['plugin']['AnyNode']]>,
     [node.properties, entityData, required, schema.plugins.core.sortEntityProperties],
   );
+
+  devLog.debug('Core', 'EntityFormEdit', { formDisabled, isLoading, isRootEntity, node, value });
 
   return (
     <FieldGroup>
@@ -69,7 +72,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
         </>
       )}
 
-      <FieldSet className="group disabled:opacity-40 min-w-0" disabled={!formEnabled}>
+      <FieldSet className="group disabled:opacity-40 min-w-0" disabled={formDisabled}>
         {propertiesWithoutName.map(([fieldName, propNode], idx, arr) => {
           const isRequired = required.has(fieldName);
           const label = utils?.generateFieldLabel(fieldName);

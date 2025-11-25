@@ -60,6 +60,7 @@ export function useRemoveEntity<Schema extends Schemas = Schemas>({
               ? `${description} "${entityName}". ${descriptionAfter}`
               : `${description}. ${descriptionAfter}`
           }
+          mode="destructive"
           onConfirm={() => {
             removeMutation.mutate(removeEntityId, {
               onSuccess: () => handleOnConfirmed(removeEntityId),

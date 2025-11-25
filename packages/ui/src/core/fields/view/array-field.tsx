@@ -1,5 +1,6 @@
 import type { Schemas } from '@stately/schema';
 import { useId } from 'react';
+import { NotSet } from '@/base/components';
 import { ArrayIndex } from '@/base/components/array-index';
 import type { FieldViewProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
@@ -25,8 +26,12 @@ export function ArrayView<Schema extends Schemas = Schemas>({
 
   return (
     <ItemGroup className="flex flex-col flex-1 gap-2">
-      {arrValue.map((item, index) => {
-        return (
+      {arrValue === undefined ? (
+        <NotSet />
+      ) : arrValue.length === 0 ? (
+        <NotSet override="[Empty]" />
+      ) : (
+        arrValue.map((item, index) => (
           <Item
             className={['p-0', 'min-w-0 flex-1'].join(' ')}
             // biome-ignore lint/suspicious/noArrayIndexKey: ""
@@ -38,8 +43,8 @@ export function ArrayView<Schema extends Schemas = Schemas>({
               <FieldView<Schema> node={node.items} value={item} />
             </ItemContent>
           </Item>
-        );
-      })}
+        ))
+      )}
     </ItemGroup>
   );
 }

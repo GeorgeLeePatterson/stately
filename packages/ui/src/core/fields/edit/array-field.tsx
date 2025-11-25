@@ -1,6 +1,6 @@
 import type { Schemas } from '@stately/schema';
 import { CoreNodeType } from '@stately/schema/core/nodes';
-import { Plus, Trash2 } from 'lucide-react';
+import { Dot, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { ArrayIndex } from '@/base/components/array-index';
 import { GlowingSave } from '@/base/components/glowing-save';
@@ -10,6 +10,11 @@ import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
 import { Field, FieldSet } from '@/base/ui/field';
 import { useStatelyUi } from '@/index';
+
+/*
+TODOs:
+1. Empty array should NOT disable save unless value differs from formData
+*/
 
 export type ArrayEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
   Schema,
@@ -50,13 +55,11 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
     }
   }, [value, isDirty]);
 
-  // Check if this is a primitive array for compact rendering
-  const isPrimitiveArray = itemNode.nodeType === CoreNodeType.Primitive;
-
   // Get item label for Link types
   const getItemLabel = (index: number, item: any) => {
     if (itemNode.nodeType === CoreNodeType.Link) {
-      const targetName = schema.data.entityDisplayNames?.[itemNode.targetType] || 'Item';
+      const targetName =
+        schema.data.entityDisplayNames?.[itemNode.targetType] || 'Link Array Value';
 
       // If this is a reference mode Link, show the ref name
       if (item?.ref) {
@@ -66,7 +69,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
       // Otherwise show numbered label
       return `${targetName} ${index + 1}`;
     }
-    return `Value ${index + 1}`;
+    return `Array Value ${index + 1}`;
   };
 
   // Validate array - just check presence if required (items validate themselves)
@@ -111,7 +114,8 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
         <div className="space-y-4 p-4 border-2 border-dashed border-border bg-muted/10 rounded-lg">
           <FieldSet className="min-w-0 flex-1">
             {formData.map((item: any, index: number) =>
-              isPrimitiveArray ? (
+              // Primitive displays differently
+              itemNode.nodeType === CoreNodeType.Primitive ? (
                 <Field
                   className="min-w-0 flex-row flex gap-2"
                   key={`${node.nodeType}-${itemNode.primitiveType}-${index}`}
@@ -145,9 +149,13 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
                   </div>
                 </Field>
               ) : (
+                // Complex fields
                 <Field key={`${itemNode.nodeType}-${index}`}>
                   <div className="flex items-center justify-between px-3 pt-2">
-                    <h6 className="text-sm">{getItemLabel(index, item)}</h6>
+                    <h6 className="text-sm font-mono flex items-center">
+                      <Dot />
+                      {getItemLabel(index, item)}
+                    </h6>
                     <Button
                       className="text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={() => handleRemove(index)}
@@ -193,7 +201,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
       {isDirty && (
         <GlowingSave
           isDisabled={!isValid}
-          label={label ? `${label} Array` : 'Array'}
+          label={label ? `'${label}' Array` : 'Array'}
           mode="edit"
           onCancel={() => {
             setFormData(safeValue);
