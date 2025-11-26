@@ -1,8 +1,6 @@
 import { type RecordBatch, RecordBatchReader } from 'apache-arrow';
 import type { ArrowApi } from '@/api';
-import type { components } from '@/generated-types';
-
-export type QueryRequest = components['schemas']['QueryRequest'];
+import type { QueryRequest } from '@/types/api';
 
 /**
  * Stream Arrow IPC data as RecordBatches from a query.

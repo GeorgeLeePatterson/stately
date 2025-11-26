@@ -1,25 +1,20 @@
 import { useMemo } from 'react';
+import type { ArrowViewState } from '@/lib/arrow-view';
+import { formatBytes } from '@/lib/utils';
 
-export function useQueryStats(result?: QueryExecutionResult | null) {
+/**
+ * Format query statistics for display.
+ *
+ * @param state - ArrowViewState from a streaming query (or null)
+ * @returns Array of label/value pairs for display
+ */
+export function useQueryStats(state?: ArrowViewState | null) {
   return useMemo(() => {
-    if (!result) return [];
+    if (!state?.table) return [];
     return [
-      { label: 'Rows', value: result.rowCount.toLocaleString() },
-      { label: 'Size', value: formatBytes(result.sizeBytes) },
-      { label: 'Duration', value: `${result.elapsedMs.toFixed(1)} ms` },
+      { label: 'Rows', value: state.table.numRows.toLocaleString() },
+      { label: 'Size', value: formatBytes(state.metrics.bytesReceived) },
+      { label: 'Duration', value: `${state.metrics.elapsedMs.toFixed(1)} ms` },
     ];
-  }, [result]);
-}
-
-function formatBytes(bytes: number) {
-  if (!Number.isFinite(bytes)) return '—';
-  if (bytes < 1024) return `${bytes} B`;
-  const units = ['KB', 'MB', 'GB', 'TB'];
-  let value = bytes / 1024;
-  let unitIndex = 0;
-  while (value >= 1024 && unitIndex < units.length - 1) {
-    value /= 1024;
-    unitIndex += 1;
-  }
-  return `${value.toFixed(1)} ${units[unitIndex]}`;
+  }, [state]);
 }

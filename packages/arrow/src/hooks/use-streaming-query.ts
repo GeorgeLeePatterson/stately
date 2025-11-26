@@ -1,24 +1,36 @@
-import { experimental_streamedQuery as streamedQuery, useQuery } from '@tanstack/react-query';
+import {
+  experimental_streamedQuery as streamedQuery,
+  type UseQueryResult,
+  useQuery,
+} from '@tanstack/react-query';
 import { type RecordBatch, Table } from 'apache-arrow';
 import { useCallback, useRef } from 'react';
-import { type ArrowView, createArrowView } from '@/lib/arrow-view';
-import { type QueryRequest, streamQuery } from '@/lib/stream-query';
+import { type ArrowView, type ArrowViewUpdater, createArrowView } from '@/lib/arrow-view';
+import { streamQuery } from '@/lib/stream-query';
+import type { QueryRequest } from '@/types/api';
 import { useArrowApi } from './use-arrow-api';
+
+/** Query key for streaming queries - export for use with queryClient */
+export const STREAMING_QUERY_KEY = ['arrow', 'streaming-query'] as const;
 
 /**
  * Result type for useStreamingQuery hook.
  */
 export interface UseStreamingQueryResult {
-  /** Current status of the streaming query */
-  status: 'idle' | 'pending' | 'streaming' | 'complete' | 'error';
-  /** Error if status is 'error' */
-  error: Error | null;
+  /** The underlying React Query result for full API access */
+  query: UseQueryResult<Table | null, Error>;
   /** ArrowView for accessing streamed data (stable reference) */
   view: ArrowView;
   /** Execute a streaming query */
   execute: (payload: QueryRequest) => void;
   /** Abort the current streaming query */
   abort: () => void;
+  /** True if no query has been executed yet */
+  isIdle: () => boolean;
+  /** True if waiting for first batch */
+  isPending: () => boolean;
+  /** True if actively receiving batches */
+  isStreaming: () => boolean;
 }
 
 /**
@@ -50,7 +62,9 @@ export interface UseStreamingQueryResult {
  */
 export function useStreamingQuery(): UseStreamingQueryResult {
   const api = useArrowApi();
-  const viewRef = useRef<ArrowViewInternal>(createArrowView());
+  const { view, updater } = useRef(createArrowView()).current;
+  const viewRef = useRef<ArrowView>(view);
+  const updaterRef = useRef<ArrowViewUpdater>(updater);
   const abortControllerRef = useRef<AbortController | null>(null);
   const startTimeRef = useRef<number>(0);
 
@@ -62,7 +76,7 @@ export function useStreamingQuery(): UseStreamingQueryResult {
       initialValue: null,
       reducer: (table: Table | null, batch: RecordBatch): Table | null => {
         const newTable = table ? new Table([...table.batches, batch]) : new Table([batch]);
-        viewRef.current._setTable(newTable);
+        updaterRef.current.setTable(newTable);
         return newTable;
       },
       refetchMode: 'reset',
@@ -83,7 +97,7 @@ export function useStreamingQuery(): UseStreamingQueryResult {
           batchCount++;
           bytesReceived += batch.data.byteLength;
 
-          viewRef.current._updateMetrics({
+          updaterRef.current.updateMetrics({
             batchesReceived: batchCount,
             bytesReceived,
             elapsedMs: performance.now() - startTimeRef.current,
@@ -93,14 +107,14 @@ export function useStreamingQuery(): UseStreamingQueryResult {
         }
       },
     }),
-    queryKey: ['arrow', 'streaming-query'] as const,
+    queryKey: STREAMING_QUERY_KEY,
   });
 
   const execute = useCallback(
     (payload: QueryRequest) => {
       // Reset view state
-      viewRef.current._setTable(null);
-      viewRef.current._updateMetrics({ batchesReceived: 0, bytesReceived: 0, elapsedMs: 0 });
+      updaterRef.current.setTable(null);
+      updaterRef.current.updateMetrics({ batchesReceived: 0, bytesReceived: 0, elapsedMs: 0 });
       viewRef.current.setCursor(0);
 
       // Trigger refetch with new payload via meta
@@ -113,18 +127,21 @@ export function useStreamingQuery(): UseStreamingQueryResult {
     abortControllerRef.current?.abort();
   }, []);
 
-  // Derive our status from React Query's state
-  const status: UseStreamingQueryResult['status'] = query.isError
-    ? 'error'
-    : query.isPending && query.fetchStatus === 'idle'
-      ? 'idle'
-      : query.isPending && query.fetchStatus === 'fetching'
-        ? 'pending'
-        : query.isSuccess && query.fetchStatus === 'fetching'
-          ? 'streaming'
-          : query.isSuccess
-            ? 'complete'
-            : 'idle';
+  // Helper functions for common status checks
+  const isIdle = useCallback(
+    () => query.fetchStatus === 'idle' && !query.data,
+    [query.fetchStatus, query.data],
+  );
 
-  return { abort, error: query.error, execute, status, view: viewRef.current };
+  const isPending = useCallback(
+    () => query.status === 'pending' && query.fetchStatus === 'fetching',
+    [query.status, query.fetchStatus],
+  );
+
+  const isStreaming = useCallback(
+    () => query.status === 'success' && query.fetchStatus === 'fetching',
+    [query.status, query.fetchStatus],
+  );
+
+  return { abort, execute, isIdle, isPending, isStreaming, query, view: viewRef.current };
 }

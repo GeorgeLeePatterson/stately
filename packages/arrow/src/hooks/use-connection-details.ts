@@ -1,8 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import type { components } from '@/generated-types';
+import type { ConnectionDetailQuery } from '@/types/api';
 import { useArrowApi } from './use-arrow-api';
-
-export type ConnectionDetailQuery = components['schemas']['ConnectionDetailQuery'];
 
 export function useConnectionDetails(connectorId?: string, filters: ConnectionDetailQuery = {}) {
   const api = useArrowApi();

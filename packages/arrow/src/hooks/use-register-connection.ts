@@ -1,8 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import type { components } from '@/generated-types';
+import type { ConnectionMetadata } from '@/types/api';
 import { useArrowApi } from './use-arrow-api';
-
-export type ConnectionMetadata = components['schemas']['ConnectionMetadata'];
 
 export function useRegisterConnection() {
   const api = useArrowApi();
