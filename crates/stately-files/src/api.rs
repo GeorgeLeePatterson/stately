@@ -66,4 +66,4 @@ macro_rules! from_ref {
         (name = "files", description = "File management endpoints"),
     )
 )]
-pub struct OpenApi;
+pub struct OpenApiDoc;

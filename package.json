@@ -27,5 +27,8 @@
     "overrides": {
       "csstype": "^3.2.3"
     }
+  },
+  "dependencies": {
+    "apache-arrow": "file:vendor/apache-arrow-esnext-esm-21.1.0.tgz"
   }
 }
