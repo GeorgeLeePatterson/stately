@@ -81,15 +81,13 @@ export function useViewerQuery() {
        *       should switch to a streaming reader + worker so we don't hold everything
        *       in JS memory at once.
        */
-      // export async function executeViewerQuery(
-      //   payload: components['schemas']['QueryRequest'],
-      // ): Promise<QueryExecutionResult> {
       const startedAt = performance.now();
       const { data: buffer, error } = await api.execute_query({
         body: payload,
         parseAs: 'arrayBuffer',
       });
       if (error) throw error;
+      if (!buffer) throw new Error('No data returned from query');
 
       let table: Table;
       try {
@@ -117,7 +115,6 @@ export function useViewerQuery() {
         throw error;
       }
       const elapsedMs = performance.now() - startedAt;
-
       return { elapsedMs, rowCount: table.numRows, sizeBytes: buffer.byteLength, table };
     },
   });

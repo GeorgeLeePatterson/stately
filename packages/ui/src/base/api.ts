@@ -1,8 +1,22 @@
 import type { Client, FetchResponse, MaybeOptionalInit } from 'openapi-fetch';
-import type { HttpMethod, MediaType } from 'openapi-typescript-helpers';
+import type { HttpMethod, MediaType, RequiredKeysOf } from 'openapi-typescript-helpers';
 import { devLog } from './lib/utils';
 
-// Extract operation type using the key, not the path
+/**
+ * Helper type to determine if init parameter should be optional.
+ * Uses the same logic as openapi-fetch's InitParam type.
+ */
+type MaybeOptionalInitParam<Init> = RequiredKeysOf<Init> extends never
+  ? [(Init & { [key: string]: unknown })?]
+  : [Init & { [key: string]: unknown }];
+
+/**
+ * Extract operation type using the key, not the path.
+ *
+ * Each operation is a generic function that captures the specific Init type,
+ * allowing options like `parseAs: 'arrayBuffer'` to properly transform the
+ * response type via openapi-fetch's ParseAsResponse.
+ */
 export type TypedOperations<
   Paths,
   Bindings extends Record<string, { method: HttpMethod; path: any }>,
@@ -13,9 +27,9 @@ export type TypedOperations<
     path: infer P extends keyof Paths;
   }
     ? Paths[P] extends Record<M, infer Op extends Record<string | number, any>>
-      ? (
-          init?: MaybeOptionalInit<Paths[P], M>,
-        ) => Promise<FetchResponse<Op, MaybeOptionalInit<Paths[P], M>, Media>>
+      ? <Init extends MaybeOptionalInit<Paths[P], M>>(
+          ...init: MaybeOptionalInitParam<Init>
+        ) => Promise<FetchResponse<Op, Init, Media>>
       : never
     : never;
 };
