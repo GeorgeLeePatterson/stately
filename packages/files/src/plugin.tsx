@@ -15,6 +15,7 @@ import {
   type DefineOptions,
   type DefineUiPlugin,
   devLog,
+  type UiNavigationOptions,
   type UiPluginFactory,
 } from '@stately/ui/base';
 import type { RouteOption } from '@stately/ui/base/layout';
@@ -33,7 +34,10 @@ import { type FilesUiUtils, type FilesUtils, filesUiUtils } from './utils';
 
 export const FILES_PLUGIN_NAME = 'files' as const;
 
-export type FilesOptions = DefineOptions<{ api?: { pathPrefix?: string } }>;
+export type FilesOptions = DefineOptions<{
+  api?: { pathPrefix?: string };
+  navigation?: { routes?: UiNavigationOptions['routes'] };
+}>;
 
 /**
  * Files schema plugin augment type
@@ -75,7 +79,8 @@ export type FilesUiPlugin = DefineUiPlugin<
   FilesPaths,
   typeof FILES_OPERATIONS,
   FilesUiUtils,
-  FilesOptions
+  FilesOptions,
+  typeof filesRoutes
 >;
 
 /**
@@ -117,8 +122,9 @@ export function filesUiPlugin<
     );
     devLog.debug('Files', 'registered plugin', { options, pathPrefix, runtime });
 
-    const routes = filesRoutes;
-    devLog.debug('Files', 'registered routes', { filesRoutes });
+    // Files only supports a top level route, only provides a single page.
+    const routes = { ...filesRoutes, ...(options?.navigation?.routes || {}) };
+    devLog.debug('Files', 'registered routes', { routes });
 
     const plugin = { [FILES_PLUGIN_NAME]: { api, options, routes, utils: filesUiUtils } };
     return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };

@@ -1,3 +1,8 @@
+//! TODO: Docs
+//!
+//! Explain:
+//! 1. How `QuerySession` is an abstraction over a `DataFusion` session context, to allow an
+//!    implementation to provide their own.
 use std::sync::Arc;
 
 use async_trait::async_trait;
@@ -7,7 +12,7 @@ use datafusion::execution::context::SessionContext;
 use datafusion::prelude::SessionConfig;
 use tracing::error;
 
-use super::StatQuery;
+use super::ConnectionDetailQuery;
 use crate::ListSummary;
 use crate::connectors::{Capability, ConnectionMetadata, ConnectorRegistry};
 use crate::error::{Error, Result};
@@ -45,7 +50,8 @@ impl QuerySession for SessionContext {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum SessionCapability {
-    /// Connector supports executing ad-hoc SQL queries through `DataFusion`.
+    /// Query session context supports executing ad-hoc SQL queries through `DataFusion` without
+    /// providing a specific connector ID.
     ExecuteWithoutConnector,
 }
 
@@ -81,13 +87,10 @@ where
     /// Access the underlying `DataFusion` session.
     pub fn session(&self) -> &SessionContext { self.session.as_session() }
 
-    /// List catalogs exposed by this connector.
-    pub fn list_catalogs(&self) -> Vec<String> { self.session().catalog_names() }
-
-    /// List tables/files for a connector, if supported.
+    ///  Register a connector to be queried
     ///
     /// # Errors
-    /// - If an error occurs while listing tables.
+    /// - If an error occurs while preparing the session.
     pub async fn register(&self, connector_id: &str) -> Result<ConnectionMetadata> {
         let connector = self.registry.get(connector_id).await?;
         connector
@@ -97,28 +100,33 @@ where
         Ok(connector.metadata().clone())
     }
 
+    /// List catalogs exposed by this connector.
+    pub fn list_catalogs(&self) -> Vec<String> { self.session().catalog_names() }
+
     /// List available connectors.
     ///
     /// # Errors
     /// - If an error occurs while listing connectors.
-    pub async fn list_connections(&self) -> Result<Vec<ConnectionMetadata>> {
+    pub async fn list_connectors(&self) -> Result<Vec<ConnectionMetadata>> {
         self.registry.list().await
     }
 
-    /// List tables/files for a connector, if supported.
+    /// List databases, or tables/files for a connector, if supported.
     ///
     /// # Errors
-    /// - If an error occurs while listing tables.
-    pub async fn list_tables(&self, connector_id: &str, params: &StatQuery) -> Result<ListSummary> {
+    /// - If an error occurs while listing.
+    pub async fn list(
+        &self,
+        connector_id: &str,
+        params: &ConnectionDetailQuery,
+    ) -> Result<ListSummary> {
         let connector = self
             .registry
             .get(connector_id)
             .await
             .inspect_err(|error| error!(?error, connector_id, "Error getting connection"))?;
         if !connector.metadata().has(Capability::List) {
-            return Err(Error::UnsupportedConnector(
-                "Connector does not support table listing".into(),
-            ));
+            return Err(Error::UnsupportedConnector("Connector does not support listing".into()));
         }
         connector
             .prepare_session(self.session.as_session())
@@ -157,26 +165,12 @@ where
             ));
         }
 
-        let dataframe = self
-            .session
+        self.session
             .sql(sql)
             .await
-            .inspect_err(|error| error!(?error, connector_id, "Error running sql"))?;
-
-        // TODO: Remove !!! Return stream only
-
-        let collected = dataframe.clone().collect().await.map_err(Error::DataFusion)?;
-        if let Some(batch) = collected.first() {
-            eprintln!(
-                "
-                    RecordBatch streaming:
-
-                    {:?}
-                    ",
-                batch.schema()
-            );
-        }
-
-        dataframe.execute_stream().await.map_err(Error::DataFusion)
+            .inspect_err(|error| error!(?error, connector_id, "Error running sql"))?
+            .execute_stream()
+            .await
+            .map_err(Error::DataFusion)
     }
 }

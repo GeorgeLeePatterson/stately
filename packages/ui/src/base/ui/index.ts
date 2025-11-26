@@ -130,7 +130,18 @@ import {
   InputGroupText,
 } from './input-group';
 // Item
-import { Item } from './item';
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+} from './item';
 // Label
 import { Label } from './label';
 // Menubar
@@ -353,6 +364,15 @@ export {
   InputGroupInput,
   InputGroupText,
   Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
   Label,
   Menubar,
   MenubarCheckboxItem,

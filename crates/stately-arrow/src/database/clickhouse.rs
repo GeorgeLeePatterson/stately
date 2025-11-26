@@ -17,7 +17,7 @@ use datafusion::prelude::{DataFrame, SessionConfig};
 use serde::{Deserialize, Serialize};
 use tracing::debug;
 
-use super::{DatabaseOptions, PoolOptions, Secret};
+use super::{ConnectionOptions, PoolOptions, Secret};
 use crate::connectors::{Backend, Capability, ConnectionKind, ConnectionMetadata};
 use crate::context::DEFAULT_SESSION_CAPABILITIES;
 use crate::error::Error;
@@ -107,7 +107,7 @@ impl ClickHouseBackend {
     pub async fn try_new(
         id: impl Into<String>,
         name: impl Into<String>,
-        options: &DatabaseOptions,
+        options: &ConnectionOptions,
         config: Option<ClickHouseConfig>,
         connect: PoolOptions,
     ) -> Result<Self> {
@@ -209,7 +209,7 @@ impl Backend for ClickHouseBackend {
 /// Create a `ClickHouse` client builder, Arrow format.
 pub fn create_client_builder(
     catalog: &str,
-    options: &DatabaseOptions,
+    options: &ConnectionOptions,
     config: &ClickHouseConfig,
 ) -> ClientBuilder {
     let catalog = if catalog.is_empty() { "default" } else { catalog };

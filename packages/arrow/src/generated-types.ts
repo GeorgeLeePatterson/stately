@@ -15,9 +15,9 @@ export interface components {
       compression?: null | components['schemas']['ClickHouseCompression'];
       settings?: { [key: string]: string };
     };
-    /** @description Main configuration for a connection */
-    Connection: {
-      config?: components['schemas']['ConnectionType'];
+    /** @description Connector Stately `entity` type */
+    Connector: {
+      config?: components['schemas']['ConnectorType'];
       /** @description Human-readable name for this connection. */
       name?: string;
     };
@@ -34,7 +34,7 @@ export interface components {
       kind: components['schemas']['ConnectionKind'];
       name: string;
     };
-    ConnectionType:
+    ConnectorType:
       | { object_store: components['schemas']['ObjectStoreConfiguration'] }
       | { database: components['schemas']['DatabaseConfiguration'] };
     /** @description Supported databases for the default backend lineup. */
@@ -42,11 +42,11 @@ export interface components {
     /** @description Configuration for database-backed connectors. */
     DatabaseConfiguration: {
       driver: components['schemas']['Database'];
-      options: components['schemas']['DatabaseOptions'];
+      options: components['schemas']['ConnectionOptions'];
       pool?: components['schemas']['PoolOptions'];
     };
     /** @description Common connection options shared by database connectors. */
-    DatabaseOptions: {
+    ConnectionOptions: {
       /**
        * @description Whether the connector should validate connections before use
        * @default false
@@ -140,7 +140,11 @@ export interface components {
      */
     Secret: string;
     SessionCapability: 'execute_without_connector';
-    StatQuery: { catalog?: string | null; database?: string | null; schema?: string | null };
+    ConnectionDetailQuery: {
+      catalog?: string | null;
+      database?: string | null;
+      schema?: string | null;
+    };
     /** @description Lightweight description of a table/file exposed by a connector. */
     TableSummary: {
       name: string;
@@ -214,7 +218,7 @@ export interface paths {
   '/catalogs': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     /**
-     * List all available connectors
+     * List all registered catalogs
      * @description # Errors
      *     - Internal server error
      */
@@ -246,12 +250,12 @@ export interface paths {
   '/connectors/{connector_id}': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     /**
-     * List files available in a connector's object store
+     * List databases or tables/files available in a connector's underlying data store
      * @description # Errors
      *     - Connector not found
      *     - Internal server error
      */
-    get: operations['stat'];
+    get: operations['list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -320,7 +324,7 @@ export interface operations {
       500: { headers: { [name: string]: unknown }; content?: never };
     };
   };
-  stat: {
+  list: {
     parameters: {
       query?: { catalog?: string | null; database?: string | null; schema?: string | null };
       header?: never;
@@ -332,7 +336,7 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description List of files */
+      /** @description List of databases or tables/files */
       200: {
         headers: { [name: string]: unknown };
         content: { 'application/json': components['schemas']['ListSummary'] };

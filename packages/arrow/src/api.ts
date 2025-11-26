@@ -20,10 +20,10 @@ export type ArrowOperations = DefineOperations<operations>;
  */
 export const ARROW_OPERATIONS = createOperationBindingsFactory<paths, operations>()({
   execute_query: { method: 'post', path: '/query' },
+  list: { method: 'get', path: '/connectors/{connector_id}' },
   list_catalogs: { method: 'get', path: '/catalogs' },
   list_connectors: { method: 'get', path: '/connectors' },
   register: { method: 'get', path: '/register/{connector_id}' },
-  stat: { method: 'get', path: '/connectors/{connector_id}' },
 } as const);
 
 export type ArrowApi = TypedOperations<ArrowPaths, typeof ARROW_OPERATIONS>;

@@ -35,9 +35,9 @@ pub trait Backend: Send + Sync {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum Capability {
-    /// Connector supports executing ad-hoc SQL queries through `DataFusion`.
+    /// Connection supports executing ad-hoc SQL queries through `DataFusion`.
     ExecuteSql,
-    /// Connector can enumerate available tables/files for browsing.
+    /// Connection can enumerate available tables/files for browsing.
     List,
 }
 
@@ -75,6 +75,8 @@ impl Serialize for ConnectionKind {
 }
 
 /// Static metadata describing a connector instance.
+///
+/// A connection refers to a connector in the context of the underlying query engine.
 #[derive(
     Debug,
     Clone,

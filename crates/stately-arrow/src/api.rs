@@ -1,6 +1,6 @@
-mod handlers;
+pub mod handlers;
+pub mod ipc;
 pub mod openapi;
-mod response;
 
 use axum::Router;
 use axum::routing::{get, post};
@@ -8,41 +8,42 @@ use datafusion::prelude::SessionContext;
 
 use crate::{QueryContext, QuerySession};
 
-/// Create the viewer API router
-/// This can be mounted at any path (e.g., /api/v1/viewer)
+/// Create the API router
+/// This can be mounted at any path (e.g., /api/v1/arrow)
 pub fn router<S, Session>(state: S) -> Router<S>
 where
     S: Send + Sync + Clone + 'static,
-    ViewerState<Session>: axum::extract::FromRef<S>,
+    QueryState<Session>: axum::extract::FromRef<S>,
     Session: QuerySession + 'static,
 {
     Router::new()
         .route("/connectors", get(handlers::list_connectors::<Session>))
-        .route("/connectors/{connector_id}", get(handlers::stat::<Session>))
+        .route("/connectors/{connector_id}", get(handlers::list::<Session>))
         .route("/register/{connector_id}", get(handlers::register::<Session>))
         .route("/catalogs", get(handlers::list_catalogs::<Session>))
         .route("/query", post(handlers::execute_query::<Session>))
         .with_state(state)
 }
 
-/// State required by the viewer API
+/// State required by the API handlers
 ///
-/// Implement `FromRef` to allow `ViewerState` to be extracted from application API state.
-/// This enables using `ViewerState` handlers with any router requiring state.
+/// Implement `FromRef` to allow `QueryState` to be extracted from application API state.
+/// This enables using `QueryState` handlers with any router requiring state.
 ///
 /// ```rust,ignore
-/// use arrow_ui::database::clickhouse::QuerySessionContext;
+/// use stately_arrow::database::clickhouse::QuerySessionContext;
 ///
 /// pub struct ApiState {
-///     pub query_context: arrow_ui::QueryContext<QuerySessionContext>,
+///     pub query_context: stately_arrow::QueryContext<QuerySessionContext>,
+///     pub other_state: String,
 /// }
 ///
-/// impl axum::extract::FromRef<ApiState> for arrow_ui::api::ViewerState<QuerySessionContext> {
+/// impl axum::extract::FromRef<ApiState> for stately_arrow::api::QueryState<QuerySessionContext> {
 ///     fn from_ref(state: &ApiState) -> Self { Self::new(state.query_context.clone()) }
 /// }
 ///
 /// pub struct Registry {
-///     state:      Arc<RwLock<xeo4_state::State>>,
+///     state:      Arc<RwLock<StatelyState>>,
 ///     registered: Arc<RwLock<BackendCache>>,
 ///     options:    RegistryOptions,
 /// }
@@ -72,21 +73,22 @@ where
 ///     let registry: Arc<dyn arrow_ui::ConnectorRegistry> =
 ///         Arc::new(xeo4_query::Registry::new(Arc::clone(&state)).with_options(opts));
 ///     let query_context = arrow_ui::QueryContext::with_session(session, registry);
-///     ApiState { queryContext }
+///
+///     ApiState { queryContext, other_state: "Other".to_string() }
 /// }
 /// ```
 #[derive(Clone)]
-pub struct ViewerState<S = SessionContext>
+pub struct QueryState<S = SessionContext>
 where
     S: QuerySession,
 {
     pub query_context: QueryContext<S>,
 }
 
-impl<S> ViewerState<S>
+impl<S> QueryState<S>
 where
     S: QuerySession,
 {
-    /// Create `ViewerState` from `QueryContext`
+    /// Create `QueryState` from `QueryContext`
     pub fn new(query_context: QueryContext<S>) -> Self { Self { query_context } }
 }

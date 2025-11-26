@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, utoipa::ToSchema)]
 #[schema(as = DatabaseConfiguration)]
 pub struct Config {
-    pub options: DatabaseOptions,
+    pub options: ConnectionOptions,
     pub driver:  Database,
     #[serde(default)]
     pub pool:    PoolOptions,
@@ -16,7 +16,7 @@ pub struct Config {
 
 /// Common connection options shared by database connectors.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, utoipa::ToSchema)]
-pub struct DatabaseOptions {
+pub struct ConnectionOptions {
     /// Endpoint, url, or path to the database
     pub endpoint: String,
     /// Username used to connect to the database

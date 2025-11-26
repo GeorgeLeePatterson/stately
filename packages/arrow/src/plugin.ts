@@ -14,6 +14,7 @@ import {
   type DefineUiPlugin,
   type DefineUiUtils,
   devLog,
+  type UiNavigationOptions,
   type UiPluginFactory,
 } from '@stately/ui/base';
 import type { RouteOption } from '@stately/ui/base/layout';
@@ -27,7 +28,10 @@ import type { ArrowData, ArrowNodeMap, ArrowTypes } from './schema';
 
 export const ARROW_PLUGIN_NAME = 'arrow' as const;
 
-export type ArrowOptions = DefineOptions<{ api?: { pathPrefix?: string } }>;
+export type ArrowOptions = DefineOptions<{
+  api?: { pathPrefix?: string };
+  navigation?: { routes?: UiNavigationOptions['routes'] };
+}>;
 
 /**
  * Arrow plugin utilities
@@ -115,8 +119,8 @@ export function arrowUiPlugin<
     );
     devLog.debug('Arrow', 'registered plugin', { options, pathPrefix, runtime });
 
-    const routes = arrowRoutes;
-    devLog.debug('Arrow', 'registered routes', { arrowRoutes });
+    const routes = { ...arrowRoutes, ...(options?.navigation?.routes || {}) };
+    devLog.debug('Arrow', 'registered routes', { routes });
 
     const plugin = { [ARROW_PLUGIN_NAME]: { api, options, routes } };
     return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };

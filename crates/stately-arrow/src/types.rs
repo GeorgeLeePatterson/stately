@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, utoipa::IntoParams, utoipa::ToSchema)]
-pub struct StatQuery {
+pub struct ConnectionDetailQuery {
     pub catalog:  Option<String>,
     pub database: Option<String>,
     pub schema:   Option<String>,

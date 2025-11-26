@@ -7,8 +7,8 @@ use utoipa::openapi::tag::TagBuilder;
 use utoipa::openapi::{ComponentsBuilder, InfoBuilder, OpenApiBuilder, PathsBuilder};
 
 use crate::{
-    Capability, ConnectionMetadata, ListSummary, QueryRequest, SessionCapability, StatQuery,
-    TableSummary,
+    Capability, ConnectionDetailQuery, ConnectionMetadata, ListSummary, QueryRequest,
+    SessionCapability, TableSummary,
 };
 
 /// `OpenAPI` documentation struct for the stately-arrow API.
@@ -16,13 +16,13 @@ use crate::{
 pub struct OpenApiDoc;
 
 impl utoipa::OpenApi for OpenApiDoc {
-    #[cfg_attr(not(all(feature = "database", feature = "object-store")), expect(unused_mut))]
     fn openapi() -> utoipa::openapi::OpenApi {
         // Build components with base schemas
+        #[cfg_attr(not(all(feature = "database", feature = "object-store")), expect(unused_mut))]
         let mut components = ComponentsBuilder::new()
             // Base schemas (always included)
             .schema_from::<QueryRequest>()
-            .schema_from::<StatQuery>()
+            .schema_from::<ConnectionDetailQuery>()
             .schema_from::<SessionCapability>()
             .schema_from::<Capability>()
             .schema_from::<ConnectionMetadata>()
@@ -34,12 +34,12 @@ impl utoipa::OpenApi for OpenApiDoc {
         #[cfg(feature = "database")]
         {
             use crate::database::{
-                Config as DatabaseConfig, Database, DatabaseOptions, PoolOptions, Secret,
+                Config as DatabaseConfig, ConnectionOptions, Database, PoolOptions, Secret,
                 TlsOptions,
             };
             components = components
                 .schema_from::<DatabaseConfig>()
-                .schema_from::<DatabaseOptions>()
+                .schema_from::<ConnectionOptions>()
                 .schema_from::<Database>()
                 .schema_from::<PoolOptions>()
                 .schema_from::<Secret>()
@@ -72,7 +72,7 @@ impl utoipa::OpenApi for OpenApiDoc {
         let paths = PathsBuilder::new()
             .path_from::<super::handlers::__path_list_connectors>()
             .path_from::<super::handlers::__path_list_catalogs>()
-            .path_from::<super::handlers::__path_stat>()
+            .path_from::<super::handlers::__path_list>()
             .path_from::<super::handlers::__path_execute_query>()
             .path_from::<super::handlers::__path_register>()
             .build();
@@ -89,7 +89,7 @@ impl utoipa::OpenApi for OpenApiDoc {
             .paths(paths)
             .components(Some(components.build()))
             .tags(Some(vec![
-                TagBuilder::new().name("arrow-view").description(Some("Viewer endpoints")).build(),
+                TagBuilder::new().name("arrow").description(Some("Arrow data endpoints")).build(),
             ]))
             .build()
     }

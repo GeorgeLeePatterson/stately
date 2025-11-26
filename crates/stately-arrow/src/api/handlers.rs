@@ -2,12 +2,12 @@ use axum::Json;
 use axum::extract::{Path, Query, State};
 use tracing::debug;
 
-use super::ViewerState;
-use super::response::arrow_ipc_response;
+use super::QueryState;
+use super::ipc::arrow_ipc_response;
 use crate::error::Result;
-use crate::{ConnectionMetadata, ListSummary, QueryRequest, QuerySession, StatQuery};
+use crate::{ConnectionDetailQuery, ConnectionMetadata, ListSummary, QueryRequest, QuerySession};
 
-const IDENT: &str = "[arrow-ui::Viewer]";
+const IDENT: &str = "[stately-arrow]";
 
 /// List all available connectors
 ///
@@ -16,38 +16,38 @@ const IDENT: &str = "[arrow-ui::Viewer]";
 #[utoipa::path(
     get,
     path = "/connectors",
-    tag = "arrow-ui",
+    tag = "arrow",
     responses(
-        (status = 200, description = "List of available connectors", body = Vec<ConnectionMetadata>),
+        (status = 200, description = "List of available connections", body = Vec<ConnectionMetadata>),
         (status = 500, description = "Internal server error")
     )
 )]
 pub(super) async fn list_connectors<S>(
-    State(state): State<ViewerState<S>>,
+    State(state): State<QueryState<S>>,
 ) -> Result<Json<Vec<ConnectionMetadata>>>
 where
     S: QuerySession,
 {
-    let connections = state.query_context.list_connections().await?;
-    debug!("{IDENT} Listed connectors: {connections:?}");
-    Ok(Json(connections))
+    let connectors = state.query_context.list_connectors().await?;
+    debug!("{IDENT} Listed connectors: {connectors:?}");
+    Ok(Json(connectors))
 }
 
-/// List all available connectors
+/// List all registered catalogs
 ///
 /// # Errors
 /// - Internal server error
 #[utoipa::path(
     get,
     path = "/catalogs",
-    tag = "arrow-ui",
+    tag = "arrow",
     responses(
         (status = 200, description = "List of registered catalogs", body = Vec<String>),
         (status = 500, description = "Internal server error")
     )
 )]
 pub(super) async fn list_catalogs<S>(
-    State(state): State<ViewerState<S>>,
+    State(state): State<QueryState<S>>,
 ) -> Result<Json<Vec<String>>>
 where
     S: QuerySession,
@@ -57,7 +57,7 @@ where
     Ok(Json(catalogs))
 }
 
-/// List files available in a connector's object store
+/// List databases or tables/files available in a connector's underlying data store
 ///
 /// # Errors
 /// - Connector not found
@@ -65,27 +65,27 @@ where
 #[utoipa::path(
     get,
     path = "/connectors/{connector_id}",
-    tag = "arrow-ui",
+    tag = "arrow",
     params(
         ("connector_id" = String, Path, description = "Connector ID"),
-        StatQuery
+        ConnectionDetailQuery
     ),
     responses(
-        (status = 200, description = "List of files", body = ListSummary),
+        (status = 200, description = "List of databases or tables/files", body = ListSummary),
         (status = 404, description = "Connector not found"),
         (status = 500, description = "Internal server error")
     )
 )]
-pub(super) async fn stat<S>(
-    Query(params): Query<StatQuery>,
+pub(super) async fn list<S>(
+    Query(params): Query<ConnectionDetailQuery>,
     Path(connector_id): Path<String>,
-    State(state): State<ViewerState<S>>,
+    State(state): State<QueryState<S>>,
 ) -> Result<Json<ListSummary>>
 where
     S: QuerySession,
 {
     debug!("{IDENT} Listing files for connector: {connector_id}");
-    Ok(Json(state.query_context.list_tables(&connector_id, &params).await?))
+    Ok(Json(state.query_context.list(&connector_id, &params).await?))
 }
 
 /// Register a connector. Useful when federating queries since registration is lazy
@@ -96,7 +96,7 @@ where
 #[utoipa::path(
     get,
     path = "/register/{connector_id}",
-    tag = "arrow-ui",
+    tag = "arrow",
     params(
         ("connector_id" = String, Path, description = "Connector ID"),
     ),
@@ -108,7 +108,7 @@ where
 )]
 pub(super) async fn register<S>(
     Path(connector_id): Path<String>,
-    State(state): State<ViewerState<S>>,
+    State(state): State<QueryState<S>>,
 ) -> Result<Json<ConnectionMetadata>>
 where
     S: QuerySession,
@@ -125,7 +125,7 @@ where
 #[utoipa::path(
     post,
     path = "/query",
-    tag = "arrow-ui",
+    tag = "arrow",
     request_body = QueryRequest,
     responses(
         (
@@ -139,7 +139,7 @@ where
     )
 )]
 pub(super) async fn execute_query<S>(
-    State(state): State<ViewerState<S>>,
+    State(state): State<QueryState<S>>,
     Json(request): Json<QueryRequest>,
 ) -> Result<axum::response::Response>
 where
