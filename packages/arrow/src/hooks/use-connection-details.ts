@@ -18,6 +18,6 @@ export function useConnectionDetails(connectorId?: string, filters: ConnectionDe
       if (error) throw error;
       return data;
     },
-    queryKey: ['viewer', 'stat', connectorId, filters],
+    queryKey: ['list', connectorId, filters],
   });
 }

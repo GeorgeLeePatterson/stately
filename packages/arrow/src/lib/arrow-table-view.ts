@@ -1,4 +1,4 @@
-import { type StructRowProxy, Table } from 'apache-arrow';
+import { type RecordBatch, type StructRowProxy, Table } from 'apache-arrow';
 
 /**
  * Metrics about the streaming query progress.
@@ -15,7 +15,7 @@ export interface StreamMetrics {
 /**
  * State snapshot provided to ArrowView subscribers.
  */
-export interface ArrowViewState {
+export interface ArrowTableViewState {
   table: Table | null;
   cursor: number;
   metrics: StreamMetrics;
@@ -25,9 +25,9 @@ export interface ArrowViewState {
  * A view into an Arrow Table with cursor-based navigation.
  * The underlying table may grow as streaming progresses.
  */
-export interface ArrowView {
+export interface ArrowTableView {
   /** The underlying Arrow Table (grows during streaming) */
-  readonly table: Table | null;
+  readonly table: Table;
   /** Current cursor position for sequential navigation */
   readonly cursor: number;
 
@@ -40,24 +40,26 @@ export interface ArrowView {
   /** Get a slice of rows as a Table (zero-copy) */
   slice(start: number, end: number): Table;
   /** Subscribe to state changes, returns unsubscribe function */
-  subscribe(callback: (state: ArrowViewState) => void): () => void;
-}
+  subscribe(callback: (state: ArrowTableViewState) => void): () => void;
 
-/**
- * Updater functions for modifying ArrowView state.
- * Returned separately from createArrowView to keep the public ArrowView interface clean.
- */
-export interface ArrowViewUpdater {
+  /**
+   * Timer events
+   */
+  timer: number;
+  startTimer(): void;
+
+  /**
+   * Metric events
+   */
+  readonly metrics: StreamMetrics;
+
+  /**
+   * Updater functions for modifying ArrowView state.
+   * Returned separately from createArrowView to keep the public ArrowView interface clean.
+   */
   setTable(table: Table | null): void;
-  updateMetrics(metrics: Partial<StreamMetrics>): void;
-}
-
-/**
- * Result of createArrowView - the public view and internal updater.
- */
-export interface CreateArrowViewResult {
-  view: ArrowView;
-  updater: ArrowViewUpdater;
+  appendBatch(batch: RecordBatch): Table;
+  reset(): number;
 }
 
 /**
@@ -68,20 +70,45 @@ export interface CreateArrowViewResult {
  * @param initialTable - Optional initial table
  * @returns Object with `view` (public) and `updater` (for streaming hook)
  */
-export function createArrowView(initialTable?: Table | null): CreateArrowViewResult {
-  let table: Table | null = initialTable ?? null;
+export function createArrowView(initialTable?: Table | null): ArrowTableView {
+  let table: Table = initialTable ?? new Table([]);
   let cursor = 0;
-  let metrics: StreamMetrics = { batchesReceived: 0, bytesReceived: 0, elapsedMs: 0 };
-  const subscribers = new Set<(state: ArrowViewState) => void>();
+  const metrics: StreamMetrics = { batchesReceived: 0, bytesReceived: 0, elapsedMs: 0 };
+  let timer = 0;
+  const subscribers = new Set<(state: ArrowTableViewState) => void>();
 
   const notify = () => {
-    const state: ArrowViewState = { cursor, metrics, table };
     for (const cb of subscribers) {
-      cb(state);
+      cb({ cursor, metrics, table });
     }
   };
 
-  const view: ArrowView = {
+  const setCursor = (position: number) => {
+    cursor = Math.max(0, Math.min(position, table?.numRows ?? 0));
+  };
+
+  const setTable = (newTable: Table) => {
+    table = newTable;
+    notify();
+  };
+
+  const startTimer = () => {
+    timer = performance.now();
+  };
+
+  const view: ArrowTableView = {
+    appendBatch(batch: RecordBatch) {
+      const newTable = new Table([...(table?.batches || []), batch]);
+      setTable(newTable);
+
+      metrics.batchesReceived++;
+      metrics.bytesReceived += batch.data.byteLength;
+      metrics.elapsedMs = performance.now() - timer;
+      notify();
+
+      return newTable;
+    },
+
     get cursor() {
       return cursor;
     },
@@ -89,6 +116,10 @@ export function createArrowView(initialTable?: Table | null): CreateArrowViewRes
     getRow(index: number) {
       if (!table || index < 0 || index >= table.numRows) return null;
       return table.get(index);
+    },
+
+    get metrics() {
+      return metrics;
     },
 
     next(count = 100) {
@@ -99,9 +130,19 @@ export function createArrowView(initialTable?: Table | null): CreateArrowViewRes
       return result;
     },
 
-    setCursor(position: number) {
-      cursor = Math.max(0, Math.min(position, table?.numRows ?? 0));
+    reset() {
+      startTimer();
+      setCursor(0);
+      setTable(new Table([]));
+      metrics.batchesReceived = 0;
+      metrics.bytesReceived = 0;
+      metrics.elapsedMs = 0;
+      return timer;
     },
+
+    setCursor,
+
+    setTable,
 
     slice(start: number, end: number) {
       if (!table) return new Table();
@@ -110,7 +151,9 @@ export function createArrowView(initialTable?: Table | null): CreateArrowViewRes
       return table.slice(safeStart, safeEnd);
     },
 
-    subscribe(callback: (state: ArrowViewState) => void) {
+    startTimer,
+
+    subscribe(callback: (state: ArrowTableViewState) => void) {
       subscribers.add(callback);
       // Immediately call with current state
       callback({ cursor, metrics, table });
@@ -120,19 +163,9 @@ export function createArrowView(initialTable?: Table | null): CreateArrowViewRes
     get table() {
       return table;
     },
+
+    timer,
   };
 
-  const updater: ArrowViewUpdater = {
-    setTable(newTable: Table | null) {
-      table = newTable;
-      notify();
-    },
-
-    updateMetrics(update: Partial<StreamMetrics>) {
-      metrics = { ...metrics, ...update };
-      notify();
-    },
-  };
-
-  return { updater, view };
+  return view;
 }

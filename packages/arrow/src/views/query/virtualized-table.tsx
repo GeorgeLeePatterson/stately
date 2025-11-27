@@ -16,75 +16,39 @@ import {
   TableRow,
 } from '@stately/ui/base/ui';
 import {
-  type ColumnDef,
   createColumnHelper,
+  type DisplayColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import type { Table as ArrowTable, Vector } from 'apache-arrow';
+import type { Table as ArrowTable } from 'apache-arrow';
 import { MoreHorizontal } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
-
-interface ViewerResultsTableProps {
-  table?: ArrowTable | null;
-  isLoading?: boolean;
-  error?: string | null;
-}
-
-interface ColumnDescriptor {
-  key: string;
-  name: string;
-  vector: Vector | null;
-}
 
 const ROW_HEIGHT = 42;
 const DATA_COLUMN_MAX_WIDTH = 320;
 const CELL_CHAR_LIMIT = 140;
 
-interface ColumnMetaConfig {
-  headClassName?: string;
-  cellClassName?: string;
-  maxWidth?: number;
+// TODO: Remove or use
+interface HeaderMeta {
+  cellClassName: string;
+  headClassName: string;
+  maxWidth: number;
 }
 
-type ViewerColumnDef = ColumnDef<number, ColumnMetaConfig> & { meta?: ColumnMetaConfig };
-
-export function ViewerResultsTable({ table, isLoading, error }: ViewerResultsTableProps) {
-  if (isLoading) {
-    return (
-      <div className="flex h-full min-h-[360px] items-center justify-center rounded-lg border bg-muted/30 text-sm text-muted-foreground">
-        Running query…
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-full min-h-[360px] items-center justify-center rounded-lg border bg-destructive/5 text-sm text-destructive">
-        {error}
-      </div>
-    );
-  }
-
-  if (!table || table.numRows === 0) {
-    return (
-      <div className="flex h-full min-h-[360px] flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-center text-sm text-muted-foreground">
-        <p className="font-medium text-foreground">Run a query to see results</p>
-        <p className="max-w-sm text-xs text-muted-foreground">
-          Large result sets are rendered with virtualization so scrolling billions of rows stays
-          silky.
-        </p>
-      </div>
-    );
-  }
-
-  return <VirtualizedTable table={table} />;
+export function formatValue(value: unknown): string {
+  if (value === null || value === undefined) return '—';
+  if (typeof value === 'number') return value.toLocaleString();
+  if (value instanceof Date) return value.toISOString();
+  if (Array.isArray(value)) return `[${value.map(formatValue).join(', ')}]`;
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(value);
 }
 
-function VirtualizedTable({ table }: { table: ArrowTable }) {
-  const columns = useMemo<ColumnDescriptor[]>(() => {
+export function VirtualizedTable({ table }: { table: ArrowTable }) {
+  const columns = useMemo(() => {
     return table.schema.fields.map((field, index) => ({
       key: field?.name || `column_${index}`,
       name: field?.name || `column_${index}`,
@@ -120,7 +84,7 @@ function VirtualizedTable({ table }: { table: ArrowTable }) {
     }
   }, []);
 
-  const tableColumns = useMemo<ViewerColumnDef[]>(() => {
+  const tableColumns = useMemo<DisplayColumnDef<number>[]>(() => {
     const rowNumberColumn = columnHelper.display({
       cell: info => (
         <span className="font-mono text-xs text-muted-foreground">
@@ -134,7 +98,7 @@ function VirtualizedTable({ table }: { table: ArrowTable }) {
         cellClassName: 'w-[80px] max-w-[80px]',
         headClassName: 'w-[80px] max-w-[80px]',
         maxWidth: 80,
-      },
+      } as const,
       size: 80,
     });
 
@@ -151,7 +115,7 @@ function VirtualizedTable({ table }: { table: ArrowTable }) {
           cellClassName: 'max-w-[320px] truncate',
           headClassName: 'max-w-[320px]',
           maxWidth: DATA_COLUMN_MAX_WIDTH,
-        },
+        } as const,
         size: 160,
       }),
     );
@@ -174,7 +138,11 @@ function VirtualizedTable({ table }: { table: ArrowTable }) {
       ),
       header: () => '',
       id: '__details__',
-      meta: { cellClassName: 'w-12 text-right', headClassName: 'w-12 text-right', maxWidth: 48 },
+      meta: {
+        cellClassName: 'w-12 text-right',
+        headClassName: 'w-12 text-right',
+        maxWidth: 48,
+      } as const,
       size: 48,
     });
 
@@ -208,7 +176,6 @@ function VirtualizedTable({ table }: { table: ArrowTable }) {
 
   const drawerRowValues = useMemo(() => {
     if (drawerRowIndex === null) return [];
-
     return columns.map(column => ({
       key: column.key,
       name: column.name,
@@ -231,14 +198,12 @@ function VirtualizedTable({ table }: { table: ArrowTable }) {
                     <TableHead
                       className={cn(
                         'bg-muted/30 text-[11px] font-semibold uppercase tracking-wide',
-                        (header.column.columnDef.meta as any)?.headClassName,
+                        header.column.columnDef.meta?.headClassName,
                       )}
                       key={header.id}
                       style={{
-                        maxWidth: (header.column.columnDef.meta as ColumnMetaConfig | undefined)
-                          ?.maxWidth,
-                        width: (header.column.columnDef.meta as ColumnMetaConfig | undefined)
-                          ?.maxWidth,
+                        maxWidth: header.column.columnDef?.meta?.maxWidth,
+                        width: header.column.columnDef?.meta?.maxWidth,
                       }}
                     >
                       {header.isPlaceholder
@@ -270,18 +235,11 @@ function VirtualizedTable({ table }: { table: ArrowTable }) {
                   >
                     {row.getVisibleCells().map(cell => (
                       <TableCell
-                        className={cn(
-                          'align-top',
-                          (cell.column.columnDef.meta as ColumnMetaConfig | undefined)
-                            ?.cellClassName,
-                        )}
+                        className={cn('align-top', cell.column.columnDef.meta?.cellClassName)}
                         key={cell.id}
                         style={{
-                          maxWidth:
-                            (cell.column.columnDef.meta as ColumnMetaConfig | undefined)
-                              ?.maxWidth ?? DATA_COLUMN_MAX_WIDTH,
-                          width: (cell.column.columnDef.meta as ColumnMetaConfig | undefined)
-                            ?.maxWidth,
+                          maxWidth: cell.column.columnDef.meta?.maxWidth ?? DATA_COLUMN_MAX_WIDTH,
+                          width: cell.column.columnDef.meta?.maxWidth,
                         }}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -333,13 +291,4 @@ function VirtualizedTable({ table }: { table: ArrowTable }) {
       </Drawer>
     </>
   );
-}
-
-function formatValue(value: unknown): string {
-  if (value === null || value === undefined) return '—';
-  if (typeof value === 'number') return value.toLocaleString();
-  if (value instanceof Date) return value.toISOString();
-  if (Array.isArray(value)) return `[${value.map(formatValue).join(', ')}]`;
-  if (typeof value === 'object') return JSON.stringify(value);
-  return String(value);
 }
