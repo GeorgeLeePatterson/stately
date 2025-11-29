@@ -119,21 +119,18 @@ prepare-release version:
         exit 1
     fi
 
-    # Generate demo documentation
-    echo "Generating demo documentation..."
-    ./scripts/generate-demo.sh
-
     # Make sure git cliff is installed
     git cliff --version || (echo "Error: git cliff is not installed" && exit 1)
-
-    # Parse version components
-    IFS='.' read -r MAJOR MINOR PATCH <<< "{{version}}"
 
     # Get current version for release notes
     CURRENT_VERSION=$(grep -E '^version = ' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
 
     # Create release branch
     git checkout -b "release-v{{version}}"
+
+    # Generate demo documentation
+    echo "Generating demo documentation..."
+    ./scripts/generate-demo.sh
 
     # Update workspace version in root Cargo.toml (only in [workspace.package] section)
     # This uses a more specific pattern to only match the version under [workspace.package]
@@ -159,9 +156,9 @@ prepare-release version:
     # Update Cargo.lock
     cargo update --workspace
 
-    # Generate full changelog
+    # Generate full changelog with the new version tagged
     echo "Generating changelog..."
-    git cliff -o CHANGELOG.md
+    git cliff --tag v{{version}} -o CHANGELOG.md
 
     # Generate release notes for this version
     echo "Generating release notes..."

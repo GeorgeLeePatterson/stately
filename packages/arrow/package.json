@@ -36,7 +36,7 @@
     "@stately/ui": "workspace:*",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.12",
-    "@types/react": "^19.2.6",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "lucide-react": "^0.554.0",
     "tsdown": "0.17.0-beta.1",

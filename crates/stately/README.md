@@ -20,7 +20,7 @@ Stately provides a framework for managing application configuration and state wi
 - 🔍 **Search & Query** - Built-in entity search across collections
 - 🌍 **Foreign Types** - Use types from external crates in your state
 
-Stately does not provide the configuration and structures that comprise the state. Instead it provides an ultra-thin container management strategy that provides seamless integration with [@stately/ui](stately-ui).
+Stately does not provide the configuration and structures that comprise the state. Instead it provides an ultra-thin container management strategy that provides seamless integration with [@stately/ui](../../packages/ui).
 
 ## Installation
 
@@ -28,14 +28,14 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stately = "0.3.0"
+stately = "0.3.2"
 ```
 
 With Axum API generation:
 
 ```toml
 [dependencies]
-stately = { version = "0.3.0", features = ["axum"] }
+stately = { version = "0.3.2", features = ["axum"] }
 ```
 
 ## Quick Start
@@ -77,6 +77,8 @@ pub struct AppState {
 This generates:
 - `StateEntry` enum for entity type discrimination
 - `Entity` enum for type-erased entity access
+- `ForeignEntity` trait for externally defined entities
+- Wrappers for renamed entities and foreign entities
 - Collections with full CRUD operations
 - Search and query methods
 
@@ -233,6 +235,7 @@ See the [examples](examples/) directory:
 
 - [`basic.rs`](examples/basic.rs) - Core CRUD operations and entity relationships
 - [`axum_api.rs`](examples/axum_api.rs) - Web API generation with Axum
+- [`doc_expand.rs`](examples/doc_expand.rs) - Example used to generate documentation
 
 Run examples:
 
@@ -267,7 +270,7 @@ match &pipeline.source {
 For configuration that should have exactly one instance:
 
 ```rust
-#[stately::entity(singleton)]
+#[stately::entity]
 #[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct Settings {
     pub max_connections: usize,
@@ -327,7 +330,7 @@ let id = state.json_configs.create(config);
 
 Because `ForeignEntity` is generated in your crate (not in stately), you can implement it on types from external crates without violating Rust's orphan rules. The macro creates wrapper types in the `Entity` enum that delegate to your `ForeignEntity` implementation, ensuring full compatibility with state operations.
 
-## 🌐 Web API Generation (Axum)
+## 🌐 Web API Generation (Axum currently)
 
 Generate a complete REST API with OpenAPI documentation:
 
@@ -480,9 +483,6 @@ The `#[stately::entity]` macro implements the `HasName` trait and supports these
 
 // Use a method to get the name
 #[stately::entity(name_method = "get_identifier")]
-
-// Mark as singleton (returns "default" as the name)
-#[stately::entity(singleton)]
 ```
 
 ## Examples
@@ -491,13 +491,6 @@ See the [examples directory](../examples/):
 
 - [`basic.rs`](examples/basic.rs) - Core functionality demonstration
 - [`axum_api.rs`](examples/axum_api.rs) - Web API generation
-
-Run examples:
-
-```bash
-cargo run --example basic
-cargo run --example axum_api --features axum
-```
 
 ## API Reference
 
@@ -528,6 +521,7 @@ Stately uses procedural macros to generate boilerplate at compile time:
 2. **`#[stately::state]`** generates:
    - `StateEntry` enum for entity type discrimination
    - `Entity` enum for type-erased entity wrapper
+   - `ForeignEntity` for external entities
    - Collection fields with type-safe accessors
    - CRUD operation methods
    - `link_aliases` module with `Link<T>` type aliases

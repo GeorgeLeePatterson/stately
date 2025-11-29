@@ -30,7 +30,7 @@
     "directory": "packages/schema"
   },
   "devDependencies": {
-    "typescript": "^5.7.2"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "openapi-types": "^12.1.3",

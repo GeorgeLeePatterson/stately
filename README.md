@@ -35,7 +35,7 @@ Add stately to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stately = { version = "0.3.0", features = ["axum"] }
+stately = { version = "0.3.2", features = ["axum"] }
 ```
 
 See [`crates/stately`](crates/stately) for full documentation.
@@ -69,7 +69,7 @@ This is a monorepo containing both Rust and TypeScript packages:
 - **[`stately-derive`](crates/stately-derive)** - Procedural macros
 
 ### TypeScript Packages
-- **[`@stately/schema-types`](packages/schema-types)** - Shared type definitions
+- **[`@stately/schema`](packages/schema)** - Shared type definitions
 - **[`@stately/codegen`](packages/codegen)** - CLI tool for schema generation
 - **[`@stately/ui`](packages/ui)** - React UI components
 

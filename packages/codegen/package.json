@@ -38,10 +38,10 @@
   },
   "dependencies": {
     "@stately/schema": "workspace:*",
-    "openapi-typescript": "^7.4.4"
+    "openapi-typescript": "^7.10.1"
   },
   "devDependencies": {
-    "@types/node": "^22.10.1",
-    "typescript": "^5.7.2"
+    "@types/node": "^22.19.1",
+    "typescript": "^5.9.3"
   }
 }

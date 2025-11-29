@@ -39,6 +39,8 @@ pub struct Connector {
     pub config: Type,
 }
 
+#[allow(missing_copy_implementations)] // This will grow, so Copy is a breaking change
+#[non_exhaustive]
 #[derive(
     Debug, Clone, PartialEq, Hash, Eq, serde::Deserialize, serde::Serialize, utoipa::ToSchema,
 )]

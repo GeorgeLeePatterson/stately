@@ -37,20 +37,27 @@ examples:
       - 'examples/**'
       - '**/examples/**'
 
-arrow:
+stately:
   - changed-files:
     - any-glob-to-any-file:
-      - '**/arrow/**'
-      - '**/arrow.rs'
+      - '**/crates/stately/**'
 
-deserialize:
+macros:
   - changed-files:
     - any-glob-to-any-file:
-      - '**/deserialize/**'
-      - '**/deserialize.rs'
+      - '**/stately-derive/**'
 
-serialize:
+stately-ui:
   - changed-files:
     - any-glob-to-any-file:
-      - '**/serialize/**'
-      - '**/serialize.rs'
+      - '**/packages/ui/**'
+
+stately-codegen:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/packages/codegen/**'
+
+stately-schema:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/packages/schema/**'

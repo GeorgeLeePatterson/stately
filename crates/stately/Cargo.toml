@@ -11,6 +11,12 @@ repository.workspace = true
 homepage.workspace = true
 documentation.workspace = true
 
+[package.metadata.docs.rs]
+# Build docs with all features enabled to show the complete API
+all-features = true
+# Alternatively, you can specify features explicitly:
+# features = ["axum"]
+
 [features]
 default = ["openapi"]
 openapi = ["dep:utoipa"]
@@ -29,7 +35,7 @@ tokio = { version = "1", features = ["sync"], optional = true }
 tower-http = { version = "0.6", features = ["compression-gzip"], optional = true }
 utoipa = { workspace = true, optional = true }
 
-stately-derive = { path = "../stately-derive", version = "0.3.0" }
+stately-derive = { path = "../stately-derive", version = "0.3.2" }
 
 [dev-dependencies]
 tower = { version = "0.5", features = ["util"] }
