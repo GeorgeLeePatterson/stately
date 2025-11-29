@@ -17,7 +17,7 @@ export function VersionedFileDetails({ entry, onClose }: VersionedFileDetailsPro
   const latestVersion = versions[0]; // Versions are sorted newest first
 
   return (
-    <div className="space-y-4">
+    <div className="versioned-file-details space-y-4">
       {/* Back button for mobile */}
       <Button className="sm:hidden mb-2" onClick={onClose} size="sm" variant="ghost">
         <ArrowLeft className="h-4 w-4 mr-2" />

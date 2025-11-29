@@ -2,56 +2,13 @@
   "name": "@stately/files",
   "version": "0.1.0",
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./codegen": {
-      "types": "./dist/codegen.d.ts",
-      "import": "./dist/codegen.js"
-    },
-    "./components": {
-      "types": "./dist/components/index.d.ts",
-      "import": "./dist/components/index.js"
-    },
-    "./dialogs": {
-      "types": "./dist/dialogs/index.d.ts",
-      "import": "./dist/dialogs/index.js"
-    },
-    "./fields/edit": {
-      "types": "./dist/fields/edit.d.ts",
-      "import": "./dist/fields/edit.js"
-    },
-    "./fields/view": {
-      "types": "./dist/fields/view.d.ts",
-      "import": "./dist/fields/view.js"
-    },
-    "./hooks": {
-      "types": "./dist/hooks/index.d.ts",
-      "import": "./dist/hooks/index.js"
-    },
-    "./pages": {
-      "types": "./dist/pages/index.d.ts",
-      "import": "./dist/pages/index.js"
-    },
-    "./types/api": {
-      "types": "./dist/types/api.d.ts",
-      "import": "./dist/types/api.js"
-    },
-    "./views": {
-      "types": "./dist/views/index.d.ts",
-      "import": "./dist/views/index.js"
-    }
-  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "check": "tsc --noEmit",
-    "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "dev": "tsdown --watch"
   },
   "peerDependencies": {
     "@stately/codegen": "workspace:*",
@@ -76,7 +33,49 @@
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "lucide-react": "^0.554.0",
-    "tsup": "^8.3.5",
+    "tsdown": "0.17.0-beta.1",
     "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./codegen": {
+      "types": "./dist/codegen.d.ts",
+      "import": "./dist/codegen.mjs"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.mjs"
+    },
+    "./dialogs": {
+      "types": "./dist/dialogs/index.d.ts",
+      "import": "./dist/dialogs/index.mjs"
+    },
+    "./fields/edit": {
+      "types": "./dist/fields/edit.d.ts",
+      "import": "./dist/fields/edit.mjs"
+    },
+    "./fields/view": {
+      "types": "./dist/fields/view.d.ts",
+      "import": "./dist/fields/view.mjs"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.mjs"
+    },
+    "./pages": {
+      "types": "./dist/pages/index.d.ts",
+      "import": "./dist/pages/index.mjs"
+    },
+    "./types/api": {
+      "types": "./dist/types/api.d.ts",
+      "import": "./dist/types/api.mjs"
+    },
+    "./views": {
+      "types": "./dist/views/index.d.ts",
+      "import": "./dist/views/index.mjs"
+    }
   }
 }

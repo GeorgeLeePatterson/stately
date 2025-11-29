@@ -50,7 +50,27 @@ export type * from './runtime.js';
 export { defaultUiOptions, createStatelyUi };
 
 // Utils
-import { devLog } from './lib/utils.js';
+import { cn, devLog } from './lib/utils.js';
+import {
+  camelCaseToKebabCase,
+  runtimeUtils,
+  stripLeadingSlash,
+  stripTrailingSlash,
+  toKebabCase,
+  toSpaceCase,
+  toTitleCase,
+} from './utils.js';
 
+export type * from './lib/utils.js';
 export type * from './utils.js';
-export { devLog };
+export {
+  cn,
+  devLog,
+  stripLeadingSlash,
+  stripTrailingSlash,
+  camelCaseToKebabCase,
+  toKebabCase,
+  toSpaceCase,
+  toTitleCase,
+  runtimeUtils,
+};

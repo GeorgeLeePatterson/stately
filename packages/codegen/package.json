@@ -20,7 +20,7 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "rm -rf dist .turbo",
-    "typecheck": "tsc --noEmit",
+    "check": "tsc --noEmit",
     "dev": "tsc --build --watch"
   },
   "keywords": [

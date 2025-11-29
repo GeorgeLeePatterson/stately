@@ -23,7 +23,7 @@ import { Files } from 'lucide-react';
 import { FILES_OPERATIONS, type FilesPaths } from './api';
 import { primitiveStringTransformer } from './fields/edit/primitive-string';
 import { RelativePathEdit } from './fields/edit/relative-path-field';
-import { RelativePathFieldView } from './fields/view/relative-path-field';
+import { RelativePathView } from './fields/view/relative-path-field';
 import type { FilesData, FilesNodeMap, FilesTypes } from './schema';
 import { FilesNodeType } from './schema';
 import { type FilesUiUtils, type FilesUtils, filesUiUtils } from './utils';
@@ -104,7 +104,7 @@ export function filesUiPlugin<
     );
     registry.components.set(
       baseRegistry.makeRegistryKey(FilesNodeType.RelativePath, 'view'),
-      RelativePathFieldView,
+      RelativePathView,
     );
 
     // Register transformers

@@ -28,7 +28,7 @@ export function PageHeader({
   backLabel,
 }: PageHeaderProps) {
   return (
-    <div className="space-y-6">
+    <div className="stately-page-header space-y-6">
       {backTo && (
         <div className="mb-2">
           <Button asChild size="sm" variant="ghost">

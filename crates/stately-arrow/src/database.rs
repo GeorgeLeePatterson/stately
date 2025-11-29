@@ -4,6 +4,10 @@ pub mod clickhouse;
 
 use serde::{Deserialize, Serialize};
 
+// The ClickHouse session context is the most strict, so it's used as the default when enabled
+#[cfg(feature = "clickhouse")]
+pub type DefaultQuerySessionContext = clickhouse::QuerySessionContext;
+
 /// Configuration for database-backed connectors.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, utoipa::ToSchema)]
 #[schema(as = DatabaseConfiguration)]

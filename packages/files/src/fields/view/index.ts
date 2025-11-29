@@ -1,3 +1,3 @@
-import { RelativePathFieldView } from './relative-path-field';
+import { RelativePathView } from './relative-path-field';
 
-export { RelativePathFieldView };
+export { RelativePathView };

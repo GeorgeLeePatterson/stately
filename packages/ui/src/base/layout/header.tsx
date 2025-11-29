@@ -11,7 +11,7 @@ export function Header({ before, pageTitle, children }: React.PropsWithChildren<
   const { options } = useBaseStatelyUi();
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+    <header className="stately-header flex h-16 shrink-0 items-center gap-2 border-b px-4">
       {before}
       <Separator className="mr-2 h-4" orientation="vertical" />
       <div className="flex flex-1 items-center justify-between">

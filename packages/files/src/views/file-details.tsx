@@ -19,7 +19,7 @@ export function FileDetails({
   if (!entry) return null;
 
   return (
-    <div {...rest} className={cn(['flex-1 min-w-0', rest?.className])}>
+    <div {...rest} className={cn(['file-details', 'flex-1 min-w-0', rest?.className])}>
       {entry.type === 'versioned_file' ? (
         <VersionedFileDetails entry={entry} onClose={onClose} />
       ) : entry.type !== 'directory' ? (

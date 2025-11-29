@@ -17,7 +17,7 @@ import type { FileListResponse, FileSaveRequest, FileUploadResponse } from './ty
  * Users will mount these at their chosen prefix (e.g., /files/*)
  */
 export interface paths {
-  '/files/list': {
+  '/list': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     /**
      * List files and directories
@@ -36,7 +36,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/files/save': {
+  '/save': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     get?: never;
     put?: never;
@@ -51,7 +51,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/files/upload': {
+  '/upload': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     get?: never;
     put?: never;

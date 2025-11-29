@@ -107,7 +107,18 @@ import {
 // Empty
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from './empty';
 // Field
-import { FieldGroup } from './field';
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+  FieldTitle,
+} from './field';
 // Form
 import {
   Form,
@@ -350,6 +361,15 @@ export {
   EmptyHeader,
   EmptyTitle,
   FieldGroup,
+  FieldSet,
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldTitle,
   Form,
   FormControl,
   FormDescription,

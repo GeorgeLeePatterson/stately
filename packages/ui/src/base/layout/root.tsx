@@ -1,4 +1,5 @@
 import { SidebarProvider, SidebarTrigger } from '@/base/ui/sidebar';
+import { cn } from '../lib/utils';
 import { Toaster } from '../ui/sonner';
 import { toTitleCase } from '../utils';
 import { Header } from './header';
@@ -28,7 +29,13 @@ export function Root({
   return (
     <SidebarProvider {...rest}>
       <Navigation {...sidebarProps} />
-      <main className="bg-background relative flex w-full flex-1 flex-col overflow-hidden min-w-0">
+      <main
+        className={cn([
+          'stately-main @container/stately',
+          'bg-background relative overflow-hidden',
+          'flex w-full flex-1 flex-col min-w-0',
+        ])}
+      >
         {/* Top Bar */}
         <Header
           {...headerProps}
@@ -37,7 +44,13 @@ export function Root({
         />
 
         {/* Main Content */}
-        <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden min-w-0 wrap-anywhere">
+        <div
+          className={cn([
+            'stately-content',
+            'flex flex-1 flex-col min-w-0 ',
+            'overflow-y-auto overflow-x-hidden wrap-anywhere',
+          ])}
+        >
           {children}
         </div>
       </main>

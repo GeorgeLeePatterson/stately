@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.22.0",
+  "packageManager": "pnpm@10.24.0",
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=10.0.0"
@@ -13,7 +13,7 @@
     "dev": "turbo run dev",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
+    "check": "turbo run check",
     "clean": "turbo run clean && rm -rf node_modules .turbo"
   },
   "devDependencies": {
@@ -27,8 +27,5 @@
     "overrides": {
       "csstype": "^3.2.3"
     }
-  },
-  "dependencies": {
-    "apache-arrow": "file:vendor/apache-arrow-esnext-esm-21.1.0.tgz"
   }
 }

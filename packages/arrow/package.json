@@ -2,20 +2,13 @@
   "name": "@stately/arrow",
   "version": "0.1.0",
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "check": "tsc --noEmit",
-    "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "dev": "tsdown --watch"
   },
   "peerDependencies": {
     "@stately/codegen": "workspace:*",
@@ -46,7 +39,61 @@
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "lucide-react": "^0.554.0",
-    "tsup": "^8.3.5",
+    "tsdown": "0.17.0-beta.1",
     "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./api": {
+      "types": "./dist/api.d.ts",
+      "import": "./dist/api.mjs"
+    },
+    "./context": {
+      "types": "./dist/context.d.ts",
+      "import": "./dist/context.mjs"
+    },
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.mjs"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "import": "./dist/schema.mjs"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.mjs"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.mjs"
+    },
+    "./lib": {
+      "types": "./dist/lib/index.d.ts",
+      "import": "./dist/lib/index.mjs"
+    },
+    "./pages": {
+      "types": "./dist/pages/index.d.ts",
+      "import": "./dist/pages/index.mjs"
+    },
+    "./types/api": {
+      "types": "./dist/types/api/index.d.ts",
+      "import": "./dist/types/api/index.mjs"
+    },
+    "./views": {
+      "types": "./dist/views/index.d.ts",
+      "import": "./dist/views/index.mjs"
+    },
+    "./views/connectors": {
+      "types": "./dist/views/connectors/index.d.ts",
+      "import": "./dist/views/connectors/index.mjs"
+    },
+    "./views/query": {
+      "types": "./dist/views/query/index.d.ts",
+      "import": "./dist/views/query/index.mjs"
+    }
   }
 }

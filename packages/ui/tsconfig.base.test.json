@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "noEmit": true,
-    "rootDir": "."
-  },
-  "include": ["tests/base-operations.test-d.ts"],
-  "exclude": []
-}

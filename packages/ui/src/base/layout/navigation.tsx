@@ -17,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/base/ui/sidebar';
+import { cn } from '../lib/utils';
 import { PluginNavigation } from './plugin-navigation';
 
 export type NavigationRoutes = UiNavigationOptions['routes'];
@@ -92,7 +93,12 @@ export function Navigation<S extends StatelySchemas<any, any> = StatelySchemas<a
     ));
 
   return (
-    <Sidebar collapsible="icon" variant="floating" {...rest}>
+    <Sidebar
+      collapsible="icon"
+      variant="floating"
+      {...rest}
+      className={cn(['stately-nav', rest?.className])}
+    >
       {/* Header */}
       <SidebarHeader>
         <div className="flex items-center gap-2 py-2">

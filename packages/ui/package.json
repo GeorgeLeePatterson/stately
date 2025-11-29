@@ -2,93 +2,13 @@
   "name": "@stately/ui",
   "version": "0.1.0",
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./styles.css": "./dist/styles.css",
-    "./base": {
-      "types": "./dist/base/index.d.ts",
-      "import": "./dist/base/index.js"
-    },
-    "./base/components": {
-      "types": "./dist/base/components/index.d.ts",
-      "import": "./dist/base/components/index.js"
-    },
-    "./base/dialogs": {
-      "types": "./dist/base/dialogs/index.d.ts",
-      "import": "./dist/base/dialogs/index.js"
-    },
-    "./base/form": {
-      "types": "./dist/base/form/index.d.ts",
-      "import": "./dist/base/form/index.js"
-    },
-    "./base/hooks": {
-      "types": "./dist/base/hooks/index.d.ts",
-      "import": "./dist/base/hooks/index.js"
-    },
-    "./base/layout": {
-      "types": "./dist/base/layout/index.d.ts",
-      "import": "./dist/base/layout/index.js"
-    },
-    "./base/lib/utils": {
-      "types": "./dist/base/lib/utils.d.ts",
-      "import": "./dist/base/lib/utils.js"
-    },
-    "./base/ui": {
-      "types": "./dist/base/ui/index.d.ts",
-      "import": "./dist/base/ui/index.js"
-    },
-    "./core": {
-      "types": "./dist/core/index.d.ts",
-      "import": "./dist/core/index.js"
-    },
-    "./core/context": {
-      "types": "./dist/core/context/index.d.ts",
-      "import": "./dist/core/context/index.js"
-    },
-    "./core/dialogs": {
-      "types": "./dist/core/dialogs/index.d.ts",
-      "import": "./dist/core/dialogs/index.js"
-    },
-    "./core/fields": {
-      "types": "./dist/core/fields/index.d.ts",
-      "import": "./dist/core/fields/index.js"
-    },
-    "./core/fields/edit": {
-      "types": "./dist/core/fields/edit/index.d.ts",
-      "import": "./dist/core/fields/edit/index.js"
-    },
-    "./core/fields/view": {
-      "types": "./dist/core/fields/view/index.d.ts",
-      "import": "./dist/core/fields/view/index.js"
-    },
-    "./core/hooks": {
-      "types": "./dist/core/hooks/index.d.ts",
-      "import": "./dist/core/hooks/index.js"
-    },
-    "./core/pages": {
-      "types": "./dist/core/pages/index.d.ts",
-      "import": "./dist/core/pages/index.js"
-    },
-    "./core/views/entity": {
-      "types": "./dist/core/views/entity/index.d.ts",
-      "import": "./dist/core/views/entity/index.js"
-    },
-    "./core/views/link": {
-      "types": "./dist/core/views/link/index.d.ts",
-      "import": "./dist/core/views/link/index.js"
-    }
-  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown",
     "check": "tsc --noEmit",
-    "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "dev": "tsdown --watch"
   },
   "peerDependencies": {
     "@stately/schema": "workspace:*",
@@ -135,8 +55,7 @@
     "next-themes": "^0.4.6",
     "react-hook-form": "^7.66.1",
     "tailwind-merge": "^2.6.0",
-    "vaul": "^1.1.2",
-    "zod": "^4.1.12"
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@stately/schema": "workspace:*",
@@ -149,7 +68,86 @@
     "openapi-typescript-helpers": "^0.0.15",
     "sonner": "^2.0.7",
     "tailwindcss": "^4.1.17",
-    "tsup": "^8.5.1",
+    "tsdown": "0.17.0-beta.1",
     "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./base": {
+      "types": "./dist/base/index.d.ts",
+      "import": "./dist/base/index.mjs"
+    },
+    "./base/components": {
+      "types": "./dist/base/components/index.d.ts",
+      "import": "./dist/base/components/index.mjs"
+    },
+    "./base/dialogs": {
+      "types": "./dist/base/dialogs/index.d.ts",
+      "import": "./dist/base/dialogs/index.mjs"
+    },
+    "./base/form": {
+      "types": "./dist/base/form/index.d.ts",
+      "import": "./dist/base/form/index.mjs"
+    },
+    "./base/hooks": {
+      "types": "./dist/base/hooks/index.d.ts",
+      "import": "./dist/base/hooks/index.mjs"
+    },
+    "./base/layout": {
+      "types": "./dist/base/layout/index.d.ts",
+      "import": "./dist/base/layout/index.mjs"
+    },
+    "./base/lib/utils": {
+      "types": "./dist/base/lib/utils.d.ts",
+      "import": "./dist/base/lib/utils.mjs"
+    },
+    "./base/ui": {
+      "types": "./dist/base/ui/index.d.ts",
+      "import": "./dist/base/ui/index.mjs"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.mjs"
+    },
+    "./core/context": {
+      "types": "./dist/core/context/index.d.ts",
+      "import": "./dist/core/context/index.mjs"
+    },
+    "./core/dialogs": {
+      "types": "./dist/core/dialogs/index.d.ts",
+      "import": "./dist/core/dialogs/index.mjs"
+    },
+    "./core/fields": {
+      "types": "./dist/core/fields/index.d.ts",
+      "import": "./dist/core/fields/index.mjs"
+    },
+    "./core/fields/edit": {
+      "types": "./dist/core/fields/edit/index.d.ts",
+      "import": "./dist/core/fields/edit/index.mjs"
+    },
+    "./core/fields/view": {
+      "types": "./dist/core/fields/view/index.d.ts",
+      "import": "./dist/core/fields/view/index.mjs"
+    },
+    "./core/hooks": {
+      "types": "./dist/core/hooks/index.d.ts",
+      "import": "./dist/core/hooks/index.mjs"
+    },
+    "./core/pages": {
+      "types": "./dist/core/pages/index.d.ts",
+      "import": "./dist/core/pages/index.mjs"
+    },
+    "./core/views/entity": {
+      "types": "./dist/core/views/entity/index.d.ts",
+      "import": "./dist/core/views/entity/index.mjs"
+    },
+    "./core/views/link": {
+      "types": "./dist/core/views/link/index.d.ts",
+      "import": "./dist/core/views/link/index.mjs"
+    }
   }
 }

@@ -124,7 +124,7 @@ export function RelativePathEdit({
 
   // For all other cases (external, or undefined, or switching modes)
   return (
-    <ButtonGroup className="flex-1 min-w-0 w-full">
+    <ButtonGroup className="relative-path-edit flex-1 min-w-0 w-full">
       {standalone && modeSelector}
 
       {/* External mode - text input */}

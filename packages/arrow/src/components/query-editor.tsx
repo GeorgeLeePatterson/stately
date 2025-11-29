@@ -1,20 +1,37 @@
 /**
- * QueryEditor - Pure SQL input component
- *
- * Handles SQL editing and execution triggers. Does NOT own:
- * - Query execution (caller provides onRun)
- * - Results display (separate component)
- * - Card/layout wrapper (caller decides container)
+ * QueryEditor - Pure SQL input component with flexible sql input field
  */
 
 import { Editor } from '@stately/ui/base/components';
 import { cn } from '@stately/ui/base/lib/utils';
 import { Badge, Button, Spinner } from '@stately/ui/base/ui';
 import { Table as TableIcon } from 'lucide-react';
+import { useId } from 'react';
 
-export interface QueryStat {
-  label: string;
+export interface QueryEditorStat {
+  label: React.ComponentType<any> | string;
   value: string;
+  title?: string;
+}
+
+export function QueryStat({ label: StatLabel, value, title }: QueryEditorStat) {
+  const inner =
+    typeof StatLabel === 'string' ? (
+      <span className="flex flex-row items-center justify-center">
+        <span className="text-[10px] leading-4 uppercase text-muted-foreground">{StatLabel}</span>{' '}
+        <span className="font-semibold leading-4 text-sm">{value}</span>
+      </span>
+    ) : (
+      <>
+        <StatLabel className="" />
+        {value}
+      </>
+    );
+  return (
+    <Badge className={cn('rounded-lg border', 'text-xs')} title={title} variant="secondary">
+      {inner}
+    </Badge>
+  );
 }
 
 export interface QueryEditorProps {
@@ -25,54 +42,48 @@ export interface QueryEditorProps {
   /** Called when user clicks Run */
   onRun: () => void;
 
-  /** Unique form ID for the editor */
-  formId?: string;
   /** Placeholder text */
   placeholder?: string;
 
-  /** Query is pending (initial fetch) */
-  isPending?: boolean;
-  /** Query is streaming (receiving data) */
-  isStreaming?: boolean;
+  /** Query is executing  */
+  isExecuting?: boolean;
+
+  /** Query has been executed, viewing results */
+  isActive?: boolean;
 
   /** Stats to display below editor (rows, bytes, duration) */
-  stats?: QueryStat[];
+  stats?: QueryEditorStat[];
 
-  /** Additional content to render in the footer area */
-  footerContent?: React.ReactNode;
-
-  /** Editor className override */
-  className?: string;
+  /** Optionally provide the id for the results panel */
+  resultsHrefId?: string;
 }
 
 export function QueryEditor({
   value,
   onChange,
   onRun,
-  formId = 'query-editor',
   placeholder = 'SELECT 1',
-  isPending = false,
-  isStreaming = false,
+  isExecuting = false,
+  isActive = false,
   stats = [],
-  footerContent,
-  className,
-}: QueryEditorProps) {
-  const isExecuting = isPending || isStreaming;
-  const canRun = value.trim().length > 0 && !isExecuting;
+  resultsHrefId,
+  ...rest
+}: QueryEditorProps & Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>) {
+  const formId = useId();
 
   return (
-    <div className={cn('flex flex-col space-y-2', className)}>
+    <div {...rest} className={cn('flex flex-col space-y-2', rest?.className)}>
       <div className="flex flex-col flex-1">
         <Editor
           className="min-h-full flex-1"
           content={value}
-          formId={formId}
+          formId={`query-editor-${formId}`}
           onContent={onChange}
           placeholder={placeholder}
           saveButton={
             <Button
               className="cursor-pointer"
-              disabled={!canRun}
+              disabled={value.trim().length === 0 || isExecuting}
               onClick={onRun}
               size="sm"
               type="button"
@@ -96,30 +107,30 @@ export function QueryEditor({
       </div>
 
       {/* Footer: Stats + custom content */}
-      {(stats.length > 0 || footerContent) && (
-        <div className="flex gap-2 justify-between">
-          {stats.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {stats.map(stat => (
-                <Badge
-                  className={cn(
-                    'flex flex-row items-center justify-center gap-1',
-                    'rounded-lg border',
-                    'text-xs',
-                  )}
-                  key={stat.label}
-                  variant="secondary"
-                >
-                  <span className="text-[10px] uppercase text-muted-foreground">{stat.label}</span>
-                  <span className="font-semibold text-sm">{stat.value}</span>
-                </Badge>
-              ))}
-            </div>
-          )}
+      <div className="flex gap-2 justify-between">
+        {true && (
+          <>
+            {stats.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {stats.map((stat, i) => (
+                  <QueryStat
+                    // biome-ignore lint/suspicious/noArrayIndexKey: ''
+                    key={`${value}-${i}`}
+                    {...stat}
+                  />
+                ))}
+              </div>
+            )}
 
-          {footerContent}
-        </div>
-      )}
+            {/* Click to see results */}
+            {isActive && resultsHrefId && (
+              <Button asChild type="button" variant="link">
+                <a href={`#${resultsHrefId}`}>Go to Query Results</a>
+              </Button>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

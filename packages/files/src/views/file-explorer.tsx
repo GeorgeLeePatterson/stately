@@ -43,7 +43,7 @@ export function FileExplorer({
   );
 
   return (
-    <div className="w-full h-full flex flex-col gap-2">
+    <div className="file-explorer w-full h-full flex flex-col gap-2">
       <InputGroup className="h-8">
         <InputGroupAddon>
           <InputGroupText>

@@ -16,9 +16,9 @@ use crate::{
 pub struct OpenApiDoc;
 
 impl utoipa::OpenApi for OpenApiDoc {
+    #[allow(unused_mut)]
     fn openapi() -> utoipa::openapi::OpenApi {
         // Build components with base schemas
-        #[cfg_attr(not(all(feature = "database", feature = "object-store")), expect(unused_mut))]
         let mut components = ComponentsBuilder::new()
             // Base schemas (always included)
             .schema_from::<QueryRequest>()

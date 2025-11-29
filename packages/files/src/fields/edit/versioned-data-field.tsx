@@ -59,7 +59,7 @@ export function VersionedDataField({ value, onChange }: VersionedDataFieldProps)
   // When file is selected
   return (
     <>
-      <ButtonGroup className="min-w-0 flex flex-1 items-center gap-2 p-0">
+      <ButtonGroup className="versioned-data-field min-w-0 flex flex-1 items-center gap-2 p-0">
         <InputGroup className="bg-background">
           <InputGroupInput
             className="min-w-0 flex-1 bg-transparent resize-y max-h-64 min-h-1 px-3 py-1"

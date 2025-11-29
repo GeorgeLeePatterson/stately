@@ -1,7 +1,9 @@
-import { createArrowView } from './arrow-table-view';
+import { createArrowTableStore } from './arrow-table-store';
 import { streamQuery } from './stream-query';
+import { formatBytes, messageFromError, sanitizeIdentifier } from './utils';
 
-export type * from './arrow-table-view';
+export type * from './arrow-table-store';
 export type * from './stream-query';
+export type * from './utils';
 
-export { createArrowView, streamQuery };
+export { createArrowTableStore, streamQuery, formatBytes, messageFromError, sanitizeIdentifier };

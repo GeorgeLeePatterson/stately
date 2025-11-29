@@ -3,7 +3,7 @@ import { Database, ExternalLink, FolderOpen, HardDrive, HardDriveUpload } from '
 import { FileBrowserDialog } from '@/dialogs/file-browser-dialog';
 import { RELATIVE_PATH_MODES } from '../edit/relative-path-field';
 
-export function RelativePathFieldView({ value }: { value: any }) {
+export function RelativePathView({ value }: { value: any }) {
   if (!value) {
     return <NotSet />;
   }
@@ -21,7 +21,7 @@ export function RelativePathFieldView({ value }: { value: any }) {
   ) => {
     return (
       <Explain content={pathValue}>
-        <div className="@container flex flex-1 w-full items-center gap-2 min-w-0">
+        <div className="relative-path-view @container flex flex-1 w-full items-center gap-2 min-w-0">
           <span
             className="w-full text-sm py-1 px-2 rounded bg-muted font-mono flex items-center gap-2"
             title={title}

@@ -19,9 +19,9 @@ export type FilesOperations = DefineOperations<operations>;
  * These paths do NOT include any prefix - that's provided by the user.
  */
 export const FILES_OPERATIONS = createOperationBindingsFactory<paths, operations>()({
-  list: { method: 'get', path: '/files/list' },
-  save: { method: 'post', path: '/files/save' },
-  upload: { method: 'post', path: '/files/upload' },
+  list: { method: 'get', path: '/list' },
+  save: { method: 'post', path: '/save' },
+  upload: { method: 'post', path: '/upload' },
 } as const);
 
 export type FilesApi = TypedOperations<FilesPaths, typeof FILES_OPERATIONS>;

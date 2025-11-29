@@ -30,7 +30,15 @@ export function ConnectorSummary({
 }) {
   const [search, setSearch] = useState('');
 
-  if (!summary || summary.summary.length === 0) {
+  if (!summary) {
+    return (
+      <div className="p-2 text-center text-xs text-muted-foreground">
+        Select a connector to view its summary.
+      </div>
+    );
+  }
+
+  if (summary.summary.length === 0) {
     return (
       <div className="p-2 text-center text-xs text-muted-foreground">List returned no items.</div>
     );
@@ -47,7 +55,7 @@ export function ConnectorSummary({
     .map(normalizeSummaryItem);
 
   return (
-    <div className="flex flex-col px-2 space-y-2">
+    <div className="connector-summary flex flex-col px-2 space-y-2">
       {/* Header */}
       <div className="flex items-center justify-between">
         <span className="shrink-0 flex gap-2 text-xs font-semibold uppercase text-muted-foreground">

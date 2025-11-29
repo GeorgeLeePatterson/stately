@@ -64,7 +64,7 @@ export function FileManager({ initialPath }: FileManagerProps) {
   const breadcrumbs = currentPath ? currentPath.split('/') : [];
 
   return (
-    <div className="flex flex-col h-full min-h-full flex-1">
+    <div className="file-manager flex flex-col h-full min-h-full flex-1">
       {/* Breadcrumbs */}
       <div className="p-2">
         <div className="flex items-center gap-1 text-sm">

@@ -1,19 +1,24 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: {
     index: "src/index.ts",
+
     // Plugin
-    codegen: "src/codegen.ts",
+    "api": "src/api.ts",
+    "context": "src/context.tsx",
+    "plugin": "src/plugin.ts",
+    "schema": "src/schema.ts",
+
     // React
     "components/index": "src/components/index.ts",
-    "dialogs/index": "src/dialogs/index.ts",
-    "fields/edit": "src/fields/edit/index.ts",
-    "fields/view": "src/fields/view/index.ts",
-    "hooks/index": "src/hooks/index.ts",
+    "hooks/index": "src/hooks/index.tsx",
+    "lib/index": "src/lib/index.ts",
     "pages/index": "src/pages/index.ts",
     "types/api": "src/types/api.ts",
     "views/index": "src/views/index.ts",
+    "views/connectors/index": "src/views/connectors/index.ts",
+    "views/query/index": "src/views/query/index.ts",
   },
   format: ["esm"],
   dts: true,

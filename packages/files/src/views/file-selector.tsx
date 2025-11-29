@@ -65,7 +65,7 @@ export function FileSelector({ mode, onSelect, onClose }: FileSelectorProps) {
 
   // Upload mode - upload dropzone only
   return (
-    <div className="w-full flex flex-col gap-2">
+    <div className="file-selector w-full flex flex-col gap-2">
       <div className="border-2 border-dashed rounded-md p-8 text-center space-y-3">
         <UploadIcon className="h-8 w-8 mx-auto text-muted-foreground" />
         <div className="space-y-1">

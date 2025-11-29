@@ -108,7 +108,8 @@
       "!ui/src/types/api.ts",
       "!**/node_modules/",
       "!**/*.json",
-      "!**/tsup.config.ts"
+      "!**/tsup.config.ts",
+      "!**/tsdown.config.ts"
     ]
   }
 }
