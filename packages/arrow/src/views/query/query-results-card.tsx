@@ -1,6 +1,7 @@
 import { cn } from '@stately/ui/base';
 import { Card, CardContent, CardHeader, CardTitle } from '@stately/ui/base/ui';
 import { TableIcon } from 'lucide-react';
+import { AnyIsLoading } from '@/components/any-is-loading';
 import type { ArrowTableDataView } from '@/hooks/use-streaming-query';
 import { ArrowTable } from './arrow-table';
 
@@ -25,11 +26,12 @@ export function QueryResultsCard({
   return (
     <Card className={cn(['query-results-card gap-4 flex-auto min-w-0', rest?.className])}>
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="flex items-center gap-2 justify-between">
           <a className="flex items-center gap-2" href={`#${hrefId || DEFAULT_RESULTS_HREF_ID}`}>
             {(!title || typeof title === 'string') && <TableIcon className="h-4 w-4" />}
             {title ?? 'Results'}
           </a>
+          <AnyIsLoading isLoading={!!isLoading} loaderOnly />
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-auto overflow-hidden">
@@ -37,7 +39,6 @@ export function QueryResultsCard({
           // Loading
           <div
             className={cn([
-              'min-h-[360px] ',
               'flex h-full items-center justify-center',
               'rounded-lg border bg-muted/30',
               'text-sm text-muted-foreground',
@@ -64,7 +65,7 @@ export function QueryResultsCard({
           // No data
           <div
             className={cn([
-              ' h-full min-h-[360px]',
+              'py-4 h-full',
               'flex flex-col items-center justify-center gap-2 ',
               'rounded-lg border border-dashed',
               'text-center text-sm text-muted-foreground',

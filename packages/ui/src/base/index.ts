@@ -1,28 +1,38 @@
 // Api
 import { createOperations } from './api';
 
-export type * from './api';
+export type { TypedOperations } from './api';
 export { createOperations };
 
 // Plugin
-export type * from './plugin.js';
+export type {
+  AllUiPlugins,
+  AnyUiAugments,
+  AnyUiPlugin,
+  DefineOptions,
+  DefineRoutes,
+  DefineUiPlugin,
+  DefineUiUtils,
+  PluginFunction,
+  PluginFunctionMap,
+  PluginRuntime,
+  UiPluginFactory,
+} from './plugin.js';
 
 // Context
 import { createStatelyUiProvider, createUseStatelyUi, StatelyUiProvider } from './context';
 
-export type * from './context';
+export type { StatelyProviderProps } from './context';
 export { createStatelyUiProvider, createUseStatelyUi, StatelyUiProvider };
 
 // Layout
 import { Layout } from './layout';
 
-export type * from './layout';
 export { Layout };
 
 // Form
 import { BaseForm } from './form';
 
-export type * from './form';
 export { BaseForm };
 
 // Theme
@@ -34,25 +44,45 @@ import {
   useTheme,
 } from './theme.js';
 
-export type * from './theme.js';
+export type { Theme, ThemeProviderProps } from './theme.js';
 export { defaultThemeOption, defaultStorageKey, ThemeProvider, ThemeToggle, useTheme };
 
 // Registry
 import * as registry from './registry.js';
 
-export type * from './registry.js';
+export type {
+  ComponentRegistry,
+  FunctionRegistry,
+  NodeTypeComponent,
+  RegistryKey,
+  RegistryMode,
+  RegistryType,
+  Transformer,
+  TransformerEditProps,
+  TransformerRegistry,
+  TransformerViewProps,
+  UiRegistry,
+} from './registry.js';
 export { registry };
 
 // Runtime
 import { createStatelyUi, defaultUiOptions } from './runtime.js';
 
-export type * from './runtime.js';
+export type {
+  StatelyUiBuilder,
+  StatelyUiConfiguration,
+  StatelyUiRuntime,
+  UiNavigationOptions,
+  UiOptions,
+  UiPluginRuntime,
+} from './runtime.js';
 export { defaultUiOptions, createStatelyUi };
 
 // Utils
 import { cn, devLog } from './lib/utils.js';
 import {
   camelCaseToKebabCase,
+  mergePathPrefixOptions,
   runtimeUtils,
   stripLeadingSlash,
   stripTrailingSlash,
@@ -61,8 +91,7 @@ import {
   toTitleCase,
 } from './utils.js';
 
-export type * from './lib/utils.js';
-export type * from './utils.js';
+export type { UiUtils } from './utils.js';
 export {
   cn,
   devLog,
@@ -73,4 +102,5 @@ export {
   toSpaceCase,
   toTitleCase,
   runtimeUtils,
+  mergePathPrefixOptions,
 };

@@ -18,7 +18,13 @@ export function Page({ children, ...rest }: PageProps) {
       ])}
     >
       <PageHeader {...rest} />
-      <div className="stately-page-content flex flex-col flex-1 w-full h-full min-w-0">
+      <div
+        className={cn([
+          'stately-page-content',
+          'flex flex-col flex-1',
+          'w-full h-full min-w-0 min-h-full',
+        ])}
+      >
         {children}
 
         {/* Bottom actions - always put actions at top and bottom */}

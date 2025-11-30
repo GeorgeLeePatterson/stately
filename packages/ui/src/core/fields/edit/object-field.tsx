@@ -1,5 +1,3 @@
-import type { Schemas } from '@stately/schema';
-import { CoreNodeType } from '@stately/schema/core/nodes';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { FormInput, WandSparkles } from 'lucide-react';
 import { Fragment, useId } from 'react';
@@ -17,6 +15,8 @@ import {
 } from '@/base/ui/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/base/ui/tabs';
 import { useObjectField } from '@/core/hooks/use-object-field';
+import type { Schemas } from '@/core/schema';
+import { CoreNodeType } from '@/core/schema/nodes';
 import { useStatelyUi } from '@/index';
 import { ObjectWizardEdit } from './object-wizard';
 

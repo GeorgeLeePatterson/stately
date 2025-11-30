@@ -1,5 +1,3 @@
-import type { Schemas } from '@stately/schema';
-import { CoreNodeType } from '@stately/schema/core/nodes';
 import { Dot, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { ArrayIndex } from '@/base/components/array-index';
@@ -9,6 +7,8 @@ import { FieldEdit } from '@/base/form/field-edit';
 import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
 import { Field, FieldSet } from '@/base/ui/field';
+import type { Schemas } from '@/core/schema';
+import { CoreNodeType } from '@/core/schema/nodes';
 import { useStatelyUi } from '@/index';
 
 /*

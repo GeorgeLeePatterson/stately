@@ -1,7 +1,7 @@
-import type { Schemas } from '@stately/schema';
-import type { ObjectNode } from '@stately/schema/core/nodes';
 import { useCallback } from 'react';
 import type { CoreStateEntry } from '@/core';
+import type { Schemas } from '@/core/schema';
+import type { ObjectNode } from '@/core/schema/nodes';
 import { EntitySelectEdit } from '../entity/entity-select-edit';
 import type { LinkFor } from './link-edit-view';
 

@@ -4,10 +4,10 @@ import { Page } from './page';
 import { PageHeader } from './page-header';
 import { Root } from './root';
 
-export type * from './header';
-export type * from './navigation';
-export type * from './page';
-export type * from './page-header';
-export type * from './root';
+export type { HeaderProps } from './header';
+export type { NavigationProps, NavigationRoutes, RouteOption } from './navigation';
+export type { PageProps } from './page';
+export type { PageHeaderProps } from './page-header';
+export type { RootProps } from './root';
 
 export const Layout = { Header, Navigation, Page, PageHeader, Root };

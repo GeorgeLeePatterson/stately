@@ -21,7 +21,7 @@ export function useFileVersions({ value }: { value?: VersionedDataValue }) {
     enabled: !!filename && !!filesApi,
     queryFn: async () => {
       if (!filename || !filesApi) return null;
-      const { data, error } = await filesApi.list({
+      const { data, error } = await filesApi.list_files({
         params: { query: { path: `${filename}/${versionSubDir}` } },
       });
       if (error || !data) {

@@ -1,6 +1,6 @@
-import type { Schemas } from '@stately/schema';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export type RecursiveRefEditProps<Schema extends Schemas = Schemas> = FieldEditProps<

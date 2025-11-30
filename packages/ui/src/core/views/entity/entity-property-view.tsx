@@ -1,8 +1,8 @@
-import type { Schemas } from '@stately/schema';
 import { Cog } from 'lucide-react';
 import type { ComponentProps } from 'react';
 import { cn } from '@/base/lib/utils';
 import { Item, ItemContent } from '@/base/ui/item';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export type EntityPropertyMode = 'edit' | 'view';

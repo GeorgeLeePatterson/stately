@@ -1,4 +1,3 @@
-import type { Schemas } from '@stately/schema';
 import { useQueryClient } from '@tanstack/react-query';
 import { CopyPlus, Edit, Trash2 } from 'lucide-react';
 import { devLog } from '@/base';
@@ -6,6 +5,7 @@ import { Layout, type PageProps } from '@/base/layout';
 import { Button } from '@/base/ui/button';
 import { Skeleton } from '@/base/ui/skeleton';
 import { useEntityData, useEntitySchema, useEntityUrl, useRemoveEntity } from '@/core/hooks';
+import type { Schemas } from '@/core/schema';
 import { EntityDetailView } from '@/core/views/entity';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';

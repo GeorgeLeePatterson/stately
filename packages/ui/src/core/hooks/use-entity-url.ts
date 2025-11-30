@@ -1,5 +1,5 @@
-import type { Schemas } from '@stately/schema';
 import { useCallback } from 'react';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import { resolveEntityUrl as coreResolveEntityUrl, type EntityUrlParts } from '../utils';
 

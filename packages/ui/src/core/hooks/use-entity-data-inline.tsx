@@ -1,7 +1,7 @@
-import type { Schemas } from '@stately/schema';
 import { useState } from 'react';
 import { Note } from '@/base/components/note';
 import type { CoreStateEntry } from '@/core';
+import type { Schemas } from '@/core/schema';
 import { useEntityData } from './use-entity-data';
 
 export function useEntityDataInline<Schema extends Schemas = Schemas>({

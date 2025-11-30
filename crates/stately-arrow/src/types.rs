@@ -1,10 +1,30 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, utoipa::IntoParams, utoipa::ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::IntoParams, utoipa::ToSchema)]
 pub struct ConnectionDetailQuery {
     pub catalog:  Option<String>,
     pub database: Option<String>,
     pub schema:   Option<String>,
+}
+
+/// Request for multiple connection details
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema)]
+pub struct ConnectionDetailsRequest {
+    /// IDs -> filters of each connector to list
+    pub connectors:    HashMap<String, ConnectionDetailQuery>,
+    /// Whether one failure should fail the entire request
+    #[serde(default)]
+    #[schema(default)]
+    pub fail_on_error: bool,
+}
+
+/// Response to execute a SQL query
+#[derive(Debug, Clone, Serialize, Deserialize, utoipa::ToSchema, utoipa::ToResponse)]
+pub struct ConnectionDetailsResponse {
+    /// IDs -> `ListSummary` of each connector to list
+    pub connections: HashMap<String, ListSummary>,
 }
 
 /// Request to execute a SQL query

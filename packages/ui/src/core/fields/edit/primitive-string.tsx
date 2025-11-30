@@ -1,5 +1,3 @@
-import type { Schemas } from '@stately/schema';
-import { CoreNodeType } from '@stately/schema/core/nodes';
 import { FileText, Link as LinkIcon, Type } from 'lucide-react';
 import { type ComponentType, useMemo, useState } from 'react';
 import { devLog } from '@/base';
@@ -16,6 +14,8 @@ import {
   SelectLabel,
   SelectTrigger,
 } from '@/base/ui/select';
+import type { Schemas } from '@/core/schema';
+import { CoreNodeType } from '@/core/schema/nodes';
 import { useStatelyUi } from '@/index';
 
 export interface StringMode {

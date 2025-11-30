@@ -1,8 +1,8 @@
-import type { Schemas } from '@stately/schema';
 import { useId } from 'react';
 import { FieldItem } from '@/base/components/field';
 import type { FieldViewProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
+import type { Schemas } from '@/core/schema';
 
 export type TupleViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
   Schema,

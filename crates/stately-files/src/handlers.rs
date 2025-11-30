@@ -28,7 +28,7 @@ use crate::types::{FileEntryType, FileInfo, FileVersion};
 /// - `Error::Internal` if the file could not be saved
 #[utoipa::path(
     post,
-    path = "/files/upload",
+    path = "/upload",
     request_body(content = String, content_type = "multipart/form-data"),
     responses(
         (status = 200, description = "File uploaded successfully", body = FileUploadResponse),
@@ -79,7 +79,7 @@ pub async fn upload(
     let sanitized_name =
         utils::sanitize_filename(&file_name.unwrap_or_else(|| "unnamed".to_string()));
 
-    save_file(&sanitized_name, &data, state.base.as_ref()).await
+    save(&sanitized_name, &data, state.base.as_ref()).await
 }
 
 /// Save file content directly (without multipart upload)
@@ -91,7 +91,7 @@ pub async fn upload(
 /// - `Error::Internal` if the file could not be saved
 #[utoipa::path(
     post,
-    path = "/files/save",
+    path = "/save",
     request_body = FileSaveRequest,
     responses(
         (status = 200, description = "File saved successfully", body = FileUploadResponse),
@@ -100,13 +100,13 @@ pub async fn upload(
     ),
     tag = "files"
 )]
-pub async fn save(
+pub async fn save_file(
     State(state): State<FileState>,
     Json(request): Json<FileSaveRequest>,
 ) -> Result<Json<FileUploadResponse>> {
     let name = request.name.unwrap_or_else(|| "unnamed.txt".to_string());
     let sanitized_name = utils::sanitize_filename(&name);
-    save_file(&sanitized_name, request.content.as_bytes(), state.base.as_ref()).await
+    save(&sanitized_name, request.content.as_bytes(), state.base.as_ref()).await
 }
 
 /// List files and directories
@@ -122,7 +122,7 @@ pub async fn save(
 /// - `Error::Internal` if the files could not be listed
 #[utoipa::path(
     get,
-    path = "/files/list",
+    path = "/list",
     params(
         ("path" = Option<String>, Query, description = "Optional path relative to data directory (e.g., 'uploads'). Defaults to root data directory if not specified.")
     ),
@@ -133,7 +133,7 @@ pub async fn save(
     ),
     tag = "files"
 )]
-pub async fn list(
+pub async fn list_files(
     State(state): State<FileState>,
     Query(params): Query<FileListQuery>,
 ) -> Result<Json<FileListResponse>> {
@@ -277,11 +277,7 @@ async fn collect_files(target_dir: impl AsRef<Path>) -> Result<Vec<FileInfo>> {
 /// Save file with UUID-based versioning
 ///
 /// Files are stored as: uploads/{name}/__versions__/{uuid}
-async fn save_file(
-    name: &str,
-    data: &[u8],
-    base: Option<&Dirs>,
-) -> Result<Json<FileUploadResponse>> {
+async fn save(name: &str, data: &[u8], base: Option<&Dirs>) -> Result<Json<FileUploadResponse>> {
     let (uuid, file_dir, file_path) = utils::create_versioned_filepath(name, base);
 
     // Create directory if it doesn't exist

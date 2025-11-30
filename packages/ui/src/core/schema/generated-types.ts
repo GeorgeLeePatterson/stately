@@ -17,7 +17,7 @@ import type { CoreComponents } from './generated';
  * Users will mount these at their chosen prefix (e.g., /*)
  */
 export interface paths {
-  '/entity': {
+  '/': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     get?: never;
     /** Create a new entity */
@@ -29,7 +29,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/entity/list/{type}': {
+  '/list/{type}': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     /** List entity summaries */
     get: operations['list_entities'];
@@ -41,7 +41,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/entity/{entry}/{id}': {
+  '/{entry}/{id}': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     get?: never;
     put?: never;
@@ -53,7 +53,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/entity/{id}': {
+  '/{id}': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     /** Get entity by ID and type */
     get: operations['get_entity_by_id'];

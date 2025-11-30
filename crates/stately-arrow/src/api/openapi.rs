@@ -7,8 +7,8 @@ use utoipa::openapi::tag::TagBuilder;
 use utoipa::openapi::{ComponentsBuilder, InfoBuilder, OpenApiBuilder, PathsBuilder};
 
 use crate::{
-    Capability, ConnectionDetailQuery, ConnectionMetadata, ListSummary, QueryRequest,
-    SessionCapability, TableSummary,
+    Capability, ConnectionDetailQuery, ConnectionDetailsRequest, ConnectionDetailsResponse,
+    ConnectionMetadata, ListSummary, QueryRequest, SessionCapability, TableSummary,
 };
 
 /// `OpenAPI` documentation struct for the stately-arrow API.
@@ -23,6 +23,8 @@ impl utoipa::OpenApi for OpenApiDoc {
             // Base schemas (always included)
             .schema_from::<QueryRequest>()
             .schema_from::<ConnectionDetailQuery>()
+            .schema_from::<ConnectionDetailsRequest>()
+            .schema_from::<ConnectionDetailsResponse>()
             .schema_from::<SessionCapability>()
             .schema_from::<Capability>()
             .schema_from::<ConnectionMetadata>()
@@ -72,7 +74,8 @@ impl utoipa::OpenApi for OpenApiDoc {
         let paths = PathsBuilder::new()
             .path_from::<super::handlers::__path_list_connectors>()
             .path_from::<super::handlers::__path_list_catalogs>()
-            .path_from::<super::handlers::__path_list>()
+            .path_from::<super::handlers::__path_connector_list>()
+            .path_from::<super::handlers::__path_connector_list_many>()
             .path_from::<super::handlers::__path_execute_query>()
             .path_from::<super::handlers::__path_register>()
             .build();

@@ -1,10 +1,10 @@
-import type { Schemas } from '@stately/schema';
 import { useId } from 'react';
 import { NotSet } from '@/base/components';
 import { ArrayIndex } from '@/base/components/array-index';
 import type { FieldViewProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
 import { Item, ItemContent, ItemGroup } from '@/base/ui/item';
+import type { Schemas } from '@/core/schema';
 
 export type ArrayViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
   Schema,

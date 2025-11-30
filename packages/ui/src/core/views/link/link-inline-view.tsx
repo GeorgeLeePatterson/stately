@@ -1,6 +1,6 @@
-import type { Schemas } from '@stately/schema';
-import type { ObjectNode } from '@stately/schema/core/nodes';
 import type { CoreEntity, CoreStateEntry } from '@/core';
+import type { Schemas } from '@/core/schema';
+import type { ObjectNode } from '@/core/schema/nodes';
 import { EntityDetailView } from '../entity/entity-detail-view';
 
 export interface LinkInlineViewProps<Schema extends Schemas = Schemas> {

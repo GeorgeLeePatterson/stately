@@ -57,9 +57,6 @@ importers:
       '@stately/codegen':
         specifier: workspace:*
         version: link:../codegen
-      '@stately/schema':
-        specifier: workspace:*
-        version: link:../schema
       '@stately/ui':
         specifier: workspace:*
         version: link:../ui
@@ -87,9 +84,9 @@ importers:
 
   packages/codegen:
     dependencies:
-      '@stately/schema':
+      '@stately/ui':
         specifier: workspace:*
-        version: link:../schema
+        version: link:../ui
       openapi-typescript:
         specifier: ^7.10.1
         version: 7.10.1(typescript@5.9.3)
@@ -125,9 +122,6 @@ importers:
       '@stately/codegen':
         specifier: workspace:*
         version: link:../codegen
-      '@stately/schema':
-        specifier: workspace:*
-        version: link:../schema
       '@stately/ui':
         specifier: workspace:*
         version: link:../ui
@@ -225,6 +219,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.8
         version: 1.2.8(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@stately/schema':
+        specifier: workspace:*
+        version: link:../schema
       '@uiw/codemirror-extensions-basic-setup':
         specifier: ^4.25.3
         version: 4.25.3(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.0)(@codemirror/language@6.11.3)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/view@6.38.8)
@@ -268,9 +265,6 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
     devDependencies:
-      '@stately/schema':
-        specifier: workspace:*
-        version: link:../schema
       '@tailwindcss/cli':
         specifier: ^4.1.17
         version: 4.1.17

@@ -31,7 +31,7 @@ export function useFileExplore({
     queryFn: async () => {
       if (!filesApi) throw new Error('Files API is unavailable');
 
-      const { data, error } = await filesApi.list({
+      const { data, error } = await filesApi.list_files({
         params: { query: { path: currentPath || undefined } },
       });
 

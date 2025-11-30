@@ -4,13 +4,13 @@
  * Validation functions for Stately schemas
  */
 
-import type { Schemas } from '../index.js';
 import type {
   ValidateArgs,
   ValidationError,
   ValidationOptions,
   ValidationResult,
-} from '../validation.js';
+} from '@stately/schema';
+import type { Schemas } from './index.js';
 import { CoreNodeType } from './nodes.js';
 import { isObject } from './utils.js';
 

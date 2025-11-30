@@ -1,4 +1,4 @@
-import { CoreNodeType } from '@stately/schema/core/nodes';
+import { CoreNodeType } from '@stately/ui/core/schema';
 import type { CodegenPlugin, CodegenPluginContext } from '../plugin-manager.js';
 
 export function createCoreCodegenPlugin(): CodegenPlugin {

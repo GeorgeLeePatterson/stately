@@ -1,4 +1,4 @@
-import type { NodeMap } from '../nodes.js';
+import type { NodeMap } from '@stately/schema';
 import type { CoreStatelyConfig } from './generated.js';
 
 /**

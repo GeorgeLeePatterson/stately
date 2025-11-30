@@ -1,8 +1,8 @@
-import type { Schemas } from '@stately/schema';
 import { type QueryClient, useMutation } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 import { devLog } from '@/base';
 import { ConfirmDialog } from '@/base/dialogs/confirm-dialog';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
 

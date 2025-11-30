@@ -1,9 +1,9 @@
-import type { Schemas } from '@stately/schema';
 import { useCallback, useState } from 'react';
 import { GlowingSave } from '@/base/components/glowing-save';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { FieldSet } from '@/base/ui/field';
+import type { Schemas } from '@/core/schema';
 
 export type TupleEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
   Schema,

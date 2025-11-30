@@ -39,8 +39,8 @@ macro_rules! from_ref {
 #[openapi(
     paths(
         super::handlers::upload,
-        super::handlers::save,
-        super::handlers::list,
+        super::handlers::save_file,
+        super::handlers::list_files,
     ),
     components(
         responses(

@@ -4,9 +4,7 @@
  * Helper utilities for working with Stately schemas
  */
 
-import type { BaseNode } from '../nodes.js';
-import type { DefineUtils } from '../plugin.js';
-import { isNodeOfType } from '../schema.js';
+import { type BaseNode, type DefineUtils, isNodeOfType } from '@stately/schema';
 import {
   type ArrayNode,
   type CoreNodes,

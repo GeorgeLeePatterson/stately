@@ -1,4 +1,3 @@
-import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { useId, useMemo } from 'react';
 import { devLog } from '@/base';
@@ -7,6 +6,7 @@ import { Field, FieldGroup, FieldSet } from '@/base/ui/field';
 import { Separator } from '@/base/ui/separator';
 import { Skeleton } from '@/base/ui/skeleton';
 import type { CoreEntity } from '@/core';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import { EntityPropertyEdit } from './entity-property-edit';
 

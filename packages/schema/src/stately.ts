@@ -16,17 +16,6 @@ import { UnknownNodeType } from './nodes.js';
 import type { StatelySchemaConfig, StatelySchemas } from './schema.js';
 import type { ValidateArgs, ValidateHook, ValidationResult } from './validation.js';
 
-export interface SchemaRegistry {
-  utils: Map<string, (...args: any[]) => unknown>;
-}
-
-/**
- * Schema plugin descriptor installed by plugin factory functions.
- */
-export interface PluginDescriptor<S extends StatelySchemas<any, any>> {
-  validate?: ValidateHook<S>;
-}
-
 /**
  * Runtime plugin factory signature.
  */
@@ -65,9 +54,10 @@ export function createStately<S extends StatelySchemas<any, any>>(
   })(baseState);
 }
 
-export function runValidationPipeline<
-  P extends { [key: string]: { validate?: ValidateHook<any> } },
->(plugins: P, args: ValidateArgs<any>): ValidationResult {
+function runValidationPipeline<P extends { [key: string]: { validate?: ValidateHook<any> } }>(
+  plugins: P,
+  args: ValidateArgs<any>,
+): ValidationResult {
   const pluginNames = Object.keys(plugins);
   const hooks = Object.values(plugins)
     .filter(plugin => !!plugin?.validate)

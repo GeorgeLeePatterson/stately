@@ -1,6 +1,7 @@
 import { Note } from '@stately/ui/base/components';
-import { cn } from '@stately/ui/base/lib/utils';
+import { cn, messageFromError } from '@stately/ui/base/lib/utils';
 import {
+  Badge,
   Button,
   Card,
   CardContent,
@@ -14,46 +15,44 @@ import {
   Spinner,
 } from '@stately/ui/base/ui';
 import { PlugZap, SquareStack } from 'lucide-react';
-import { useCallback, useState } from 'react';
-import { CatalogBadge, ConnectionBadge } from '@/components/badges';
+import type React from 'react';
+import { Fragment, useState } from 'react';
 import { useArrowStatelyUi } from '@/context';
 import { useListCatalogs } from '@/hooks/use-list-catalog';
 import { useRegisterConnection } from '@/hooks/use-register-connection';
-import { messageFromError } from '@/lib/utils';
 import type { ConnectionMetadata } from '@/types/api';
 
 export interface ConnectorsRegisterCardProps {
   currentConnector?: ConnectionMetadata;
   connectors: ConnectionMetadata[];
+  onClickConnector?: (id: string) => void;
 }
 
 export function ConnectorsRegisterCard({
   currentConnector,
   connectors,
+  onClickConnector,
   ...rest
 }: ConnectorsRegisterCardProps & React.HTMLAttributes<HTMLDivElement>) {
   const { utils } = useArrowStatelyUi();
 
   const [open, setOpen] = useState(false);
-  const [registering, setRegistering] = useState(false);
 
-  const registerMutation = useRegisterConnection();
+  // Catalogs
   const catalogsQuery = useListCatalogs(currentConnector?.catalog ?? undefined);
 
   const catalogs = catalogsQuery.data ?? [];
   const registered = connectors.filter(c => c.catalog && catalogs.includes(c.catalog));
 
+  const isObjectStoreRegistered = registered.some(r => r.kind === 'object_store');
+
+  // Registering
+  const registerMutation = useRegisterConnection();
   const registerError = registerMutation.error
     ? messageFromError(registerMutation.error) || 'Failed to register connection.'
     : undefined;
 
-  const handleRegister = useCallback(
-    (id: string) => {
-      setRegistering(true);
-      registerMutation.mutate(id, { onSettled: () => setRegistering(false) });
-    },
-    [registerMutation],
-  );
+  const isAnyLoading = catalogsQuery.isFetching || registerMutation.isPending;
 
   const registerButton = (
     <DropdownMenu onOpenChange={setOpen} open={open}>
@@ -65,7 +64,7 @@ export function ConnectorsRegisterCard({
           size="sm"
           variant="secondary"
         >
-          {registering ? (
+          {isAnyLoading ? (
             <>
               <Spinner />
               Registering...
@@ -81,10 +80,15 @@ export function ConnectorsRegisterCard({
       <DropdownMenuContent>
         {connectors.map(connection => (
           <DropdownMenuCheckboxItem
-            checked={registered.some(r => r.id === connection.id)}
+            checked={
+              registered.some(r => r.id === connection.id) ||
+              (isObjectStoreRegistered && connection.kind === 'object-store')
+            }
             disabled={registerMutation.isPending || registered.some(r => r.id === connection.id)}
             key={connection.id}
-            onCheckedChange={checked => (checked ? handleRegister(connection.id) : checked)}
+            onCheckedChange={checked =>
+              checked ? registerMutation.mutate(connection.id) : checked
+            }
           >
             <span className="items-center font-semi-bold text-sm">{connection.name}</span>
             <span className="items-center text-xs text-muted-foreground truncate">
@@ -114,12 +118,24 @@ export function ConnectorsRegisterCard({
           {registerError && <Note message={registerError} mode="error" />}
 
           {catalogs.map(c => (
-            <CatalogBadge catalog={c} key={`catalog-${c}`} />
+            <Badge key={`catalog-${c}`} variant="outline">
+              {c}
+            </Badge>
           ))}
 
           {/* Registered connections (derived from catalogs) */}
           {registered.map(c => (
-            <ConnectionBadge connector={c} key={`connector-${c.id}`} />
+            <Fragment key={`connector-${c.id}`}>
+              {c.kind === 'object_store' ? (
+                <Badge variant="secondary">object store</Badge>
+              ) : (
+                <Badge asChild variant="default">
+                  <a href={`#${c.id}`} onClick={() => onClickConnector?.(c.id)}>
+                    {c.id}
+                  </a>
+                </Badge>
+              )}
+            </Fragment>
           ))}
         </div>
       </CardContent>

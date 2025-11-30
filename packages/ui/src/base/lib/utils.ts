@@ -4,6 +4,16 @@ import { twMerge } from 'tailwind-merge';
 export const NAMESPACE = 'stately/ui';
 
 /**
+ * Helpful with react-query errors
+ */
+export function messageFromError(err: unknown): string | null {
+  if (!err) return null;
+  if (typeof err === 'string') return err;
+  if (err instanceof Error) return err.message;
+  return null;
+}
+
+/**
  * Merge class names
  */
 export function cn(...inputs: ClassValue[]) {

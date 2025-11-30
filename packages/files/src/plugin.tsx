@@ -5,9 +5,6 @@
  * Following the canonical pattern from @stately/schema/core/plugin.ts and @stately/ui/core/plugin.ts
  */
 
-import type { DefinePlugin, Schemas } from '@stately/schema';
-import { CoreNodeType } from '@stately/schema/core/nodes';
-import type { PluginFactory } from '@stately/schema/stately';
 import {
   type AnyUiPlugin,
   registry as baseRegistry,
@@ -19,6 +16,8 @@ import {
   type UiPluginFactory,
 } from '@stately/ui/base';
 import type { RouteOption } from '@stately/ui/base/layout';
+import { CoreNodeType } from '@stately/ui/core';
+import type { DefinePlugin, PluginFactory, Schemas } from '@stately/ui/schema';
 import { Files } from 'lucide-react';
 import { FILES_OPERATIONS, type FilesPaths } from './api';
 import { primitiveStringTransformer } from './fields/edit/primitive-string';
@@ -114,7 +113,9 @@ export function filesUiPlugin<
     );
 
     // Create typed operations with user's prefix
-    const pathPrefix = options?.api?.pathPrefix ?? runtime.options.api?.pathPrefix;
+    const basePathPrefix = runtime.options?.api?.pathPrefix;
+    const corePathPrefix = options?.api?.pathPrefix;
+    const pathPrefix = runtime.utils.mergePathPrefixOptions(basePathPrefix, corePathPrefix);
     const api = createOperations<FilesPaths, typeof FILES_OPERATIONS>(
       client,
       FILES_OPERATIONS,

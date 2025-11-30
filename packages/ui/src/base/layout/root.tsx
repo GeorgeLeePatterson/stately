@@ -33,7 +33,8 @@ export function Root({
         className={cn([
           'stately-main @container/stately',
           'bg-background relative overflow-hidden',
-          'flex w-full flex-1 flex-col min-w-0',
+          'w-full flex-1 min-w-0',
+          'grid grid-rows-[auto_1fr] h-full',
         ])}
       >
         {/* Top Bar */}

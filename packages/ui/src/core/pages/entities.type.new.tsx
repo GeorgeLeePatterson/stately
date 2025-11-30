@@ -1,4 +1,3 @@
-import type { Schemas } from '@stately/schema';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { devLog } from '@/base';
@@ -6,6 +5,7 @@ import { Note } from '@/base/components/note';
 import { BaseForm } from '@/base/form';
 import { Layout, type PageProps } from '@/base/layout';
 import { useCreateEntity, useEntityData, useEntitySchema, useEntityUrl } from '@/core/hooks';
+import type { Schemas } from '@/core/schema';
 import { EntityEditView } from '@/core/views/entity';
 import { useStatelyUi } from '@/index';
 import type { CoreEntityData, CoreStateEntry } from '..';

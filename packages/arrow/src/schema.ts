@@ -4,8 +4,7 @@
  * Defines the RelativePath node type for file path handling
  */
 
-import type { BaseNode } from '@stately/schema/nodes';
-import type { DefineData, DefineTypes } from '@stately/schema/plugin';
+import type { BaseNode, DefineData, DefineTypes } from '@stately/ui/schema';
 import type { components } from './generated-types';
 
 /**

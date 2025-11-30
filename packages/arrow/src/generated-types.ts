@@ -15,11 +15,17 @@ export interface components {
       compression?: null | components['schemas']['ClickHouseCompression'];
       settings?: { [key: string]: string };
     };
-    /** @description Connector Stately `entity` type */
-    Connector: {
-      config?: components['schemas']['ConnectorType'];
-      /** @description Human-readable name for this connection. */
-      name?: string;
+    /** @description Request for multiple connection details */
+    ConnectionDetailsRequest: {
+      /** @description IDs -> filters of each connector to list */
+      connectors: { [key: string]: components['schemas']['ConnectionDetailQuery'] };
+      /** @description Whether one failure should fail the entire request */
+      fail_on_error?: boolean;
+    };
+    /** @description Response to execute a SQL query */
+    ConnectionDetailsResponse: {
+      /** @description IDs -> `ListSummary` of each connector to list */
+      connections: { [key: string]: components['schemas']['ListSummary'] };
     };
     /** @description Capabilities a connector can expose to the viewer. */
     ConnectionKind: null | string;
@@ -33,6 +39,12 @@ export interface components {
       /** @description The 'kind' of connector */
       kind: components['schemas']['ConnectionKind'];
       name: string;
+    };
+    /** @description Connector Stately `entity` type */
+    Connector: {
+      config?: components['schemas']['ConnectorType'];
+      /** @description Human-readable name for this connection. */
+      name?: string;
     };
     ConnectorType:
       | { object_store: components['schemas']['ObjectStoreConfiguration'] }
@@ -240,7 +252,13 @@ export interface paths {
      */
     get: operations['list_connectors'];
     put?: never;
-    post?: never;
+    /**
+     * List databases or tables/files available in a set of connectors's underlying data stores
+     * @description # Errors
+     *     - Connector not found
+     *     - Internal server error
+     */
+    post: operations['connector_list_many'];
     delete?: never;
     options?: never;
     head?: never;
@@ -255,7 +273,7 @@ export interface paths {
      *     - Connector not found
      *     - Internal server error
      */
-    get: operations['list'];
+    get: operations['connector_list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -315,7 +333,7 @@ export interface operations {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     requestBody?: never;
     responses: {
-      /** @description List of available connectors */
+      /** @description List of available connections */
       200: {
         headers: { [name: string]: unknown };
         content: { 'application/json': components['schemas']['ConnectionMetadata'][] };
@@ -324,7 +342,24 @@ export interface operations {
       500: { headers: { [name: string]: unknown }; content?: never };
     };
   };
-  list: {
+  connector_list_many: {
+    parameters: { query?: never; header?: never; path?: never; cookie?: never };
+    requestBody: {
+      content: { 'application/json': components['schemas']['ConnectionDetailsRequest'] };
+    };
+    responses: {
+      /** @description List of databases or tables/files keyed by connection */
+      200: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ConnectionDetailsResponse'] };
+      };
+      /** @description Connector not found */
+      404: { headers: { [name: string]: unknown }; content?: never };
+      /** @description Internal server error */
+      500: { headers: { [name: string]: unknown }; content?: never };
+    };
+  };
+  connector_list: {
     parameters: {
       query?: { catalog?: string | null; database?: string | null; schema?: string | null };
       header?: never;

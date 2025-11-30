@@ -4,6 +4,7 @@ export default defineConfig({
   entry: {
     // Base + Core
     index: "src/index.ts",
+    schema: "src/schema.ts",
     // Base
     "base/index": "src/base/index.ts",
     "base/components/index": "src/base/components/index.ts",
@@ -23,6 +24,7 @@ export default defineConfig({
     //     TODO: Individual Fields
     "core/hooks/index": "src/core/hooks/index.ts",
     "core/pages/index": "src/core/pages/index.ts",
+    "core/schema/index": "src/core/schema/index.ts",
     "core/views/entity/index": "src/core/views/entity/index.ts",
     "core/views/link/index": "src/core/views/link/index.ts",
 

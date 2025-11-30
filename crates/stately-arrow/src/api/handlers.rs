@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use axum::Json;
 use axum::extract::{Path, Query, State};
 use tracing::debug;
@@ -5,7 +7,10 @@ use tracing::debug;
 use super::QueryState;
 use super::ipc::arrow_ipc_response;
 use crate::error::Result;
-use crate::{ConnectionDetailQuery, ConnectionMetadata, ListSummary, QueryRequest, QuerySession};
+use crate::{
+    ConnectionDetailQuery, ConnectionDetailsRequest, ConnectionDetailsResponse, ConnectionMetadata,
+    ListSummary, QueryRequest, QuerySession,
+};
 
 const IDENT: &str = "[stately-arrow]";
 
@@ -18,7 +23,11 @@ const IDENT: &str = "[stately-arrow]";
     path = "/connectors",
     tag = "arrow",
     responses(
-        (status = 200, description = "List of available connections", body = Vec<ConnectionMetadata>),
+        (
+            status = 200,
+            description = "List of available connections",
+            body = Vec<ConnectionMetadata>
+        ),
         (status = 500, description = "Internal server error")
     )
 )]
@@ -76,7 +85,7 @@ where
         (status = 500, description = "Internal server error")
     )
 )]
-pub(super) async fn list<S>(
+pub(super) async fn connector_list<S>(
     Query(params): Query<ConnectionDetailQuery>,
     Path(connector_id): Path<String>,
     State(state): State<QueryState<S>>,
@@ -84,8 +93,55 @@ pub(super) async fn list<S>(
 where
     S: QuerySession,
 {
-    debug!("{IDENT} Listing files for connector: {connector_id}");
+    debug!("{IDENT} Listing details for connector: {connector_id}");
     Ok(Json(state.query_context.list(&connector_id, &params).await?))
+}
+
+/// List databases or tables/files available in a set of connectors's underlying data stores
+///
+/// # Errors
+/// - Connector not found
+/// - Internal server error
+#[utoipa::path(
+    post,
+    path = "/connectors",
+    tag = "arrow",
+    request_body = ConnectionDetailsRequest,
+    responses(
+        (
+            status = 200,
+            description = "List of databases or tables/files keyed by connection",
+            body = ConnectionDetailsResponse
+        ),
+        (status = 404, description = "Connector not found"),
+        (status = 500, description = "Internal server error")
+    )
+)]
+pub(super) async fn connector_list_many<S>(
+    State(state): State<QueryState<S>>,
+    Json(request): Json<ConnectionDetailsRequest>,
+) -> Result<Json<ConnectionDetailsResponse>>
+where
+    S: QuerySession,
+{
+    let keys = request.connectors.keys();
+    debug!("{IDENT} Listing details for connectors: {keys:?}");
+    let mut connections = HashMap::default();
+    for (connector_id, filters) in request.connectors {
+        let result = match state.query_context.list(&connector_id, &filters).await {
+            Ok(r) => r,
+            Err(e) => {
+                tracing::error!("Failed to list connector details for {connector_id}: {e:?}");
+                if request.fail_on_error {
+                    return Err(e);
+                }
+                continue;
+            }
+        };
+        tracing::debug!("Listed connector details for {connector_id}: {result:?}");
+        drop(connections.insert(connector_id, result));
+    }
+    Ok(Json(ConnectionDetailsResponse { connections }))
 }
 
 /// Register a connector. Useful when federating queries since registration is lazy

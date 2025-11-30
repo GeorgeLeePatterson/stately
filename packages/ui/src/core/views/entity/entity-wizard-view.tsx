@@ -1,6 +1,6 @@
-import type { Schemas } from '@stately/schema';
 import { useId } from 'react';
 import type { CoreEntity } from '@/core';
+import type { Schemas } from '@/core/schema';
 import { ObjectWizardEdit } from '../../fields/edit/object-wizard';
 
 export interface EntityWizardEditProps<Schema extends Schemas = Schemas> {

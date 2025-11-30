@@ -1,5 +1,5 @@
-import type { Schemas } from '@stately/schema';
 import { useStatelyUi } from '@stately/ui';
+import type { Schemas } from '@stately/ui/schema';
 import type { ArrowUiPlugin } from './plugin';
 
 /**

@@ -1,9 +1,9 @@
-import type { Schemas } from '@stately/schema';
 import { DescriptionLabel } from '@/base/components/description-label';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { FieldSet } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export type UntaggedEnumEditProps<Schema extends Schemas = Schemas> = FieldEditProps<

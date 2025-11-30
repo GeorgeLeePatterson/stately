@@ -1,5 +1,5 @@
 import { Layout } from '@stately/ui';
-import type { PageProps } from '@stately/ui/base';
+import type { PageProps } from '@stately/ui/base/layout';
 import { Button } from '@stately/ui/base/ui';
 import { ChevronRight } from 'lucide-react';
 import { useFileExplore } from '@/hooks/use-file-explore';

@@ -1,5 +1,4 @@
-import type { BaseNode } from '../nodes.js';
-import type { DefineNodeMap } from '../plugin.js';
+import type { BaseNode, DefineNodeMap } from '@stately/schema';
 
 /**
  * Node types (AST representation of OpenAPI schemas)

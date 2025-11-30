@@ -8,6 +8,8 @@ import { useObjectField } from './use-object-field';
 import { useRemoveEntity } from './use-remove-entity';
 import { useUpdateEntity } from './use-update-entity';
 
+export type { ObjectFieldState } from './use-object-field';
+
 export {
   useListEntities,
   useEntityDataInline,

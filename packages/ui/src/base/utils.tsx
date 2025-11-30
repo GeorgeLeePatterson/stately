@@ -9,6 +9,7 @@ export interface UiUtils {
   generateFieldLabel(field: string): string;
   stripLeadingSlash(path: string): string;
   stripTrailingSlash(path: string): string;
+  mergePathPrefixOptions(base?: string, incoming?: string): string;
   toKebabCase: typeof toKebabCase;
   toTitleCase: typeof toTitleCase;
   toSpaceCase: typeof toSpaceCase;
@@ -28,6 +29,17 @@ export const stripLeadingSlash = (path: string) => (path?.startsWith('/') ? path
  */
 export const stripTrailingSlash = (path: string) =>
   path?.endsWith('/') ? path.slice(0, -1) : path;
+
+export const mergePathPrefixOptions = (base?: string, incoming?: string): string => {
+  let pathPrefix = '';
+  if (base) {
+    pathPrefix = `/${stripLeadingSlash(stripTrailingSlash(base))}`;
+  }
+  if (incoming) {
+    pathPrefix = `${pathPrefix}/${stripLeadingSlash(stripTrailingSlash(incoming))}`;
+  }
+  return pathPrefix;
+};
 
 /**
  * Generate a field label from a string
@@ -98,6 +110,7 @@ export function runtimeUtils<
       }
       return Dot;
     },
+    mergePathPrefixOptions,
     stripLeadingSlash,
     stripTrailingSlash,
     toKebabCase,

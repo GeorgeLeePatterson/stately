@@ -10,7 +10,7 @@ where
 {
     Router::new()
         .route("/upload", post(super::handlers::upload))
-        .route("/save", post(super::handlers::save))
-        .route("/list", get(super::handlers::list))
+        .route("/save", post(super::handlers::save_file))
+        .route("/list", get(super::handlers::list_files))
         .with_state(state)
 }

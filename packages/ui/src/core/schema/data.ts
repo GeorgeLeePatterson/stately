@@ -4,26 +4,10 @@
  * Parsing logic for extracting entity metadata from OpenAPI specs
  */
 
-import type { DefineData } from '../plugin.js';
+import type { DefineData } from '@stately/schema';
+import { toKebabCase, toTitleCase } from '@/base/utils.js';
 import type { CoreStatelyConfig } from './generated.js';
 import type { NodeValue, StateEntry } from './helpers.js';
-
-/**
- * Generate kebab-case label from string
- */
-function toKebabCase(str: string): string {
-  return str.replace(/_/g, '-');
-}
-
-/**
- * Generate title-case label from string
- */
-function toTitleCase(str: string): string {
-  return str
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
 
 /**
  * Parse entity mappings from the Entity schema's oneOf variants

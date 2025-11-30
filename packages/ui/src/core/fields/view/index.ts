@@ -8,15 +8,15 @@ import { TaggedUnionView } from './tagged-union-field';
 import { TupleView } from './tuple-field';
 import { UntaggedEnumView } from './untagged-enum-field';
 
-export type * from './array-field';
-export type * from './map-field';
-export type * from './nullable-field';
-export type * from './object-field';
-export type * from './primitive-field';
-export type * from './recursive-ref-field';
-export type * from './tagged-union-field';
-export type * from './tuple-field';
-export type * from './untagged-enum-field';
+export type { ArrayViewProps } from './array-field';
+export type { MapViewProps } from './map-field';
+export type { NullableViewProps } from './nullable-field';
+export type { ObjectViewProps } from './object-field';
+export type { PrimitiveViewProps } from './primitive-field';
+export type { RecursiveRefViewProps } from './recursive-ref-field';
+export type { TaggedUnionViewProps } from './tagged-union-field';
+export type { TupleViewProps } from './tuple-field';
+export type { UntaggedEnumViewProps } from './untagged-enum-field';
 
 export const ViewFields = {
   ArrayView,

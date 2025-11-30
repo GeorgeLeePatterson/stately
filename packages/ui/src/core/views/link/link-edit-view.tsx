@@ -1,6 +1,3 @@
-import type { Schemas } from '@stately/schema';
-import type { LinkNode } from '@stately/schema/core/nodes';
-import { SINGLETON_ID } from '@stately/schema/core/utils';
 import { useCallback, useMemo, useState } from 'react';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { Button } from '@/base/ui/button';
@@ -9,6 +6,9 @@ import { FieldGroup, FieldSet } from '@/base/ui/field';
 import type { CoreEntity, CoreStateEntry } from '@/core';
 import { useListEntities } from '@/core/hooks';
 import { useEntityDataInline } from '@/core/hooks/use-entity-data-inline';
+import type { Schemas } from '@/core/schema';
+import { SINGLETON_ID } from '@/core/schema';
+import type { LinkNode } from '@/core/schema/nodes';
 import { LinkInlineEdit } from './link-inline-edit';
 import { LinkRefEdit } from './link-ref-edit';
 

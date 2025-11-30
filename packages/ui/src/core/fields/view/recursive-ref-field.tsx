@@ -1,6 +1,6 @@
-import type { Schemas } from '@stately/schema';
 import type { FieldViewProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export type RecursiveRefViewProps<Schema extends Schemas = Schemas> = FieldViewProps<

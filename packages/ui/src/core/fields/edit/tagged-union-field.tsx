@@ -1,10 +1,10 @@
-import type { Schemas } from '@stately/schema';
 import { useEffect, useState } from 'react';
 import { DescriptionLabel } from '@/base/components/description-label';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { Card, CardContent } from '@/base/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export type TaggedUnionEditProps<Schema extends Schemas = Schemas> = FieldEditProps<

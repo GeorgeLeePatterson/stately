@@ -1,6 +1,6 @@
-import type { Schemas } from '@stately/schema';
 import { useQuery } from '@tanstack/react-query';
 import { devLog } from '@/base';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
 

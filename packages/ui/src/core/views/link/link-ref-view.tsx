@@ -1,5 +1,3 @@
-import type { Schemas } from '@stately/schema';
-import type { ObjectNode } from '@stately/schema/core/nodes';
 import { ExternalLink } from 'lucide-react';
 import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
@@ -7,6 +5,8 @@ import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/ba
 import type { CoreStateEntry } from '@/core';
 import { ViewLinkControl } from '@/core/context/link-explore-context';
 import { useEntityUrl } from '@/core/hooks';
+import type { Schemas } from '@/core/schema';
+import type { ObjectNode } from '@/core/schema/nodes';
 
 export interface LinkRefViewProps<Schema extends Schemas = Schemas> {
   label?: React.ReactNode;

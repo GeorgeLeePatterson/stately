@@ -1,6 +1,6 @@
-import type { Schemas } from '@stately/schema';
 import { NotSet } from '@/base/components/not-set';
 import type { FieldViewProps } from '@/base/form/field-view';
+import type { Schemas } from '@/core/schema';
 
 export type PrimitiveViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
   Schema,

@@ -1,4 +1,3 @@
-import type { Schemas } from '@stately/schema';
 import { useQueryClient } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -9,6 +8,7 @@ import { Alert, AlertDescription } from '@/base/ui/alert';
 import { FieldGroup } from '@/base/ui/field';
 import { Skeleton } from '@/base/ui/skeleton';
 import { useEntityData, useEntitySchema, useEntityUrl, useUpdateEntity } from '@/core/hooks';
+import type { Schemas } from '@/core/schema';
 import { EntityEditView } from '@/core/views/entity';
 import { useStatelyUi } from '@/index';
 import type { CoreEntityData, CoreStateEntry } from '..';

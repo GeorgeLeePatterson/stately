@@ -1,4 +1,3 @@
-import type { Schemas } from '@stately/schema';
 import { ChevronRight } from 'lucide-react';
 import { Fragment } from 'react';
 import { Button } from '@/base/ui/button';
@@ -15,6 +14,7 @@ import { Skeleton } from '@/base/ui/skeleton';
 import type { CoreStateEntry } from '@/core';
 import { useEntityData } from '@/core/hooks/use-entity-data';
 import { useEntitySchema } from '@/core/hooks/use-entity-schema';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import { EntityDetailView } from '../views/entity/entity-detail-view';
 

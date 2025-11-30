@@ -1,10 +1,10 @@
-import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { DescriptionLabel } from '@/base/components/description-label';
 import { NotSet } from '@/base/components/not-set';
 import { SimpleLabel } from '@/base/components/simple-label';
 import type { FieldViewProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export type ObjectViewProps<Schema extends Schemas = Schemas> = FieldViewProps<

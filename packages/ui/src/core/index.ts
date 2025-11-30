@@ -1,28 +1,40 @@
-import type { Schemas } from '@stately/schema';
-import type { StateEntry } from '@stately/schema/core/helpers';
-import type { CoreTypes } from '@stately/schema/core/plugin';
 import { coreUiPlugin } from './plugin';
-import * as coreUtils from './utils';
+import type { Schemas } from './schema';
+import { CORE_PLUGIN_NAME, CoreNodeType, corePlugin, PrimitiveType, stately } from './schema';
+import type { StateEntry } from './schema/helpers';
+import type { CoreTypes } from './schema/plugin';
+import * as coreSchemaUtils from './schema/utils';
+import * as coreUiUtils from './utils';
 
-// Re-exports
-export type { CoreApi } from './api';
-export type { CoreUiOptions, CoreUiPlugin } from './plugin';
-export type { CoreUiUtils } from './utils';
-export { coreUtils, coreUiPlugin };
-
-// Helper types
-type SchemaConfigOf<S extends Schemas<any, any>> = S['config'];
-type SchemaTypesOf<S extends Schemas<any, any>> = CoreTypes<SchemaConfigOf<S>>;
-type PluginInfoOf<S extends Schemas<any, any>> = S['plugin'];
+// ------------
+// Schema exports
+export type {
+  CoreNodeMap,
+  CoreNodes,
+  CorePlugin,
+  CoreStatelyConfig,
+  DefineCoreConfig,
+  PluginNodeUnion,
+  SchemaConfig,
+} from './schema';
+export type { Schemas };
+export { corePlugin, stately, CORE_PLUGIN_NAME, coreSchemaUtils, CoreNodeType, PrimitiveType };
 
 // Use StateEntry from helpers instead of deriving from CoreTypes
 export type CoreStateEntry<S extends Schemas<any, any> = Schemas<any, any>> = StateEntry<
-  SchemaConfigOf<S>
+  S['config']
 >;
 
 // EntityData is already the extracted data payload from Entity discriminated union
 export type CoreEntity<S extends Schemas = Schemas> = S['types']['EntityData'];
-export type CoreEntityData<S extends Schemas<any, any> = Schemas<any, any>> =
-  SchemaTypesOf<S>['EntityData'];
-export type CoreNodeUnion<S extends Schemas<any, any> = Schemas<any, any>> =
-  PluginInfoOf<S>['AnyNode'];
+export type CoreEntityData<S extends Schemas<any, any> = Schemas<any, any>> = CoreTypes<
+  S['config']
+>['EntityData'];
+export type CoreNodeUnion<S extends Schemas<any, any> = Schemas<any, any>> = S['plugin']['AnyNode'];
+
+// ------------
+// UI exports
+export type { CoreApi } from './api';
+export type { CoreUiOptions, CoreUiPlugin } from './plugin';
+export type { CoreUiUtils } from './utils';
+export { coreUiUtils, coreUiPlugin };

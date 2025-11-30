@@ -1,10 +1,14 @@
-import type { DefinePlugin, Schemas } from '../index.js';
-import type { NodeValues } from '../nodes.js';
-import type { AnySchemaAugments, DefineTypes } from '../plugin.js';
-import type { PluginAnyNode } from '../schema.js';
-import type { PluginFactory } from '../stately.js';
+import type {
+  AnySchemaAugments,
+  DefinePlugin,
+  DefineTypes,
+  NodeValues,
+  PluginAnyNode,
+  PluginFactory,
+} from '@stately/schema';
 import { type CoreData, generateCoreData } from './data.js';
 import type { CoreStatelyConfig } from './generated.js';
+import type { Schemas } from './index.js';
 import type { CoreNodeMap } from './nodes.js';
 import type { CoreUtils } from './utils.js';
 import { coreUtils } from './utils.js';

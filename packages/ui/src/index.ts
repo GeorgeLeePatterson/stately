@@ -8,7 +8,6 @@
  * 4. Plugin authors
  */
 
-import type { Schemas } from '@stately/schema';
 import { createUseStatelyUi } from './base/context.js';
 import type { AnyUiPlugin } from './base/plugin.js';
 import {
@@ -19,6 +18,11 @@ import {
 } from './base/runtime.js';
 import { statelyUiProvider as coreStatelyUiProvider } from './core/context.js';
 import { type CoreUiOptions, type CoreUiPlugin, coreUiPlugin } from './core/index.js';
+import type { Schemas } from './schema.js';
+
+// ------------------------
+// Stately UI: Root level definitions, components, and utilities
+// ------------------------
 
 // Plugin re-exports
 export type {
@@ -31,20 +35,6 @@ export type {
 } from './base/plugin.js';
 export type { RegistryKey, RegistryMode, UiRegistry } from './base/registry.js';
 export type { AnyUiPlugin };
-
-// Schema re-exports
-import { stately } from '@stately/schema';
-
-export type {
-  DefineComponents,
-  DefineConfig,
-  DefineGeneratedNodes,
-  DefineOperations,
-  DefinePaths,
-  DefinePlugin,
-  Schemas,
-} from '@stately/schema';
-export { stately };
 
 // Options re-exports
 import { defaultUiOptions } from './base/runtime.js';
@@ -61,10 +51,6 @@ export { ThemeProvider, ThemeToggle, useTheme };
 // Layout re-exports
 import { Layout } from './base/layout';
 export { Layout };
-
-// ------------------------
-// Root level stately ui definitions
-// ------------------------
 
 /**
  * Runtime configuration with core configuration included.

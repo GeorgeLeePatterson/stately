@@ -1,6 +1,6 @@
-import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { useCallback, useEffect, useState } from 'react';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export interface ObjectFieldState<S extends Schemas = Schemas> {

@@ -1,5 +1,3 @@
-import type { Schemas } from '@stately/schema';
-import { CoreNodeType } from '@stately/schema/core/nodes';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useCallback, useId, useState } from 'react';
@@ -23,6 +21,8 @@ import {
 import { Item, ItemContent, ItemGroup } from '@/base/ui/item';
 import { Separator } from '@/base/ui/separator';
 import type { CoreNodeUnion } from '@/core';
+import type { Schemas } from '@/core/schema';
+import { CoreNodeType } from '@/core/schema/nodes';
 import { KeyValue, MAX_ITEMS_VIEW_DEFAULT } from '../view/map-field';
 
 const generateSaveLabels = (

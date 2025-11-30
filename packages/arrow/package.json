@@ -12,7 +12,6 @@
   },
   "peerDependencies": {
     "@stately/codegen": "workspace:*",
-    "@stately/schema": "workspace:*",
     "@stately/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.10",
     "@tanstack/react-table": "^8.21.3",
@@ -32,7 +31,6 @@
   },
   "devDependencies": {
     "@stately/codegen": "workspace:*",
-    "@stately/schema": "workspace:*",
     "@stately/ui": "workspace:*",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.12",

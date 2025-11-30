@@ -1,9 +1,9 @@
-import type { Schemas } from '@stately/schema';
 import { FieldItem } from '@/base/components/field';
 import { SimpleLabel } from '@/base/components/simple-label';
 import type { FieldViewProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
 import type { CoreNodeUnion } from '@/core';
+import type { Schemas } from '@/core/schema';
 
 export type UntaggedEnumViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
   Schema,

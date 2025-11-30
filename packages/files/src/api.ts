@@ -4,9 +4,12 @@
  * Defines the canonical API operations for the files plugin.
  */
 
-import { createOperationBindingsFactory, type DefineOperations } from '@stately/schema/api';
-import type { DefinePaths } from '@stately/schema/generated';
 import type { TypedOperations } from '@stately/ui/base';
+import {
+  createOperationBindingsFactory,
+  type DefineOperations,
+  type DefinePaths,
+} from '@stately/ui/schema';
 import type { operations, paths } from './generated-types';
 
 export type FilesPaths = DefinePaths<paths>;
@@ -19,8 +22,8 @@ export type FilesOperations = DefineOperations<operations>;
  * These paths do NOT include any prefix - that's provided by the user.
  */
 export const FILES_OPERATIONS = createOperationBindingsFactory<paths, operations>()({
-  list: { method: 'get', path: '/list' },
-  save: { method: 'post', path: '/save' },
+  list_files: { method: 'get', path: '/list' },
+  save_file: { method: 'post', path: '/save' },
   upload: { method: 'post', path: '/upload' },
 } as const);
 

@@ -1,5 +1,5 @@
-import type { Schemas } from '@stately/schema';
 import { FieldDescription, FieldTitle } from '@/base/ui/field';
+import type { Schemas } from '@/core/schema';
 import { EntityPropertyLabel, type EntityPropertyProps } from './entity-property-view';
 
 export function EntityPropertyEdit<Schema extends Schemas = Schemas>({

@@ -115,7 +115,7 @@ impl ClickHouseBackend {
             id:           id.into(),
             name:         name.into(),
             kind:         ConnectionKind::Database,
-            capabilities: vec![Capability::ExecuteSql],
+            capabilities: vec![Capability::ExecuteSql, Capability::List],
             catalog:      Some(CLICKHOUSE_CATALOG.to_string()),
         };
 

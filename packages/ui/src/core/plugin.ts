@@ -1,15 +1,15 @@
-import type { Schemas } from '@stately/schema';
-import { CORE_OPERATIONS, type CorePaths } from '@stately/schema/core/api';
-import type { StateEntry } from '@stately/schema/core/helpers';
-import { CoreNodeType as NodeType } from '@stately/schema/core/nodes';
-import { CORE_PLUGIN_NAME } from '@stately/schema/core/plugin';
 import { Cog } from 'lucide-react';
 import { createOperations, devLog } from '@/base';
 import type { AnyUiPlugin, DefineOptions, DefineUiPlugin, UiPluginFactory } from '@/base/plugin';
 import { type ComponentRegistry, makeRegistryKey, type TransformerRegistry } from '@/base/registry';
 import type { StatelyUiRuntime, UiNavigationOptions } from '@/base/runtime';
 import { defaultPrimitiveStringTransformer, EditFields, ViewFields } from '@/core/fields';
+import type { Schemas } from '@/core/schema';
 import * as linkFields from '@/core/views/link';
+import { CORE_OPERATIONS, type CorePaths } from './schema/api';
+import type { StateEntry } from './schema/helpers';
+import { CoreNodeType as NodeType } from './schema/nodes';
+import { CORE_PLUGIN_NAME } from './schema/plugin';
 import { type CoreUiUtils, createCoreUtils } from './utils';
 
 export interface CoreEntityOptions {
@@ -49,7 +49,9 @@ export function coreUiPlugin<Schema extends Schemas, Augments extends readonly A
     registerCoreTransformers(runtime.registry.transformers);
 
     // Create api bundle
-    const pathPrefix = options?.api?.pathPrefix ?? runtime.options?.api?.pathPrefix;
+    const basePathPrefix = runtime.options?.api?.pathPrefix;
+    const corePathPrefix = options?.api?.pathPrefix;
+    const pathPrefix = runtime.utils.mergePathPrefixOptions(basePathPrefix, corePathPrefix);
     const api = createOperations<CorePaths, typeof CORE_OPERATIONS>(
       runtime.client,
       CORE_OPERATIONS,

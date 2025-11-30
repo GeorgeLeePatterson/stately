@@ -1,5 +1,3 @@
-import type { Schemas } from '@stately/schema';
-import { SINGLETON_ID } from '@stately/schema/core/utils';
 import { Tuple } from '@stately/schema/helpers';
 import { Fragment, useMemo, useState } from 'react';
 import { devLog } from '@/base';
@@ -8,6 +6,8 @@ import { FieldView } from '@/base/form/field-view';
 import { JsonView } from '@/base/form/json-view';
 import { Separator } from '@/base/ui/separator';
 import type { CoreEntity, CoreStateEntry } from '@/core';
+import type { Schemas } from '@/core/schema';
+import { SINGLETON_ID } from '@/core/schema';
 import { EntityPropertyView } from '@/core/views/entity/entity-property-view';
 import { useStatelyUi } from '@/index';
 

@@ -1,8 +1,8 @@
-import type { Schemas } from '@stately/schema';
-import type { ObjectNode } from '@stately/schema/core/nodes';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { FieldLegend } from '@/base/ui/field';
 import type { CoreEntity, CoreStateEntry } from '@/core';
+import type { Schemas } from '@/core/schema';
+import type { ObjectNode } from '@/core/schema/nodes';
 import { useStatelyUi } from '@/index';
 import { EditMode, EntityEditView } from '../entity/entity-edit-view';
 import type { LinkFor } from './link-edit-view';

@@ -1,4 +1,3 @@
-import type { Schemas } from '@stately/schema';
 import { useQueryClient } from '@tanstack/react-query';
 import { CopyPlus, ExternalLink, FileText, Plus, Trash } from 'lucide-react';
 import { toast } from 'sonner';
@@ -24,6 +23,7 @@ import {
 } from '@/base/ui/item';
 import { Skeleton } from '@/base/ui/skeleton';
 import { useEntityUrl, useListEntities, useRemoveEntity } from '@/core/hooks';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
 

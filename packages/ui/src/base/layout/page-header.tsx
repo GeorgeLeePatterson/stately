@@ -11,7 +11,7 @@ import {
 import { Button } from '../ui/button';
 
 export interface PageHeaderProps {
-  title: React.ReactNode;
+  title?: React.ReactNode;
   description?: string;
   breadcrumbs?: Array<{ label: string; href?: string }>;
   actions?: ReactNode;
@@ -64,7 +64,9 @@ export function PageHeader({
 
       <div className="flex items-start justify-between gap-4 min-w-0">
         <div className="space-y-1 min-w-0 flex-1">
-          <h2 className="text-2xl font-bold tracking-tight flex items-center min-w-0">{title}</h2>
+          {title && (
+            <h2 className="text-2xl font-bold tracking-tight flex items-center min-w-0">{title}</h2>
+          )}
           {description && <p className="text-muted-foreground">{description}</p>}
         </div>
         {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}

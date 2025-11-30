@@ -26,8 +26,12 @@ export interface paths {
      *
      *     Versioned files are stored as: `{filename}/__versions__/{uuid}`
      *     The UI is responsible for aggregating versions for display.
+     *
+     *     # Errors
+     *     - `Error::BadRequest` if the path is invalid
+     *     - `Error::Internal` if the files could not be listed
      */
-    get: operations['list'];
+    get: operations['list_files'];
     put?: never;
     post?: never;
     delete?: never;
@@ -43,8 +47,12 @@ export interface paths {
     /**
      * Save file content directly (without multipart upload)
      * @description This endpoint allows saving file content from a text input.
+     *
+     *     # Errors
+     *     - `Error::BadRequest` if the file name is invalid
+     *     - `Error::Internal` if the file could not be saved
      */
-    post: operations['save'];
+    post: operations['save_file'];
     delete?: never;
     options?: never;
     head?: never;
@@ -61,6 +69,10 @@ export interface paths {
      *     `data/uploads/{name}/{uuid}`
      *
      *     This allows automatic versioning without conflicts.
+     *
+     *     # Errors
+     *     - `Error::BadRequest` if the file name is invalid
+     *     - `Error::Internal` if the file could not be saved
      */
     post: operations['upload'];
     delete?: never;
@@ -72,7 +84,7 @@ export interface paths {
 }
 
 export interface operations {
-  list: {
+  list_files: {
     parameters: {
       query?: {
         /** @description Optional path relative to data directory (e.g., 'uploads'). Defaults to root data directory if not specified. */
@@ -95,7 +107,7 @@ export interface operations {
       500: { headers: { [name: string]: unknown }; content?: never };
     };
   };
-  save: {
+  save_file: {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     requestBody: { content: { 'application/json': FileSaveRequest } };
     responses: {

@@ -126,7 +126,13 @@ where
             .await
             .inspect_err(|error| error!(?error, connector_id, "Error getting connection"))?;
         if !connector.metadata().has(Capability::List) {
-            return Err(Error::UnsupportedConnector("Connector does not support listing".into()));
+            tracing::error!(
+                "Connector '{connector_id}' does not support listing: {:?}",
+                connector.metadata()
+            );
+            return Err(Error::UnsupportedConnector(format!(
+                "Connector does not support listing: {connector_id}"
+            )));
         }
         connector
             .prepare_session(self.session.as_session())

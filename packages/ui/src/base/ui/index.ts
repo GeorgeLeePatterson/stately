@@ -6,7 +6,13 @@
 
 import { toast } from 'sonner';
 // Accordion
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionTriggerHeader,
+} from './accordion';
 // Alert
 import { Alert, AlertDescription, AlertTitle } from './alert';
 // Alert Dialog
@@ -277,6 +283,7 @@ export {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  AccordionTriggerHeader,
   Alert,
   AlertDescription,
   AlertDialog,

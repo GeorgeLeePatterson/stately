@@ -1,7 +1,7 @@
-import type { Schemas } from '@stately/schema';
-import { CoreNodeType } from '@stately/schema/core/nodes';
 import { isNodeOfType } from '@stately/schema/schema';
 import type { CoreStateEntry } from '@/core';
+import type { Schemas } from '@/core/schema';
+import { CoreNodeType } from '@/core/schema/nodes';
 import { useStatelyUi } from '@/index';
 
 export function useEntitySchema<Schema extends Schemas>(

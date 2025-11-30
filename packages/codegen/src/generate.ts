@@ -9,7 +9,6 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { CoreNodeType } from '@stately/schema/core/nodes';
 import openapiTS, { astToString } from 'openapi-typescript';
 import { createCoreCodegenPlugin } from './core/index.js';
 import {
@@ -41,7 +40,7 @@ async function main() {
   const resolvedOutputPath = outputPath;
   const userPlugins = await loadPluginsFromConfig(pluginConfigPath);
   if (userPlugins.length) {
-    console.log(`🔌 Loaded ${userPlugins.length} stately-codegen plugin(s)`);
+    console.log(`🔌 Loaded ${userPlugins.length} @stately/codegen plugin(s)`);
   }
   const plugins = [...userPlugins, createCoreCodegenPlugin()];
   setCodegenPlugins(plugins);
@@ -86,7 +85,7 @@ async function main() {
         console.log(`  🔄 Circular reference detected: ${schema.$ref}`);
         return {
           description: schema.description,
-          nodeType: CoreNodeType.RecursiveRef,
+          nodeType: 'recursiveRef',
           refName: schema.$ref.split('/').pop() || '',
         };
       }
@@ -128,7 +127,7 @@ async function main() {
           return result;
         }
       } catch (error) {
-        console.warn(`[stately-codegen] Plugin "${plugin.name}" failed:`, error);
+        console.warn(`[@stately/codegen] Plugin "${plugin.name}" failed:`, error);
       }
     }
 
@@ -208,6 +207,6 @@ ${typesString}
 }
 
 main().catch(error => {
-  console.error('[stately-codegen] generation failed:', error);
+  console.error('[@stately/codegen] generation failed:', error);
   process.exit(1);
 });

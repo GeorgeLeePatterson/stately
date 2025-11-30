@@ -1,4 +1,3 @@
-import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown, Variable } from 'lucide-react';
 import { useState } from 'react';
@@ -10,6 +9,7 @@ import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/base/ui/collapsible';
 import { Item, ItemActions, ItemContent, ItemGroup, ItemTitle } from '@/base/ui/item';
+import type { Schemas } from '@/core/schema';
 
 export const MAX_ITEMS_VIEW_DEFAULT = 3;
 

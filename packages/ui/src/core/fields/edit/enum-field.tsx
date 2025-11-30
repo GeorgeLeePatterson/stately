@@ -1,7 +1,7 @@
-import type { Schemas } from '@stately/schema';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { Field } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export type EnumEditProps<Schema extends Schemas = Schemas> = FieldEditProps<

@@ -1,18 +1,18 @@
 import { useArrowApi } from './use-arrow-api';
-import { useConnectionDetails } from './use-connection-details';
+import { useConnectionDetails, useMultiConnectionDetails } from './use-connection-details';
 import { useConnectors } from './use-connectors';
 import { useListCatalogs } from './use-list-catalog';
 import { useListConnectors } from './use-list-connections';
 import { useRegisterConnection } from './use-register-connection';
-import { useStreamingQuery } from './use-streaming-query';
+import { STREAMING_QUERY_KEY, streamQueryOptions, useStreamingQuery } from './use-streaming-query';
 
-export type * from './use-arrow-api';
-export type * from './use-connection-details';
-export type * from './use-connectors';
-export type * from './use-list-catalog';
-export type * from './use-list-connections';
-export type * from './use-register-connection';
-export type * from './use-streaming-query';
+export type { UseConnectors } from './use-connectors';
+export type {
+  ArrowTableColumnDescriptor,
+  ArrowTableDataView,
+  CreateDataViewOptions,
+  UseStreamingQueryResult,
+} from './use-streaming-query';
 
 export {
   useArrowApi,
@@ -20,6 +20,9 @@ export {
   useConnectors,
   useListCatalogs,
   useListConnectors,
+  useMultiConnectionDetails,
   useRegisterConnection,
   useStreamingQuery,
+  streamQueryOptions,
+  STREAMING_QUERY_KEY,
 };

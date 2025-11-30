@@ -1,10 +1,3 @@
-export function messageFromError(err: unknown): string | null {
-  if (!err) return null;
-  if (typeof err === 'string') return err;
-  if (err instanceof Error) return err.message;
-  return null;
-}
-
 export function sanitizeIdentifier(name: string) {
   if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) {
     return `'${name}'`;

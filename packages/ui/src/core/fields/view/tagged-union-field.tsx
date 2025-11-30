@@ -1,7 +1,7 @@
-import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { FieldItem } from '@/base/components/field';
 import type { FieldViewProps } from '@/base/form/field-view';
+import type { Schemas } from '@/core/schema';
 import { EnumFieldView } from './untagged-enum-field';
 
 export type TaggedUnionViewProps<Schema extends Schemas = Schemas> = FieldViewProps<

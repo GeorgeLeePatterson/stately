@@ -1,5 +1,3 @@
-import type { Schemas } from '@stately/schema';
-import { CoreNodeType } from '@stately/schema/core/nodes';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Fragment, useCallback, useState } from 'react';
@@ -10,6 +8,8 @@ import { Field, FieldGroup } from '@/base/ui/field';
 import { Progress } from '@/base/ui/progress';
 import { Skeleton } from '@/base/ui/skeleton';
 import { useObjectField } from '@/core/hooks/use-object-field';
+import type { Schemas } from '@/core/schema';
+import { CoreNodeType } from '@/core/schema/nodes';
 import { EntityPropertyView } from '@/core/views/entity/entity-property-view';
 import { useStatelyUi } from '@/index';
 import type { ObjectEditNode, ObjectEditProps } from './object-field';

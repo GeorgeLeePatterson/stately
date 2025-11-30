@@ -1,4 +1,3 @@
-import type { Schemas } from '@stately/schema';
 import type { AnyRecord } from '@stately/schema/helpers';
 import { FileJson, FormInput, WandSparkles } from 'lucide-react';
 import { useState } from 'react';
@@ -6,6 +5,7 @@ import { JsonEdit } from '@/base/form/json-edit';
 import { JsonView } from '@/base/form/json-view';
 import { FieldGroup } from '@/base/ui/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/base/ui/tabs';
+import type { Schemas } from '@/core/schema';
 import { EntityFormEdit } from './entity-form-edit';
 import { EntityWizardEdit } from './entity-wizard-view';
 

@@ -1,4 +1,3 @@
-import type { Schemas } from '@stately/schema';
 import { ExternalLink, ListRestart, Loader2, Pencil } from 'lucide-react';
 import { useId } from 'react';
 import { Note } from '@/base/components/note';
@@ -9,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import type { CoreStateEntry } from '@/core';
 import { ViewLinkControl } from '@/core/context/link-explore-context';
 import { useEntityUrl } from '@/core/hooks';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export interface EntitySelectEditProps<Schema extends Schemas = Schemas> {

@@ -17,8 +17,12 @@ where
     Session: QuerySession + 'static,
 {
     Router::new()
-        .route("/connectors", get(handlers::list_connectors::<Session>))
-        .route("/connectors/{connector_id}", get(handlers::list::<Session>))
+        .route(
+            "/connectors",
+            get(handlers::list_connectors::<Session>)
+                .post(handlers::connector_list_many::<Session>),
+        )
+        .route("/connectors/{connector_id}", get(handlers::connector_list::<Session>))
         .route("/register/{connector_id}", get(handlers::register::<Session>))
         .route("/catalogs", get(handlers::list_catalogs::<Session>))
         .route("/query", post(handlers::execute_query::<Session>))

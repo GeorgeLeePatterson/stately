@@ -1,11 +1,11 @@
-import type { DefineOperations } from '../api';
 import type {
   DefineComponentSchemas,
   DefineComponents,
   DefineGeneratedNodes,
+  DefineOperations,
   DefinePaths,
   StatelyConfig,
-} from '../generated';
+} from '@stately/schema';
 import type { CoreOperations, CorePaths } from './api';
 
 /**

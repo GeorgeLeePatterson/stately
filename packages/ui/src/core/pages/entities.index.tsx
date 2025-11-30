@@ -1,6 +1,6 @@
-import type { Schemas } from '@stately/schema';
 import { Layout, type PageProps } from '@/base/layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/base/ui/card';
+import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import { useEntityUrl } from '../hooks';
 

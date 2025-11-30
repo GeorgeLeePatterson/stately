@@ -1,11 +1,11 @@
-import type { Schemas } from '@stately/schema';
-import { CoreNodeType } from '@stately/schema/core/nodes';
 import { useId, useState } from 'react';
 import { DescriptionLabel } from '@/base/components/description-label';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { Checkbox } from '@/base/ui/checkbox';
 import { Field, FieldContent, FieldLabel } from '@/base/ui/field';
+import type { Schemas } from '@/core/schema';
+import { CoreNodeType } from '@/core/schema/nodes';
 import { EntityPropertyEdit } from '@/core/views/entity/entity-property-edit';
 
 function isValueNulled(value?: any) {

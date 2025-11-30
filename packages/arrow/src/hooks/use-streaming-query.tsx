@@ -1,3 +1,4 @@
+import { devLog } from '@stately/ui/base';
 import {
   queryOptions,
   experimental_streamedQuery as streamedQuery,
@@ -29,17 +30,12 @@ export interface ArrowTableColumnDescriptor {
   getValue(rowIndex: number): unknown | undefined;
 }
 
-export interface ArrowTableDataWindowRequest {
-  start: number;
-  end: number;
-}
-
 export interface ArrowTableDataView {
   columns: readonly ArrowTableColumnDescriptor[];
   loadedRowCount: number;
   totalRowCount?: number;
   isRowLoaded?: (rowIndex: number) => boolean;
-  requestWindow?: (window: ArrowTableDataWindowRequest) => void;
+  requestWindow?: (window: { start: number; end: number }) => void;
 }
 
 export interface CreateDataViewOptions {
@@ -139,6 +135,9 @@ export function useStreamingQuery({
 
   const execute = useCallback(
     (payload: QueryRequest) => {
+      // TODO: Remove
+      devLog.debug('Arrow', 'stream query execute', payload);
+
       reset();
 
       // Update query request
@@ -170,6 +169,13 @@ export function useStreamingQuery({
   const isActive = !!queryRequest?.sql;
 
   const snapshot = useSyncExternalStore(storeRef.current.subscribe, storeRef.current.getSnapshot);
+
+  // TODO: Remove
+  devLog.debug('Arrow', 'stream query props', {
+    derived: `idle=${isIdle}, pending=${isPending}, streaming=${isStreaming}, active=${isActive}`,
+    queryRequest,
+    snapshot,
+  });
 
   /**
    * =========================
@@ -271,6 +277,9 @@ export const streamQueryOptions = ({
       },
       refetchMode: 'replace', // Is this right?
       streamFn: async context => {
+        // TODO: Remove
+        devLog.debug('Arrow', 'stream fn*', { payload, store });
+
         if (!payload) {
           // No query request means reset the query
           async function* emptyStream(): AsyncGenerator<RecordBatch> {

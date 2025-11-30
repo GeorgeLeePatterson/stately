@@ -1,4 +1,12 @@
-import type { Schemas } from '@stately/schema';
+import type { BaseNode } from '@stately/schema/nodes';
+import { isNodeOfType } from '@stately/schema/schema';
+import type { Stately } from '@stately/schema/stately';
+import { Braces, Brackets, Cog, Dot, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
+import type { ComponentType } from 'react';
+import type { AnyUiPlugin, StatelyUiRuntime } from '@/base';
+import type { Schemas } from '@/core/schema';
+import type { CoreStateEntry } from '.';
+import { CoreRouteBasePath, type CoreUiOptions, type CoreUiPlugin } from './plugin';
 import {
   type ArrayNode,
   CoreNodeType,
@@ -11,15 +19,7 @@ import {
   type TaggedUnionNode,
   type TupleNode,
   type UntaggedEnumNode,
-} from '@stately/schema/core/nodes';
-import type { BaseNode } from '@stately/schema/nodes';
-import { isNodeOfType } from '@stately/schema/schema';
-import type { Stately } from '@stately/schema/stately';
-import { Braces, Brackets, Cog, Dot, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
-import type { ComponentType } from 'react';
-import type { AnyUiPlugin, StatelyUiRuntime } from '@/base';
-import type { CoreStateEntry } from '.';
-import { CoreRouteBasePath, type CoreUiOptions, type CoreUiPlugin } from './plugin';
+} from './schema/nodes';
 
 export type EntityUrlParts =
   | { type?: string; id?: never; mode?: never }

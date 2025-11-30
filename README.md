@@ -92,3 +92,8 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for detai
 - [Crates.io](https://crates.io/crates/stately)
 - [Repository](https://github.com/georgeleepatterson/stately)
 - [Issue Tracker](https://github.com/georgeleepatterson/stately/issues)
+
+# TODO: Remove - NOTES
+
+Plugin Authors Notes:
+1. Ensure that the "operation id" of an endpoint is unique. For example, if an api handler is named 'list', explicitly set its operation id to 'list_{plugin_name}' or similar, to avoid collision with another operation id.

@@ -1,5 +1,5 @@
-import type { Schemas } from '@stately/schema';
 import { type AnyUiPlugin, createStatelyUiProvider, type UiOptions } from '@/base';
+import type { Schemas } from '@/core/schema';
 import type { CoreUiPlugin } from '.';
 import { LinkExplorerProvider } from './context/link-explore-context';
 

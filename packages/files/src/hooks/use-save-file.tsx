@@ -12,7 +12,7 @@ export const useSaveFile = ({ onSuccess }: { onSuccess: (data: FileUploadRespons
       if (!content) throw new Error('Content cannot be empty');
       if (!filesApi) throw new Error('Files API is unavailable');
 
-      const { data, error } = await filesApi.save({ body: { content, name: filename } });
+      const { data, error } = await filesApi.save_file({ body: { content, name: filename } });
 
       if (error || !data) throw new Error('Save failed');
       return data as FileUploadResponse;

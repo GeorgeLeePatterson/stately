@@ -5,8 +5,6 @@
  * Following the canonical pattern from @stately/schema/core/plugin.ts and @stately/ui/core/plugin.ts
  */
 
-import type { DefinePlugin, Schemas } from '@stately/schema';
-import type { PluginFactory } from '@stately/schema/stately';
 import {
   type AnyUiPlugin,
   createOperations,
@@ -18,6 +16,7 @@ import {
   type UiPluginFactory,
 } from '@stately/ui/base';
 import type { RouteOption } from '@stately/ui/base/layout';
+import type { DefinePlugin, PluginFactory, Schemas } from '@stately/ui/schema';
 import { Database } from 'lucide-react';
 import { ARROW_OPERATIONS, type ArrowPaths } from './api';
 import type { ArrowData, ArrowNodeMap, ArrowTypes } from './schema';
@@ -111,7 +110,9 @@ export function arrowUiPlugin<
     // );
 
     // Create typed operations with user's prefix
-    const pathPrefix = options?.api?.pathPrefix ?? runtime.options.api?.pathPrefix;
+    const basePathPrefix = runtime.options?.api?.pathPrefix;
+    const corePathPrefix = options?.api?.pathPrefix;
+    const pathPrefix = runtime.utils.mergePathPrefixOptions(basePathPrefix, corePathPrefix);
     const api = createOperations<ArrowPaths, typeof ARROW_OPERATIONS>(
       client,
       ARROW_OPERATIONS,

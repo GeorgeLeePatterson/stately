@@ -1,7 +1,7 @@
-import type { Schemas } from '@stately/schema';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { Input } from '@/base/ui/input';
 import { Switch } from '@/base/ui/switch';
+import type { Schemas } from '@/core/schema';
 import { PrimitiveStringEdit } from './primitive-string';
 
 export type PrimitiveEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
