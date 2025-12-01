@@ -7,12 +7,7 @@ import { useRegisterConnection } from './use-register-connection';
 import { STREAMING_QUERY_KEY, streamQueryOptions, useStreamingQuery } from './use-streaming-query';
 
 export type { UseConnectors } from './use-connectors';
-export type {
-  ArrowTableColumnDescriptor,
-  ArrowTableDataView,
-  CreateDataViewOptions,
-  UseStreamingQueryResult,
-} from './use-streaming-query';
+export type { UseStreamingQueryResult } from './use-streaming-query';
 
 export {
   useArrowApi,

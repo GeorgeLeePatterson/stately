@@ -1,3 +1,29 @@
+import type { Table } from 'apache-arrow';
+import type { ArrowTableDataView } from '@/components/arrow-table';
+
+/**
+ * Converts an Apache Arrow Table to an ArrowTableDataView for rendering.
+ */
+export function tableToDataView(table: Table): ArrowTableDataView {
+  const columns = table.schema.fields.map((field, index) => {
+    const vector = table.getChildAt(index);
+    const key = field?.name || `column_${index}`;
+    return {
+      key,
+      name: field?.name || `column_${index}`,
+      getValue: (rowIndex: number) => {
+        if (rowIndex < 0 || rowIndex >= table.numRows) return undefined;
+        return vector?.get(rowIndex);
+      },
+    };
+  });
+
+  return {
+    columns,
+    rowCount: table.numRows,
+  };
+}
+
 export function sanitizeIdentifier(name: string) {
   if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) {
     return `'${name}'`;

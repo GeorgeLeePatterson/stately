@@ -2,8 +2,7 @@ import { cn } from '@stately/ui/base';
 import { Card, CardContent, CardHeader, CardTitle } from '@stately/ui/base/ui';
 import { TableIcon } from 'lucide-react';
 import { AnyIsLoading } from '@/components/any-is-loading';
-import type { ArrowTableDataView } from '@/hooks/use-streaming-query';
-import { ArrowTable } from './arrow-table';
+import { ArrowTable, type ArrowTableDataView } from '@/components/arrow-table';
 
 export const DEFAULT_RESULTS_HREF_ID = 'query-results';
 
@@ -24,13 +23,15 @@ export function QueryResultsCard({
   ...rest
 }: QueryResultsCardProps & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
   return (
-    <Card className={cn(['query-results-card gap-4 flex-auto min-w-0', rest?.className])}>
+    <Card
+      className={cn(['query-results-card gap-4 flex-auto min-w-0 max-h-[80dvh]', rest?.className])}
+    >
       <CardHeader>
         <CardTitle className="flex items-center gap-2 justify-between">
-          <a className="flex items-center gap-2" href={`#${hrefId || DEFAULT_RESULTS_HREF_ID}`}>
+          <div className="flex items-center gap-2" id={hrefId || DEFAULT_RESULTS_HREF_ID}>
             {(!title || typeof title === 'string') && <TableIcon className="h-4 w-4" />}
             {title ?? 'Results'}
-          </a>
+          </div>
           <AnyIsLoading isLoading={!!isLoading} loaderOnly />
         </CardTitle>
       </CardHeader>
@@ -58,7 +59,7 @@ export function QueryResultsCard({
           >
             {error}
           </div>
-        ) : data && (data?.loadedRowCount || 0) > 0 ? (
+        ) : data && data.rowCount > 0 ? (
           // Data table view
           <ArrowTable data={data} />
         ) : (

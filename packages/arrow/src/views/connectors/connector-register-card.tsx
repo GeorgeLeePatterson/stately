@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
   DropdownMenu,
@@ -76,11 +75,10 @@ export function ConnectorsRegisterCard({
           <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <SquareStack className="h-4 w-4" />
-              Registered
+              Registered Catalogs
             </div>
             {registerButton}
           </CardTitle>
-          <CardDescription>Currently registered catalogs</CardDescription>
         </CardHeader>
         <CardContent>
           {/* Catalog and connector badges */}

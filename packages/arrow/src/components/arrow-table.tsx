@@ -17,13 +17,22 @@ import {
 } from '@stately/ui/base/ui';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { MoreHorizontal } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { ArrowTableDataView } from '@/hooks/use-streaming-query';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 const ROW_HEIGHT = 42;
 const DATA_COLUMN_MAX_WIDTH = 320;
-const CELL_CHAR_LIMIT = 140;
-const PREFETCH_PADDING_ROWS = 50;
+
+export interface ArrowTableColumnDescriptor {
+  key: string;
+  name: string;
+  maxWidth?: number;
+  getValue(rowIndex: number): unknown | undefined;
+}
+
+export interface ArrowTableDataView {
+  columns: readonly ArrowTableColumnDescriptor[];
+  rowCount: number;
+}
 
 export interface ArrowTableProps {
   data: ArrowTableDataView;
@@ -45,24 +54,16 @@ export function formatValue(value: unknown): string {
 
 export function ArrowTable({
   data,
-  className,
   rowHeight = ROW_HEIGHT,
   overscan = 12,
   emptyState = 'No results to display.',
-}: ArrowTableProps) {
+  ...rest
+}: ArrowTableProps & React.HTMLAttributes<HTMLDivElement>) {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const [drawerRowIndex, setDrawerRowIndex] = useState<number | null>(null);
 
-  const isRowLoaded = useMemo(() => {
-    if (data.isRowLoaded) return data.isRowLoaded;
-    return (rowIndex: number) => rowIndex < data.loadedRowCount;
-  }, [data.isRowLoaded, data.loadedRowCount]);
-
-  const rowCount =
-    typeof data.totalRowCount === 'number' ? Math.max(data.totalRowCount, 0) : data.loadedRowCount;
-
   const virtualizer = useVirtualizer({
-    count: rowCount,
+    count: data.rowCount,
     estimateSize: () => rowHeight,
     getScrollElement: () => parentRef.current,
     overscan,
@@ -75,37 +76,29 @@ export function ArrowTable({
       ? virtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end
       : 0;
 
-  useEffect(() => {
-    if (!data.requestWindow || virtualRows.length === 0) return;
-    const first = virtualRows[0].index;
-    const last = virtualRows[virtualRows.length - 1].index;
-    const window = {
-      end: last + PREFETCH_PADDING_ROWS,
-      start: Math.max(0, first - PREFETCH_PADDING_ROWS),
-    };
-    data.requestWindow(window);
-  }, [data.requestWindow, virtualRows]);
-
   const handleDrawerChange = useCallback((open: boolean) => {
     if (!open) setDrawerRowIndex(null);
   }, []);
 
   const drawerRowValues = useMemo(() => {
     if (drawerRowIndex === null) return [];
-    if (!isRowLoaded(drawerRowIndex)) return [];
     return data.columns.map(column => ({
       key: column.key,
       name: column.name,
       value: formatValue(column.getValue(drawerRowIndex)),
     }));
-  }, [data.columns, drawerRowIndex, isRowLoaded]);
+  }, [data.columns, drawerRowIndex]);
 
-  if (rowCount === 0) {
+  const containerClasses = 'flex flex-col max-h-[100dvh] overflow-hidden rounded-lg border';
+
+  if (data.rowCount === 0) {
     return (
       <div
+        {...rest}
         className={cn(
-          'flex min-h-[240px] items-center justify-center rounded-lg border',
-          className,
+          'min-h-[240px] items-center justify-center',
+          containerClasses,
+          rest?.className,
         )}
       >
         <p className="text-sm text-muted-foreground">{emptyState}</p>
@@ -115,35 +108,24 @@ export function ArrowTable({
 
   return (
     <>
-      <div
-        className={cn(
-          'flex h-full min-h-[360px] flex-col overflow-hidden rounded-lg border',
-          className,
-        )}
-      >
+      <div {...rest} className={cn('h-full min-h-[360px]', containerClasses, rest?.className)}>
         <div className="arrow-table flex-1 overflow-auto bg-background" ref={parentRef}>
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-background">
               <TableRow>
-                <TableHead className="w-[80px] max-w-[80px] bg-muted/30 text-[11px] font-semibold uppercase tracking-wide">
+                <TableHead className="w-[80px] max-w-[80px] bg-muted text-[11px] font-semibold uppercase tracking-wide sticky left-0 z-20">
                   Row
                 </TableHead>
                 {data.columns.map(column => (
                   <TableHead
-                    className={cn(
-                      'bg-muted/30 text-[11px] font-semibold uppercase tracking-wide',
-                      column.maxWidth && 'truncate',
-                    )}
+                    className="bg-muted/30 text-[11px] font-semibold uppercase tracking-wide truncate"
                     key={column.key}
-                    style={{
-                      maxWidth: column.maxWidth ?? DATA_COLUMN_MAX_WIDTH,
-                      width: column.maxWidth,
-                    }}
+                    style={{ maxWidth: column.maxWidth ?? DATA_COLUMN_MAX_WIDTH }}
                   >
                     {column.name}
                   </TableHead>
                 ))}
-                <TableHead className="w-12 bg-muted/30" />
+                <TableHead className="w-12 bg-muted/30 sticky right-0" />
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -158,62 +140,60 @@ export function ArrowTable({
               )}
               {virtualRows.map(virtualRow => {
                 const rowIndex = virtualRow.index;
-                const loaded = isRowLoaded(rowIndex);
 
-                const rowCells = loaded
-                  ? data.columns.map(column => {
-                      const rawValue = column.getValue(rowIndex);
-                      const formatted = formatValue(rawValue);
-                      return { column, formatted };
-                    })
-                  : data.columns.map(column => ({ column, formatted: null }));
-
-                const rowHasOverflow = loaded
-                  ? rowCells.some(cell => (cell.formatted?.length ?? 0) > CELL_CHAR_LIMIT)
-                  : false;
+                const rowCells = data.columns.map(column => {
+                  const rawValue = column.getValue(rowIndex);
+                  const formatted = formatValue(rawValue);
+                  return { column, formatted };
+                });
 
                 return (
                   <TableRow
-                    className={cn(rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/20')}
+                    className={cn(
+                      'group/row',
+                      rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/20',
+                    )}
                     key={rowIndex}
                     style={{ height: virtualRow.size }}
                   >
-                    <TableCell className="w-[80px] max-w-[80px] align-top">
+                    {/* Row index */}
+                    <TableCell
+                      className={cn(
+                        'w-[80px] max-w-[80px] align-top sticky left-0',
+                        rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted',
+                      )}
+                    >
                       <span className="font-mono text-xs text-muted-foreground">
                         {rowIndex.toLocaleString()}
                       </span>
                     </TableCell>
+
                     {rowCells.map(cell => (
                       <TableCell
-                        className={cn(
-                          'align-top font-mono text-xs',
-                          cell.column.maxWidth && 'truncate',
-                        )}
+                        className="align-top font-mono text-xs overflow-hidden"
                         key={`${rowIndex}-${cell.column.key}`}
-                        style={{
-                          maxWidth: cell.column.maxWidth ?? DATA_COLUMN_MAX_WIDTH,
-                          width: cell.column.maxWidth,
-                        }}
+                        style={{ maxWidth: cell.column.maxWidth ?? DATA_COLUMN_MAX_WIDTH }}
                       >
-                        {loaded ? (
-                          <span className="inline-block wrap-break-word">{cell.formatted}</span>
-                        ) : (
-                          <span className="inline-flex h-4 w-20 animate-pulse rounded bg-muted" />
-                        )}
+                        <span className="block truncate">{cell.formatted}</span>
                       </TableCell>
                     ))}
-                    <TableCell className="w-12 text-right">
-                      {rowHasOverflow && (
-                        <Button
-                          aria-label="View full row"
-                          className="h-7 w-7"
-                          onClick={() => setDrawerRowIndex(rowIndex)}
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
+
+                    {/* Drawer button */}
+                    <TableCell
+                      className={cn(
+                        'w-12 text-right align-top sticky right-0',
+                        rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted',
                       )}
+                    >
+                      <Button
+                        aria-label="View full row"
+                        className="h-7 w-7 opacity-0 group-hover/row:opacity-100 focus:opacity-100 transition-opacity"
+                        onClick={() => setDrawerRowIndex(rowIndex)}
+                        size="icon"
+                        variant="ghost"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );

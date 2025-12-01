@@ -24,37 +24,14 @@ import { useArrowApi } from './use-arrow-api';
 /** Query key for streaming queries - export for use with queryClient */
 export const STREAMING_QUERY_KEY = ['arrow', 'streaming-query'] as const;
 
-export interface ArrowTableColumnDescriptor {
-  key: string;
-  name: string;
-  maxWidth?: number;
-  getValue(rowIndex: number): unknown | undefined;
-}
-
-export interface ArrowTableDataView {
-  columns: readonly ArrowTableColumnDescriptor[];
-  loadedRowCount: number;
-  totalRowCount?: number;
-  isRowLoaded?: (rowIndex: number) => boolean;
-  requestWindow?: (window: { start: number; end: number }) => void;
-}
-
-export interface CreateDataViewOptions {
-  totalRowCount?: number;
-  isRowLoaded?: ArrowTableDataView['isRowLoaded'];
-  requestWindow?: ArrowTableDataView['requestWindow'];
-}
-
 /**
  * Result type for useStreamingQuery hook.
  */
 export interface UseStreamingQueryResult {
   /** The underlying React Query result for full API access */
   query: UseQueryResult<Table | null, Error>;
-  /** Derived Arrow view for table virtualization */
+  /** Current store snapshot with table and metrics */
   snapshot: ArrowTableStoreSnapshot;
-  /** Fetch a fresh data view with custom options */
-  createDataView: (options?: CreateDataViewOptions) => ArrowTableDataView;
   /** Subscribe to low-level store snapshots */
   onSnapshot: (cb: (snapshot: ArrowTableStoreSnapshot) => void) => () => void;
   /** Execute a streaming query */
@@ -84,7 +61,7 @@ export interface UseStreamingQueryResult {
  * @example
  * ```typescript
  * function DataViewer() {
- *   const { dataView, execute } = useStreamingQuery({
+ *   const { snapshot, execute } = useStreamingQuery({
  *     subscribe: ({ table }) => {
  *       console.log(`Loaded ${table?.numRows ?? 0} rows`);
  *     },
@@ -93,8 +70,9 @@ export interface UseStreamingQueryResult {
  *   // Execute a query
  *   const handleRun = () => execute({ sql: 'SELECT * FROM large_table' });
  *
- *   // Access data for rendering
- *   return <ArrowTable data={dataView} />;
+ *   // Convert table to data view for rendering
+ *   const view = useMemo(() => tableToDataView(snapshot.table), [snapshot.table]);
+ *   return <ArrowTable data={view} />;
  * }
  * ```
  */
@@ -165,38 +143,6 @@ export function useStreamingQuery({
     snapshot,
   });
 
-  /**
-   * =========================
-   * These seem derivative and should probably be moved.
-   * =========================
-   */
-  const createDataView = useCallback(
-    (options: CreateDataViewOptions = {}): ArrowTableDataView => {
-      const columns = snapshot.table.schema.fields.map((field, index) => {
-        const vector = snapshot.table.getChildAt(index);
-        const key = field?.name || `column_${index}`;
-        return {
-          getValue: (rowIndex: number) => {
-            if (rowIndex < 0 || rowIndex >= snapshot.table.numRows) return undefined;
-            return vector?.get(rowIndex);
-          },
-          key,
-          name: field?.name || `column_${index}`,
-        };
-      });
-
-      return {
-        columns,
-        isRowLoaded:
-          options.isRowLoaded ?? ((rowIndex: number) => rowIndex < snapshot.table.numRows),
-        loadedRowCount: snapshot.table.numRows,
-        requestWindow: options.requestWindow,
-        totalRowCount: options.totalRowCount,
-      };
-    },
-    [snapshot.table],
-  );
-
   const queryStats = useMemo<QueryEditorStat[]>(() => {
     const currentTable = storeRef.current.table;
     const currentMetrics = storeRef.current.metrics;
@@ -207,11 +153,6 @@ export function useStreamingQuery({
       { label: Timer, value: `${currentMetrics.elapsedMs.toFixed(1)} ms` },
     ];
   }, []);
-
-  /**
-   * =========================
-   * =========================
-   */
 
   useEffect(() => {
     subscriptionCleanupRef.current?.();
@@ -230,7 +171,6 @@ export function useStreamingQuery({
 
   return {
     abort,
-    createDataView,
     execute,
     isActive,
     isIdle,

@@ -52,7 +52,7 @@ export function QueryEditorCard({
           {reset && (
             <AnyIsLoading isLoading={!!isExecuting} loaderOnly>
               <Button
-                disabled={!!error || isExecuting}
+                disabled={!!error || isExecuting || !isActive}
                 onClick={() => {
                   reset();
                   onSql('');
@@ -69,11 +69,12 @@ export function QueryEditorCard({
         </CardTitle>
         <CardDescription>Compose SQL, then stream Arrow results instantly.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-auto">
         {/* Query error */}
         {error && <Note message={error} mode="error" />}
 
         <QueryEditor
+          className="h-full"
           isActive={isActive}
           isExecuting={isExecuting}
           onChange={onSql}
