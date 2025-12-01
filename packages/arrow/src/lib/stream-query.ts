@@ -1,3 +1,4 @@
+import { devLog } from '@stately/ui/base';
 import { type RecordBatch, RecordBatchReader } from 'apache-arrow';
 import type { ArrowApi } from '@/api';
 import type { QueryRequest } from '@/types/api';
@@ -25,17 +26,25 @@ export async function* streamQuery(
   payload: QueryRequest,
   signal?: AbortSignal,
 ): AsyncGenerator<RecordBatch> {
-  const { response, error } = await api.execute_query({ body: payload, parseAs: 'stream' });
+  const { response, error } = await api.execute_query({ body: payload, parseAs: 'stream', signal });
 
   if (error) {
     const message = typeof error === 'string' ? error : JSON.stringify(error);
     throw new Error(message || 'Query execution failed');
   }
 
-  const reader = await RecordBatchReader.from(response);
+  try {
+    const reader = await RecordBatchReader.from(response);
+    devLog.debug('Arrow', 'created stream reader');
 
-  for await (const batch of reader) {
-    if (signal?.aborted) break;
-    yield batch;
+    for await (const batch of reader) {
+      if (signal?.aborted) break;
+      yield batch;
+    }
+  } catch (error) {
+    devLog.error('Arrow', 'Error streaming record batches: ', { error, payload });
+    throw error;
+  } finally {
+    devLog.debug('Arrow', 'Exiting record batch stream', { payload });
   }
 }

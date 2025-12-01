@@ -1,3 +1,4 @@
+import { Note } from '@stately/ui/base/components';
 import { cn } from '@stately/ui/base/lib/utils';
 import {
   Button,
@@ -6,7 +7,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Spinner,
 } from '@stately/ui/base/ui';
 import { RefreshCw, TextSearch } from 'lucide-react';
 import { AnyIsLoading } from '@/components/any-is-loading';
@@ -17,27 +17,29 @@ export const DEFAULT_SQL = 'SELECT 1';
 export type QueryEditorCardProps = {
   sql: string;
   onSql: (sql: string) => void;
-  onRun: () => void;
   title?: React.ReactNode;
-  editorProps?: Partial<Omit<QueryEditorProps, 'value' | 'onChange' | 'onRun' | 'isActive'>>;
-  isDisabled?: boolean;
-  isLoading?: boolean;
-  isActive?: boolean;
+  error?: string;
   reset?: () => void;
 };
 
 export function QueryEditorCard({
+  // Card props
   sql,
   onSql,
-  onRun,
   title,
-  editorProps,
-  isDisabled,
-  isLoading,
-  isActive,
+  error,
   reset,
+  // Editor props
+  placeholder,
+  isExecuting,
+  isActive,
+  stats,
+  resultsHrefId,
+  onRun,
   ...rest
-}: QueryEditorCardProps & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
+}: QueryEditorCardProps &
+  Omit<QueryEditorProps, 'value' | 'onChange'> &
+  Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
   return (
     <Card {...rest} className={cn(['query-editor-card gap-4', rest?.className])}>
       <CardHeader>
@@ -48,9 +50,9 @@ export function QueryEditorCard({
           </span>
           {/* TODO: Add a "cancel" button, abort the query */}
           {reset && (
-            <AnyIsLoading isLoading={!!isLoading}>
+            <AnyIsLoading isLoading={!!isExecuting} loaderOnly>
               <Button
-                disabled={isDisabled || isLoading}
+                disabled={!!error || isExecuting}
                 onClick={() => {
                   reset();
                   onSql('');
@@ -64,16 +66,21 @@ export function QueryEditorCard({
               </Button>
             </AnyIsLoading>
           )}
-          {isLoading && <Spinner />}
         </CardTitle>
         <CardDescription>Compose SQL, then stream Arrow results instantly.</CardDescription>
       </CardHeader>
       <CardContent>
+        {/* Query error */}
+        {error && <Note message={error} mode="error" />}
+
         <QueryEditor
-          {...editorProps}
           isActive={isActive}
+          isExecuting={isExecuting}
           onChange={onSql}
           onRun={onRun}
+          placeholder={placeholder}
+          resultsHrefId={resultsHrefId}
+          stats={stats}
           value={sql}
         />
       </CardContent>

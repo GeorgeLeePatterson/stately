@@ -7,6 +7,7 @@ use bytes::Bytes;
 use datafusion::execution::SendableRecordBatchStream;
 use futures_util::{StreamExt, stream};
 
+use super::handlers::IDENT;
 use crate::Error;
 use crate::error::Result;
 
@@ -80,10 +81,10 @@ impl ArrowIpcStreamState {
 
             if let Some(batch_result) = self.stream.next().await {
                 let batch: RecordBatch = batch_result?;
-                self.writer.write(&batch)?;
-                self.writer.flush()?;
+                self.writer.write(&batch).inspect_err(log_err("stream_chunks - Writer.write"))?;
+                self.writer.flush().inspect_err(log_err("stream_chunks - Writer.flush"))?;
             } else {
-                self.writer.finish()?;
+                self.writer.finish().inspect_err(log_err("stream_chunks - Writer.finish"))?;
                 self.finished = true;
                 if let Some(chunk) = self.take_chunk(true) {
                     return Ok(Some((chunk, self)));
@@ -109,34 +110,18 @@ pub async fn arrow_ipc_response(stream: SendableRecordBatchStream) -> Result<Res
             |state| async move { state.stream_chunks().await },
         ));
 
-    // let body = Body::from_stream(stream::try_unfold(state, |mut state| async move {
-    //     loop {
-    //         if let Some(chunk) = state.take_chunk(false) {
-    //             return Ok::<_, Error>(Some((chunk, state)));
-    //         }
-
-    //         if state.finished {
-    //             return Ok(None);
-    //         }
-
-    //         if let Some(batch_result) = state.stream.next().await {
-    //             let batch: RecordBatch = batch_result?;
-    //             state.writer.write(&batch)?;
-    //             state.writer.flush()?;
-    //         } else {
-    //             state.writer.finish()?;
-    //             state.finished = true;
-    //             if let Some(chunk) = state.take_chunk(true) {
-    //                 return Ok(Some((chunk, state)));
-    //             }
-    //             return Ok(None);
-    //         }
-    //     }
-    // }));
-
     Ok(Response::builder()
         .header(header::CONTENT_TYPE, "application/vnd.apache.arrow.stream")
         .header(header::TRANSFER_ENCODING, "chunked")
         .body(body)
         .unwrap())
+}
+
+fn log_err<E>(msg: &'static str) -> impl FnOnce(&E)
+where
+    E: std::error::Error,
+{
+    move |err| {
+        tracing::error!("{IDENT} {msg}: {err:?}");
+    }
 }

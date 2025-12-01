@@ -40,7 +40,7 @@ export interface QueryEditorProps {
   /** Called when SQL changes */
   onChange: (sql: string) => void;
   /** Called when user clicks Run */
-  onRun: () => void;
+  onRun: Exclude<React.ComponentProps<typeof Button>['onClick'], undefined>;
 
   /** Placeholder text */
   placeholder?: string;

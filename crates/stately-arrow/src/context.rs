@@ -155,6 +155,7 @@ where
                 error!(?error, connector_id, "Error getting connection");
             })?;
             if !connector.metadata().has(Capability::ExecuteSql) {
+                error!(connector_id, "Connector does not support SQL execution");
                 return Err(Error::UnsupportedConnector(
                     "Connector does not support SQL execution".into(),
                 ));

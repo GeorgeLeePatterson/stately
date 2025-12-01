@@ -1,7 +1,7 @@
 import { Layout } from '@stately/ui';
 import { cn, devLog, messageFromError } from '@stately/ui/base/lib/utils';
 import { useSidebar } from '@stately/ui/base/ui';
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { type ButtonHTMLAttributes, useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { useConnectors } from '@/hooks/use-connectors';
 import { useStreamingQuery } from '@/hooks/use-streaming-query';
 import type { ArrowTableStore } from '@/lib/arrow-table-store';
@@ -35,8 +35,15 @@ function Root(props: ArrowViewerProps) {
   const isExecuting = useMemo(() => isPending || isStreaming, [isPending, isStreaming]);
 
   const handleRun = useCallback(
-    (s?: string) => {
+    (
+      _?: Parameters<Exclude<ButtonHTMLAttributes<HTMLButtonElement>['onClick'], undefined>>[0],
+      s?: string,
+    ) => {
       const sqlCommand = s || sql;
+
+      // TODO: Remove
+      devLog.debug('Arrow', 'handleRun', { sqlCommand });
+
       if (!sqlCommand.trim()) return;
       // TODO: Remove
       devLog.debug('Arrow', 'handleRun', {
@@ -45,6 +52,7 @@ function Root(props: ArrowViewerProps) {
         sqlCommand,
       });
       execute({ connector_id: currentConnector?.id, sql: sqlCommand });
+      // query.refetch();
     },
     [sql, execute, currentConnector?.id],
   );
@@ -61,39 +69,35 @@ function Root(props: ArrowViewerProps) {
           `WHERE information_schema.tables.table_schema = ${identifier}`;
       }
       console.debug('handleSelectConnectorItem AFTER: ', { identifier, sql, type });
-      handleRun(sql);
+      setSql(sql);
+      handleRun(undefined, sql);
     },
     [handleRun],
   );
 
   return (
     <Layout.Page breadcrumbs={[{ label: 'Viewer' }]}>
-      <div className={cn(['arrow-viewer', 'grid grid-cols-3 gap-4', 'h-full', 'w-full min-w-0'])}>
+      <div
+        className={cn(
+          'arrow-viewer @container/arrowviewer',
+          'grid grid-cols-3 gap-4',
+          'h-full',
+          'w-full min-w-0',
+        )}
+      >
         {/* Left */}
-        <div className="flex flex-col gap-4">
-          {/* Connector and Tables */}
-          {/*<ConnectorSelectCard
-            connectors={connectors}
-            currentConnector={currentConnector}
-            error={connectorsError}
-            isLoading={connectorsQuery.isLoading}
-            onSelect={c => setConnectorId(c?.id)}
-          />
-*/}
-          {/* Connector Details */}
-          {/*<ConnectorDetailsCard
-            className="flex-auto"
-            connectors={connectors}
-            currentConnector={currentConnector}
-            error={connectorsError}
-            isLoading={connectorsQuery.isLoading}
-            onSelect={handleSelectConnectorItem}
-          />
-*/}
-
+        <div
+          className={cn(
+            'flex flex-col gap-4',
+            // Default (sm) show as 2 columns
+            'col-span-3',
+            // Larger show as flex side by side
+            '@md/arrowviewer:col-span-1',
+          )}
+        >
           {/* Connector menu */}
           <ConnectorMenuCard
-            className="flex-auto"
+            className={cn('@md/arrowviewer:flex-auto')}
             connectors={connectors}
             currentConnector={currentConnector}
             error={connectorsError}
@@ -111,17 +115,26 @@ function Root(props: ArrowViewerProps) {
         </div>
 
         {/* Right */}
-        <div className="col-span-2 flex flex-col flex-nowrap gap-4">
+        <div
+          className={cn([
+            'gap-4 flex flex-col',
+            // Default (sm) show as 1 column span
+            'col-span-3',
+            // Larger show as 1 column
+            '@md/arrowviewer:col-span-2',
+          ])}
+        >
           {/* Query */}
           <QueryEditorCard
-            editorProps={{ isExecuting, resultsHrefId: DEFAULT_RESULTS_HREF_ID, stats: queryStats }}
+            error={query?.error ? messageFromError(query.error) || 'Error streaming' : undefined}
             isActive={isActive}
-            isDisabled={!isActive || !query.error}
-            isLoading={query.isFetching}
+            isExecuting={query.isFetching}
             onRun={handleRun}
             onSql={setSql}
             reset={restart}
+            resultsHrefId={DEFAULT_RESULTS_HREF_ID}
             sql={sql}
+            stats={queryStats}
           />
 
           {/* Results */}

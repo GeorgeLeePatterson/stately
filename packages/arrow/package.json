@@ -25,7 +25,7 @@
     "sonner": "^2.0.7"
   },
   "dependencies": {
-    "apache-arrow": "file:../../vendor/apache-arrow-esnext-esm-21.1.0.tgz",
+    "apache-arrow": "file:../../vendor/arrow-js/targets/esnext/esm",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1"
   },

@@ -90,7 +90,7 @@ export function Editor({
             variant="outline"
           >
             {editorOpen ? <Check /> : <Maximize />}
-            {editorOpen ? 'Done' : 'Open Editor'}
+            <span className="hidden @md/editor:inline">{editorOpen ? 'Done' : 'Open Editor'}</span>
           </Button>
         </DialogTrigger>
       }
@@ -167,7 +167,10 @@ function EditorContent({
   );
 
   return (
-    <InputGroup {...rest} className={cn('min-w-0 min-h-48 flex-1', rest?.className)}>
+    <InputGroup
+      {...rest}
+      className={cn('@container/editor', 'min-w-0 min-h-48 flex-1', rest?.className)}
+    >
       {/* Mode toggle */}
       {mode === 'text' ? (
         <InputGroupTextarea

@@ -33,8 +33,8 @@ importers:
         specifier: ^5.90.10
         version: 5.90.11(react@19.2.0)
       apache-arrow:
-        specifier: file:../../vendor/apache-arrow-esnext-esm-21.1.0.tgz
-        version: '@apache-arrow/esnext-esm@file:vendor/apache-arrow-esnext-esm-21.1.0.tgz'
+        specifier: file:../../vendor/arrow-js/targets/esnext/esm
+        version: '@apache-arrow/esnext-esm@file:vendor/arrow-js/targets/esnext/esm'
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -301,9 +301,8 @@ importers:
 
 packages:
 
-  '@apache-arrow/esnext-esm@file:vendor/apache-arrow-esnext-esm-21.1.0.tgz':
-    resolution: {integrity: sha512-ZMlUJKmoout0U6PvHFMqYhXD5V7UAOdxUyf3cZQQwAJisz9HL2t449J6POjo+Na1M4HhHXtuHWuOakYi7n4SlQ==, tarball: file:vendor/apache-arrow-esnext-esm-21.1.0.tgz}
-    version: 21.1.0
+  '@apache-arrow/esnext-esm@file:vendor/arrow-js/targets/esnext/esm':
+    resolution: {directory: vendor/arrow-js/targets/esnext/esm, type: directory}
     hasBin: true
 
   '@babel/code-frame@7.27.1':
@@ -2219,7 +2218,7 @@ packages:
 
 snapshots:
 
-  '@apache-arrow/esnext-esm@file:vendor/apache-arrow-esnext-esm-21.1.0.tgz':
+  '@apache-arrow/esnext-esm@file:vendor/arrow-js/targets/esnext/esm':
     dependencies:
       '@swc/helpers': 0.5.17
       '@types/command-line-args': 5.2.3

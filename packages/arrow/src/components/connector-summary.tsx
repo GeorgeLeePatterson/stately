@@ -59,7 +59,7 @@ export function ConnectorSummary({
   return (
     <div className="connector-summary flex flex-col h-full px-2 space-y-2">
       {/* Filter */}
-      <ButtonGroup className={cn(['flex-auto w-full min-w-0'])}>
+      <ButtonGroup className={cn('flex-auto w-full min-w-0')}>
         <ButtonGroupText asChild>
           <Label
             className="text-sm whitespace-nowrap"

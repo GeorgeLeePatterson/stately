@@ -55,28 +55,63 @@ export function ConnectorsRegisterCard({
   const isAnyLoading = catalogsQuery.isFetching || registerMutation.isPending;
 
   const registerButton = (
+    <DropdownMenuTrigger asChild>
+      <Button
+        className={cn('text-xs')}
+        disabled={registerMutation.isPending}
+        onClick={() => setOpen(!open)}
+        size="sm"
+        variant="secondary"
+      >
+        {isAnyLoading ? <Spinner /> : <PlugZap />}
+        <span className="hidden md:inline">{isAnyLoading ? 'Registering' : 'Register'}</span>
+      </Button>
+    </DropdownMenuTrigger>
+  );
+
+  return (
     <DropdownMenu onOpenChange={setOpen} open={open}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          className="text-xs"
-          disabled={registerMutation.isPending}
-          onClick={() => setOpen(!open)}
-          size="sm"
-          variant="secondary"
-        >
-          {isAnyLoading ? (
-            <>
-              <Spinner />
-              Registering...
-            </>
-          ) : (
-            <>
-              <PlugZap />
-              Register...
-            </>
-          )}
-        </Button>
-      </DropdownMenuTrigger>
+      <Card {...rest} className={cn('connectors-register-card', 'gap-4', rest?.className)}>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <SquareStack className="h-4 w-4" />
+              Registered
+            </div>
+            {registerButton}
+          </CardTitle>
+          <CardDescription>Currently registered catalogs</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {/* Catalog and connector badges */}
+          <div className="text-sm flex flex-wrap gap-2">
+            {registerError && <Note message={registerError} mode="error" />}
+
+            {catalogs.map(c => (
+              <Badge key={`catalog-${c}`} variant="outline">
+                {c}
+              </Badge>
+            ))}
+
+            {/* Registered connections (derived from catalogs) */}
+            {registered.map(c => (
+              <Fragment key={`connector-${c.id}`}>
+                {c.kind === 'object_store' ? (
+                  <Badge variant="secondary">object store</Badge>
+                ) : (
+                  <Badge asChild variant="default">
+                    <a href={`#${c.id}`} onClick={() => onClickConnector?.(c.id)}>
+                      {c.id}
+                    </a>
+                  </Badge>
+                )}
+              </Fragment>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Register connector menu content */}
       <DropdownMenuContent>
         {connectors.map(connection => (
           <DropdownMenuCheckboxItem
@@ -98,47 +133,5 @@ export function ConnectorsRegisterCard({
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-
-  return (
-    <Card {...rest} className={cn(['connectors-register-card gap-4', rest?.className])}>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <SquareStack className="h-4 w-4" />
-            Registered
-          </div>
-          {registerButton}
-        </CardTitle>
-        <CardDescription>Currently registered catalogs</CardDescription>
-      </CardHeader>
-      <CardContent>
-        {/* Catalog and connector badges */}
-        <div className="text-sm flex flex-wrap gap-2">
-          {registerError && <Note message={registerError} mode="error" />}
-
-          {catalogs.map(c => (
-            <Badge key={`catalog-${c}`} variant="outline">
-              {c}
-            </Badge>
-          ))}
-
-          {/* Registered connections (derived from catalogs) */}
-          {registered.map(c => (
-            <Fragment key={`connector-${c.id}`}>
-              {c.kind === 'object_store' ? (
-                <Badge variant="secondary">object store</Badge>
-              ) : (
-                <Badge asChild variant="default">
-                  <a href={`#${c.id}`} onClick={() => onClickConnector?.(c.id)}>
-                    {c.id}
-                  </a>
-                </Badge>
-              )}
-            </Fragment>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
   );
 }

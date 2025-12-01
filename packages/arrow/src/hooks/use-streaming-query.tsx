@@ -4,6 +4,7 @@ import {
   experimental_streamedQuery as streamedQuery,
   type UseQueryResult,
   useQuery,
+  useQueryClient,
 } from '@tanstack/react-query';
 import { RecordBatch, type Table } from 'apache-arrow';
 import { Binary, SquareSigma, Timer } from 'lucide-react';
@@ -63,7 +64,7 @@ export interface UseStreamingQueryResult {
   /** Abort the current streaming query */
   abort: () => void;
   /** True if no query has been executed yet */
-  isIdle: () => boolean;
+  isIdle: boolean;
   /** True if waiting for first batch */
   isPending: boolean;
   /** True if actively receiving batches */
@@ -103,55 +104,42 @@ export function useStreamingQuery({
   subscribe?: Parameters<ArrowTableStore['subscribe']>[0];
 }): UseStreamingQueryResult {
   const api = useArrowApi();
+  const queryClient = useQueryClient();
   const storeRef = useRef(createArrowTableStore());
 
   const [queryRequest, setQueryRequest] = useState<QueryRequest>();
 
-  const abortControllerRef = useRef<AbortController | null>(null);
   const subscriptionCleanupRef = useRef<(() => void) | null>(null);
 
-  // Use useQuery with streamedQuery for the streaming functionality
-  const query = useQuery(
-    streamQueryOptions({
-      abortController: abortControllerRef.current ?? undefined,
-      api,
-      payload: queryRequest,
-      store: storeRef.current,
-    }),
+  const streamOptions = useMemo(
+    () => ({ api, payload: queryRequest, store: storeRef.current }),
+    [api, queryRequest],
   );
 
-  const reset = useCallback(() => {
-    // Reset store state
-    storeRef.current.reset();
-
-    // Re-set abort controller
-    abortControllerRef.current = new AbortController();
-  }, []);
+  // Use useQuery with streamedQuery for the streaming functionality
+  const query = useQuery(streamQueryOptions(streamOptions));
 
   const restart = useCallback(() => {
-    reset();
+    storeRef.current.reset();
     setQueryRequest(undefined);
-  }, [reset]);
-
-  const execute = useCallback(
-    (payload: QueryRequest) => {
-      // TODO: Remove
-      devLog.debug('Arrow', 'stream query execute', payload);
-
-      reset();
-
-      // Update query request
-      setQueryRequest(payload);
-    },
-    [reset],
-  );
-
-  const abort = useCallback(() => {
-    abortControllerRef.current?.abort();
   }, []);
 
+  const execute = useCallback((payload: QueryRequest) => {
+    // TODO: Remove
+    devLog.debug('Arrow', 'stream query execute', payload);
+
+    storeRef.current.reset();
+
+    // Update query request
+    setQueryRequest(payload);
+  }, []);
+
+  const abort = useCallback(() => {
+    queryClient.cancelQueries({ queryKey: STREAMING_QUERY_KEY });
+  }, [queryClient]);
+
   // Helper functions for common status checks
-  const isIdle = useCallback(
+  const isIdle = useMemo(
     () => query.fetchStatus === 'idle' && !query.data,
     [query.fetchStatus, query.data],
   );
@@ -260,28 +248,23 @@ export const streamQueryOptions = ({
   store,
   api,
   payload,
-  abortController,
 }: {
   store: ArrowTableStore;
   api?: ArrowApi;
   payload?: QueryRequest;
-  abortController?: AbortController;
 }) =>
   queryOptions({
-    enabled: !payload, // Only run when we have a payload
+    enabled: !!payload, // Only run when we have a payload
     queryFn: streamedQuery({
       initialValue: store.table,
       reducer: (_: Table, batch: RecordBatch): Table => {
         store.appendBatch(batch);
         return store.table;
       },
-      refetchMode: 'replace', // Is this right?
       streamFn: async context => {
-        // TODO: Remove
         devLog.debug('Arrow', 'stream fn*', { payload, store });
 
         if (!payload) {
-          // No query request means reset the query
           async function* emptyStream(): AsyncGenerator<RecordBatch> {
             yield new RecordBatch({});
           }
@@ -290,11 +273,12 @@ export const streamQueryOptions = ({
 
         if (!api) throw new Error('Arrow API is unavailable');
 
-        // Combine React Query's signal with our abort controller
-        context.signal.addEventListener('abort', () => abortController?.abort());
-
-        return streamQuery(api, payload, abortController?.signal);
+        // Use React Query's signal directly for cancellation
+        return streamQuery(api, payload, context.signal);
       },
     }),
     queryKey: [STREAMING_QUERY_KEY, payload?.sql, payload?.connector_id] as const,
+    retry: false,
+    retryOnMount: false,
+    staleTime: Number.POSITIVE_INFINITY,
   });

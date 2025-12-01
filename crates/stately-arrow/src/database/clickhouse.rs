@@ -177,6 +177,9 @@ impl Backend for ClickHouseBackend {
     }
 
     async fn list(&self, database: Option<&str>, _: Option<&str>) -> Result<ListSummary> {
+        // TODO: Remove
+        tracing::debug!(?database, "------> Clickhouse List");
+
         if database.is_some() {
             self.pool
                 .get()
@@ -186,7 +189,12 @@ impl Backend for ClickHouseBackend {
                 .fetch_tables(database, None)
                 .await
                 .map_err(Error::from)
-                .map(ListSummary::Databases)
+                .map(|name| {
+                    name.into_iter()
+                        .map(|name| TableSummary { name, rows: None, size_bytes: None })
+                        .collect()
+                })
+                .map(ListSummary::Tables)
         } else {
             self.pool
                 .get()
@@ -196,12 +204,7 @@ impl Backend for ClickHouseBackend {
                 .fetch_schemas(None)
                 .await
                 .map_err(Error::from)
-                .map(|name| {
-                    name.into_iter()
-                        .map(|name| TableSummary { name, rows: None, size_bytes: None })
-                        .collect()
-                })
-                .map(ListSummary::Tables)
+                .map(ListSummary::Databases)
         }
     }
 }

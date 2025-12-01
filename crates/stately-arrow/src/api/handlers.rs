@@ -12,7 +12,7 @@ use crate::{
     ListSummary, QueryRequest, QuerySession,
 };
 
-const IDENT: &str = "[stately-arrow]";
+pub(super) const IDENT: &str = "[stately-arrow]";
 
 /// List all available connectors
 ///
@@ -202,7 +202,10 @@ where
     S: QuerySession,
 {
     debug!(?request, "{IDENT} Executing query");
-    let stream =
-        state.query_context.execute_query(request.connector_id.as_deref(), &request.sql).await?;
+    let stream = state
+        .query_context
+        .execute_query(request.connector_id.as_deref(), &request.sql)
+        .await
+        .inspect_err(|error| tracing::error!("{IDENT} Error executing query: {error:?}"))?;
     arrow_ipc_response(stream).await
 }
