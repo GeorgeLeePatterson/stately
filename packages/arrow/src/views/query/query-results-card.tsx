@@ -33,9 +33,7 @@ export function QueryResultsCard({
   ...rest
 }: QueryResultsCardProps & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
   return (
-    <Card
-      className={cn(['query-results-card gap-4 flex-auto min-w-0 max-h-[80dvh]', rest?.className])}
-    >
+    <Card className={cn(['query-results-card gap-4 flex-auto min-w-0 max-h-dvh', rest?.className])}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 justify-between">
           <div className="flex items-center gap-2" id={hrefId || DEFAULT_RESULTS_HREF_ID}>
@@ -51,7 +49,6 @@ export function QueryResultsCard({
           <div
             className={cn([
               'flex flex-col h-full items-center justify-center gap-2',
-              // 'rounded-lg border bg-muted/30',
               'text-sm text-muted-foreground',
             ])}
           >

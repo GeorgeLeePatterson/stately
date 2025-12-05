@@ -126,13 +126,12 @@ export function ConnectorMenuCard({
     <Card {...rest} className={cn(['connector-select-card gap-4', rest?.className])}>
       <CardHeader>
         {/* Connector Details */}
-        <CardTitle className="flex items-center justify-between gap-2">
-          <span className="flex items-center gap-2">
+        <CardTitle className="flex items-center justify-between gap-2 h-full">
+          <div className="flex items-center gap-2">
             <Database className="h-4 w-4" />
             Connectors
-          </span>
-
-          <AnyIsLoading isLoading={!!isLoading} loaderOnly>
+          </div>
+          <AnyIsLoading className="h-3.5 w-3.5" isLoading={!!isLoading} loaderOnly>
             {Object.keys(connectionDetails?.data ?? {}).length > 0 ? (
               <Button
                 className="cursor-pointer"
@@ -168,7 +167,9 @@ export function ConnectorMenuCard({
                 }
                 key={connector.id}
               >
-                <div className={cn('p-2', 'border-border border-x', 'inset-shadow-sm/20')}>
+                <div
+                  className={cn('p-2 min-h-[98px]', 'border-border border-x', 'inset-shadow-sm/20')}
+                >
                   <div className="flex-auto flex flex-col space-y-2">
                     {connectionDetailsError && (
                       <Note message={connectionDetailsError} mode="error" />

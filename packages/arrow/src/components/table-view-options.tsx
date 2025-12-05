@@ -21,7 +21,7 @@ export function TableViewOptions<TData>({ table }: { table: Table<TData> }) {
           View
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
+      <DropdownMenuContent align="end" className="max-h-[60vh] w-fit min-w-[150px] max-w-[300px]">
         <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
@@ -31,7 +31,7 @@ export function TableViewOptions<TData>({ table }: { table: Table<TData> }) {
             return (
               <DropdownMenuCheckboxItem
                 checked={column.getIsVisible()}
-                className="capitalize"
+                className="capitalize truncate max-w-full"
                 key={column.id}
                 onCheckedChange={value => column.toggleVisibility(!!value)}
               >

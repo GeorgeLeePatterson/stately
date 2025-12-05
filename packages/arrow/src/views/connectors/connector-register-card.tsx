@@ -15,7 +15,7 @@ import {
 } from '@stately/ui/base/ui';
 import { PlugZap, SquareStack } from 'lucide-react';
 import type React from 'react';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { useListCatalogs } from '@/hooks/use-list-catalog';
 import { useRegisterConnection } from '@/hooks/use-register-connection';
 import type { ConnectionMetadata } from '@/types/api';
@@ -66,7 +66,7 @@ export function ConnectorsRegisterCard({
         disabled={registerMutation.isPending}
         onClick={() => setOpen(!open)}
         size="sm"
-        variant="secondary"
+        variant="ghost"
       >
         {isAnyLoading ? <Spinner /> : <PlugZap />}
         <span className="hidden md:inline">{isAnyLoading ? 'Registering' : 'Register'}</span>
@@ -88,7 +88,7 @@ export function ConnectorsRegisterCard({
           <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <SquareStack className="h-4 w-4" />
-              Registered&nbsp;<span className="hidden @md/connectorregister:inline">Catalogs</span>
+              <span className="hidden @md/connectorregister:inline">Registered&nbsp;</span>Catalogs
             </div>
             {registerButton}
           </CardTitle>
@@ -105,7 +105,7 @@ export function ConnectorsRegisterCard({
             ))}
 
             {/* Registered connections (derived from catalogs) */}
-            {registered.map(c => (
+            {/*{registered.map(c => (
               <Fragment key={`connector-${c.id}`}>
                 {c.metadata.kind === 'object_store' ? (
                   <Badge variant="secondary">object store</Badge>
@@ -117,7 +117,7 @@ export function ConnectorsRegisterCard({
                   </Badge>
                 )}
               </Fragment>
-            ))}
+            ))}*/}
           </div>
         </CardContent>
       </Card>

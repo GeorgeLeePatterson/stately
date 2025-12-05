@@ -224,7 +224,7 @@ export function ConnectorSummary({
         </ButtonGroup>
 
         {/* Results */}
-        <ScrollArea className="flex-auto h-28 max-h-dvh rounded-lg border">
+        <ScrollArea className="flex-auto min-h-12 max-h-dvh rounded-lg border">
           {filteredItems.length === 0 ? (
             <div className="p-2 text-center text-xs text-muted-foreground">No items found</div>
           ) : (

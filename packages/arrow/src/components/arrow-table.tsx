@@ -1,13 +1,6 @@
 import { cn } from '@stately/ui/base/lib/utils';
 import {
   Button,
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
   Table,
   TableBody,
   TableCell,
@@ -15,9 +8,19 @@ import {
   TableHeader,
   TableRow,
 } from '@stately/ui/base/ui';
+import {
+  type ColumnDef,
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  type VisibilityState,
+} from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, ScanSearch } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { TableRowDrawer } from './table-row-drawer';
+import { TableViewOptions } from './table-view-options';
 
 const ROW_HEIGHT = 42;
 const DATA_COLUMN_MAX_WIDTH = 320;
@@ -53,6 +56,11 @@ export function formatValue(value: unknown): string {
   return String(value);
 }
 
+/** Row type for react-table - just the row index since we fetch values dynamically */
+interface ArrowRowData {
+  _rowIndex: number;
+}
+
 export function ArrowTable({
   data,
   rowHeight = ROW_HEIGHT,
@@ -62,9 +70,40 @@ export function ArrowTable({
 }: ArrowTableProps & React.HTMLAttributes<HTMLDivElement>) {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const [drawerRowIndex, setDrawerRowIndex] = useState<number | null>(null);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  // Create row data - just indices since we use getValue() for actual data
+  const rowData = useMemo<ArrowRowData[]>(
+    () => Array.from({ length: data.rowCount }, (_, i) => ({ _rowIndex: i })),
+    [data.rowCount],
+  );
+
+  // Build react-table column definitions from ArrowTableColumnDescriptor
+  const columns = useMemo<ColumnDef<ArrowRowData, unknown>[]>(() => {
+    const columnHelper = createColumnHelper<ArrowRowData>();
+
+    return data.columns.map(col =>
+      columnHelper.accessor(row => col.getValue(row._rowIndex), {
+        cell: info => formatValue(info.getValue()),
+        header: col.name,
+        id: col.key,
+        meta: { maxWidth: col.maxWidth },
+      }),
+    );
+  }, [data.columns]);
+
+  const table = useReactTable({
+    columns,
+    data: rowData,
+    getCoreRowModel: getCoreRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    state: { columnVisibility },
+  });
+
+  const { rows } = table.getRowModel();
 
   const virtualizer = useVirtualizer({
-    count: data.rowCount,
+    count: rows.length,
     estimateSize: () => rowHeight,
     getScrollElement: () => parentRef.current,
     overscan,
@@ -81,6 +120,9 @@ export function ArrowTable({
     if (!open) setDrawerRowIndex(null);
   }, []);
 
+  // For drawer, show ALL columns (including hidden) so user can see full row
+  const drawerTitle = `Row ${drawerRowIndex !== null ? (drawerRowIndex + 1).toLocaleString() : ''}`;
+  const drawerDescription = 'Full values';
   const drawerRowValues = useMemo(() => {
     if (drawerRowIndex === null) return [];
     return data.columns.map(column => ({
@@ -89,6 +131,9 @@ export function ArrowTable({
       value: formatValue(column.getValue(drawerRowIndex)),
     }));
   }, [data.columns, drawerRowIndex]);
+
+  const visibleColumns = table.getVisibleLeafColumns();
+  const totalColumnCount = visibleColumns.length + 2; // +2 for row index and actions columns
 
   const containerClasses = 'flex flex-col max-h-[100dvh] overflow-hidden rounded-lg border';
 
@@ -114,48 +159,70 @@ export function ArrowTable({
   return (
     <>
       <div {...rest} className={cn('h-full min-h-[360px]', containerClasses, rest?.className)}>
+        {/* Table options */}
+        {data.columns.length > 0 && (
+          <div className="w-full px-3 py-2 flex items-center justify-end border-b">
+            <TableViewOptions table={table} />
+          </div>
+        )}
+
+        {/* Data table */}
         <div
-          className="arrow-table flex-1 overflow-auto bg-background **:data-[slot=table-container]:overflow-visible"
+          className="arrow-table max-h-dvh flex-1 overflow-auto bg-background **:data-[slot=table-container]:overflow-visible"
           ref={parentRef}
         >
           <Table>
             {/* Header */}
             <TableHeader>
-              <TableRow className="sticky top-0 z-20">
-                {/* Row index column */}
-                <TableHead
-                  className={cn(
-                    'w-[80px] max-w-[80px]',
-                    'bg-muted',
-                    'text-[11px] font-semibold uppercase tracking-wide',
-                    'sticky top-0 left-0 z-30',
-                  )}
-                >
-                  Row
-                </TableHead>
-
-                {/* Data columns */}
-                {data.columns.map(column => (
+              {table.getHeaderGroups().map(headerGroup => (
+                <TableRow className="sticky top-0 z-20" key={headerGroup.id}>
+                  {/* Row index column */}
                   <TableHead
                     className={cn(
+                      'w-[80px] max-w-[80px]',
                       'bg-muted',
-                      'text-[11px] font-semibold uppercase tracking-wide truncate',
+                      'text-[11px] font-semibold uppercase tracking-wide',
+                      'sticky top-0 left-0 z-30',
                     )}
-                    key={column.key}
-                    style={{ maxWidth: column.maxWidth ?? DATA_COLUMN_MAX_WIDTH }}
-                    title={column.name}
                   >
-                    {column.name}
+                    Row
                   </TableHead>
-                ))}
 
-                {/* View more column */}
-                <TableHead className={cn('w-12 bg-muted', 'top-0 right-0 sticky z-30')}>
-                  <span className="flex justify-center">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </span>
-                </TableHead>
-              </TableRow>
+                  {/* Data columns */}
+                  {headerGroup.headers.map(header => {
+                    const maxWidth =
+                      (header.column.columnDef.meta as { maxWidth?: number })?.maxWidth ??
+                      DATA_COLUMN_MAX_WIDTH;
+
+                    return (
+                      <TableHead
+                        className={cn(
+                          'bg-muted',
+                          'text-[11px] font-semibold uppercase tracking-wide truncate',
+                        )}
+                        key={header.id}
+                        style={{ maxWidth }}
+                        title={
+                          typeof header.column.columnDef.header === 'string'
+                            ? header.column.columnDef.header
+                            : header.id
+                        }
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    );
+                  })}
+
+                  {/* View more column */}
+                  <TableHead className={cn('w-12 bg-muted', 'top-0 right-0 sticky z-30')}>
+                    <span className="flex justify-center">
+                      <ScanSearch className="h-4 w-4" />
+                    </span>
+                  </TableHead>
+                </TableRow>
+              ))}
             </TableHeader>
 
             {/* Body */}
@@ -164,7 +231,7 @@ export function ArrowTable({
                 <TableRow>
                   <TableCell
                     className="p-0"
-                    colSpan={data.columns.length + 2}
+                    colSpan={totalColumnCount}
                     style={{ height: paddingTop }}
                   />
                 </TableRow>
@@ -172,13 +239,8 @@ export function ArrowTable({
 
               {/* Data rows */}
               {virtualRows.map(virtualRow => {
-                const rowIndex = virtualRow.index;
-
-                const rowCells = data.columns.map(column => {
-                  const rawValue = column.getValue(rowIndex);
-                  const formatted = formatValue(rawValue);
-                  return { column, formatted };
-                });
+                const row = rows[virtualRow.index];
+                const rowIndex = row.original._rowIndex;
 
                 return (
                   <TableRow
@@ -186,7 +248,7 @@ export function ArrowTable({
                       'group/row',
                       rowIndex % 2 === 0 ? 'bg-background' : 'bg-muted/20',
                     )}
-                    key={rowIndex}
+                    key={row.id}
                     style={{ height: virtualRow.size }}
                   >
                     {/* Row index */}
@@ -202,15 +264,23 @@ export function ArrowTable({
                     </TableCell>
 
                     {/* Row data */}
-                    {rowCells.map(cell => (
-                      <TableCell
-                        className="align-top font-mono text-xs overflow-hidden"
-                        key={`${rowIndex}-${cell.column.key}`}
-                        style={{ maxWidth: cell.column.maxWidth ?? DATA_COLUMN_MAX_WIDTH }}
-                      >
-                        <span className="block truncate">{cell.formatted}</span>
-                      </TableCell>
-                    ))}
+                    {row.getVisibleCells().map(cell => {
+                      const maxWidth =
+                        (cell.column.columnDef.meta as { maxWidth?: number })?.maxWidth ??
+                        DATA_COLUMN_MAX_WIDTH;
+
+                      return (
+                        <TableCell
+                          className="align-top font-mono text-xs overflow-hidden"
+                          key={cell.id}
+                          style={{ maxWidth }}
+                        >
+                          <span className="block truncate">
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </span>
+                        </TableCell>
+                      );
+                    })}
 
                     {/* Drawer button */}
                     <TableCell
@@ -236,7 +306,7 @@ export function ArrowTable({
                 <TableRow>
                   <TableCell
                     className="p-0"
-                    colSpan={data.columns.length + 2}
+                    colSpan={totalColumnCount}
                     style={{ height: paddingBottom }}
                   />
                 </TableRow>
@@ -246,33 +316,14 @@ export function ArrowTable({
         </div>
       </div>
 
-      <Drawer onOpenChange={handleDrawerChange} open={drawerRowIndex !== null}>
-        <DrawerContent className="max-h-[80vh]">
-          <DrawerHeader>
-            <DrawerTitle>
-              Row {drawerRowIndex !== null ? (drawerRowIndex + 1).toLocaleString() : ''}
-            </DrawerTitle>
-            <DrawerDescription>Full values</DrawerDescription>
-          </DrawerHeader>
-          <div className="max-h-[60vh] overflow-auto px-4 pb-4">
-            <dl className="space-y-4 text-sm">
-              {drawerRowValues.map(cell => (
-                <div className="space-y-1" key={cell.key}>
-                  <dt className="text-muted-foreground font-medium">{cell.name}</dt>
-                  <dd className="font-mono text-xs wrap-break-word rounded-md bg-muted/40 p-3">
-                    {cell.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button variant="outline">Close</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      {/* Row details drawer */}
+      <TableRowDrawer
+        description={drawerDescription}
+        onOpen={handleDrawerChange}
+        open={drawerRowIndex !== null}
+        title={drawerTitle}
+        values={drawerRowValues}
+      />
     </>
   );
 }
