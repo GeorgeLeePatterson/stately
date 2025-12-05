@@ -1,10 +1,10 @@
 import type { AnyRecord } from '@stately/schema/helpers';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
-import { Fragment, useCallback, useState } from 'react';
+import { Fragment, useCallback, useMemo, useState } from 'react';
 import { FieldEdit } from '@/base/form/field-edit';
 import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
-import { Field, FieldGroup } from '@/base/ui/field';
+import { Field, FieldGroup, FieldLegend, FieldSet } from '@/base/ui/field';
 import { Progress } from '@/base/ui/progress';
 import { Skeleton } from '@/base/ui/skeleton';
 import { useObjectField } from '@/core/hooks/use-object-field';
@@ -51,7 +51,9 @@ export const ObjectWizardEdit = <
   );
 
   const {
+    extraFieldsValue,
     formData,
+    handleAdditionalFieldChange,
     handleFieldChange,
     handleSave,
     handleCancel: _,
@@ -61,36 +63,60 @@ export const ObjectWizardEdit = <
 
   const requiredFields = new Set(node.required || []);
 
+  // Include additionalProperties as a final step if present
+  const hasAdditionalProperties = !!node.additionalProperties;
+  const totalSteps = fields.length + (hasAdditionalProperties ? 1 : 0);
+
   const [currentStep, setCurrentStep] = useState(0);
 
-  const currentField = fields[currentStep];
-  if (!currentField) return null;
+  // Determine if we're on the additionalProperties step
+  const isAdditionalPropertiesStep = hasAdditionalProperties && currentStep === fields.length;
 
-  const [fieldName, propNode] = currentField;
+  const currentField = fields[currentStep];
+
+  const [fieldName, propNode] = currentField ?? ['', null];
   const isRequired = requiredFields.has(fieldName);
   const fieldLabel = utils?.generateFieldLabel?.(fieldName) ?? fieldName;
   const fieldValue = formData?.[fieldName];
 
-  const isFirstStep = currentStep === 0;
-  const isLastStep = currentStep === fields.length - 1;
-  const progress = ((currentStep + 1) / fields.length) * 100;
-
-  const isNullableNode = propNode.nodeType === CoreNodeType.Nullable;
+  const isNullableNode = propNode?.nodeType === CoreNodeType.Nullable;
   const isNullable = !isRequired || isNullableNode;
 
-  // Check if current field is valid (for required fields)
-  const fieldValidationResult = schema.validate({
-    data: fieldValue,
-    path: `${label ?? ''}[ObjectNode][property]`,
-    schema: propNode,
-  });
-  const isCurrentFieldValid = isNullable || fieldValidationResult.valid;
+  // Memoize the synthetic map node for additionalProperties
+  const additionalPropertiesMapNode = useMemo(() => {
+    if (!node.additionalProperties) return null;
+    return { nodeType: CoreNodeType.Map, valueSchema: node.additionalProperties };
+  }, [node.additionalProperties]);
+
+  // Check if current field/step is valid
+  const isCurrentFieldValid = useMemo(() => {
+    // Additional properties step is always valid (optional by nature)
+    if (isAdditionalPropertiesStep) return true;
+
+    if (!propNode) return false;
+
+    if (isNullable) return true;
+
+    const fieldValidationResult = schema.validate({
+      data: fieldValue,
+      path: `${label ?? ''}[ObjectNode][property]`,
+      schema: propNode,
+    });
+    return fieldValidationResult.valid;
+  }, [isAdditionalPropertiesStep, propNode, isNullable, schema, fieldValue, label]);
+
+  // For regular field steps, we need a current field
+  if (!isAdditionalPropertiesStep && !currentField) return null;
+
+  const isFirstStep = currentStep === 0;
+  const isLastStep = currentStep === totalSteps - 1;
+  const progress = ((currentStep + 1) / totalSteps) * 100;
 
   const handleNext = () => {
     if (isLastStep) {
       handleSave();
     } else {
-      setCurrentStep(prev => Math.min(prev + 1, fields.length - 1));
+      setCurrentStep(prev => Math.min(prev + 1, totalSteps - 1));
     }
   };
 
@@ -119,7 +145,18 @@ export const ObjectWizardEdit = <
       <FieldGroup className="min-h-48 flex flex-col justify-center">
         {isLoading ? (
           <Skeleton className="h-32 w-full" />
-        ) : (
+        ) : isAdditionalPropertiesStep && additionalPropertiesMapNode ? (
+          <FieldSet className="min-w-0">
+            <FieldLegend variant="label">Additional Properties</FieldLegend>
+            <FieldEdit<Schema>
+              formId={`${formId}-additional`}
+              isWizard
+              node={additionalPropertiesMapNode}
+              onChange={v => handleAdditionalFieldChange(v as AnyRecord)}
+              value={extraFieldsValue}
+            />
+          </FieldSet>
+        ) : propNode ? (
           <Fragment>
             <EntityPropertyView fieldName={fieldName} isRequired={isRequired} node={propNode}>
               {/* Primitive field view */}
@@ -148,7 +185,7 @@ export const ObjectWizardEdit = <
               )}
             </EntityPropertyView>
           </Fragment>
-        )}
+        ) : null}
       </FieldGroup>
 
       {/* Navigation */}
@@ -165,7 +202,7 @@ export const ObjectWizardEdit = <
         </Button>
 
         <div className="text-sm text-muted-foreground">
-          {fields.map((name, index) => (
+          {Array.from({ length: totalSteps }, (_, index) => (
             <span
               className={`inline-block w-2 h-2 rounded-full mx-1 ${
                 index === currentStep
@@ -174,7 +211,8 @@ export const ObjectWizardEdit = <
                     ? 'bg-primary/50'
                     : 'bg-muted'
               }`}
-              key={`wizard-field-${name}`}
+              // biome-ignore lint/suspicious/noArrayIndexKey: ''
+              key={`wizard-step-${index}`}
             />
           ))}
         </div>

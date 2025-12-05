@@ -1,0 +1,529 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "stately-files",
+    "description": "File upload and relative path management for stately",
+    "contact": {
+      "name": "George Lee Patterson",
+      "email": "patterson.george@gmail.com"
+    },
+    "license": {
+      "name": "Apache-2.0",
+      "identifier": "Apache-2.0"
+    },
+    "version": "0.3.2"
+  },
+  "paths": {
+    "/list": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "List files and directories",
+        "description": "Lists all files and directories in the specified path (or root data directory if no path\nspecified). Returns both files and directories with a flag indicating which is which.\n\nVersioned files are stored as: `{filename}/__versions__/{uuid}`\nThe UI is responsible for aggregating versions for display.\n\n# Errors\n- `Error::BadRequest` if the path is invalid\n- `Error::Internal` if the files could not be listed",
+        "operationId": "list_files",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "description": "Optional path relative to data directory (e.g., 'uploads'). Defaults to root data directory if not specified.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Files and directories listed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/save": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Save file content directly (without multipart upload)",
+        "description": "This endpoint allows saving file content from a text input.\n\n# Errors\n- `Error::BadRequest` if the file name is invalid\n- `Error::Internal` if the file could not be saved",
+        "operationId": "save_file",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "File saved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Upload a file to the data directory",
+        "description": "Files are stored in a versioned structure:\n`data/uploads/{name}/{uuid}`\n\nThis allows automatic versioning without conflicts.\n\n# Errors\n- `Error::BadRequest` if the file name is invalid\n- `Error::Internal` if the file could not be saved",
+        "operationId": "upload",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "description": "Standard error shape returned by handlers",
+        "required": [
+          "error",
+          "status"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
+      "FileEntryType": {
+        "type": "string",
+        "enum": [
+          "directory",
+          "file",
+          "versioned_file"
+        ]
+      },
+      "FileInfo": {
+        "type": "object",
+        "required": [
+          "name",
+          "size",
+          "type"
+        ],
+        "properties": {
+          "created": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Creation timestamp (Unix epoch seconds) - oldest version for versioned files",
+            "minimum": 0
+          },
+          "modified": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Last modified timestamp (Unix epoch seconds) - newest version for versioned files",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "description": "File name (relative path from target directory)"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64",
+            "description": "File size in bytes",
+            "minimum": 0
+          },
+          "type": {
+            "$ref": "#/components/schemas/FileEntryType",
+            "description": "Entry type: `directory`, `file`, or `versioned_file`"
+          },
+          "versions": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/FileVersion"
+            },
+            "description": "List of all versions (only populated for versioned files)"
+          }
+        }
+      },
+      "FileListQuery": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional path to list files from (relative to data directory)"
+          }
+        }
+      },
+      "FileListResponse": {
+        "type": "object",
+        "required": [
+          "files"
+        ],
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileInfo"
+            },
+            "description": "List of files"
+          }
+        }
+      },
+      "FileSaveRequest": {
+        "type": "object",
+        "required": [
+          "content"
+        ],
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "File content as string"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional filename"
+          }
+        }
+      },
+      "FileUploadResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "path",
+          "uuid",
+          "full_path"
+        ],
+        "properties": {
+          "full_path": {
+            "type": "string",
+            "description": "Full absolute path on the server"
+          },
+          "path": {
+            "type": "string",
+            "description": "Relative path from data directory (e.g., \"uploads/config.json\")"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation was successful"
+          },
+          "uuid": {
+            "type": "string",
+            "description": "The UUID version identifier"
+          }
+        }
+      },
+      "FileVersion": {
+        "type": "object",
+        "required": [
+          "uuid",
+          "size"
+        ],
+        "properties": {
+          "created": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Creation timestamp (Unix epoch seconds)",
+            "minimum": 0
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Size of this specific version in bytes",
+            "minimum": 0
+          },
+          "uuid": {
+            "type": "string",
+            "description": "UUID identifier for this version"
+          }
+        }
+      },
+      "RelativePath": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Path relative to the cache directory",
+            "required": [
+              "path",
+              "dir"
+            ],
+            "properties": {
+              "dir": {
+                "type": "string",
+                "enum": [
+                  "cache"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "description": "Path relative to the cache directory"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Path relative to the data directory (non-versioned files)",
+            "required": [
+              "path",
+              "dir"
+            ],
+            "properties": {
+              "dir": {
+                "type": "string",
+                "enum": [
+                  "data"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "description": "Path relative to the data directory (non-versioned files)"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "Path to uploaded file with version resolution support (in uploads/ directory)",
+            "required": [
+              "path",
+              "dir"
+            ],
+            "properties": {
+              "dir": {
+                "type": "string",
+                "enum": [
+                  "upload"
+                ]
+              },
+              "path": {
+                "$ref": "#/components/schemas/VersionedPath",
+                "description": "Path to uploaded file with version resolution support (in uploads/ directory)"
+              }
+            }
+          }
+        ],
+        "description": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead."
+      },
+      "UserDefinedPath": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/RelativePath",
+            "description": "Application-managed path with optional version resolution"
+          },
+          {
+            "type": "string",
+            "description": "User-provided external path (filesystem path or URL)"
+          }
+        ],
+        "description": "Path that can be either managed by the application or user-defined.\n\nUse this type when a path could be either:\n- An uploaded file managed by the app (with version resolution)\n- A user-provided path on the filesystem\n\n# Examples\n```\n// Managed: uploads/config.json (resolved to latest UUID)\nUserDefinedPath::Managed(RelativePath::Data(VersionedPath::new(\"uploads/config.json\")))\n\n// External: /usr/local/bin/script.sh\nUserDefinedPath::External(\"/usr/local/bin/script.sh\".to_string())\n```"
+      },
+      "VersionedPath": {
+        "type": "string",
+        "description": "Newtype wrapper for versioned file paths.\n\nRepresents a logical file name that resolves to the latest UUID-versioned\nfile in a directory (e.g., \"config.json\" → \"uploads/config.json/{latest-uuid}\").\n\nThe inner string is not directly accessible to prevent bypassing version resolution."
+      }
+    },
+    "responses": {
+      "ApiError": {
+        "description": "Standard error shape returned by handlers",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Standard error shape returned by handlers",
+              "required": [
+                "error",
+                "status"
+              ],
+              "properties": {
+                "error": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer",
+                  "format": "int32",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "FileListResponse": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "files"
+              ],
+              "properties": {
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FileInfo"
+                  },
+                  "description": "List of files"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FileUploadResponse": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "path",
+                "uuid",
+                "full_path"
+              ],
+              "properties": {
+                "full_path": {
+                  "type": "string",
+                  "description": "Full absolute path on the server"
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Relative path from data directory (e.g., \"uploads/config.json\")"
+                },
+                "success": {
+                  "type": "boolean",
+                  "description": "Whether the operation was successful"
+                },
+                "uuid": {
+                  "type": "string",
+                  "description": "The UUID version identifier"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "files",
+      "description": "File management endpoints"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { useArrowApi } from './use-arrow-api';
 
 export const LIST_CATALOGS_QUERY_KEY = ['catalogs'] as const;
 
-export function useListCatalogs(currentCatalog?: string) {
+export function useListCatalogs(key?: string) {
   const api = useArrowApi();
   return useQuery({
     queryFn: async () => {
@@ -12,6 +12,6 @@ export function useListCatalogs(currentCatalog?: string) {
       if (error) throw error;
       return data ?? [];
     },
-    queryKey: [...LIST_CATALOGS_QUERY_KEY, currentCatalog],
+    queryKey: [...LIST_CATALOGS_QUERY_KEY, key],
   });
 }

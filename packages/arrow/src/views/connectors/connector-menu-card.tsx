@@ -21,15 +21,15 @@ import {
 import { ChevronDown, ChevronUp, Database, FileStack, Layers2, RefreshCcw } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { AnyIsLoading } from '@/components/any-is-loading';
-import { ConnectorDetails } from '@/components/connector-details';
 import { useMultiConnectionDetails } from '@/hooks/use-connection-details';
+import { createConnectionItemIdentifier } from '@/lib/utils';
 import type {
-  ConnectionDetailQuery,
   ConnectionDetailsRequest,
-  ConnectionKind,
   ConnectionMetadata,
+  ConnectionSearchQuery,
   ListSummary,
 } from '@/types/api';
+import { ConnectorSummary } from './connector-summary';
 
 export interface ConnectorMenuCardProps {
   connectors: ConnectionMetadata[];
@@ -51,7 +51,7 @@ export function ConnectorMenuCard({
 }: ConnectorMenuCardProps & Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'>) {
   const [filters, setFilters] = useState<ConnectionDetailsRequest['connectors']>({});
 
-  // Database list or Tables/Files list
+  // Database/Files list or Tables list
   const detailsRequest = useMemo(() => ({ connectors: filters }), [filters]);
   const connectionDetails = useMultiConnectionDetails(detailsRequest);
 
@@ -61,24 +61,54 @@ export function ConnectorMenuCard({
 
   const isAnyLoading = isLoading || connectionDetails.isFetching;
 
+  // Clicking on a connector
   const handleSelect = useCallback(
     (id: string) => {
       const connector = connectors.find(connector => connector.id === id);
-      connector && setFilters(prev => ({ ...prev, [connector.id]: {} }));
+      connector &&
+        setFilters(prev => (connector.id in prev ? prev : { ...prev, [connector.id]: {} }));
       onSelect(connector);
     },
     [connectors, onSelect],
   );
 
-  const handleConnectorFilter = useCallback(
-    (connectorId: string, filter?: ConnectionDetailQuery) => {
-      setFilters(prev => ({ ...prev, [connectorId]: filter ?? {} }));
-    },
+  // Search button in summary
+  const handleConnectorSearch = useCallback(
+    (connectorId: string, search?: ConnectionSearchQuery) =>
+      setFilters(prev => ({ ...prev, [connectorId]: search ?? {} })),
     [],
   );
 
+  // Clicking on an item in the summary
+  const connectorFilter = currentConnector?.id ? filters?.[currentConnector.id] : undefined;
+  const handleSelectItem = useCallback(
+    (type: ListSummary['type'], name: string) => {
+      if (type === 'databases') {
+        onSelectItem(name, type);
+        return;
+      }
+      const catalog = currentConnector?.catalog ?? undefined;
+      const database = connectorFilter?.search ?? '';
+      const sep = currentConnector?.metadata.kind === 'object_store' ? '/' : '.';
+      const identifier = createConnectionItemIdentifier({ catalog, database, name, sep });
+      onSelectItem(identifier, type);
+    },
+    [connectorFilter, currentConnector, onSelectItem],
+  );
+
+  // Sort connectors
   const sortedConnectors = connectors.sort((a, b) => {
-    if (a.kind !== b.kind) return (a.kind || '').localeCompare(b.kind || '');
+    const akind = a.metadata.kind;
+    const bkind = b.metadata.kind;
+    if (typeof akind === 'string' && typeof bkind === 'string') {
+      if (akind !== bkind) return (akind || '').localeCompare(bkind || '');
+    } else if (typeof akind === 'string') {
+      return -1;
+    } else if (typeof bkind === 'string') {
+      return 1;
+    } else {
+      if (akind.other !== bkind.other) return akind.other.localeCompare(bkind.other);
+    }
     if (a.catalog !== b.catalog) return (a.catalog || '').localeCompare(b.catalog || '');
     return a.id.localeCompare(b.id);
   });
@@ -87,6 +117,7 @@ export function ConnectorMenuCard({
   console.debug('ConnectorMenuCard: ', {
     data: connectionDetails.data,
     detailsLoading: connectionDetails.isFetching,
+    filters,
     isAnyLoading,
     isLoading,
   });
@@ -137,17 +168,21 @@ export function ConnectorMenuCard({
                 }
                 key={connector.id}
               >
-                <div className={cn(['px-2 py-3', 'inset-shadow-sm/20'])}>
-                  <ConnectorDetails
-                    connectors={connectors}
-                    currentConnector={currentConnector}
-                    error={connectionDetailsError}
-                    filters={filters}
-                    isLoading={connectionDetails?.isFetching}
-                    onSelect={onSelectItem}
-                    setFilters={f => handleConnectorFilter(connector.id, f)}
-                    summary={connectionDetails.data?.[connector.id]}
-                  />
+                <div className={cn('p-2', 'border-border border-x', 'inset-shadow-sm/20')}>
+                  <div className="flex-auto flex flex-col space-y-2">
+                    {connectionDetailsError && (
+                      <Note message={connectionDetailsError} mode="error" />
+                    )}
+
+                    {/* Database/Table Filter & Select */}
+                    <ConnectorSummary
+                      connector={connector}
+                      isLoading={isLoading}
+                      onSearch={f => handleConnectorSearch(connector.id, f)}
+                      onSelectItem={handleSelectItem}
+                      summary={connectionDetails.data?.[connector.id]}
+                    />
+                  </div>
                 </div>
               </ConnectorRow>
             ))}
@@ -158,15 +193,15 @@ export function ConnectorMenuCard({
   );
 }
 
-const sharedClasses = 'px-3 border-0 hover:bg-muted rounded-none cursor-pointer';
+const sharedClasses = 'px-4 py-3 border-0 hover:bg-muted rounded-none cursor-pointer';
 
-const connectorKindClasses: { [key in ConnectionKind]: string } = {
+const connectorKindClasses = {
   database: 'border-l-2 border-primary',
   object_store: 'border-l-2 border-blue-500',
   other: 'border-l-2 border-gray-500',
 };
 
-const connectorKindIcons: { [key in ConnectionKind]: React.ReactNode } = {
+const connectorKindIcons = {
   database: <Database className="w-4 h-4" />,
   object_store: <FileStack className="w-4 h-4" />,
   other: <Layers2 className="w-4 h-4" />,
@@ -182,8 +217,10 @@ function ConnectorRow({
   connector: ConnectionMetadata;
   isLoading?: boolean;
 }>) {
-  const kindClasses = connectorKindClasses[connector.kind ?? 'other'] ?? connectorKindClasses.other;
-  const kindIcon = connectorKindIcons[connector.kind ?? 'other'] ?? connectorKindIcons.other;
+  const connectorKind =
+    typeof connector.metadata.kind === 'string' ? connector.metadata.kind : 'other';
+  const kindClasses = connectorKindClasses[connectorKind] ?? connectorKindClasses.other;
+  const kindIcon = connectorKindIcons[connectorKind] ?? connectorKindIcons.other;
 
   const isSelected = c?.id === connector.id;
 
@@ -197,14 +234,14 @@ function ConnectorRow({
         >
           <ItemMedia>{isLoading ? <Spinner className="w-4 h-4" /> : kindIcon}</ItemMedia>
           <ItemContent>
-            <ItemTitle className="text-ellipsis">{connector.id}</ItemTitle>
+            <ItemTitle className="text-ellipsis">{connector.name}</ItemTitle>
           </ItemContent>
           <ItemActions>
             {isSelected ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
           </ItemActions>
         </Item>
       </AccordionTrigger>
-      <AccordionContent>{children}</AccordionContent>
+      <AccordionContent className="p-0">{children}</AccordionContent>
     </AccordionItem>
   );
 }

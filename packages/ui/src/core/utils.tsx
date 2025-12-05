@@ -18,6 +18,7 @@ import {
   type PrimitiveNode,
   type TaggedUnionNode,
   type TupleNode,
+  type UnionNode,
   type UntaggedEnumNode,
 } from './schema/nodes';
 
@@ -83,6 +84,7 @@ export function getNodeTypeIcon(nodeType: string): ComponentType<any> | null {
     case CoreNodeType.Primitive:
       return TextCursorInput;
     case CoreNodeType.Enum:
+    case CoreNodeType.Union:
     case CoreNodeType.TaggedUnion:
     case CoreNodeType.UntaggedEnum:
       return Shapes;
@@ -142,6 +144,7 @@ export function getDefaultValue(node: BaseNode): any {
     case isNodeOfType<LinkNode<any>>(node, CoreNodeType.Link):
       return '';
 
+    case isNodeOfType<UnionNode<any>>(node, CoreNodeType.Union):
     case isNodeOfType<TaggedUnionNode<any>>(node, CoreNodeType.TaggedUnion):
     case isNodeOfType<UntaggedEnumNode<any>>(node, CoreNodeType.UntaggedEnum):
       return null;
@@ -204,7 +207,7 @@ export function resolveEntityUrl<
   const data = runtime.schema.data;
   const utils = runtime.utils;
   const basePath = omitBasePath ? '' : (runtime.options?.navigation?.basePath ?? '');
-  const entitiesBasePath = `${utils.stripTrailingSlash(basePath || '')}${CoreRouteBasePath}`;
+  const entitiesBasePath = `${utils.stripTrailing(basePath || '')}${CoreRouteBasePath}`;
 
   const pathParts = [entitiesBasePath];
 
@@ -212,18 +215,18 @@ export function resolveEntityUrl<
   if (entityParts?.type) {
     const { type: entityType, mode, id: entityId } = entityParts;
     // Ensure entityType is resolveable as url path
-    let entityUrlPath = utils.stripLeadingSlash(utils.stripTrailingSlash(entityType));
+    let entityUrlPath = utils.stripLeading(utils.stripTrailing(entityType));
     if (!(entityType in data.urlToStateEntry)) {
       entityUrlPath = resolveEntityType(entityUrlPath, data);
     }
     pathParts.push(`/${entityUrlPath}`);
 
     // Entity ID
-    const strippedEntityId = utils.stripLeadingSlash(utils.stripTrailingSlash(entityId || ''));
+    const strippedEntityId = utils.stripLeading(utils.stripTrailing(entityId || ''));
     if (strippedEntityId) pathParts.push(`/${strippedEntityId}`);
 
     // Mode, ie `edit` or 'new'
-    const strippedMode = utils.stripLeadingSlash(utils.stripTrailingSlash(mode || ''));
+    const strippedMode = utils.stripLeading(utils.stripTrailing(mode || ''));
     if (strippedMode) pathParts.push(`/${strippedMode}`);
   }
 

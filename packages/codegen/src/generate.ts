@@ -20,24 +20,32 @@ import {
 
 // Accept paths as arguments (will be called by CLI)
 const openapiPath = process.argv[2];
-const outputPath = process.argv[3];
+const outputDir = process.argv[3];
 const pluginConfigPath = process.argv[4];
 
-if (!openapiPath || !outputPath) {
-  console.error('Usage: node generate.js <openapi.json> <output.ts> [pluginConfig.js]');
+if (!openapiPath || !outputDir) {
+  console.error('Usage: node generate.js <openapi.json> <output_dir> [pluginConfig.js]');
   process.exit(1);
 }
 
 type SerializedNode = any;
 
 async function main() {
-  if (!openapiPath || !outputPath) {
-    console.error('Usage: node generate.js <openapi.json> <output.ts> [pluginConfig.js]');
+  if (!openapiPath || !outputDir) {
+    console.error('Usage: node generate.js <openapi.json> <output_dir> [pluginConfig.js]');
     process.exit(1);
   }
 
   const resolvedOpenapiPath = openapiPath;
-  const resolvedOutputPath = outputPath;
+  const resolvedOutputDir = path.resolve(outputDir);
+
+  // Ensure output directory exists
+  if (!fs.existsSync(resolvedOutputDir)) {
+    fs.mkdirSync(resolvedOutputDir, { recursive: true });
+  }
+
+  const schemasOutputPath = path.join(resolvedOutputDir, 'schemas.ts');
+  const typesOutputPath = path.join(resolvedOutputDir, 'types.ts');
   const userPlugins = await loadPluginsFromConfig(pluginConfigPath);
   if (userPlugins.length) {
     console.log(`🔌 Loaded ${userPlugins.length} @stately/codegen plugin(s)`);
@@ -95,10 +103,13 @@ async function main() {
       }
 
       const resolved = resolveRef(schema.$ref);
-      if (!resolved) return null;
+      if (!resolved) {
+        console.log(`  ⚠️ Could not resolve reference, type generation will fail: ${schema.$ref}`);
+        return null;
+      }
 
-      // Mark as parsing and create placeholder
       if (cached) {
+        // Mark as parsing and create placeholder
         cached.state = 'parsing';
         const placeholder: any = { nodeType: 'unknown' };
         cached.node = placeholder;
@@ -174,15 +185,12 @@ export const PARSED_SCHEMAS = ${JSON.stringify(parsedSchemas, null, 2)} as const
 export type ParsedSchemaName = keyof typeof PARSED_SCHEMAS;
 `;
 
-  fs.writeFileSync(resolvedOutputPath, output);
+  fs.writeFileSync(schemasOutputPath, output);
 
-  console.log(`💾 Written to ${resolvedOutputPath}`);
+  console.log(`💾 Written to ${schemasOutputPath}`);
 
   // Generate TypeScript types using openapi-typescript
   console.log('🔧 Generating TypeScript types from OpenAPI spec...');
-
-  const outputDir = path.dirname(resolvedOutputPath);
-  const typesOutputPath = path.join(outputDir, 'generated-types.ts');
 
   try {
     // openapiTS returns a TypeScript AST, convert it to a string

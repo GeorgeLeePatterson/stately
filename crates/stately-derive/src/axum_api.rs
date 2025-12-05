@@ -170,7 +170,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                 request_body = Entity,
                 responses(
                     (status = 200, description = "Entity created successfully", body = OperationResponse),
-                    (status = 500, description = "Internal server error", body = String)
+                    (status = 500, description = "Internal server error", body = ::stately::ApiError)
                 )
             )]
         }
@@ -217,7 +217,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                 ),
                 responses(
                     (status = 200, description = "Successfully retrieved entity", body = GetEntityResponse),
-                    (status = 404, description = "Entity not found")
+                    (status = 404, description = "Entity not found", body = ::stately::ApiError)
                 )
             )]
         }
@@ -235,7 +235,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                 request_body = Entity,
                 responses(
                     (status = 200, description = "Entity updated successfully", body = OperationResponse),
-                    (status = 500, description = "Internal server error", body = String)
+                    (status = 500, description = "Internal server error", body = ::stately::ApiError)
                 )
             )]
         }
@@ -253,7 +253,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                 request_body = Entity,
                 responses(
                     (status = 200, description = "Entity patched successfully", body = OperationResponse),
-                    (status = 500, description = "Internal server error", body = String)
+                    (status = 500, description = "Internal server error", body = ::stately::ApiError)
                 )
             )]
         }
@@ -273,8 +273,8 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                 ),
                 responses(
                     (status = 200, description = "Entity removed successfully", body = OperationResponse),
-                    (status = 404, description = "Entity not found"),
-                    (status = 500, description = "Internal server error", body = String)
+                    (status = 404, description = "Entity not found", body = ::stately::ApiError),
+                    (status = 500, description = "Internal server error", body = ::stately::ApiError)
                 )
             )]
         }
@@ -318,6 +318,7 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
                         EntitiesResponse,
                         ListResponse,
                         GetEntityResponse,
+                        ::stately::ApiError,
                     ),
                     schemas(
                         Entity,

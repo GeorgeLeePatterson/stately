@@ -1,6 +1,16 @@
 import { cn } from '@stately/ui/base';
-import { Card, CardContent, CardHeader, CardTitle } from '@stately/ui/base/ui';
-import { TableIcon } from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  Skeleton,
+} from '@stately/ui/base/ui';
+import { Sheet, TableIcon } from 'lucide-react';
 import { AnyIsLoading } from '@/components/any-is-loading';
 import { ArrowTable, type ArrowTableDataView } from '@/components/arrow-table';
 
@@ -40,12 +50,14 @@ export function QueryResultsCard({
           // Loading
           <div
             className={cn([
-              'flex h-full items-center justify-center',
-              'rounded-lg border bg-muted/30',
+              'flex flex-col h-full items-center justify-center gap-2',
+              // 'rounded-lg border bg-muted/30',
               'text-sm text-muted-foreground',
             ])}
           >
-            Running query…
+            <LoadingRow />
+            <LoadingRow />
+            <LoadingRow />
           </div>
         ) : error ? (
           // Error
@@ -64,22 +76,36 @@ export function QueryResultsCard({
           <ArrowTable data={data} />
         ) : (
           // No data
-          <div
-            className={cn([
-              'py-4 h-full',
-              'flex flex-col items-center justify-center gap-2 ',
-              'rounded-lg border border-dashed',
-              'text-center text-sm text-muted-foreground',
-            ])}
-          >
-            <p className="font-medium text-foreground">Run a query to see results</p>
-            <p className="max-w-sm text-xs text-muted-foreground">
-              Large result sets are rendered with virtualization to maintain performance while
-              scrolling.
-            </p>
-          </div>
+          <EmptyResults />
         )}
       </CardContent>
     </Card>
+  );
+}
+
+function LoadingRow() {
+  return (
+    <div className="flex flex-row flex-nowrap gap-2 w-full h-12 min-w-0">
+      <Skeleton className="h-full w-12" />
+      <Skeleton className="h-full flex-auto" />
+      <Skeleton className="h-full flex-auto" />
+      <Skeleton className="h-full flex-auto" />
+      <Skeleton className="h-full flex-auto" />
+    </div>
+  );
+}
+
+export function EmptyResults() {
+  return (
+    <Empty className="border p-6 md:p-6">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Sheet />
+        </EmptyMedia>
+        <EmptyTitle>No results</EmptyTitle>
+      </EmptyHeader>
+      {/* TODO: Add a CTA to focus editor */}
+      {/*<EmptyContent>Run a query to see results</EmptyContent>*/}
+    </Empty>
   );
 }

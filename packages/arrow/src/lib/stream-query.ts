@@ -26,6 +26,7 @@ export async function* streamQuery(
   payload: QueryRequest,
   signal?: AbortSignal,
 ): AsyncGenerator<RecordBatch> {
+  devLog.debug('Arrow', 'running streamQuery', { payload });
   const { response, error } = await api.execute_query({ body: payload, parseAs: 'stream', signal });
 
   if (error) {

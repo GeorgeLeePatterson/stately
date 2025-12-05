@@ -21,10 +21,6 @@ impl axum::response::IntoResponse for Error {
             Error::BadRequest(msg) => (axum::http::StatusCode::BAD_REQUEST, msg.clone()),
             _ => (axum::http::StatusCode::INTERNAL_SERVER_ERROR, self.to_string()),
         };
-        let body = axum::Json(serde_json::json!({
-            "error": message,
-            "status": status.as_u16()
-        }));
-        (status, body).into_response()
+        (status, axum::Json(stately::ApiError::new(message, status))).into_response()
     }
 }

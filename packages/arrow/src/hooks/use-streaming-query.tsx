@@ -7,17 +7,14 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { RecordBatch, type Table } from 'apache-arrow';
-import { Binary, SquareSigma, Timer } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { ArrowApi } from '@/api';
-import type { QueryEditorStat } from '@/components/query-editor';
 import {
   type ArrowTableStore,
   type ArrowTableStoreSnapshot,
   createArrowTableStore,
 } from '@/lib/arrow-table-store';
 import { streamQuery } from '@/lib/stream-query';
-import { formatBytes } from '@/lib/utils';
 import type { QueryRequest } from '@/types/api';
 import { useArrowApi } from './use-arrow-api';
 
@@ -48,8 +45,6 @@ export interface UseStreamingQueryResult {
   isStreaming: boolean;
   /** True if a sql query has been run */
   isActive: boolean;
-  /** Label value pairs of streaming query stats */
-  queryStats: QueryEditorStat[];
 }
 
 /**
@@ -97,20 +92,15 @@ export function useStreamingQuery({
   // Use useQuery with streamedQuery for the streaming functionality
   const query = useQuery(streamQueryOptions(streamOptions));
 
-  const restart = useCallback(() => {
-    storeRef.current.reset();
-    setQueryRequest(undefined);
-  }, []);
+  const restart = useCallback(() => setQueryRequest(undefined), []);
 
-  const execute = useCallback((payload: QueryRequest) => {
-    // TODO: Remove
-    devLog.debug('Arrow', 'stream query execute', payload);
-
-    storeRef.current.reset();
-
-    // Update query request
-    setQueryRequest(payload);
-  }, []);
+  const execute = useCallback(
+    (payload: QueryRequest) =>
+      setQueryRequest(p =>
+        p?.connector_id === payload.connector_id && p?.sql === payload.sql ? p : payload,
+      ),
+    [],
+  );
 
   const abort = useCallback(() => {
     queryClient.cancelQueries({ queryKey: STREAMING_QUERY_KEY });
@@ -134,6 +124,7 @@ export function useStreamingQuery({
 
   const isActive = !!queryRequest?.sql;
 
+  // Sync the arrow store updates with react state
   const snapshot = useSyncExternalStore(storeRef.current.subscribe, storeRef.current.getSnapshot);
 
   // TODO: Remove
@@ -142,17 +133,6 @@ export function useStreamingQuery({
     queryRequest,
     snapshot,
   });
-
-  const queryStats = useMemo<QueryEditorStat[]>(() => {
-    const currentTable = storeRef.current.table;
-    const currentMetrics = storeRef.current.metrics;
-    if (!currentTable) return [];
-    return [
-      { label: SquareSigma, value: currentTable.numRows.toLocaleString() },
-      { label: Binary, value: formatBytes(currentMetrics.bytesReceived) },
-      { label: Timer, value: `${currentMetrics.elapsedMs.toFixed(1)} ms` },
-    ];
-  }, []);
 
   useEffect(() => {
     subscriptionCleanupRef.current?.();
@@ -178,7 +158,6 @@ export function useStreamingQuery({
     isStreaming,
     onSnapshot: cb => storeRef.current.subscribe(cb),
     query,
-    queryStats,
     restart,
     snapshot,
   };
@@ -204,14 +183,17 @@ export const streamQueryOptions = ({
       streamFn: async context => {
         devLog.debug('Arrow', 'stream fn*', { payload, store });
 
+        if (!api) throw new Error('Arrow API is unavailable');
+
+        // Reset store
+        store.reset();
+
         if (!payload) {
           async function* emptyStream(): AsyncGenerator<RecordBatch> {
             yield new RecordBatch({});
           }
           return emptyStream();
         }
-
-        if (!api) throw new Error('Arrow API is unavailable');
 
         // Use React Query's signal directly for cancellation
         return streamQuery(api, payload, context.signal);

@@ -10,6 +10,7 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
+  FieldLegend,
   FieldSeparator,
   FieldSet,
 } from '@/base/ui/field';
@@ -105,8 +106,17 @@ function ObjectForm<Schema extends Schemas = Schemas>({
 }: ObjectFormProps<Schema>) {
   const { utils } = useStatelyUi<Schema>();
 
-  const { formData, handleFieldChange, handleSave, handleCancel, fields, isDirty, isValid } =
-    useObjectField<Schema>({ label, node, onSave: onChange, value });
+  const {
+    extraFieldsValue,
+    fields,
+    formData,
+    handleAdditionalFieldChange,
+    handleCancel,
+    handleFieldChange,
+    handleSave,
+    isDirty,
+    isValid,
+  } = useObjectField<Schema>({ label, node, onSave: onChange, value });
 
   return (
     <div className="flex-1 border-l-4 border-border rounded-xs pl-4 py-3 space-y-3">
@@ -167,26 +177,22 @@ function ObjectForm<Schema extends Schemas = Schemas>({
           })}
         </FieldSet>
 
-        {/*
-          Render merged union if present - properties are spread into this object
-
-          TODO: Remove
-            This is WRONG. The properties need to be collected from the associated enums.
-            Then the formData needs to be filtered to only include those properties.
-        */}
-        {/*{node.merged && (
-          <FieldEdit
-            formId={`merged-${formId}`}
-            node={node.merged}
-            value={formData}
-            onChange={newValue => {
-              // Merged union updates are spread into the object
-              setFormData({ ...(value ?? {}), ...newValue });
-              setIsDirty(true);
-            }}
-            label="Configuration"
-          />
-        )}*/}
+        {/* Render additionalProperties for dynamic keys */}
+        {node.additionalProperties && (
+          <>
+            <FieldSeparator />
+            <FieldSet className="min-w-0">
+              <FieldLegend variant="label">Additional Properties</FieldLegend>
+              <FieldEdit<Schema>
+                formId={`additional-${formId}`}
+                isWizard={isWizard}
+                node={{ nodeType: CoreNodeType.Map, valueSchema: node.additionalProperties }}
+                onChange={v => handleAdditionalFieldChange(v as AnyRecord)}
+                value={extraFieldsValue}
+              />
+            </FieldSet>
+          </>
+        )}
       </FieldGroup>
 
       {/* Save/Cancel buttons appear when dirty */}

@@ -10,7 +10,7 @@ import {
   type DefineOperations,
   type DefinePaths,
 } from '@stately/ui/schema';
-import type { operations, paths } from './generated-types';
+import type { operations, paths } from './generated/types';
 
 export type FilesPaths = DefinePaths<paths>;
 export type FilesOperations = DefineOperations<operations>;

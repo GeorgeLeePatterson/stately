@@ -1,14 +1,16 @@
 import type { AnyRecord } from '@stately/schema/helpers';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
 export interface ObjectFieldState<S extends Schemas = Schemas> {
   formData: Record<string, any>;
   handleFieldChange: (fieldName: string, isNullable: boolean, newValue: any) => void;
+  handleAdditionalFieldChange: (newExtras: AnyRecord) => void;
   handleSave: () => void;
   handleCancel: () => void;
   fields: Array<[string, S['plugin']['AnyNode']]>;
+  extraFieldsValue: AnyRecord;
   isDirty: boolean;
   isValid: boolean;
 }
@@ -42,6 +44,13 @@ export function useObjectField<S extends Schemas = Schemas>({
     required,
   );
 
+  // For additionalProperties: track known keys and derive extra fields
+  const knownKeys = useMemo(() => new Set(Object.keys(node.properties)), [node.properties]);
+  const extraFieldsValue = useMemo(() => {
+    if (!node.additionalProperties || !formData) return {};
+    return Object.fromEntries(Object.entries(formData).filter(([k]) => !knownKeys.has(k)));
+  }, [node.additionalProperties, formData, knownKeys]);
+
   const objectValidation = schema.validate({
     data: formData,
     path: `${label ?? ''}[ObjectNode]`,
@@ -72,14 +81,31 @@ export function useObjectField<S extends Schemas = Schemas>({
     setIsDirty(true);
   }, []);
 
+  // Handle changes to additionalProperties (extra fields beyond known properties)
+  const handleAdditionalFieldChange = useCallback(
+    (newExtras: AnyRecord) => {
+      setFormData(d => {
+        // Keep only known fields from current data, merge with new extras
+        const knownFieldsData = Object.fromEntries(
+          Object.entries(d).filter(([k]) => knownKeys.has(k)),
+        );
+        return { ...knownFieldsData, ...newExtras };
+      });
+      setIsDirty(true);
+    },
+    [knownKeys],
+  );
+
   const handleCancel = useCallback(() => {
     setFormData(value ?? {});
     setIsDirty(false);
   }, [value]);
 
   return {
+    extraFieldsValue,
     fields,
     formData,
+    handleAdditionalFieldChange,
     handleCancel,
     handleFieldChange,
     handleSave,

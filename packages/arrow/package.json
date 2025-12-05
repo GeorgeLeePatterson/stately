@@ -8,7 +8,10 @@
   "scripts": {
     "build": "tsdown",
     "check": "tsc --noEmit",
-    "dev": "tsdown --watch"
+    "dev": "tsdown --watch",
+    "codegen": "pnpm run generate:openapi && pnpm run generate:types",
+    "generate:openapi": "cargo run -p stately-arrow --bin generate-openapi -- .",
+    "generate:types": "stately-codegen ./openapi.json ./src/generated"
   },
   "peerDependencies": {
     "@stately/codegen": "workspace:*",

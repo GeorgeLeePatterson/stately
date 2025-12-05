@@ -6,6 +6,7 @@ import { PrimitiveView } from './primitive-field';
 import { RecursiveRefView } from './recursive-ref-field';
 import { TaggedUnionView } from './tagged-union-field';
 import { TupleView } from './tuple-field';
+import { UnionView } from './union-field';
 import { UntaggedEnumView } from './untagged-enum-field';
 
 export type { ArrayViewProps } from './array-field';
@@ -16,6 +17,7 @@ export type { PrimitiveViewProps } from './primitive-field';
 export type { RecursiveRefViewProps } from './recursive-ref-field';
 export type { TaggedUnionViewProps } from './tagged-union-field';
 export type { TupleViewProps } from './tuple-field';
+export type { UnionViewProps } from './union-field';
 export type { UntaggedEnumViewProps } from './untagged-enum-field';
 
 export const ViewFields = {
@@ -27,5 +29,6 @@ export const ViewFields = {
   RecursiveRefView,
   TaggedUnionView,
   TupleView,
+  UnionView,
   UntaggedEnumView,
 };

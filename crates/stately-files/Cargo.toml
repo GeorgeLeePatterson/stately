@@ -14,13 +14,18 @@ documentation.workspace = true
 [dependencies]
 shellexpand = "3"
 
+stately = { path = "../stately", features = ["axum"] }
+
 axum = { workspace = true, features = ["http2", "macros", "multipart"]  }
 serde.workspace = true
-serde_json.workspace = true
 thiserror.workspace = true
 tokio = { workspace = true, features = ["full"] }
 uuid.workspace = true
 utoipa.workspace = true
+
+[[bin]]
+name = "generate-openapi"
+path = "src/bin/generate_openapi.rs"
 
 [lints]
 workspace = true

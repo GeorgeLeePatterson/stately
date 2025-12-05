@@ -5,9 +5,11 @@ pub mod clickhouse;
 use serde::{Deserialize, Serialize};
 
 // The ClickHouse session context is the most strict, so it's used as the default when enabled
+/// Default query session context which provides support for any in-crate database backends.
 #[cfg(feature = "clickhouse")]
 pub type DefaultQuerySessionContext = clickhouse::QuerySessionContext;
 
+// TODO: Mark non_exhaustive and provide builder
 /// Configuration for database-backed connectors.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, utoipa::ToSchema)]
 #[schema(as = DatabaseConfiguration)]
@@ -18,6 +20,7 @@ pub struct Config {
     pub pool:    PoolOptions,
 }
 
+// TODO: Mark non_exhaustive and provide builder
 /// Common connection options shared by database connectors.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, utoipa::ToSchema)]
 pub struct ConnectionOptions {
@@ -66,6 +69,10 @@ pub struct TlsOptions {
 }
 
 /// Supported databases for the default backend lineup.
+///
+/// Default implementations will be provided and over time the list will grow. For that reason, this
+/// enum is marked as `non_exhaustive`.
+#[non_exhaustive]
 #[cfg_attr(not(feature = "clickhouse"), expect(missing_copy_implementations))]
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, utoipa::ToSchema)]
 #[cfg_attr(feature = "strum", derive(strum_macros::AsRefStr))]

@@ -1,10 +1,12 @@
 import type { AnyRecord } from '@stately/schema/helpers';
+import { useMemo } from 'react';
 import { DescriptionLabel } from '@/base/components/description-label';
 import { NotSet } from '@/base/components/not-set';
 import { SimpleLabel } from '@/base/components/simple-label';
 import type { FieldViewProps } from '@/base/form/field-view';
 import { FieldView } from '@/base/form/field-view';
 import type { Schemas } from '@/core/schema';
+import { CoreNodeType } from '@/core/schema/nodes';
 import { useStatelyUi } from '@/index';
 
 export type ObjectViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
@@ -20,6 +22,14 @@ export function ObjectView<Schema extends Schemas = Schemas>({
   const { schema, utils } = useStatelyUi<Schema>();
   const required = new Set(node.required || []);
   const objValue = value as AnyRecord;
+
+  // For additionalProperties: extract extra keys not in fixed properties
+  const knownKeys = useMemo(() => new Set(Object.keys(node.properties)), [node.properties]);
+  const extraFieldsValue = useMemo(() => {
+    if (!node.additionalProperties || !objValue) return {};
+    return Object.fromEntries(Object.entries(objValue).filter(([k]) => !knownKeys.has(k)));
+  }, [node.additionalProperties, objValue, knownKeys]);
+  const hasExtraFields = Object.keys(extraFieldsValue).length > 0;
 
   return (
     <div className="flex-1 border-l-2 border-primary/30 rounded-xs pl-4 py-3 space-y-4">
@@ -52,6 +62,17 @@ export function ObjectView<Schema extends Schemas = Schemas>({
           </div>
         );
       })}
+
+      {/* Render additionalProperties for dynamic keys */}
+      {node.additionalProperties && hasExtraFields && (
+        <div className="flex flex-col space-y-2">
+          <SimpleLabel>Additional Properties:</SimpleLabel>
+          <FieldView<Schema>
+            node={{ nodeType: CoreNodeType.Map, valueSchema: node.additionalProperties }}
+            value={extraFieldsValue}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -7,8 +7,8 @@ import type { AllUiPlugins, AnyUiPlugin } from './plugin';
 export interface UiUtils {
   // Universal
   generateFieldLabel(field: string): string;
-  stripLeadingSlash(path: string): string;
-  stripTrailingSlash(path: string): string;
+  stripLeading(path: string): string;
+  stripTrailing(path: string): string;
   mergePathPrefixOptions(base?: string, incoming?: string): string;
   toKebabCase: typeof toKebabCase;
   toTitleCase: typeof toTitleCase;
@@ -22,21 +22,22 @@ export interface UiUtils {
 /**
  * Strip a leading slash
  */
-export const stripLeadingSlash = (path: string) => (path?.startsWith('/') ? path.slice(1) : path);
+export const stripLeading = (path: string, char = '/') =>
+  path?.startsWith(char) ? path.slice(char.length) : path;
 
 /**
  * Strip a trailing slash
  */
-export const stripTrailingSlash = (path: string) =>
-  path?.endsWith('/') ? path.slice(0, -1) : path;
+export const stripTrailing = (path: string, char = '/') =>
+  path?.endsWith(char) ? path.slice(0, -1 * char.length) : path;
 
 export const mergePathPrefixOptions = (base?: string, incoming?: string): string => {
   let pathPrefix = '';
   if (base) {
-    pathPrefix = `/${stripLeadingSlash(stripTrailingSlash(base))}`;
+    pathPrefix = `/${stripLeading(stripTrailing(base))}`;
   }
   if (incoming) {
-    pathPrefix = `${pathPrefix}/${stripLeadingSlash(stripTrailingSlash(incoming))}`;
+    pathPrefix = `${pathPrefix}/${stripLeading(stripTrailing(incoming))}`;
   }
   return pathPrefix;
 };
@@ -111,8 +112,8 @@ export function runtimeUtils<
       return Dot;
     },
     mergePathPrefixOptions,
-    stripLeadingSlash,
-    stripTrailingSlash,
+    stripLeading,
+    stripTrailing,
     toKebabCase,
     toSpaceCase,
     toTitleCase,

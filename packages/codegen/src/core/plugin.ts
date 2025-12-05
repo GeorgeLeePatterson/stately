@@ -66,8 +66,9 @@ function transformSchema(schema: any, ctx: CodegenPluginContext) {
     }
   }
 
-  // oneOf unions (link detection, tagged/untagged enums)
-  if (schema.oneOf && schema.oneOf.length > 0) {
+  // oneOf/anyOf unions (link detection, tagged/untagged enums, generic union)
+  const unionVariants = schema.oneOf || schema.anyOf;
+  if (unionVariants && unionVariants.length > 0) {
     const linkNode = detectLinkNode(schema, ctx);
     if (linkNode) return linkNode;
 
@@ -109,12 +110,24 @@ function transformSchema(schema: any, ctx: CodegenPluginContext) {
       }
     }
 
-    return {
+    // Parse additionalProperties if present (for objects with dynamic keys)
+    let additionalProperties: any;
+    if (schema.additionalProperties && schema.additionalProperties !== true) {
+      additionalProperties = ctx.parseSchema(schema.additionalProperties, ctx.schemaName);
+    }
+
+    const node: any = {
       description: schema.description,
       nodeType: CoreNodeType.Object,
       properties,
       required: schema.required || [],
     };
+
+    if (additionalProperties) {
+      node.additionalProperties = additionalProperties;
+    }
+
+    return node;
   }
 
   // Primitives + enums
@@ -181,7 +194,8 @@ function detectLinkNode(schema: any, ctx: CodegenPluginContext) {
 }
 
 function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
-  const objectVariants = schema.oneOf
+  const variants = schema.oneOf || schema.anyOf || [];
+  const objectVariants = variants
     .map((variant: any) => resolveVariant(variant, ctx))
     .filter((resolved: any) => resolved?.type === 'object');
 
@@ -213,15 +227,14 @@ function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
   const untaggedVariants: Array<{ tag: string; schema: any }> = [];
   const taggedVariants: Array<{ tag: string; schema: any }> = [];
 
-  for (const variant of schema.oneOf) {
+  for (const variant of variants) {
     const resolved = resolveVariant(variant, ctx);
     if (!resolved || resolved.type === 'null') continue;
 
-    // Unit variant (string enum)
+    // Unit variant (string enum) - no associated data, schema is null
     if (resolved.type === 'string' && resolved.enum && resolved.enum.length > 0) {
       const tag = resolved.enum[0];
-      const variantSchema = { nodeType: CoreNodeType.Object, properties: {}, required: [] };
-      (isUntaggedEnum ? untaggedVariants : taggedVariants).push({ schema: variantSchema, tag });
+      (isUntaggedEnum ? untaggedVariants : taggedVariants).push({ schema: null, tag });
       continue;
     }
 
@@ -281,7 +294,21 @@ function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
     };
   }
 
-  return null;
+  // Fallback: generic Union for any oneOf/anyOf we couldn't classify
+  const genericVariants = variants
+    .map((variant: any) => {
+      const resolved = resolveVariant(variant, ctx);
+      if (!resolved || resolved.type === 'null') return null;
+      const parsed = ctx.parseSchema(resolved, ctx.schemaName);
+      return { schema: parsed, label: resolved.description };
+    })
+    .filter(Boolean);
+
+  return {
+    description: schema.description,
+    nodeType: CoreNodeType.Union,
+    variants: genericVariants,
+  };
 }
 
 function resolveVariant(variant: any, ctx: CodegenPluginContext) {

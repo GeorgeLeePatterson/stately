@@ -16,34 +16,40 @@ import {
 import { PlugZap, SquareStack } from 'lucide-react';
 import type React from 'react';
 import { Fragment, useState } from 'react';
-import { useArrowStatelyUi } from '@/context';
 import { useListCatalogs } from '@/hooks/use-list-catalog';
 import { useRegisterConnection } from '@/hooks/use-register-connection';
 import type { ConnectionMetadata } from '@/types/api';
+import { ConnectionItem } from './connection-item';
 
 export interface ConnectorsRegisterCardProps {
+  catalogKey?: string;
   currentConnector?: ConnectionMetadata;
   connectors: ConnectionMetadata[];
   onClickConnector?: (id: string) => void;
 }
 
 export function ConnectorsRegisterCard({
+  catalogKey,
   currentConnector,
   connectors,
   onClickConnector,
   ...rest
 }: ConnectorsRegisterCardProps & React.HTMLAttributes<HTMLDivElement>) {
-  const { utils } = useArrowStatelyUi();
-
   const [open, setOpen] = useState(false);
 
+  // TODO: Remove - finish this logic
+  // const [objectStoreRegistered, setObjectStoreRegistered] = useState(
+  //   currentConnector?.metadata.kind === 'object_store',
+  // );
+
   // Catalogs
-  const catalogsQuery = useListCatalogs(currentConnector?.catalog ?? undefined);
+  const derivedCatalogKey = [catalogKey ?? '', currentConnector?.catalog ?? ''].join();
+  const catalogsQuery = useListCatalogs(derivedCatalogKey);
 
   const catalogs = catalogsQuery.data ?? [];
   const registered = connectors.filter(c => c.catalog && catalogs.includes(c.catalog));
 
-  const isObjectStoreRegistered = registered.some(r => r.kind === 'object_store');
+  const isObjectStoreRegistered = registered.some(r => r.metadata.kind === 'object_store');
 
   // Registering
   const registerMutation = useRegisterConnection();
@@ -70,12 +76,19 @@ export function ConnectorsRegisterCard({
 
   return (
     <DropdownMenu onOpenChange={setOpen} open={open}>
-      <Card {...rest} className={cn('connectors-register-card', 'gap-4', rest?.className)}>
+      <Card
+        {...rest}
+        className={cn(
+          'connectors-register-card @container/connectorregister',
+          'gap-4',
+          rest?.className,
+        )}
+      >
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <SquareStack className="h-4 w-4" />
-              Registered Catalogs
+              Registered&nbsp;<span className="hidden @md/connectorregister:inline">Catalogs</span>
             </div>
             {registerButton}
           </CardTitle>
@@ -94,12 +107,12 @@ export function ConnectorsRegisterCard({
             {/* Registered connections (derived from catalogs) */}
             {registered.map(c => (
               <Fragment key={`connector-${c.id}`}>
-                {c.kind === 'object_store' ? (
+                {c.metadata.kind === 'object_store' ? (
                   <Badge variant="secondary">object store</Badge>
                 ) : (
                   <Badge asChild variant="default">
                     <a href={`#${c.id}`} onClick={() => onClickConnector?.(c.id)}>
-                      {c.id}
+                      {c.name}
                     </a>
                   </Badge>
                 )}
@@ -115,7 +128,8 @@ export function ConnectorsRegisterCard({
           <DropdownMenuCheckboxItem
             checked={
               registered.some(r => r.id === connection.id) ||
-              (isObjectStoreRegistered && connection.kind === 'object-store')
+              // If one object store is registered, then all object stores are registered
+              (isObjectStoreRegistered && connection.metadata.kind === 'object_store')
             }
             disabled={registerMutation.isPending || registered.some(r => r.id === connection.id)}
             key={connection.id}
@@ -123,10 +137,7 @@ export function ConnectorsRegisterCard({
               checked ? registerMutation.mutate(connection.id) : checked
             }
           >
-            <span className="items-center font-semi-bold text-sm">{connection.name}</span>
-            <span className="items-center text-xs text-muted-foreground truncate">
-              &nbsp; · {utils.toSpaceCase(connection.kind || 'memory')}
-            </span>
+            <ConnectionItem connection={connection} />
           </DropdownMenuCheckboxItem>
         ))}
       </DropdownMenuContent>

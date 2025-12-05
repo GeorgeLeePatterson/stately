@@ -12,7 +12,7 @@ use super::utils;
 use crate::settings::{Dirs, IGNORE_FILES, UPLOAD_DIR, VERSION_DIR};
 use crate::types::{FileEntryType, FileInfo, FileVersion};
 
-// TODO: Remove
+// TODO: Remove - notes
 //   * Upload is for managed files, add handler for uploading *anywhere*
 //   * Add 'read' apis, to get content, multipart if large.
 
@@ -32,8 +32,8 @@ use crate::types::{FileEntryType, FileInfo, FileVersion};
     request_body(content = String, content_type = "multipart/form-data"),
     responses(
         (status = 200, description = "File uploaded successfully", body = FileUploadResponse),
-        (status = 400, description = "Bad request"),
-        (status = 500, description = "Internal server error")
+        (status = 400, description = "Bad request", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
     ),
     tag = "files"
 )]
@@ -95,8 +95,8 @@ pub async fn upload(
     request_body = FileSaveRequest,
     responses(
         (status = 200, description = "File saved successfully", body = FileUploadResponse),
-        (status = 400, description = "Bad request"),
-        (status = 500, description = "Internal server error")
+        (status = 400, description = "Bad request", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
     ),
     tag = "files"
 )]
@@ -128,8 +128,8 @@ pub async fn save_file(
     ),
     responses(
         (status = 200, description = "Files and directories listed successfully", body = FileListResponse),
-        (status = 400, description = "Bad request"),
-        (status = 500, description = "Internal server error")
+        (status = 400, description = "Bad request", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
     ),
     tag = "files"
 )]

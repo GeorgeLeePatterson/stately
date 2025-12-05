@@ -109,6 +109,11 @@ export function validateNode<S extends Schemas = Schemas>({
         break;
       }
 
+      if (!variantSchema.schema) {
+        result = { errors: [], valid: true };
+        break;
+      }
+
       result = validateNode({
         data: variantData,
         options: nextOptions,
@@ -180,6 +185,11 @@ export function validateNode<S extends Schemas = Schemas>({
         break;
       }
 
+      if (!variant.schema) {
+        result = { errors: [], valid: true };
+        break;
+      }
+
       result = validateObject<S>({ data, options: nextOptions, path, schema: variant.schema });
       break;
     }
@@ -202,6 +212,37 @@ export function validateNode<S extends Schemas = Schemas>({
       }
 
       result = { errors: mapErrors, valid: mapErrors.length === 0 };
+      break;
+    }
+
+    case CoreNodeType.Union: {
+      if (data === null || data === undefined) {
+        result = { errors: [], valid: true };
+        break;
+      }
+
+      // Valid if data matches any variant schema
+      let matched = false;
+      for (const variant of schema.variants) {
+        if (!variant.schema) continue;
+        const variantResult = validateNode({
+          data,
+          options: nextOptions,
+          path,
+          schema: variant.schema,
+        });
+        if (variantResult.valid) {
+          matched = true;
+          break;
+        }
+      }
+
+      result = matched
+        ? { errors: [], valid: true }
+        : {
+            errors: [{ message: 'Value does not match any union variant', path, value: data }],
+            valid: false,
+          };
       break;
     }
 

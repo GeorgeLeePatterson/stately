@@ -69,12 +69,12 @@ export function QueryEditorCard({
         </CardTitle>
         <CardDescription>Compose SQL, then stream Arrow results instantly.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-auto">
+      <CardContent className="flex-auto flex flex-col gap-4">
         {/* Query error */}
         {error && <Note message={error} mode="error" />}
 
         <QueryEditor
-          className="h-full"
+          className="flex-auto"
           isActive={isActive}
           isExecuting={isExecuting}
           onChange={onSql}

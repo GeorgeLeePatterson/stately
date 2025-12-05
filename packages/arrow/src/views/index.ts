@@ -1,16 +1,6 @@
-import {
-  ConnectorDetailsCard,
-  ConnectorMenuCard,
-  ConnectorSelectCard,
-  ConnectorsRegisterCard,
-} from './connectors';
-import { ArrowTable, QueryEditorCard, QueryResultsCard } from './query';
+import { ConnectorMenuCard, ConnectorSelectCard, ConnectorsRegisterCard } from './connectors';
+import { QueryEditorCard, QueryResultsCard } from './query';
 
-export const Connectors = {
-  ConnectorDetailsCard,
-  ConnectorMenuCard,
-  ConnectorSelectCard,
-  ConnectorsRegisterCard,
-};
+export const Connectors = { ConnectorMenuCard, ConnectorSelectCard, ConnectorsRegisterCard };
 
-export const Query = { ArrowTable, QueryEditorCard, QueryResultsCard };
+export const Query = { QueryEditorCard, QueryResultsCard };

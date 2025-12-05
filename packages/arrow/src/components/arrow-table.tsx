@@ -21,6 +21,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 const ROW_HEIGHT = 42;
 const DATA_COLUMN_MAX_WIDTH = 320;
+const OVERSCAN = 12;
 
 export interface ArrowTableColumnDescriptor {
   key: string;
@@ -40,7 +41,7 @@ export interface ArrowTableProps {
   rowHeight?: number;
   overscan?: number;
   /** Message shown when no rows are available */
-  emptyState?: string;
+  emptyState?: React.ReactNode;
 }
 
 export function formatValue(value: unknown): string {
@@ -55,7 +56,7 @@ export function formatValue(value: unknown): string {
 export function ArrowTable({
   data,
   rowHeight = ROW_HEIGHT,
-  overscan = 12,
+  overscan = OVERSCAN,
   emptyState = 'No results to display.',
   ...rest
 }: ArrowTableProps & React.HTMLAttributes<HTMLDivElement>) {
@@ -101,7 +102,11 @@ export function ArrowTable({
           rest?.className,
         )}
       >
-        <p className="text-sm text-muted-foreground">{emptyState}</p>
+        {typeof emptyState === 'string' ? (
+          <p className="text-sm text-muted-foreground">{emptyState}</p>
+        ) : (
+          emptyState
+        )}
       </div>
     );
   }
@@ -109,25 +114,51 @@ export function ArrowTable({
   return (
     <>
       <div {...rest} className={cn('h-full min-h-[360px]', containerClasses, rest?.className)}>
-        <div className="arrow-table flex-1 overflow-auto bg-background" ref={parentRef}>
+        <div
+          className="arrow-table flex-1 overflow-auto bg-background **:data-[slot=table-container]:overflow-visible"
+          ref={parentRef}
+        >
           <Table>
-            <TableHeader className="sticky top-0 z-10 bg-background">
-              <TableRow>
-                <TableHead className="w-[80px] max-w-[80px] bg-muted text-[11px] font-semibold uppercase tracking-wide sticky left-0 z-20">
+            {/* Header */}
+            <TableHeader>
+              <TableRow className="sticky top-0 z-20">
+                {/* Row index column */}
+                <TableHead
+                  className={cn(
+                    'w-[80px] max-w-[80px]',
+                    'bg-muted',
+                    'text-[11px] font-semibold uppercase tracking-wide',
+                    'sticky top-0 left-0 z-30',
+                  )}
+                >
                   Row
                 </TableHead>
+
+                {/* Data columns */}
                 {data.columns.map(column => (
                   <TableHead
-                    className="bg-muted/30 text-[11px] font-semibold uppercase tracking-wide truncate"
+                    className={cn(
+                      'bg-muted',
+                      'text-[11px] font-semibold uppercase tracking-wide truncate',
+                    )}
                     key={column.key}
                     style={{ maxWidth: column.maxWidth ?? DATA_COLUMN_MAX_WIDTH }}
+                    title={column.name}
                   >
                     {column.name}
                   </TableHead>
                 ))}
-                <TableHead className="w-12 bg-muted/30 sticky right-0" />
+
+                {/* View more column */}
+                <TableHead className={cn('w-12 bg-muted', 'top-0 right-0 sticky z-30')}>
+                  <span className="flex justify-center">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </span>
+                </TableHead>
               </TableRow>
             </TableHeader>
+
+            {/* Body */}
             <TableBody>
               {paddingTop > 0 && (
                 <TableRow>
@@ -138,6 +169,8 @@ export function ArrowTable({
                   />
                 </TableRow>
               )}
+
+              {/* Data rows */}
               {virtualRows.map(virtualRow => {
                 const rowIndex = virtualRow.index;
 
@@ -168,6 +201,7 @@ export function ArrowTable({
                       </span>
                     </TableCell>
 
+                    {/* Row data */}
                     {rowCells.map(cell => (
                       <TableCell
                         className="align-top font-mono text-xs overflow-hidden"

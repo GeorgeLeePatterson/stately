@@ -6,11 +6,31 @@ export const NAMESPACE = 'stately/ui';
 /**
  * Helpful with react-query errors
  */
-export function messageFromError(err: unknown): string | null {
-  if (!err) return null;
-  if (typeof err === 'string') return err;
-  if (err instanceof Error) return err.message;
-  return null;
+export function messageFromError(err: unknown): string | undefined{
+  if (!err) return;
+  return parseApiError(err);
+}
+
+/**
+ * Helper type to deal with 'maybe' `ApiError` types and extract error message.
+ */
+export function parseApiError(err: unknown): string | undefined {
+  if (!err) return;
+  let errMsg: string | undefined;
+  if (typeof err === 'string') errMsg = err;
+  if (err instanceof Error) errMsg = err.message;
+
+  // Attempt to parse as `ApiError
+  try {
+    const parsed = errMsg ? JSON.parse(errMsg) : undefined;
+    if (parsed && typeof parsed === 'object' && 'error' in parsed) {
+      errMsg = parsed.error;
+    }
+  } catch {
+    /* ignore */
+  }
+
+  return errMsg;
 }
 
 /**

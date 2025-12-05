@@ -1,18 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import type { ConnectionDetailQuery, ConnectionDetailsRequest } from '@/types/api';
+import type { ConnectionDetailsRequest, ConnectionSearchQuery } from '@/types/api';
 import { useArrowApi } from './use-arrow-api';
 
-export function useConnectionDetails(connectorId?: string, filters: ConnectionDetailQuery = {}) {
+export function useConnectionDetails(connectorId?: string, filters: ConnectionSearchQuery = {}) {
   const api = useArrowApi();
   return useQuery({
     enabled: Boolean(connectorId),
     queryFn: async () => {
       if (!api) throw new Error('Arrow API is unavailable');
       const { data, error } = await api.connector_list({
-        params: {
-          path: { connector_id: connectorId || '' },
-          query: { database: filters.database, schema: filters.schema },
-        },
+        params: { path: { connector_id: connectorId || '' }, query: { search: filters.search } },
       });
 
       if (error) throw error;

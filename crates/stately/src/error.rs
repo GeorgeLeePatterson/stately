@@ -37,12 +37,35 @@ pub enum Error {
     Generic(String),
 }
 
+/// Standard error shape returned by handlers
+#[cfg(feature = "axum")]
+#[derive(
+    Debug,
+    Clone,
+    PartialEq,
+    Eq,
+    serde::Serialize,
+    serde::Deserialize,
+    utoipa::ToSchema,
+    utoipa::ToResponse,
+)]
+pub struct ApiError {
+    pub error:  String,
+    pub status: u16,
+}
+
+#[cfg(feature = "axum")]
+impl ApiError {
+    pub fn new<S: Into<u16>>(error: String, status: S) -> Self {
+        Self { error, status: status.into() }
+    }
+}
+
 #[cfg(feature = "axum")]
 mod axum_impl {
     use axum::Json;
     use axum::http::StatusCode;
     use axum::response::{IntoResponse, Response};
-    use serde_json::json;
 
     use super::*;
 
@@ -53,11 +76,7 @@ mod axum_impl {
                 Error::IllegalOperation(msg) => (StatusCode::BAD_REQUEST, msg.clone()),
                 _ => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()),
             };
-            let body = Json(json!({
-                "error": message,
-                "status": status.as_u16()
-            }));
-            (status, body).into_response()
+            (status, Json(ApiError::new(message, status))).into_response()
         }
     }
 

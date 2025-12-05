@@ -7,6 +7,7 @@ import { PrimitiveEdit } from './primitive-field';
 import { RecursiveRefEdit } from './recursive-ref-field';
 import { TaggedUnionEdit } from './tagged-union-field';
 import { TupleEdit } from './tuple-field';
+import { UnionEdit } from './union-field';
 import { UntaggedEnumEdit } from './untagged-enum-field';
 
 export type { ArrayEditProps } from './array-field';
@@ -25,6 +26,7 @@ export type {
 export type { RecursiveRefEditProps } from './recursive-ref-field';
 export type { TaggedUnionEditProps } from './tagged-union-field';
 export type { TupleEditProps } from './tuple-field';
+export type { UnionEditProps } from './union-field';
 export type { UntaggedEnumEditProps } from './untagged-enum-field';
 
 export const EditFields = {
@@ -37,6 +39,7 @@ export const EditFields = {
   RecursiveRefEdit,
   TaggedUnionEdit,
   TupleEdit,
+  UnionEdit,
   UntaggedEnumEdit,
 };
 export { ObjectEditMode };

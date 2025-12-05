@@ -49,7 +49,7 @@ export function PluginNavigation({
   const GroupBadgeComp = routeOverrides[sidebarTo]?.badge ?? sidebarBadge;
 
   // Ensure base path is accounted for
-  const groupBasePath = utils.stripTrailingSlash(basePath || '');
+  const groupBasePath = utils.stripTrailing(basePath || '');
   const groupTo = `${groupBasePath}${to}`;
   const groupLabel = utils.toTitleCase(label);
 

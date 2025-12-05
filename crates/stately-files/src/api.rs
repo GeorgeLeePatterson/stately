@@ -46,6 +46,7 @@ macro_rules! from_ref {
         responses(
             FileListResponse,
             FileUploadResponse,
+            stately::ApiError,
         ),
         schemas(
             FileListResponse,
@@ -56,7 +57,6 @@ macro_rules! from_ref {
             FileSaveRequest,
             FileVersion,
             FileEntryType,
-
             UserDefinedPath,
             RelativePath,
             VersionedPath,

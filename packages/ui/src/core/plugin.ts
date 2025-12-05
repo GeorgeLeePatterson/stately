@@ -105,6 +105,9 @@ function registerCoreComponents(registry: ComponentRegistry) {
   registry.set(makeRegistryKey(NodeType.UntaggedEnum, 'edit'), EditFields.UntaggedEnumEdit);
   registry.set(makeRegistryKey(NodeType.UntaggedEnum, 'view'), ViewFields.UntaggedEnumView);
 
+  registry.set(makeRegistryKey(NodeType.Union, 'edit'), EditFields.UnionEdit);
+  registry.set(makeRegistryKey(NodeType.Union, 'view'), ViewFields.UnionView);
+
   registry.set(makeRegistryKey(NodeType.Link, 'edit'), linkFields.LinkEditView);
   registry.set(makeRegistryKey(NodeType.Link, 'view'), linkFields.LinkDetailView);
 }

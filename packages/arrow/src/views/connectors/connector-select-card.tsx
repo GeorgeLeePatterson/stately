@@ -14,8 +14,8 @@ import {
 import { Database } from 'lucide-react';
 import { useCallback } from 'react';
 import { AnyIsLoading } from '@/components/any-is-loading';
-import { useArrowStatelyUi } from '@/context';
 import type { ConnectionMetadata } from '@/types/api';
+import { ConnectionItem } from './connection-item';
 
 export interface ConnectorSelectCardProps {
   connectors: ConnectionMetadata[];
@@ -25,6 +25,9 @@ export interface ConnectorSelectCardProps {
   isLoading?: boolean;
 }
 
+/**
+ * A card w/ a dropdown for selecting connectors. Not used by default, provided for convenience.
+ */
 export function ConnectorSelectCard({
   connectors,
   currentConnector,
@@ -33,8 +36,6 @@ export function ConnectorSelectCard({
   isLoading,
   ...rest
 }: ConnectorSelectCardProps & Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'>) {
-  const { utils } = useArrowStatelyUi();
-
   const handleSelect = useCallback(
     (id: string) => onSelect(connectors.find(connector => connector.id === id)),
     [connectors, onSelect],
@@ -58,6 +59,7 @@ export function ConnectorSelectCard({
         {error && <Note message={error} mode="error" />}
 
         {/* Connector dropdown */}
+        {/* TODO: Remove - Move this to components */}
         <div className="flex flex-col">
           <Select onValueChange={handleSelect} value={currentConnector?.id || ''}>
             <SelectTrigger
@@ -70,12 +72,7 @@ export function ConnectorSelectCard({
             <SelectContent>
               {connectors.map(connector => (
                 <SelectItem key={connector.id} value={connector.id}>
-                  <div className="flex items-baseline">
-                    <span className="items-center font-semi-bold text-sm">{connector.name}</span>
-                    <span className="items-center text-xs text-muted-foreground truncate">
-                      &nbsp; · {utils.toSpaceCase(connector.kind || 'memory')}
-                    </span>
-                  </div>
+                  <ConnectionItem connection={connector} />
                 </SelectItem>
               ))}
             </SelectContent>

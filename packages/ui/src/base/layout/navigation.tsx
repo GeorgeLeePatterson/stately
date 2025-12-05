@@ -44,7 +44,7 @@ export function Navigation<S extends StatelySchemas<any, any> = StatelySchemas<a
   const currentPath = window.location.pathname;
   const { plugins, options, utils } = useBaseStatelyUi<S, []>();
 
-  const basePath = utils.stripTrailingSlash(options?.navigation?.basePath || '');
+  const basePath = utils.stripTrailing(options?.navigation?.basePath || '');
 
   const topLevelRoute = options?.navigation?.routes;
   const sidebarLabel = topLevelRoute?.label || 'Application';

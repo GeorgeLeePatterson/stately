@@ -2,8 +2,8 @@
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, LazyLock};
 
 use async_trait::async_trait;
 use datafusion::execution::context::SessionContext;
@@ -20,9 +20,14 @@ use tracing::{debug, error};
 
 use crate::connectors::{Backend, Capability, ConnectionKind, ConnectionMetadata};
 use crate::error::Error;
-use crate::{ListSummary, Result, TableSummary};
+use crate::{BackendMetadata, ListSummary, Result, TableSummary};
 
 const IGNORE_FILES: &[&str] = &[".DS_Store", ".git", ".env"];
+
+static OBJECT_STORE_METADATA: LazyLock<BackendMetadata> = LazyLock::new(|| BackendMetadata {
+    kind:         ConnectionKind::ObjectStore,
+    capabilities: vec![Capability::ExecuteSql, Capability::List],
+});
 
 /// Configuration for an object store-backed connector.
 #[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, utoipa::ToSchema)]
@@ -159,11 +164,10 @@ impl ObjectStoreBackend {
         config: &Config,
     ) -> Result<Self> {
         let metadata = ConnectionMetadata {
-            id:           id.into(),
-            name:         name.into(),
-            kind:         ConnectionKind::ObjectStore,
-            capabilities: vec![Capability::ExecuteSql, Capability::List],
-            catalog:      Some(config.store.url()),
+            id:       id.into(),
+            name:     name.into(),
+            catalog:  Some(config.store.url()),
+            metadata: OBJECT_STORE_METADATA.clone(),
         };
 
         let ObjectStoreRegistration { object_store: store, url, .. } =
@@ -173,11 +177,13 @@ impl ObjectStoreBackend {
             .map_err(|e| Error::Internal(format!("Invalid bucket URL: {e}")))?;
         Ok(Self { metadata, store, url, registered: Arc::new(AtomicBool::new(false)) })
     }
+
+    pub fn metadata() -> BackendMetadata { OBJECT_STORE_METADATA.clone() }
 }
 
 #[async_trait]
 impl Backend for ObjectStoreBackend {
-    fn metadata(&self) -> &ConnectionMetadata { &self.metadata }
+    fn connection(&self) -> &ConnectionMetadata { &self.metadata }
 
     async fn prepare_session(&self, session: &SessionContext) -> Result<()> {
         if self.registered.load(Ordering::Acquire) {
@@ -202,12 +208,11 @@ impl Backend for ObjectStoreBackend {
         Ok(())
     }
 
-    async fn list(&self, database: Option<&str>, _schema: Option<&str>) -> Result<ListSummary> {
-        let prefix = database
+    async fn list(&self, path: Option<&str>) -> Result<ListSummary> {
+        let prefix = path
             .filter(|s| !s.is_empty())
             .map(|db| ObjectStorePath::from(db.trim_start_matches('/')));
-
-        let entries = self
+        let object_metas = self
             .store
             .list(prefix.as_ref())
             .try_collect::<Vec<_>>()
@@ -218,18 +223,45 @@ impl Backend for ObjectStoreBackend {
                     .iter()
                     .any(|i| meta.location.filename().is_some_and(|f| f.starts_with(i)))
             })
-            .map(|meta| TableSummary {
-                name:       meta.location.to_string(),
-                rows:       None,
-                size_bytes: Some(meta.size),
-            })
+            .map(|meta| (meta.location.to_string(), meta.size))
             .collect::<Vec<_>>();
 
-        if database.is_some() {
-            Ok(ListSummary::Tables(entries))
+        // If the path is none and there is a directory for each entry, treat as "databases"
+        let database_search = path.is_none()
+            && object_metas.iter().all(|(location, _)| {
+                location.contains('/') && !location.starts_with('/') && !location.ends_with('/')
+            });
+
+        Ok(if database_search {
+            ListSummary::Paths(
+                object_metas
+                    .into_iter()
+                    .filter_map(|(location, _)| location.split('/').next().map(ToString::to_string))
+                    .collect::<Vec<_>>(),
+            )
         } else {
-            Ok(ListSummary::Files(entries))
-        }
+            ListSummary::Files(
+                object_metas
+                    .into_iter()
+                    .map(|(location, size)| {
+                        // If the location starts with the search term, remove it, it's already
+                        // encoded in the UI
+                        let location =
+                            if let Some(p) = path.as_ref().filter(|p| location.starts_with(*p)) {
+                                location.strip_prefix(p).unwrap_or(&location).to_string()
+                            } else {
+                                location
+                            };
+                        (location, size)
+                    })
+                    .map(|(location, size)| TableSummary {
+                        name:       location,
+                        rows:       None,
+                        size_bytes: Some(size),
+                    })
+                    .collect::<Vec<_>>(),
+            )
+        })
     }
 }
 

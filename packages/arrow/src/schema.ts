@@ -5,7 +5,7 @@
  */
 
 import type { BaseNode, DefineData, DefineTypes } from '@stately/ui/schema';
-import type { components } from './generated-types';
+import type { components } from './generated/types';
 
 /**
  * Arrow plugin types

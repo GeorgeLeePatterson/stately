@@ -12,7 +12,6 @@ use datafusion::execution::context::SessionContext;
 use datafusion::prelude::SessionConfig;
 use tracing::error;
 
-use super::ConnectionDetailQuery;
 use crate::ListSummary;
 use crate::connectors::{Capability, ConnectionMetadata, ConnectorRegistry};
 use crate::error::{Error, Result};
@@ -97,7 +96,7 @@ where
             .prepare_session(self.session.as_session())
             .await
             .inspect_err(|error| error!(?error, connector_id, "Error preparing session"))?;
-        Ok(connector.metadata().clone())
+        Ok(connector.connection().clone())
     }
 
     /// List catalogs exposed by this connector.
@@ -115,20 +114,16 @@ where
     ///
     /// # Errors
     /// - If an error occurs while listing.
-    pub async fn list(
-        &self,
-        connector_id: &str,
-        params: &ConnectionDetailQuery,
-    ) -> Result<ListSummary> {
+    pub async fn list(&self, connector_id: &str, term: Option<&str>) -> Result<ListSummary> {
         let connector = self
             .registry
             .get(connector_id)
             .await
             .inspect_err(|error| error!(?error, connector_id, "Error getting connection"))?;
-        if !connector.metadata().has(Capability::List) {
+        if !connector.connection().has(Capability::List) {
             tracing::error!(
                 "Connector '{connector_id}' does not support listing: {:?}",
-                connector.metadata()
+                connector.connection()
             );
             return Err(Error::UnsupportedConnector(format!(
                 "Connector does not support listing: {connector_id}"
@@ -138,7 +133,7 @@ where
             .prepare_session(self.session.as_session())
             .await
             .inspect_err(|error| error!(?error, connector_id, "Error preparing session"))?;
-        connector.list(params.database.as_deref(), params.schema.as_deref()).await
+        connector.list(term).await
     }
 
     /// Execute a SQL query through the provided connector.
@@ -154,7 +149,7 @@ where
             let connector = self.registry.get(connector_id).await.inspect_err(|error| {
                 error!(?error, connector_id, "Error getting connection");
             })?;
-            if !connector.metadata().has(Capability::ExecuteSql) {
+            if !connector.connection().has(Capability::ExecuteSql) {
                 error!(connector_id, "Connector does not support SQL execution");
                 return Err(Error::UnsupportedConnector(
                     "Connector does not support SQL execution".into(),

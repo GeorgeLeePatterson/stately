@@ -8,7 +8,7 @@ use super::QueryState;
 use super::ipc::arrow_ipc_response;
 use crate::error::Result;
 use crate::{
-    ConnectionDetailQuery, ConnectionDetailsRequest, ConnectionDetailsResponse, ConnectionMetadata,
+    ConnectionDetailsRequest, ConnectionDetailsResponse, ConnectionMetadata, ConnectionSearchQuery,
     ListSummary, QueryRequest, QuerySession,
 };
 
@@ -28,7 +28,7 @@ pub(super) const IDENT: &str = "[stately-arrow]";
             description = "List of available connections",
             body = Vec<ConnectionMetadata>
         ),
-        (status = 500, description = "Internal server error")
+        (status = 500, description = "Internal server error", body = stately::ApiError)
     )
 )]
 pub(super) async fn list_connectors<S>(
@@ -52,7 +52,7 @@ where
     tag = "arrow",
     responses(
         (status = 200, description = "List of registered catalogs", body = Vec<String>),
-        (status = 500, description = "Internal server error")
+        (status = 500, description = "Internal server error", body = stately::ApiError)
     )
 )]
 pub(super) async fn list_catalogs<S>(
@@ -77,24 +77,24 @@ where
     tag = "arrow",
     params(
         ("connector_id" = String, Path, description = "Connector ID"),
-        ConnectionDetailQuery
+        ConnectionSearchQuery
     ),
     responses(
         (status = 200, description = "List of databases or tables/files", body = ListSummary),
-        (status = 404, description = "Connector not found"),
-        (status = 500, description = "Internal server error")
+        (status = 404, description = "Connector not found", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
     )
 )]
 pub(super) async fn connector_list<S>(
-    Query(params): Query<ConnectionDetailQuery>,
+    Query(params): Query<ConnectionSearchQuery>,
     Path(connector_id): Path<String>,
     State(state): State<QueryState<S>>,
 ) -> Result<Json<ListSummary>>
 where
     S: QuerySession,
 {
-    debug!("{IDENT} Listing details for connector: {connector_id}");
-    Ok(Json(state.query_context.list(&connector_id, &params).await?))
+    debug!("{IDENT} Listing details for connector '{connector_id}' w/ search {params:?}");
+    Ok(Json(state.query_context.list(&connector_id, params.search.as_deref()).await?))
 }
 
 /// List databases or tables/files available in a set of connectors's underlying data stores
@@ -113,8 +113,8 @@ where
             description = "List of databases or tables/files keyed by connection",
             body = ConnectionDetailsResponse
         ),
-        (status = 404, description = "Connector not found"),
-        (status = 500, description = "Internal server error")
+        (status = 404, description = "Connector not found", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
     )
 )]
 pub(super) async fn connector_list_many<S>(
@@ -127,8 +127,9 @@ where
     let keys = request.connectors.keys();
     debug!("{IDENT} Listing details for connectors: {keys:?}");
     let mut connections = HashMap::default();
-    for (connector_id, filters) in request.connectors {
-        let result = match state.query_context.list(&connector_id, &filters).await {
+    for (connector_id, params) in request.connectors {
+        let term = params.search;
+        let result = match state.query_context.list(&connector_id, term.as_deref()).await {
             Ok(r) => r,
             Err(e) => {
                 tracing::error!("Failed to list connector details for {connector_id}: {e:?}");
@@ -158,8 +159,8 @@ where
     ),
     responses(
         (status = 200, description = "Registered Connection", body = ConnectionMetadata),
-        (status = 404, description = "Connector not found"),
-        (status = 500, description = "Internal server error")
+        (status = 404, description = "Connector not found", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
     )
 )]
 pub(super) async fn register<S>(
@@ -189,9 +190,9 @@ where
             description = "Query results as Arrow IPC stream",
             content_type = "application/vnd.apache.arrow.stream"
         ),
-        (status = 400, description = "Invalid query"),
-        (status = 404, description = "Connector not found"),
-        (status = 500, description = "Internal server error")
+        (status = 400, description = "Invalid query", body = stately::ApiError),
+        (status = 404, description = "Connector not found", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
     )
 )]
 pub(super) async fn execute_query<S>(

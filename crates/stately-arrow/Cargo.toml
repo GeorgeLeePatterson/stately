@@ -27,12 +27,11 @@ bytes = "1"
 datafusion = "50"
 futures-util = "0.3"
 serde = { version = "1", features = ["derive", "std", "rc"] }
-serde_json = "1"
 thiserror = "2"
 tracing = "0.1"
 utoipa = { version = "5", features = ["axum_extras", "macros"] }
 
-stately = { path = "../stately" }
+stately = { path = "../stately", features = ["axum"] }
 uuid.workspace = true
 
 # Optional
@@ -43,6 +42,10 @@ object_store = { version = "0.12", optional = true, default-features = false, fe
     "azure",
     "gcp"
 ]}
+
+[[bin]]
+name = "generate-openapi"
+path = "src/bin/generate_openapi.rs"
 
 [lints]
 workspace = true

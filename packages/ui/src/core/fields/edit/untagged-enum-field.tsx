@@ -48,7 +48,9 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
     );
     if (!variant) return;
     // Get default value for the variant's schema and wrap with tag as key: { variant: {...} }
-    onChange({ [newTag]: plugins.core.utils?.getDefaultValue(variant.schema) });
+    onChange({
+      [newTag]: variant.schema ? plugins.core.utils?.getDefaultValue(variant.schema) : {},
+    });
   };
 
   // Handle field change - the child passes the complete variant data
@@ -72,12 +74,12 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
             ))}
           </SelectContent>
         </Select>
-        {currentVariant?.schema.description && (
+        {currentVariant?.schema?.description && (
           <DescriptionLabel>{currentVariant.schema.description}</DescriptionLabel>
         )}
       </div>
 
-      {currentVariant && currentTag && (
+      {currentVariant?.schema && currentTag && (
         <FieldSet className="p-2 min-w-0">
           {/* Render the variant schema directly */}
           <FieldEdit<Schema>

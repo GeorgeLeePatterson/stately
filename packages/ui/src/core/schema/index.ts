@@ -41,6 +41,7 @@ export type {
   TCoreNodeType,
   TPrimitiveType,
   TupleNode,
+  UnionNode,
   UntaggedEnumNode,
 } from './nodes.js';
 export type { CorePlugin } from './plugin.js';

@@ -14,6 +14,7 @@ export const CoreNodeType = {
   RecursiveRef: 'recursiveRef',
   TaggedUnion: 'taggedUnion',
   Tuple: 'tuple',
+  Union: 'union',
   UntaggedEnum: 'untaggedEnum',
 } as const;
 
@@ -69,11 +70,15 @@ export interface EnumNode extends BaseNode {
 
 /**
  * Object: struct with named properties
+ *
+ * `additionalProperties` captures the value schema for any dynamic keys
+ * beyond the fixed `properties` (e.g., from `#[serde(flatten)]` on a HashMap).
  */
 export interface ObjectNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.Object;
   properties: Readonly<Record<string, CoreNodes<ChildNode>>>;
   required: readonly string[];
+  additionalProperties?: CoreNodes<ChildNode>;
   merged?: TaggedUnionNode<ChildNode> | UntaggedEnumNode<ChildNode>;
 }
 
@@ -104,6 +109,8 @@ export interface TupleNode<ChildNode extends BaseNode = never> extends BaseNode 
 
 /**
  * Tagged Union: Rust enum with explicit discriminator
+ *
+ * Unit variants (no associated data) have `schema: null`.
  */
 export interface TaggedUnionNode<
   ChildNode extends BaseNode = never,
@@ -111,15 +118,28 @@ export interface TaggedUnionNode<
 > extends BaseNode {
   nodeType: typeof CoreNodeType.TaggedUnion;
   discriminator: Discriminator;
-  variants: ReadonlyArray<{ tag: string; schema: ObjectNode<ChildNode> }>;
+  variants: ReadonlyArray<{ tag: string; schema: ObjectNode<ChildNode> | null }>;
 }
 
 /**
  * Untagged Enum: Rust enum with inferred discriminator
+ *
+ * Unit variants (no associated data) have `schema: null`.
  */
 export interface UntaggedEnumNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.UntaggedEnum;
-  variants: ReadonlyArray<{ tag: string; schema: CoreNodes<ChildNode> }>;
+  variants: ReadonlyArray<{ tag: string; schema: CoreNodes<ChildNode> | null }>;
+}
+
+/**
+ * Union: Generic oneOf/anyOf fallback
+ *
+ * Used when we can't identify a specific tagged/untagged pattern.
+ * The value is exactly one of the variant schemas - no tag wrapping.
+ */
+export interface UnionNode<ChildNode extends BaseNode = never> extends BaseNode {
+  nodeType: typeof CoreNodeType.Union;
+  variants: ReadonlyArray<{ schema: CoreNodes<ChildNode>; label?: string }>;
 }
 
 /**
@@ -158,6 +178,7 @@ export type CoreNodeMap<ChildNode extends BaseNode = never> = DefineNodeMap<{
   [CoreNodeType.Tuple]: TupleNode<ChildNode>;
   [CoreNodeType.TaggedUnion]: TaggedUnionNode<ChildNode>;
   [CoreNodeType.UntaggedEnum]: UntaggedEnumNode<ChildNode>;
+  [CoreNodeType.Union]: UnionNode<ChildNode>;
   [CoreNodeType.Link]: LinkNode<ChildNode>;
   [CoreNodeType.Nullable]: NullableNode<ChildNode>;
   [CoreNodeType.RecursiveRef]: RecursiveRefNode;
@@ -172,6 +193,7 @@ export type CoreNodes<ChildNode extends BaseNode = never> =
   | TupleNode<ChildNode>
   | TaggedUnionNode<ChildNode>
   | UntaggedEnumNode<ChildNode>
+  | UnionNode<ChildNode>
   | LinkNode<ChildNode>
   | NullableNode<ChildNode>
   | RecursiveRefNode

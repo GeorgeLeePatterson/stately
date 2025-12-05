@@ -111,7 +111,14 @@ import {
   DropdownMenuTrigger,
 } from './dropdown-menu';
 // Empty
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from './empty';
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from './empty';
 // Field
 import {
   Field,
@@ -366,6 +373,7 @@ export {
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
+  EmptyMedia,
   EmptyTitle,
   FieldGroup,
   FieldSet,

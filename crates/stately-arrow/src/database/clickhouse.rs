@@ -1,14 +1,14 @@
 // TODO: Remove - Docs
 use std::collections::BTreeMap;
 use std::hash::{BuildHasher, Hash, RandomState};
-use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, LazyLock};
 use std::time::Duration;
 
 use async_trait::async_trait;
 use clickhouse_datafusion::prelude::clickhouse_arrow::{
-    ArrowClient, ArrowFormat, ClientBuilder, CompressionMethod, ConnectionManager, ConnectionPool,
-    bb8,
+    ArrowClient, ArrowFormat, ArrowOptions, ClientBuilder, CompressionMethod, ConnectionManager,
+    ConnectionPool, bb8,
 };
 use clickhouse_datafusion::{ClickHouseBuilder, ClickHouseSessionContext};
 use datafusion::error::DataFusionError;
@@ -21,7 +21,12 @@ use super::{ConnectionOptions, PoolOptions, Secret};
 use crate::connectors::{Backend, Capability, ConnectionKind, ConnectionMetadata};
 use crate::context::DEFAULT_SESSION_CAPABILITIES;
 use crate::error::Error;
-use crate::{ListSummary, QuerySession, Result, SessionCapability, TableSummary};
+use crate::{BackendMetadata, ListSummary, QuerySession, Result, SessionCapability, TableSummary};
+
+static CLICKHOUSE_METADATA: LazyLock<BackendMetadata> = LazyLock::new(|| BackendMetadata {
+    kind:         ConnectionKind::Database,
+    capabilities: vec![Capability::ExecuteSql, Capability::List],
+});
 
 pub const CLICKHOUSE_CATALOG: &str = "clickhouse";
 
@@ -112,11 +117,10 @@ impl ClickHouseBackend {
         connect: PoolOptions,
     ) -> Result<Self> {
         let metadata = ConnectionMetadata {
-            id:           id.into(),
-            name:         name.into(),
-            kind:         ConnectionKind::Database,
-            capabilities: vec![Capability::ExecuteSql, Capability::List],
-            catalog:      Some(CLICKHOUSE_CATALOG.to_string()),
+            id:       id.into(),
+            name:     name.into(),
+            catalog:  Some(CLICKHOUSE_CATALOG.to_string()),
+            metadata: CLICKHOUSE_METADATA.clone(),
         };
 
         let key = RandomState::new().hash_one(&metadata).to_string();
@@ -144,11 +148,13 @@ impl ClickHouseBackend {
 
         Ok(Self { key, metadata, endpoint, pool, registered: Arc::new(AtomicBool::new(false)) })
     }
+
+    pub fn metadata() -> BackendMetadata { CLICKHOUSE_METADATA.clone() }
 }
 
 #[async_trait]
 impl Backend for ClickHouseBackend {
-    fn metadata(&self) -> &ConnectionMetadata { &self.metadata }
+    fn connection(&self) -> &ConnectionMetadata { &self.metadata }
 
     async fn prepare_session(&self, session: &SessionContext) -> Result<()> {
         if self.registered.load(Ordering::Acquire) {
@@ -176,11 +182,8 @@ impl Backend for ClickHouseBackend {
         Ok(())
     }
 
-    async fn list(&self, database: Option<&str>, _: Option<&str>) -> Result<ListSummary> {
-        // TODO: Remove
-        tracing::debug!(?database, "------> Clickhouse List");
-
-        if database.is_some() {
+    async fn list(&self, database: Option<&str>) -> Result<ListSummary> {
+        if database.is_some_and(|d| !d.is_empty()) {
             self.pool
                 .get()
                 .await
@@ -195,6 +198,9 @@ impl Backend for ClickHouseBackend {
                         .collect()
                 })
                 .map(ListSummary::Tables)
+                .inspect(|result| {
+                    tracing::debug!("------> ClickHouse list w/ database: {result:?}");
+                })
         } else {
             self.pool
                 .get()
@@ -205,6 +211,9 @@ impl Backend for ClickHouseBackend {
                 .await
                 .map_err(Error::from)
                 .map(ListSummary::Databases)
+                .inspect(|result| {
+                    tracing::debug!("------> ClickHouse list w/o database: {result:?}");
+                })
         }
     }
 }
@@ -228,4 +237,6 @@ pub fn create_client_builder(
             ClickHouseCompression::Zstd => CompressionMethod::ZSTD,
         })
         .with_tls(options.tls.as_ref().is_some_and(|tls| tls.enable))
+        // Ensure strings are Utf8 encoded for UI.
+        .with_arrow_options(ArrowOptions::default().with_strings_as_strings(true))
 }

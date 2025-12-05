@@ -60,7 +60,9 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
     if (!variant) return;
 
     // Create new value with discriminator and default values for variant fields
-    const defaultVariantData = plugins.core.utils?.getDefaultValue(variant.schema);
+    const defaultVariantData = variant.schema
+      ? plugins.core.utils?.getDefaultValue(variant.schema)
+      : {};
 
     // Merge discriminator with variant data
     const newValue = {
@@ -101,18 +103,18 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
             ))}
           </SelectContent>
         </Select>
-        {currentVariant?.schema.description && (
+        {currentVariant?.schema?.description && (
           <DescriptionLabel>{currentVariant.schema.description}</DescriptionLabel>
         )}
       </div>
 
-      {currentVariant && currentTag && (
+      {currentVariant?.schema && currentTag && (
         <Card>
           <CardContent className="space-y-4">
             {currentVariant.schema.nodeType === 'object' &&
               Object.entries(currentVariant.schema.properties || {}).map(
                 ([fieldName, fieldSchema]) => {
-                  const isRequired = currentVariant.schema.required?.includes(fieldName);
+                  const isRequired = currentVariant.schema?.required?.includes(fieldName);
                   const fieldValue = formData[fieldName];
                   const fieldFormId = `${fieldName}-tagged-union-${formId}`;
 

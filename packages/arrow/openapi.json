@@ -1,0 +1,759 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "stately-arrow",
+    "description": "Arrow backend utilities for viewing data over API",
+    "version": "0.3.2"
+  },
+  "paths": {
+    "/catalogs": {
+      "get": {
+        "summary": "List all registered catalogs",
+        "description": "# Errors\n- Internal server error",
+        "operationId": "list_catalogs",
+        "responses": {
+          "200": {
+            "description": "List of registered catalogs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connectors": {
+      "get": {
+        "summary": "List all available connectors",
+        "description": "# Errors\n- Internal server error",
+        "operationId": "list_connectors",
+        "responses": {
+          "200": {
+            "description": "List of available connections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConnectionMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "List databases or tables/files available in a set of connectors's underlying data stores",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "connector_list_many",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConnectionDetailsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "List of databases or tables/files keyed by connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionDetailsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connectors/{connector_id}": {
+      "get": {
+        "summary": "List databases or tables/files available in a connector's underlying data store",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "connector_list",
+        "parameters": [
+          {
+            "name": "connector_id",
+            "in": "path",
+            "description": "Connector ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of databases or tables/files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/query": {
+      "post": {
+        "summary": "Execute a SQL query using URL tables",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "execute_query",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Query results as Arrow IPC stream",
+            "content": {
+              "application/vnd.apache.arrow.stream": {}
+            }
+          },
+          "400": {
+            "description": "Invalid query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/{connector_id}": {
+      "get": {
+        "summary": "Register a connector. Useful when federating queries since registration is lazy",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "register",
+        "parameters": [
+          {
+            "name": "connector_id",
+            "in": "path",
+            "description": "Connector ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registered Connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionMetadata"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "description": "Standard error shape returned by handlers",
+        "required": [
+          "error",
+          "status"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
+      "BackendMetadata": {
+        "type": "object",
+        "description": "Static metadata describing a backend connection.\n\nA backend is the underlying implementation of a connector/connection. For this reason, the\nbackend provides its capabilities, kind, and catalog.",
+        "required": [
+          "kind",
+          "capabilities"
+        ],
+        "properties": {
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Capability"
+            },
+            "description": "A list of capabilities the connector supports."
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ConnectionKind",
+            "description": "The 'kind' of connector"
+          }
+        }
+      },
+      "Capability": {
+        "type": "string",
+        "description": "Capabilities a connector can expose to the viewer.",
+        "enum": [
+          "execute_sql",
+          "list"
+        ]
+      },
+      "ConnectionDetailsRequest": {
+        "type": "object",
+        "description": "Request for multiple connection details",
+        "required": [
+          "connectors"
+        ],
+        "properties": {
+          "connectors": {
+            "type": "object",
+            "description": "IDs -> searches of each connector to list",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ConnectionSearchQuery"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          },
+          "fail_on_error": {
+            "type": "boolean",
+            "description": "Whether one failure should fail the entire request"
+          }
+        }
+      },
+      "ConnectionDetailsResponse": {
+        "type": "object",
+        "description": "Response to execute a SQL query",
+        "required": [
+          "connections"
+        ],
+        "properties": {
+          "connections": {
+            "type": "object",
+            "description": "IDs -> `ListSummary` of each connector to list",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ListSummary"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ConnectionKind": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "object_store"
+            ]
+          },
+          {
+            "type": "string",
+            "enum": [
+              "database"
+            ]
+          },
+          {
+            "type": "object",
+            "required": [
+              "other"
+            ],
+            "properties": {
+              "other": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "description": "The types of connectors supported"
+      },
+      "ConnectionMetadata": {
+        "type": "object",
+        "description": "Runtime metadata describing a connector instance.\n\nA connection refers to a connector in the context of the underlying query engine.",
+        "required": [
+          "id",
+          "name",
+          "metadata"
+        ],
+        "properties": {
+          "catalog": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The datafusion catalog the connector is registered in."
+          },
+          "id": {
+            "type": "string"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/BackendMetadata"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ConnectionSearchQuery": {
+        "type": "object",
+        "description": "Query param for searching connections",
+        "properties": {
+          "search": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "ListSummary": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "summary",
+              "type"
+            ],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "databases"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "summary",
+              "type"
+            ],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TableSummary"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "tables"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "summary",
+              "type"
+            ],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "paths"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "summary",
+              "type"
+            ],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TableSummary"
+                }
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "files"
+                ]
+              }
+            }
+          }
+        ],
+        "description": "Summaries provided by listing"
+      },
+      "QueryRequest": {
+        "type": "object",
+        "description": "Request to execute a SQL query",
+        "required": [
+          "sql"
+        ],
+        "properties": {
+          "connector_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ID of the connector to use"
+          },
+          "sql": {
+            "type": "string",
+            "description": "SQL query to execute (can use URL tables like `s3://bucket/path/*.parquet`)"
+          }
+        }
+      },
+      "SessionCapability": {
+        "type": "string",
+        "description": "Session capabilities a `QuerySession` can expose to the `QueryContext`.",
+        "enum": [
+          "execute_without_connector"
+        ]
+      },
+      "String": {
+        "type": "string"
+      },
+      "TableSummary": {
+        "type": "object",
+        "description": "Lightweight description of a table/file exposed by a connector.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "rows": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 0
+          },
+          "size_bytes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "responses": {
+      "ConnectionDetailsResponse": {
+        "description": "Response to execute a SQL query",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Response to execute a SQL query",
+              "required": [
+                "connections"
+              ],
+              "properties": {
+                "connections": {
+                  "type": "object",
+                  "description": "IDs -> `ListSummary` of each connector to list",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/ListSummary"
+                  },
+                  "propertyNames": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ListSummary": {
+        "description": "Summaries provided by listing",
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "summary",
+                    "type"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "databases"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "summary",
+                    "type"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TableSummary"
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "tables"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "summary",
+                    "type"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "paths"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "summary",
+                    "type"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TableSummary"
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "files"
+                      ]
+                    }
+                  }
+                }
+              ],
+              "description": "Summaries provided by listing"
+            }
+          }
+        }
+      },
+      "TableSummary": {
+        "description": "Lightweight description of a table/file exposed by a connector.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Lightweight description of a table/file exposed by a connector.",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "rows": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "int64",
+                  "minimum": 0
+                },
+                "size_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "int64",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "arrow",
+      "description": "Arrow data endpoints"
+    }
+  ]
+}

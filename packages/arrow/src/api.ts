@@ -7,7 +7,7 @@
 import type { TypedOperations } from '@stately/ui/base';
 import type { DefinePaths } from '@stately/ui/schema';
 import { createOperationBindingsFactory, type DefineOperations } from '@stately/ui/schema';
-import type { operations, paths } from './generated-types';
+import type { operations, paths } from './generated/types';
 
 export type ArrowPaths = DefinePaths<paths>;
 export type ArrowOperations = DefineOperations<operations>;

@@ -1,81 +1,35 @@
 /**
  * File API types
  *
- * These types mirror the Rust types from stately-files crate.
+ * Type aliases for the generated OpenAPI types from stately-files crate.
  * See: crates/stately-files/src/types.rs
+ *
+ * These are re-exported from the generated types for convenience and stability.
+ * Run `pnpm run generate` to regenerate from the Rust OpenAPI spec.
  */
 
-/**
- * Request body for /files/save endpoint
- */
-export interface FileSaveRequest {
-  /** File content as string */
-  content: string;
-  /** Optional filename */
-  name?: string;
-}
+import type { components } from '../generated/types.js';
 
-/**
- * Query params for /files/list endpoint
- */
-export interface FileListQuery {
-  /** Optional path to list files from (relative to data directory) */
-  path?: string;
-}
+// Re-export the full generated types for direct access
+export type { components, paths, operations } from '../generated/types.js';
 
-/**
- * Response from /files/upload and /files/save endpoints
- */
-export interface FileUploadResponse {
-  /** Whether the operation was successful */
-  success: boolean;
-  /** Relative path from data directory (e.g., "uploads/config.json") */
-  path: string;
-  /** The UUID version identifier */
-  uuid: string;
-  /** Full absolute path on the server */
-  full_path: string;
-}
+/** Request body for /files/save endpoint */
+export type FileSaveRequest = components['schemas']['FileSaveRequest'];
 
-/**
- * Response from /files/list endpoint
- */
-export interface FileListResponse {
-  /** List of files and directories */
-  files: FileInfo[];
-}
+/** Query params for /files/list endpoint */
+export type FileListQuery = components['schemas']['FileListQuery'];
 
-/**
- * File entry type discriminator
- */
-export type FileEntryType = 'file' | 'directory' | 'versioned_file';
+/** Response from /files/upload and /files/save endpoints */
+export type FileUploadResponse = components['schemas']['FileUploadResponse'];
 
-/**
- * File version information (for versioned files)
- */
-export interface FileVersion {
-  /** UUID identifier for this version */
-  uuid: string;
-  /** Size of this specific version in bytes */
-  size: number;
-  /** Creation timestamp (Unix epoch seconds) */
-  created?: number;
-}
+/** Response from /files/list endpoint */
+export type FileListResponse = components['schemas']['FileListResponse'];
 
-/**
- * File information returned from list endpoint
- */
-export interface FileInfo {
-  /** File name (relative path from target directory) */
-  name: string;
-  /** File size in bytes (latest version for versioned files) */
-  size: number;
-  /** Entry type: file, directory, or versioned_file */
-  type: FileEntryType;
-  /** Creation timestamp (Unix epoch seconds) - oldest version for versioned files */
-  created?: number;
-  /** Last modified timestamp (Unix epoch seconds) - newest version for versioned files */
-  modified?: number;
-  /** List of all versions (only populated for versioned files) */
-  versions?: FileVersion[];
-}
+/** File entry type discriminator */
+export type FileEntryType = components['schemas']['FileEntryType'];
+
+/** File version information (for versioned files) */
+export type FileVersion = components['schemas']['FileVersion'];
+
+/** File information returned from list endpoint */
+export type FileInfo = components['schemas']['FileInfo'];

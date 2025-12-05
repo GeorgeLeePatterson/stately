@@ -43,7 +43,7 @@ export function EnumFieldView<Schema extends Schemas = Schemas>({
   value,
 }: {
   tag: string;
-  node: CoreNodeUnion<Schema>;
+  node: CoreNodeUnion<Schema> | null;
   value: unknown;
 }) {
   return (
@@ -52,10 +52,12 @@ export function EnumFieldView<Schema extends Schemas = Schemas>({
         <SimpleLabel>Selected:</SimpleLabel>
         <span className="uppercase">{tag}</span>
       </div>
-      <div className="flex flex-col gap-2">
-        <SimpleLabel>Configuration:</SimpleLabel>
-        <FieldView node={node} value={value} />
-      </div>
+      {node && (
+        <div className="flex flex-col gap-2">
+          <SimpleLabel>Configuration:</SimpleLabel>
+          <FieldView node={node} value={value} />
+        </div>
+      )}
     </div>
   );
 }

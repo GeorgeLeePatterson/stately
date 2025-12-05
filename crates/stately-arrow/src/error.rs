@@ -1,5 +1,6 @@
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
+use stately::ApiError;
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
@@ -60,11 +61,6 @@ impl IntoResponse for Error {
             }
         };
 
-        let body = serde_json::json!({
-            "error": message,
-            "status": status.as_u16()
-        });
-
-        (status, axum::Json(body)).into_response()
+        (status, axum::Json(ApiError::new(message, status))).into_response()
     }
 }

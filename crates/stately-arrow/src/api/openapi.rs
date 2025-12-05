@@ -6,9 +6,11 @@
 use utoipa::openapi::tag::TagBuilder;
 use utoipa::openapi::{ComponentsBuilder, InfoBuilder, OpenApiBuilder, PathsBuilder};
 
+use crate::connectors::ConnectionKind;
 use crate::{
-    Capability, ConnectionDetailQuery, ConnectionDetailsRequest, ConnectionDetailsResponse,
-    ConnectionMetadata, ListSummary, QueryRequest, SessionCapability, TableSummary,
+    BackendMetadata, Capability, ConnectionDetailsRequest, ConnectionDetailsResponse,
+    ConnectionMetadata, ConnectionSearchQuery, ConnectionSearchTerm, ListSummary, QueryRequest,
+    SessionCapability, TableSummary,
 };
 
 /// `OpenAPI` documentation struct for the stately-arrow API.
@@ -22,15 +24,22 @@ impl utoipa::OpenApi for OpenApiDoc {
         let mut components = ComponentsBuilder::new()
             // Base schemas (always included)
             .schema_from::<QueryRequest>()
-            .schema_from::<ConnectionDetailQuery>()
+            .schema_from::<ConnectionSearchTerm>()
+            .schema_from::<ConnectionSearchQuery>()
             .schema_from::<ConnectionDetailsRequest>()
             .schema_from::<ConnectionDetailsResponse>()
             .schema_from::<SessionCapability>()
             .schema_from::<Capability>()
             .schema_from::<ConnectionMetadata>()
+            .schema_from::<BackendMetadata>()
             .schema_from::<ListSummary>()
             .schema_from::<TableSummary>()
-            .schema_from::<crate::connectors::ConnectionKind>();
+            .schema_from::<ConnectionKind>()
+            .schema_from::<stately::ApiError>()
+            // Responses
+            .response_from::<ConnectionDetailsResponse>()
+            .response_from::<ListSummary>()
+            .response_from::<TableSummary>();
 
         // Database feature schemas
         #[cfg(feature = "database")]

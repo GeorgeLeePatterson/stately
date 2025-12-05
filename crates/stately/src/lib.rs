@@ -260,6 +260,8 @@
 //! - `doc_expand.rs` - Example used to generate [`mod@demo`] for reference
 
 pub mod collection;
+#[cfg(feature = "openapi")]
+pub mod codegen;
 pub mod entity;
 pub mod error;
 pub mod link;
@@ -270,6 +272,8 @@ pub mod traits;
 // Re-export key types
 pub use collection::{Collection, Singleton};
 pub use entity::{EntityId, Summary};
+#[cfg(feature = "axum")]
+pub use error::ApiError;
 pub use error::{Error, Result};
 pub use hashbrown;
 pub use link::Link;
@@ -284,6 +288,8 @@ pub use traits::{HasName, StateCollection, StateEntity};
 pub mod prelude {
     pub use crate::collection::{Collection, Singleton};
     pub use crate::entity::{EntityId, Summary};
+    #[cfg(feature = "axum")]
+    pub use crate::error::ApiError;
     pub use crate::link::Link;
     pub use crate::traits::{StateCollection, StateEntity};
     pub use crate::{Error, Result, entity, state};
