@@ -246,8 +246,15 @@ function Root(props: ArrowViewerProps) {
  * @returns
  */
 export const ArrowViewer = ({ subscribe }: ArrowViewerProps) => {
-  const { setOpen } = useSidebar();
-  useLayoutEffect(() => setOpen(false), [setOpen]);
+  const closed = useRef(false);
+  const { setOpen, state } = useSidebar();
+  // Close sidebar on initial mount only
+  useLayoutEffect(() => {
+    if (state === 'expanded' && !closed.current) {
+      setOpen(false);
+      closed.current = true;
+    }
+  }, [setOpen, state]);
   return <Root subscribe={subscribe} />;
 };
 
