@@ -1,4 +1,37 @@
-// TODO: Docs
+//! Object store backend for cloud and local filesystem access.
+//!
+//! This module provides connectivity to object storage systems including:
+//!
+//! - **AWS S3** - Amazon Simple Storage Service
+//! - **Google Cloud Storage** - GCP object storage
+//! - **Azure Blob Storage** - Microsoft Azure storage
+//! - **Local filesystem** - For development and local data access
+//!
+//! # Configuration
+//!
+//! Use [`Config`] to specify the storage provider and file format:
+//!
+//! ```ignore
+//! use stately_arrow::object_store::{Config, ObjectStore, ObjectStoreFormat};
+//!
+//! let config = Config {
+//!     format: ObjectStoreFormat::Parquet(None),
+//!     store: ObjectStore::Aws {
+//!         bucket: "my-bucket".into(),
+//!         region: Some("us-east-1".into()),
+//!         prefix: Some("data/".into()),
+//!         ..Default::default()
+//!     },
+//! };
+//! ```
+//!
+//! # Credential Resolution
+//!
+//! Cloud providers resolve credentials from environment variables automatically:
+//!
+//! - **AWS**: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`
+//! - **GCP**: `GOOGLE_SERVICE_ACCOUNT` or application default credentials
+//! - **Azure**: `AZURE_STORAGE_ACCOUNT_NAME`, `AZURE_STORAGE_ACCOUNT_KEY`
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;

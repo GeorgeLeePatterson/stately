@@ -1,8 +1,42 @@
-//! TODO: Docs
+//! Query context and session abstractions for `DataFusion `integration.
 //!
-//! Explain:
-//! 1. How `QuerySession` is an abstraction over a `DataFusion` session context, to allow an
-//!    implementation to provide their own.
+//! This module provides the core abstractions for executing queries against registered connectors:
+//!
+//! - [`QuerySession`]: An abstraction over `DataFusion`'s `SessionContext` that allows custom
+//!   implementations to control session behavior, capabilities, and SQL execution. The default
+//!   implementation wraps `SessionContext` directly.
+//!
+//! - [`QueryContext`]: The high-level interface combining a session and a [`ConnectorRegistry`]. It
+//!   handles connector registration, catalog discovery, and query execution.
+//!
+//! - [`SessionCapability`]: Describes what actions a session supports (e.g., executing queries
+//!   without specifying a connector).
+//!
+//! # Custom Sessions
+//!
+//! Implement [`QuerySession`] to customize `DataFusion `behavior:
+//!
+//! ```ignore
+//! use async_trait::async_trait;
+//! use datafusion::execution::context::SessionContext;
+//! use stately_arrow::{QuerySession, SessionCapability, Result};
+//!
+//! #[derive(Clone)]
+//! pub struct MySession {
+//!     inner: SessionContext,
+//! }
+//!
+//! #[async_trait]
+//! impl QuerySession for MySession {
+//!     fn as_session(&self) -> &SessionContext { &self.inner }
+//!     fn capabilities(&self) -> &[SessionCapability] { &[] }
+//!     async fn sql(&self, sql: &str) -> Result<DataFrame> {
+//!         // Custom SQL handling
+//!     }
+//! }
+//! ```
+//!
+//! [`ConnectorRegistry`]: crate::ConnectorRegistry
 use std::sync::Arc;
 
 use async_trait::async_trait;

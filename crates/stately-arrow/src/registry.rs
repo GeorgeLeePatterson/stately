@@ -27,8 +27,11 @@ pub mod generic {
     use tokio::sync::RwLock;
 
     use super::ConnectorRegistry;
+    #[cfg(feature = "database")]
     use crate::connectors::{BackendMetadata, ConnectionKind};
+    #[cfg(feature = "clickhouse")]
     use crate::database::Database as DatabaseType;
+    #[cfg(feature = "clickhouse")]
     use crate::database::clickhouse::{CLICKHOUSE_CATALOG, ClickHouseBackend};
     use crate::object_store::ObjectStoreBackend;
     use crate::{Backend, ConnectionMetadata, Error, Result};
@@ -63,6 +66,7 @@ pub mod generic {
     #[serde(rename_all = "snake_case")]
     pub enum Type {
         ObjectStore(Box<crate::object_store::Config>),
+        #[cfg(feature = "database")]
         Database(Box<crate::database::Config>),
     }
 
@@ -102,13 +106,27 @@ pub mod generic {
     fn metadata_from_connector(id: String, connector: &Connector) -> ConnectionMetadata {
         let (metadata, catalog) = match &connector.config {
             Type::ObjectStore(c) => (ObjectStoreBackend::metadata(), Some(c.store.url())),
+            #[cfg(feature = "database")]
+            #[cfg_attr(not(feature = "clickhouse"), allow(unused))]
             Type::Database(c) => {
-                let metadata = match c.driver {
-                    DatabaseType::ClickHouse(_) => ClickHouseBackend::metadata(),
+                #[allow(unused_mut)]
+                let mut metadata =
+                    BackendMetadata::new(ConnectionKind::Database).with_capabilities(vec![]);
+                #[allow(unused_mut)]
+                let mut catalog = None;
+
+                #[cfg(feature = "clickhouse")]
+                #[cfg_attr(feature = "clickhouse", allow(clippy::single_match))]
+                match &c.driver {
+                    DatabaseType::ClickHouse(_) => {
+                        metadata = ClickHouseBackend::metadata();
+                        catalog = Some(CLICKHOUSE_CATALOG.to_string());
+                    }
                     #[allow(unreachable_patterns)]
-                    _ => BackendMetadata::new(ConnectionKind::Database).with_capabilities(vec![]),
-                };
-                (metadata, Some(CLICKHOUSE_CATALOG.to_string()))
+                    _ => {}
+                }
+
+                (metadata, catalog)
             }
         };
 
@@ -226,6 +244,7 @@ pub mod generic {
                 Type::ObjectStore(config) => {
                     Arc::new(ObjectStoreBackend::try_new(id, &connector.name, &config)?)
                 }
+                #[cfg(feature = "database")]
                 Type::Database(config) => {
                     let mut pool = config.pool;
                     // Ensure connection does not create a pool
@@ -239,7 +258,9 @@ pub mod generic {
                             .or(self.options.max_pool_size);
                     }
 
+                    #[allow(unreachable_code)]
                     match config.driver {
+                        #[cfg(feature = "clickhouse")]
                         DatabaseType::ClickHouse(clickhouse_conf) => {
                             let backend = ClickHouseBackend::try_new(
                                 id,

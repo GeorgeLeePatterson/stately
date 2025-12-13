@@ -73,7 +73,7 @@ pub struct TlsOptions {
 /// Default implementations will be provided and over time the list will grow. For that reason, this
 /// enum is marked as `non_exhaustive`.
 #[non_exhaustive]
-#[cfg_attr(not(feature = "clickhouse"), expect(missing_copy_implementations))]
+#[cfg_attr(not(feature = "clickhouse"), allow(missing_copy_implementations))]
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, utoipa::ToSchema)]
 #[cfg_attr(feature = "strum", derive(strum_macros::AsRefStr))]
 #[serde(rename_all = "snake_case")]

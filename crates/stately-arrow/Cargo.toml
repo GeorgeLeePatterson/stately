@@ -19,7 +19,7 @@ object-store = ["dep:object_store"]
 database = []
 clickhouse = ["database", "dep:clickhouse-datafusion"]
 
-registry = ["clickhouse", "object-store", "dep:tokio", "dep:uuid"]
+registry = ["object-store", "dep:tokio", "dep:uuid"]
 
 [dependencies]
 async-trait = "0.1"
