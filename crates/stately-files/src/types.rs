@@ -15,6 +15,12 @@ pub struct FileListQuery {
     pub path: Option<String>,
 }
 
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct FileDownloadQuery {
+    /// Optional specific version UUID. If not provided, returns the latest version.
+    pub version: Option<String>,
+}
+
 #[derive(Debug, Serialize, ToSchema, ToResponse)]
 pub struct FileUploadResponse {
     /// Whether the operation was successful

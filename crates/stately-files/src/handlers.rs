@@ -1,20 +1,25 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
+use axum::body::Body;
 use axum::extract::{Multipart, Query, State};
-use axum::response::Json;
-use tokio::fs;
+use axum::http::header;
+use axum::response::{Json, Response};
+use tokio::fs::{self, File};
 use tokio::io::AsyncWriteExt;
+use tokio_util::io::ReaderStream;
 
 use super::api::FileState;
 use super::error::{Error, Result};
-use super::types::{FileListQuery, FileListResponse, FileSaveRequest, FileUploadResponse};
+use super::path::VersionedPath;
+use super::types::{
+    FileDownloadQuery, FileListQuery, FileListResponse, FileSaveRequest, FileUploadResponse,
+};
 use super::utils;
 use crate::settings::{Dirs, IGNORE_FILES, UPLOAD_DIR, VERSION_DIR};
 use crate::types::{FileEntryType, FileInfo, FileVersion};
 
 // TODO: Remove - notes
 //   * Upload is for managed files, add handler for uploading *anywhere*
-//   * Add 'read' apis, to get content, multipart if large.
 
 /// Upload a file to the data directory
 ///
@@ -287,10 +292,9 @@ async fn save(name: &str, data: &[u8], base: Option<&Dirs>) -> Result<Json<FileU
 
     // Write file
     let mut file =
-        fs::File::create(&file_path).await.map_err(utils::map_file_err("Failed to create file"))?;
+        File::create(&file_path).await.map_err(utils::map_file_err("Failed to create file"))?;
     file.write_all(data).await.map_err(utils::map_file_err("Failed to write file"))?;
     file.flush().await.map_err(utils::map_file_err("Failed to flush file"))?;
-    // info!("File saved: {file_path:?}");
 
     Ok(Json(FileUploadResponse {
         uuid:      uuid.to_string(),
@@ -298,4 +302,164 @@ async fn save(name: &str, data: &[u8], base: Option<&Dirs>) -> Result<Json<FileU
         path:      name.to_string(),
         full_path: file_path.to_string_lossy().to_string(),
     }))
+}
+
+// ================================================================================================
+// Download handlers
+// ================================================================================================
+
+/// Download a file from the cache directory
+///
+/// Returns the raw file content with appropriate Content-Type header.
+/// No version resolution is performed - the path is used directly.
+///
+/// # Errors
+/// - `Error::NotFound` if the file does not exist
+/// - `Error::Internal` if the file could not be read
+#[utoipa::path(
+    get,
+    path = "/file/cache/{path}",
+    params(
+        ("path" = String, Path, description = "Path to file relative to cache directory")
+    ),
+    responses(
+        (status = 200, description = "File content", content_type = "application/octet-stream"),
+        (status = 404, description = "File not found", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
+    ),
+    tag = "files"
+)]
+pub async fn download_cache(
+    State(state): State<FileState>,
+    axum::extract::Path(path): axum::extract::Path<String>,
+) -> Result<Response<Body>> {
+    let base = state.base.as_ref().unwrap_or(Dirs::get());
+    let sanitized = utils::sanitize_path(&path);
+    let file_path = base.cache.join(sanitized);
+
+    stream_file(file_path).await
+}
+
+/// Download a file from the data directory
+///
+/// Returns the raw file content with appropriate Content-Type header.
+/// No version resolution is performed - the path is used directly.
+///
+/// # Errors
+/// - `Error::NotFound` if the file does not exist
+/// - `Error::Internal` if the file could not be read
+#[utoipa::path(
+    get,
+    path = "/file/data/{path}",
+    params(
+        ("path" = String, Path, description = "Path to file relative to data directory")
+    ),
+    responses(
+        (status = 200, description = "File content", content_type = "application/octet-stream"),
+        (status = 404, description = "File not found", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
+    ),
+    tag = "files"
+)]
+pub async fn download_data(
+    State(state): State<FileState>,
+    axum::extract::Path(path): axum::extract::Path<String>,
+) -> Result<Response<Body>> {
+    let base = state.base.as_ref().unwrap_or(Dirs::get());
+    let sanitized = utils::sanitize_path(&path);
+    let file_path = base.data.join(sanitized);
+
+    stream_file(file_path).await
+}
+
+/// Download a file from the uploads directory
+///
+/// Returns the raw file content with appropriate Content-Type header.
+/// Automatically resolves to the latest version unless a specific version UUID is provided.
+///
+/// # Errors
+/// - `Error::NotFound` if the file does not exist
+/// - `Error::Internal` if the file could not be read
+#[utoipa::path(
+    get,
+    path = "/file/upload/{path}",
+    params(
+        ("path" = String, Path, description = "Path to versioned file relative to uploads directory"),
+        ("version" = Option<String>, Query, description = "Optional specific version UUID. If not provided, returns the latest version.")
+    ),
+    responses(
+        (status = 200, description = "File content", content_type = "application/octet-stream"),
+        (status = 404, description = "File not found", body = stately::ApiError),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
+    ),
+    tag = "files"
+)]
+pub async fn download_upload(
+    State(state): State<FileState>,
+    axum::extract::Path(path): axum::extract::Path<String>,
+    Query(params): Query<FileDownloadQuery>,
+) -> Result<Response<Body>> {
+    let base = state.base.as_ref().unwrap_or(Dirs::get());
+    let sanitized = utils::sanitize_path(&path);
+    let uploads_dir = base.data.join(UPLOAD_DIR);
+
+    let file_path = if let Some(version) = params.version {
+        // Specific version requested
+        uploads_dir.join(&sanitized).join(VERSION_DIR).join(version)
+    } else {
+        // Resolve to latest version
+        let versioned = VersionedPath::new(sanitized.to_string_lossy().to_string());
+        versioned.resolve(&uploads_dir).map_err(|e| {
+            if e.kind() == std::io::ErrorKind::NotFound {
+                Error::NotFound(format!("File not found: {path}"))
+            } else {
+                Error::Internal(format!("Failed to resolve file: {e}"))
+            }
+        })?
+    };
+
+    stream_file(file_path).await
+}
+
+/// Stream a file as an HTTP response with appropriate headers
+///
+/// # Errors
+/// - Returns an error if the file does not exist or is not a file.
+pub async fn stream_file(file_path: PathBuf) -> Result<Response<Body>> {
+    // Check if file exists
+    if !file_path.exists() {
+        return Err(Error::NotFound(format!("File not found: {}", file_path.display())));
+    }
+
+    // Ensure it's a file, not a directory
+    let metadata = fs::metadata(&file_path)
+        .await
+        .map_err(utils::map_file_err("Failed to read file metadata"))?;
+
+    if !metadata.is_file() {
+        return Err(Error::BadRequest(format!("Path is not a file: {}", file_path.display())));
+    }
+
+    // Determine content type from extension
+    let content_type = mime_guess::from_path(&file_path).first_or_octet_stream().to_string();
+
+    // Open file for streaming
+    let file = File::open(&file_path).await.map_err(utils::map_file_err("Failed to open file"))?;
+
+    // Create a stream from the file
+    let stream = ReaderStream::new(file);
+    let body = Body::from_stream(stream);
+
+    // Extract filename for Content-Disposition header
+    let filename = file_path.file_name().and_then(|n| n.to_str()).unwrap_or("download");
+
+    // Build response with headers
+    let response = Response::builder()
+        .header(header::CONTENT_TYPE, content_type)
+        .header(header::CONTENT_LENGTH, metadata.len())
+        .header(header::CONTENT_DISPOSITION, format!("attachment; filename=\"{filename}\""))
+        .body(body)
+        .map_err(|e| Error::Internal(format!("Failed to build response: {e}")))?;
+
+    Ok(response)
 }

@@ -41,6 +41,14 @@ impl utoipa::OpenApi for OpenApiDoc {
             .response_from::<ListSummary>()
             .response_from::<TableSummary>();
 
+        // Registry feature schemas
+        #[cfg(feature = "registry")]
+        {
+            use crate::registry::generic::{Connector, Type};
+
+            components = components.schema_from::<Connector>().schema_from::<Type>();
+        }
+
         // Database feature schemas
         #[cfg(feature = "database")]
         {

@@ -12,7 +12,9 @@ homepage.workspace = true
 documentation.workspace = true
 
 [dependencies]
+mime_guess = "2"
 shellexpand = "3"
+tokio-util = { version = "0.7", features = ["io"] }
 
 stately = { path = "../stately", features = ["axum"] }
 

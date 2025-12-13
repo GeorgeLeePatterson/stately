@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 use super::path::{RelativePath, UserDefinedPath};
 use super::types::{
-    FileEntryType, FileInfo, FileListQuery, FileListResponse, FileSaveRequest, FileUploadResponse,
-    FileVersion,
+    FileDownloadQuery, FileEntryType, FileInfo, FileListQuery, FileListResponse, FileSaveRequest,
+    FileUploadResponse, FileVersion,
 };
 use crate::path::VersionedPath;
 use crate::settings::Dirs;
@@ -41,6 +41,9 @@ macro_rules! from_ref {
         super::handlers::upload,
         super::handlers::save_file,
         super::handlers::list_files,
+        super::handlers::download_cache,
+        super::handlers::download_data,
+        super::handlers::download_upload,
     ),
     components(
         responses(
@@ -54,6 +57,7 @@ macro_rules! from_ref {
             FileEntryType,
             FileInfo,
             FileListQuery,
+            FileDownloadQuery,
             FileSaveRequest,
             FileVersion,
             FileEntryType,
