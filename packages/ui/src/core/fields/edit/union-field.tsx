@@ -127,18 +127,21 @@ export function UnionEdit<Schema extends Schemas = Schemas>({
 
   return (
     <div className="space-y-3 border rounded-md p-2 min-w-0">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 max-w-full min-w-0">
         <Select onValueChange={handleVariantChange} value={selectedIndex?.toString() ?? ''}>
-          <SelectTrigger id={formId}>
+          <SelectTrigger className="max-w-full" id={formId}>
             <SelectValue placeholder={`Select ${label || 'variant'}...`} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-w-[80dvw] overflow-hidden">
             {node.variants.map((variant, index) => (
               <SelectItem
+                className="flex flex-nowrap max-w-full overflow-hidden"
                 key={`${variant.label ?? variant.schema.nodeType}-${index}`}
                 value={index.toString()}
               >
-                <span className="block truncate">{generateVariantLabel(variant, index)}</span>
+                <span className="flex-1 shrink-0 truncate p-r-4">
+                  {generateVariantLabel(variant, index)}
+                </span>
               </SelectItem>
             ))}
           </SelectContent>

@@ -1,11 +1,12 @@
 import type { CodegenPlugin, CodegenPluginContext } from '@stately/codegen';
 import { FilesNodeType } from './schema.js';
 
-const REQUIRED_DIRS = ['cache', 'data', 'upload', 'config'];
+const REQUIRED_DIRS = ['cache', 'data', 'upload'];
 
 const deref = (schema: any, pluginCtx: CodegenPluginContext) => {
   if (!schema) return null;
-  return schema.$ref ? (pluginCtx.resolveRef(schema.$ref) ?? null) : schema;
+  if (schema.$ref) return pluginCtx.resolveRef(schema.$ref) ?? null;
+  return schema;
 };
 
 const hasDirPathShape = (schema: any) => {
@@ -33,9 +34,9 @@ const extractDirValues = (variants: any[]): string[] =>
 
 const isRelativePathObject = (schema: any, ctx: CodegenPluginContext) => {
   const resolved = deref(schema, ctx);
-  if (!resolved?.oneOf || resolved.oneOf.length !== 4) return false;
+  if (!resolved?.oneOf || resolved.oneOf.length !== REQUIRED_DIRS.length) return false;
   const variants = resolved.oneOf.map((variant: any) => deref(variant, ctx)).filter(Boolean);
-  if (variants.length !== 4) return false;
+  if (variants.length !== REQUIRED_DIRS.length) return false;
   if (!variants.every(hasDirPathShape)) return false;
   const dirValues = extractDirValues(variants);
   return REQUIRED_DIRS.every(dir => dirValues.includes(dir));

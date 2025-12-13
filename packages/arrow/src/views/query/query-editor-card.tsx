@@ -41,7 +41,7 @@ export function QueryEditorCard({
   Omit<QueryEditorProps, 'value' | 'onChange'> &
   Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
   return (
-    <Card {...rest} className={cn(['query-editor-card gap-4 min-h-fit', rest?.className])}>
+    <Card {...rest} className={cn('query-editor-card gap-4 min-h-fit', rest?.className)}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 justify-between">
           <span className="flex items-center gap-2">
