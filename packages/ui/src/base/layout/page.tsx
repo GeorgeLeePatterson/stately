@@ -12,15 +12,19 @@ export function Page({ children, ...rest }: PageProps) {
     <div
       className={cn([
         'stately-page',
-        'grid grid-rows-[auto_1fr] h-full gap-4 min-w-0 py-4',
-        '@md/stately:px-4 @lg/stately-main:px-6',
-        'px-2 md:px-6 lg:px-8 py-4',
+        'grid grid-rows-[auto_1fr] h-full min-w-0 py-4 gap-4',
+        // Small (default)
+        'px-2',
+        // Medium
+        'md:px-6 @md/stately:px-4',
+        // Large
+        'lg:px-8 @lg/stately-main:px-6',
       ])}
     >
       <PageHeader {...rest} />
       <div
         className={cn([
-          'stately-page-content',
+          'stately-page-content @container/statelycontent',
           'flex flex-col flex-1',
           'w-full h-full min-w-0 min-h-full',
         ])}

@@ -16,13 +16,7 @@ import { ChevronRight, ListFilter, Search, X } from 'lucide-react';
 import { useCallback, useId, useState } from 'react';
 import { AnyIsLoading } from '@/components/any-is-loading';
 import { formatBytes, isSearchEnabled } from '@/lib/utils';
-import type {
-  ConnectionKind,
-  ConnectionMetadata,
-  ConnectionSearchQuery,
-  ListSummary,
-  TableSummary,
-} from '@/types/api';
+import type { ConnectionKind, ConnectionSearchQuery, ListSummary, TableSummary } from '@/types/api';
 
 const normalizeSummaryItem = (item: string | TableSummary) => ({
   name: typeof item === 'string' ? item : item.name,
@@ -47,7 +41,6 @@ const ConnectorItemRow = ({ item: { name, rows, size_bytes } }: { item: TableSum
 
 // TODO (Ext): Allow plugin extension
 export interface ConnectorSummarySearchProps {
-  kind?: ConnectionKind;
   placeholder?: string;
   search?: string;
   onSearch: (search?: string) => void;
@@ -67,7 +60,7 @@ export function ConnectorSummarySearch({
       className="@container/summaryfilter flex flex-row items-center gap-2"
       disabled={isDisabled}
     >
-      <InputGroup>
+      <InputGroup className="bg-background">
         {/* Database or Path filter */}
         <InputGroupInput
           aria-label="Database"
@@ -106,7 +99,7 @@ export function ConnectorSummarySearch({
 
 // TODO (Ext): Allow plugin extension
 export interface ConnectorSummaryProps {
-  connector?: ConnectionMetadata;
+  connectorKind: ConnectionKind;
   summary?: ListSummary;
   isLoading?: boolean;
   onSearch: (search: ConnectionSearchQuery) => void;
@@ -114,7 +107,7 @@ export interface ConnectorSummaryProps {
 }
 
 export function ConnectorSummary({
-  connector,
+  connectorKind,
   summary,
   isLoading,
   onSearch,
@@ -127,11 +120,12 @@ export function ConnectorSummary({
   const formId = useId();
 
   // TODO (Ext): Allow plugin extension
-  const searchEnabled = isSearchEnabled(summary, connector);
+  const searchEnabled = isSearchEnabled(summary, connectorKind);
 
   const handleSearch = useCallback(
     (needle?: string) => {
       if (!searchEnabled && needle) return;
+      setSearch(needle);
       onSearch({ search: needle });
     },
     [searchEnabled, onSearch],
@@ -140,16 +134,29 @@ export function ConnectorSummary({
   const handleSelectItem = useCallback(
     (type: ListSummary['type'], name: string) => {
       onSelectItem(type, name);
-      setSearch(name);
       handleSearch(name);
     },
     [handleSearch, onSelectItem],
   );
 
-  if (!summary) return <div className="p-2 text-center text-xs text-muted-foreground">Empty</div>;
+  if (!summary)
+    return (
+      <div
+        {...rest}
+        className={cn(['h-full p-2 text-center text-xs text-muted-foreground', rest?.className])}
+      >
+        Empty
+      </div>
+    );
+
   if (summary.summary.length === 0)
     return (
-      <div className="p-2 text-center text-xs text-muted-foreground">List returned no items.</div>
+      <div
+        {...rest}
+        className={cn(['p-2 text-center text-xs text-muted-foreground', rest?.className])}
+      >
+        List returned no items.
+      </div>
     );
 
   const filteredItems = summary.summary
@@ -163,7 +170,7 @@ export function ConnectorSummary({
     .map(normalizeSummaryItem);
 
   let searchPlaceholder = 'Search';
-  switch (typeof connector?.metadata.kind === 'string' ? (connector.metadata.kind ?? '') : '') {
+  switch (typeof connectorKind === 'string' ? (connectorKind ?? '') : '') {
     case 'database':
       searchPlaceholder = 'Search Databases';
       break;
@@ -178,14 +185,28 @@ export function ConnectorSummary({
       {...rest}
       className={cn(['h-full max-h-full space-y-2', 'flex flex-col', rest?.className])}
     >
-      {searchEnabled && (
+      {searchEnabled ? (
         <ConnectorSummarySearch
-          isDisabled={isLoading}
+          isDisabled={isLoading || !searchEnabled}
           onSearch={setSearch}
           onSubmit={() => handleSearch(search)}
           placeholder={searchPlaceholder}
           search={search}
         />
+      ) : (
+        <div className="flex-auto flex gap-2 h-9 items-center px-4 overflow-hidden">
+          <span className="flex-auto truncate">Search: {search || ''}</span>
+          <Button
+            className="cursor-pointer"
+            disabled={!search}
+            onClick={() => handleSearch(undefined)}
+            size="icon-sm"
+            type="button"
+            variant="ghost"
+          >
+            <X className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       )}
 
       <div className="connector-summary flex flex-col h-full space-y-2">
@@ -201,7 +222,7 @@ export function ConnectorSummary({
           </ButtonGroupText>
 
           {/* List search input */}
-          <InputGroup className="relative">
+          <InputGroup className="relative bg-background">
             <InputGroupAddon>
               <InputGroupText>
                 <Search className="h-3.5 w-3.5 text-muted-foreground" />
@@ -224,7 +245,7 @@ export function ConnectorSummary({
         </ButtonGroup>
 
         {/* Results */}
-        <ScrollArea className="flex-auto min-h-12 max-h-dvh rounded-lg border">
+        <ScrollArea className="flex-auto min-h-8 max-h-dvh rounded-lg border">
           {filteredItems.length === 0 ? (
             <div className="p-2 text-center text-xs text-muted-foreground">No items found</div>
           ) : (

@@ -59,7 +59,6 @@ export function ConnectorSelectCard({
         {error && <Note message={error} mode="error" />}
 
         {/* Connector dropdown */}
-        {/* TODO: Remove - Move this to components */}
         <div className="flex flex-col">
           <Select onValueChange={handleSelect} value={currentConnector?.id || ''}>
             <SelectTrigger

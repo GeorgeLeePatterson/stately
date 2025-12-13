@@ -90,17 +90,52 @@ where
     ///
     /// # Errors
     /// - If an error occurs while preparing the session.
-    pub async fn register(&self, connector_id: &str) -> Result<ConnectionMetadata> {
+    pub async fn register(&self, connector_id: &str) -> Result<Vec<ConnectionMetadata>> {
         let connector = self.registry.get(connector_id).await?;
         connector
             .prepare_session(self.session.as_session())
             .await
             .inspect_err(|error| error!(?error, connector_id, "Error preparing session"))?;
-        Ok(connector.connection().clone())
+        return self.list_registered().await;
     }
 
     /// List catalogs exposed by this connector.
-    pub fn list_catalogs(&self) -> Vec<String> { self.session().catalog_names() }
+    #[allow(unused_mut)]
+    pub async fn list_catalogs(&self) -> Vec<String> {
+        // First check for any object stores
+        let session = self.session();
+        let mut catalogs = session.catalog_names();
+
+        #[cfg(feature = "object-store")]
+        {
+            let connectors = self
+                .list_connectors()
+                .await
+                .inspect_err(|error| error!(?error, "Error listing connectors"))
+                .unwrap_or_default();
+            for connector in connectors {
+                if connector.metadata.kind == crate::ConnectionKind::ObjectStore
+                    && let Some(catalog) = connector.catalog.as_ref()
+                {
+                    use datafusion::execution::object_store::ObjectStoreUrl;
+
+                    let Ok(url) = ObjectStoreUrl::parse(catalog) else {
+                        continue;
+                    };
+
+                    if session
+                        .runtime_env()
+                        .object_store(&url)
+                        .is_ok()
+                    {
+                        catalogs.push(catalog.to_string());
+                    }
+                }
+            }
+        }
+
+        catalogs
+    }
 
     /// List available connectors.
     ///
@@ -108,6 +143,14 @@ where
     /// - If an error occurs while listing connectors.
     pub async fn list_connectors(&self) -> Result<Vec<ConnectionMetadata>> {
         self.registry.list().await
+    }
+
+    /// List available connectors.
+    ///
+    /// # Errors
+    /// - If an error occurs while listing connectors.
+    pub async fn list_registered(&self) -> Result<Vec<ConnectionMetadata>> {
+        self.registry.registered().await
     }
 
     /// List databases, or tables/files for a connector, if supported.

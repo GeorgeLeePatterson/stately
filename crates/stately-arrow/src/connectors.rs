@@ -9,8 +9,9 @@ use crate::error::{Error, Result};
 /// Registry responsible for supplying connectors to the viewer.
 #[async_trait]
 pub trait ConnectorRegistry: Send + Sync {
-    async fn list(&self) -> Result<Vec<ConnectionMetadata>>;
     async fn get(&self, id: &str) -> Result<Arc<dyn Backend>>;
+    async fn list(&self) -> Result<Vec<ConnectionMetadata>>;
+    async fn registered(&self) -> Result<Vec<ConnectionMetadata>>;
 }
 
 /// Runtime behaviour for a connector that can be queried via the viewer.
@@ -25,6 +26,13 @@ pub trait Backend: Send + Sync {
     /// List tables/files/etc exposed by this connector.
     async fn list(&self, _database: Option<&str>) -> Result<ListSummary> {
         Err(Error::UnsupportedConnector("Connector does not support table listing".into()))
+    }
+}
+
+/// Helper impl
+impl std::fmt::Debug for &dyn Backend {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Backend").field("connection", self.connection()).finish()
     }
 }
 

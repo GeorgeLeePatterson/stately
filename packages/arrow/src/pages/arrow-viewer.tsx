@@ -1,8 +1,16 @@
 import { Layout } from '@stately/ui';
 import { cn, devLog, messageFromError } from '@stately/ui/base/lib/utils';
-import { useSidebar } from '@stately/ui/base/ui';
-import { Binary, SquareSigma, Timer } from 'lucide-react';
-import { type ButtonHTMLAttributes, useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { Button, useSidebar } from '@stately/ui/base/ui';
+import { Binary, PanelLeftOpen, PanelRightOpen, SquareSigma, Timer } from 'lucide-react';
+import {
+  type ButtonHTMLAttributes,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { QueryEditorStat } from '@/components/query-editor';
 import { useConnectors } from '@/hooks/use-connectors';
 import { useStreamingQuery } from '@/hooks/use-streaming-query';
@@ -12,7 +20,9 @@ import type { ConnectionMetadata, ListSummary } from '@/types/api';
 import { ConnectorMenuCard, ConnectorsRegisterCard } from '@/views/connectors';
 import { DEFAULT_RESULTS_HREF_ID, QueryEditorCard, QueryResultsCard } from '@/views/query';
 
-// devLog.debug('Arrow', 'handleSelectConnectorItem: ', { sql, type });
+type ButtonClickArg = Parameters<
+  Exclude<ButtonHTMLAttributes<HTMLButtonElement>['onClick'], undefined>
+>[0];
 
 export interface ArrowViewerProps {
   /**
@@ -32,6 +42,23 @@ export interface ArrowViewerProps {
 function Root(props: ArrowViewerProps) {
   const [sql, setSql] = useState('');
 
+  const [sidebarOpened, setSidebarOpened] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // Click-away listener for sidebar overlay
+  useEffect(() => {
+    if (!sidebarOpened) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(e.target as Node)) {
+        setSidebarOpened(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [sidebarOpened]);
+
   // Connectors
   const { connectors, connectorsQuery, currentConnector, setConnectorId } = useConnectors();
 
@@ -43,15 +70,14 @@ function Root(props: ArrowViewerProps) {
   const { snapshot, query, execute, isPending, isStreaming, isActive, restart } =
     useStreamingQuery(props);
 
+  // UI friendly table view
   const view = useMemo(() => tableToDataView(snapshot.table), [snapshot.table]);
 
+  // Normalize all loading state
   const isExecuting = useMemo(() => isPending || isStreaming, [isPending, isStreaming]);
 
   const handleRun = useCallback(
-    (
-      _?: Parameters<Exclude<ButtonHTMLAttributes<HTMLButtonElement>['onClick'], undefined>>[0],
-      s?: string,
-    ) => {
+    (_?: ButtonClickArg, s?: string) => {
       const sqlCommand = s || sql;
       devLog.debug('Arrow', 'handleRun', { id: currentConnector?.id, sqlCommand });
       if (!sqlCommand.trim()) return;
@@ -68,9 +94,8 @@ function Root(props: ArrowViewerProps) {
   );
 
   // Connector + Query
+  // TODO (Ext): Allow plugin extension - Plugin can provide transformer
   const handleSelectConnectorItem = useCallback((identifier: string, type: ListSummary['type']) => {
-    // TODO (Ext): Allow plugin extension - Plugin can provide transformer
-
     if (type === 'databases') {
       setSql(
         'SELECT * FROM information_schema.tables ' +
@@ -78,6 +103,7 @@ function Root(props: ArrowViewerProps) {
       );
     } else {
       setSql(`SELECT * FROM ${identifier} LIMIT 500`);
+      setSidebarOpened(false);
     }
   }, []);
 
@@ -94,67 +120,94 @@ function Root(props: ArrowViewerProps) {
     ];
   }, [snapshot]);
 
-  // TODO: Remove
-  devLog.debug('====> ArrowViewer: ', {
-    queryData: query.data,
-    queryError: query.error,
-    snapshot,
-    view,
-  });
-
   return (
     <Layout.Page breadcrumbs={[{ label: 'Viewer' }]}>
       <div
         className={cn(
           'arrow-viewer @container/arrowviewer',
-          'flex flex-col gap-4',
-          'h-full w-full min-w-0',
+          'flex-[1_0_0] h-full w-full min-w-0 overflow-hidden',
+          'flex gap-4',
         )}
       >
-        {/* Top */}
         <div
           className={cn(
-            'gap-4 max-h-[50dvh] min-h-fit',
-            // Default (sm) show as 2 columns
-            'flex flex-col',
-            // Larger show as flex side by side
-            '@md/arrowviewer:grid @md/arrowviewer:grid-cols-3',
+            'relative h-full shrink-0',
+            // Small default width: just enough for button
+            'w-12',
+            // Medium+ widths
+            '@2xl/arrowviewer:w-1/4 @2xl/arrowviewer:min-w-fit',
+            '@7xl/arrowviewer:w-1/3',
           )}
+          ref={sidebarRef}
         >
-          {/* Left */}
-          <div className={cn('gap-4', 'flex flex-col')}>
-            {/* Catalogs and Registered Connectors */}
-            {/*
-              TODO:
-              1. Object store doesn't appear
-              2. Querying doesn't show the connector query is registered
-              */}
-            <ConnectorsRegisterCard
-              catalogKey={isActive ? sql : ''}
-              connectors={connectors}
-              currentConnector={currentConnector}
-              onClickConnector={setConnectorId}
-            />
+          <div
+            className={cn(
+              // layout
+              'flex flex-row flex-nowrap gap-2',
+              'h-full',
+              'bg-background border-border rounded-lg',
+              'transition-all delay-150 duration-200 ease-out',
 
-            {/* Connector menu */}
-            <ConnectorMenuCard
-              className={cn('@md/arrowviewer:flex-auto')}
-              connectors={connectors}
-              currentConnector={currentConnector}
-              error={connectorsError}
-              isLoading={connectorsQuery.isLoading}
-              onSelect={handleSelectConnector}
-              onSelectItem={handleSelectConnectorItem}
-            />
+              // scrolling for the content area
+              // NOTE: outer container should NOT clip horizontally so we DON’T put overflow here
+
+              // positioning:
+              // - small: overlay
+              'absolute top-0 left-0 z-10 p-2 border',
+              // - large: inline
+              '@2xl/arrowviewer:static @2xl/arrowviewer:p-0 @2xl/arrowviewer:border-0',
+
+              // width behavior:
+              sidebarOpened
+                ? // small open: full-width overlay
+                  'w-[calc(100dvw-1rem)] min-w-fit shadow-lg @2xl/arrowviewer:w-full'
+                : // small closed: narrow
+                  'w-12 @2xl/arrowviewer:w-full',
+            )}
+          >
+            {/* Toggle button (always visible, but mainly useful on small) */}
+            <Button
+              className="cursor-pointer shrink-0 @2xl/arrowviewer:hidden"
+              onClick={() => setSidebarOpened(!sidebarOpened)}
+              size="icon-sm"
+              variant="secondary"
+            >
+              {sidebarOpened ? <PanelRightOpen /> : <PanelLeftOpen />}
+            </Button>
+
+            {/* Single instance of the left column content */}
+            <div
+              className={cn(
+                'flex flex-col gap-2 w-full h-full overflow-y-auto',
+                // On small screens, hide content when sidebar is closed
+                !sidebarOpened && 'hidden @2xl/arrowviewer:flex',
+              )}
+            >
+              <ConnectorsRegisterCard
+                catalogKey={isActive ? sql : ''}
+                connectors={connectors}
+                currentConnector={currentConnector}
+                onClickConnector={setConnectorId}
+              />
+
+              <ConnectorMenuCard
+                className="flex-auto"
+                connectors={connectors}
+                currentConnector={currentConnector}
+                error={connectorsError}
+                isLoading={connectorsQuery.isLoading}
+                onSelect={handleSelectConnector}
+                onSelectItem={handleSelectConnectorItem}
+              />
+            </div>
           </div>
+        </div>
 
+        {/* Right - always takes remaining space */}
+        <div className={cn('flex-1 min-w-0 h-full overflow-y-auto', 'flex flex-col gap-4')}>
           {/* Query */}
-          {/*
-            TODO:
-            1. Bug - Clicking on execute after running a query (but not changing it) removes all results
-            */}
           <QueryEditorCard
-            className={cn('@md/arrowviewer:col-span-2')}
+            className={cn('min-h-fit max-h-1/2')}
             error={messageFromError(query?.error)}
             isActive={isActive}
             isExecuting={query.isFetching}
@@ -165,16 +218,16 @@ function Root(props: ArrowViewerProps) {
             sql={sql}
             stats={queryStats}
           />
-        </div>
 
-        {/* Results */}
-        <QueryResultsCard
-          className={cn('w-full min-w-0')}
-          data={view}
-          error={messageFromError(query.error?.message)}
-          hrefId={resultsHrefId}
-          isLoading={isExecuting}
-        />
+          {/* Results */}
+          <QueryResultsCard
+            className={cn('flex-auto w-full min-w-0 max-h-full')}
+            data={view}
+            error={messageFromError(query.error?.message)}
+            hrefId={resultsHrefId}
+            isLoading={isExecuting}
+          />
+        </div>
       </div>
     </Layout.Page>
   );

@@ -27,9 +27,6 @@ export function TemporaryShow({
   }, [timeout]);
 
   useEffect(() => {
-    // TODO: Remove
-    console.debug('IsShowing: ', { isShowingRef, showKey });
-
     // If showKey is off, hide
     if (!showKey) {
       setIsShowing(false);

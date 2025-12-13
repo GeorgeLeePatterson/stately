@@ -16,6 +16,7 @@ import {
 import { PlugZap, SquareStack } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
+import { useListRegistered } from '@/hooks';
 import { useListCatalogs } from '@/hooks/use-list-catalog';
 import { useRegisterConnection } from '@/hooks/use-register-connection';
 import type { ConnectionMetadata } from '@/types/api';
@@ -26,6 +27,7 @@ export interface ConnectorsRegisterCardProps {
   currentConnector?: ConnectionMetadata;
   connectors: ConnectionMetadata[];
   onClickConnector?: (id: string) => void;
+  isLoading?: boolean;
 }
 
 export function ConnectorsRegisterCard({
@@ -33,23 +35,10 @@ export function ConnectorsRegisterCard({
   currentConnector,
   connectors,
   onClickConnector,
+  isLoading,
   ...rest
 }: ConnectorsRegisterCardProps & React.HTMLAttributes<HTMLDivElement>) {
   const [open, setOpen] = useState(false);
-
-  // TODO: Remove - finish this logic
-  // const [objectStoreRegistered, setObjectStoreRegistered] = useState(
-  //   currentConnector?.metadata.kind === 'object_store',
-  // );
-
-  // Catalogs
-  const derivedCatalogKey = [catalogKey ?? '', currentConnector?.catalog ?? ''].join();
-  const catalogsQuery = useListCatalogs(derivedCatalogKey);
-
-  const catalogs = catalogsQuery.data ?? [];
-  const registered = connectors.filter(c => c.catalog && catalogs.includes(c.catalog));
-
-  const isObjectStoreRegistered = registered.some(r => r.metadata.kind === 'object_store');
 
   // Registering
   const registerMutation = useRegisterConnection();
@@ -57,7 +46,27 @@ export function ConnectorsRegisterCard({
     ? messageFromError(registerMutation.error) || 'Failed to register connection.'
     : undefined;
 
-  const isAnyLoading = catalogsQuery.isFetching || registerMutation.isPending;
+  const recentlyRegistered = registerMutation.data ?? [];
+
+  // Catalogs
+  const derivedCatalogKey = [catalogKey ?? '', currentConnector?.catalog ?? ''].join();
+  const catalogsQuery = useListCatalogs(derivedCatalogKey, !!isLoading);
+  const catalogs = catalogsQuery.data ?? [];
+
+  const currentCatalog = currentConnector?.catalog;
+  const currentKind = currentConnector?.metadata.kind;
+
+  const {
+    allRegistered,
+    registeredCatalogs,
+    query: registerQuery,
+  } = useListRegistered({ catalogs, disabled: !!isLoading, key: catalogKey, recentlyRegistered });
+
+  const isAnyLoading =
+    registerQuery.isFetching || catalogsQuery.isFetching || registerMutation.isPending;
+
+  const isCurrentCatalog = (c: string) =>
+    currentCatalog === c ? true : currentKind === 'object_store' && currentCatalog?.includes(c);
 
   const registerButton = (
     <DropdownMenuTrigger asChild>
@@ -88,7 +97,10 @@ export function ConnectorsRegisterCard({
           <CardTitle className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <SquareStack className="h-4 w-4" />
-              <span className="hidden @md/connectorregister:inline">Registered&nbsp;</span>Catalogs
+              <span>
+                <span className="hidden @md/connectorregister:inline">Registered&nbsp;</span>
+                Catalogs
+              </span>
             </div>
             {registerButton}
           </CardTitle>
@@ -98,48 +110,63 @@ export function ConnectorsRegisterCard({
           <div className="text-sm flex flex-wrap gap-2">
             {registerError && <Note message={registerError} mode="error" />}
 
-            {catalogs.map(c => (
-              <Badge key={`catalog-${c}`} variant="outline">
+            {/* Catalogs */}
+            {registeredCatalogs.catalogs.map(c => (
+              <Badge key={`catalog-${c}`} variant={isCurrentCatalog(c) ? 'default' : 'outline'}>
                 {c}
               </Badge>
             ))}
 
-            {/* Registered connections (derived from catalogs) */}
-            {/*{registered.map(c => (
-              <Fragment key={`connector-${c.id}`}>
-                {c.metadata.kind === 'object_store' ? (
-                  <Badge variant="secondary">object store</Badge>
-                ) : (
-                  <Badge asChild variant="default">
-                    <a href={`#${c.id}`} onClick={() => onClickConnector?.(c.id)}>
-                      {c.name}
-                    </a>
-                  </Badge>
-                )}
-              </Fragment>
-            ))}*/}
+            {/* Databases */}
+            {registeredCatalogs.database.map(c => (
+              <Badge key={`catalog-${c}`} variant={isCurrentCatalog(c) ? 'default' : 'secondary'}>
+                {c}
+              </Badge>
+            ))}
+
+            {/* Object store */}
+            {registeredCatalogs.object_store.map(c => (
+              <Badge
+                className={isCurrentCatalog(c) ? '' : 'bg-accent'}
+                key={`catalog-${c}`}
+                variant={isCurrentCatalog(c) ? 'default' : 'secondary'}
+              >
+                {c}
+              </Badge>
+            ))}
+
+            {/* Other */}
+            {registeredCatalogs.other.map(c => (
+              <Badge key={`catalog-${c}`} variant="outline">
+                {c}
+              </Badge>
+            ))}
           </div>
         </CardContent>
       </Card>
 
       {/* Register connector menu content */}
       <DropdownMenuContent>
-        {connectors.map(connection => (
-          <DropdownMenuCheckboxItem
-            checked={
-              registered.some(r => r.id === connection.id) ||
-              // If one object store is registered, then all object stores are registered
-              (isObjectStoreRegistered && connection.metadata.kind === 'object_store')
-            }
-            disabled={registerMutation.isPending || registered.some(r => r.id === connection.id)}
-            key={connection.id}
-            onCheckedChange={checked =>
-              checked ? registerMutation.mutate(connection.id) : checked
-            }
-          >
-            <ConnectionItem connection={connection} />
-          </DropdownMenuCheckboxItem>
-        ))}
+        {connectors.map(connection => {
+          const isRegistered =
+            allRegistered.some(c => c.id === connection.id) ||
+            // If one object store is registered, then all object stores are registered
+            (allRegistered.some(_ => connection.metadata.kind === 'object_store') &&
+              connection.metadata.kind === 'object_store');
+
+          return (
+            <DropdownMenuCheckboxItem
+              checked={isRegistered}
+              disabled={registerMutation.isPending || isRegistered}
+              key={connection.id}
+              onCheckedChange={checked =>
+                checked ? registerMutation.mutate(connection.id) : checked
+              }
+            >
+              <ConnectionItem connection={connection} />
+            </DropdownMenuCheckboxItem>
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );

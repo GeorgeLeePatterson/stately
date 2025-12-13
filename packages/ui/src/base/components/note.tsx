@@ -23,7 +23,7 @@ export function Note({
 }: {
   message: React.ReactNode;
   mode?: 'error' | 'warning' | 'info' | 'success' | 'note';
-}) {
+} & React.ComponentProps<typeof Alert>) {
   const Icon = modeIcons[mode];
   const color = modeColors[mode];
 

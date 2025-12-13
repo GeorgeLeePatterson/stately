@@ -42,7 +42,7 @@ where
     Ok(Json(connectors))
 }
 
-/// List all registered catalogs
+/// List all catalogs in `Datafusion`
 ///
 /// # Errors
 /// - Internal server error
@@ -61,7 +61,7 @@ pub(super) async fn list_catalogs<S>(
 where
     S: QuerySession,
 {
-    let catalogs = state.query_context.list_catalogs();
+    let catalogs = state.query_context.list_catalogs().await;
     debug!("{IDENT} Listed catalogs: {catalogs:?}");
     Ok(Json(catalogs))
 }
@@ -145,6 +145,34 @@ where
     Ok(Json(ConnectionDetailsResponse { connections }))
 }
 
+/// List all registered connections
+///
+/// # Errors
+/// - Internal server error
+#[utoipa::path(
+    get,
+    path = "/register",
+    tag = "arrow",
+    responses(
+        (
+            status = 200,
+            description = "List of registered connections",
+            body = Vec<ConnectionMetadata>
+        ),
+        (status = 500, description = "Internal server error", body = stately::ApiError)
+    )
+)]
+pub(super) async fn list_registered<S>(
+    State(state): State<QueryState<S>>,
+) -> Result<Json<Vec<ConnectionMetadata>>>
+where
+    S: QuerySession,
+{
+    let registered = state.query_context.list_registered().await?;
+    debug!("{IDENT} Listed registered connections: {registered:?}");
+    Ok(Json(registered))
+}
+
 /// Register a connector. Useful when federating queries since registration is lazy
 ///
 /// # Errors
@@ -154,11 +182,9 @@ where
     get,
     path = "/register/{connector_id}",
     tag = "arrow",
-    params(
-        ("connector_id" = String, Path, description = "Connector ID"),
-    ),
+    params(("connector_id" = String, Path, description = "Connector ID")),
     responses(
-        (status = 200, description = "Registered Connection", body = ConnectionMetadata),
+        (status = 200, description = "Registered Connections", body = Vec<ConnectionMetadata>),
         (status = 404, description = "Connector not found", body = stately::ApiError),
         (status = 500, description = "Internal server error", body = stately::ApiError)
     )
@@ -166,7 +192,7 @@ where
 pub(super) async fn register<S>(
     Path(connector_id): Path<String>,
     State(state): State<QueryState<S>>,
-) -> Result<Json<ConnectionMetadata>>
+) -> Result<Json<Vec<ConnectionMetadata>>>
 where
     S: QuerySession,
 {

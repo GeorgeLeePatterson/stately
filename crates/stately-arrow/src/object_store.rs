@@ -197,11 +197,6 @@ impl Backend for ObjectStoreBackend {
         let overwrote = previous.is_some();
         debug!(url = url.as_str(), overwrote, "Registered object store with session");
 
-        // TODO: Remove !!!
-        drop(session.runtime_env().object_store(url).map_err(|e| {
-            Error::Internal(format!("Failed to load registered object store: {e}"))
-        })?);
-
         // Flag that connection has been registered
         self.registered.store(true, Ordering::Release);
 

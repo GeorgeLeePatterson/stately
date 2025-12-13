@@ -73,7 +73,7 @@ export function QueryEditor({
 
   return (
     <div {...rest} className={cn('flex flex-col space-y-2', rest?.className)}>
-      <div className="flex flex-col flex-1">
+      <div className="@container/queryeditor flex flex-col flex-1 overflow-hidden">
         <Editor
           className="min-h-full flex-1"
           content={value}
@@ -89,17 +89,8 @@ export function QueryEditor({
               type="button"
               variant="outline"
             >
-              {isExecuting ? (
-                <>
-                  <Spinner className="h-4 w-4" />
-                  Running…
-                </>
-              ) : (
-                <>
-                  <TableIcon className="h-4 w-4" />
-                  Run Query
-                </>
-              )}
+              {isExecuting ? <Spinner className="h-4 w-4" /> : <TableIcon className="h-4 w-4" />}
+              Run&nbsp;<span className="hidden @sm/queryeditor:inline">Query</span>
             </Button>
           }
           supportedLanguages={['sql']}
@@ -108,27 +99,23 @@ export function QueryEditor({
 
       {/* Footer: Stats + custom content */}
       <div className="flex gap-2 justify-between">
-        {true && (
-          <>
-            {stats.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {stats.map((stat, i) => (
-                  <QueryStat
-                    // biome-ignore lint/suspicious/noArrayIndexKey: ''
-                    key={`${value}-${i}`}
-                    {...stat}
-                  />
-                ))}
-              </div>
-            )}
+        {stats.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {stats.map((stat, i) => (
+              <QueryStat
+                // biome-ignore lint/suspicious/noArrayIndexKey: ''
+                key={`${value}-${i}`}
+                {...stat}
+              />
+            ))}
+          </div>
+        )}
 
-            {/* Click to see results */}
-            {isActive && resultsHrefId && (
-              <Button asChild type="button" variant="link">
-                <a href={`#${resultsHrefId}`}>Go to Query Results</a>
-              </Button>
-            )}
-          </>
+        {/* Click to see results */}
+        {isActive && resultsHrefId && (
+          <Button asChild type="button" variant="link">
+            <a href={`#${resultsHrefId}`}>Go to Query Results</a>
+          </Button>
         )}
       </div>
     </div>

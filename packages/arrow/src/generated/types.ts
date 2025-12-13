@@ -10,7 +10,7 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List all registered catalogs
+         * List all catalogs in `Datafusion`
          * @description # Errors
          *     - Internal server error
          */
@@ -94,6 +94,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List all registered connections
+         * @description # Errors
+         *     - Internal server error
+         */
+        get: operations["list_registered"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/register/{connector_id}": {
         parameters: {
             query?: never;
@@ -143,6 +164,18 @@ export interface components {
          * @enum {string}
          */
         Capability: "execute_sql" | "list";
+        /**
+         * @description Compression options for `ClickHouse` tables.
+         * @enum {string}
+         */
+        ClickHouseCompression: "none" | "lz4" | "zstd";
+        /** @description Additional ClickHouse-specific configuration. */
+        ClickHouseConfig: {
+            compression?: null | components["schemas"]["ClickHouseCompression"];
+            settings?: {
+                [key: string]: string;
+            };
+        };
         /** @description Request for multiple connection details */
         ConnectionDetailsRequest: {
             /** @description IDs -> searches of each connector to list */
@@ -175,9 +208,39 @@ export interface components {
             metadata: components["schemas"]["BackendMetadata"];
             name: string;
         };
+        /** @description Common connection options shared by database connectors. */
+        ConnectionOptions: {
+            /**
+             * @description Whether the connector should validate connections before use
+             * @default false
+             */
+            check: boolean;
+            /** @description Endpoint, url, or path to the database */
+            endpoint: string;
+            /** @description Optional password for the database */
+            password?: string;
+            tls?: null | components["schemas"]["TlsOptions"];
+            /** @description Username used to connect to the database */
+            username: string;
+        };
         /** @description Query param for searching connections */
         ConnectionSearchQuery: {
             search?: string | null;
+        };
+        /**
+         * @description Supported databases for the default backend lineup.
+         *
+         *     Default implementations will be provided and over time the list will grow. For that reason, this
+         *     enum is marked as `non_exhaustive`.
+         */
+        Database: {
+            click_house: null | components["schemas"]["ClickHouseConfig"];
+        };
+        /** @description Configuration for database-backed connectors. */
+        DatabaseConfiguration: {
+            driver: components["schemas"]["Database"];
+            options: components["schemas"]["ConnectionOptions"];
+            pool?: components["schemas"]["PoolOptions"];
         };
         /** @description Summaries provided by listing */
         ListSummary: {
@@ -197,6 +260,54 @@ export interface components {
             /** @enum {string} */
             type: "files";
         };
+        /** @description Supported object store providers. */
+        ObjectStore: {
+            aws: components["schemas"]["ObjectStoreOptions"];
+        } | {
+            gcp: components["schemas"]["ObjectStoreOptions"];
+        } | {
+            azure: components["schemas"]["ObjectStoreOptions"];
+        } | {
+            local: components["schemas"]["ObjectStoreOptions"];
+        };
+        /** @description Configuration for an object store-backed connector. */
+        ObjectStoreConfiguration: {
+            /** @description The format to read/write within the store. */
+            format?: components["schemas"]["ObjectStoreFormat"];
+            /** @description Provider specific configuration for the store itself. */
+            store?: components["schemas"]["ObjectStore"];
+        };
+        /** @description Supported file formats for object-store connectors. */
+        ObjectStoreFormat: {
+            /** @description Apache Parquet format with optional key/value overrides. */
+            parquet: {
+                [key: string]: string;
+            } | null;
+        };
+        /** @description Provider-agnostic object store settings. */
+        ObjectStoreOptions: {
+            /** @description *Required* bucket name (or base directory for local stores). */
+            bucket: string;
+            /** @description Whether credentials should be resolved from environment variables. */
+            from_env?: boolean;
+            /** @description Additional provider-specific configuration parameters. */
+            options?: {
+                [key: string]: string;
+            };
+        };
+        /** @description Common configuration options shared across connector types. */
+        PoolOptions: {
+            /** Format: int32 */
+            connect_timeout?: number | null;
+            /**
+             * Format: int32
+             * @description Configure the maximum number of connections to the database. Note, not all connectors
+             *     support pools.
+             */
+            pool_size?: number | null;
+            /** Format: int32 */
+            transaction_timeout?: number | null;
+        };
         /** @description Request to execute a SQL query */
         QueryRequest: {
             /** @description ID of the connector to use */
@@ -204,6 +315,23 @@ export interface components {
             /** @description SQL query to execute (can use URL tables like `s3://bucket/path/*.parquet`) */
             sql: string;
         };
+        /**
+         * @description Newtype to protect secrets from being logged
+         *     A wrapper type for sensitive string data like passwords.
+         *
+         *     This type provides protection against accidental exposure of sensitive data
+         *     in logs, debug output, or error messages. The inner value is not displayed
+         *     in `Debug` implementations.
+         *
+         *     # Example
+         *     ```
+         *     use stately_arrow::database::Secret;
+         *
+         *     let password = Secret::new("my_password");
+         *     println!("{password:?}"); // Prints: Secret(*******)
+         *     ```
+         */
+        Secret: string;
         /**
          * @description Session capabilities a `QuerySession` can expose to the `QueryContext`.
          * @enum {string}
@@ -217,6 +345,13 @@ export interface components {
             rows?: number | null;
             /** Format: int64 */
             size_bytes?: number | null;
+        };
+        /** @description TLS options for databases that require secure connections. */
+        TlsOptions: {
+            cafile?: string | null;
+            domain?: string | null;
+            /** @default false */
+            enable: boolean;
         };
     };
     responses: {
@@ -476,6 +611,35 @@ export interface operations {
             };
         };
     };
+    list_registered: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of registered connections */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectionMetadata"][];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     register: {
         parameters: {
             query?: never;
@@ -488,13 +652,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Registered Connection */
+            /** @description Registered Connections */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ConnectionMetadata"];
+                    "application/json": components["schemas"]["ConnectionMetadata"][];
                 };
             };
             /** @description Connector not found */

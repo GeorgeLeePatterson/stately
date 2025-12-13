@@ -291,7 +291,7 @@ export function ArrowTable({
                     >
                       <Button
                         aria-label="View full row"
-                        className="h-7 w-7 opacity-0 group-hover/row:opacity-100 focus:opacity-100 transition-opacity"
+                        className="h-7 w-7 opacity-100 sm:opacity-0 group-hover/row:opacity-100 focus:opacity-100 transition-opacity"
                         onClick={() => setDrawerRowIndex(rowIndex)}
                         size="icon"
                         variant="ghost"

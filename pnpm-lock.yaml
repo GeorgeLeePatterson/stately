@@ -29,9 +29,6 @@ importers:
 
   packages/arrow:
     dependencies:
-      '@tanstack/react-query':
-        specifier: ^5.90.10
-        version: 5.90.11(react@19.2.0)
       apache-arrow:
         specifier: file:../../vendor/arrow-js/targets/esnext/esm
         version: '@apache-arrow/esnext-esm@file:vendor/arrow-js/targets/esnext/esm'
@@ -41,18 +38,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      openapi-fetch:
-        specifier: ^0.15
-        version: 0.15.0
       react:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.0
-      react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.0(react@19.2.0)
-      sonner:
-        specifier: ^2.0.7
-        version: 2.0.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
     devDependencies:
       '@stately/codegen':
         specifier: workspace:*
@@ -60,6 +48,9 @@ importers:
       '@stately/ui':
         specifier: workspace:*
         version: link:../ui
+      '@tanstack/react-query':
+        specifier: ^5.90.11
+        version: 5.90.11(react@19.2.0)
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -69,9 +60,6 @@ importers:
       '@types/react':
         specifier: ^19.2.7
         version: 19.2.7
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.7)
       lucide-react:
         specifier: ^0.554.0
         version: 0.554.0(react@19.2.0)

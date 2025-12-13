@@ -8,7 +8,7 @@
   "paths": {
     "/catalogs": {
       "get": {
-        "summary": "List all registered catalogs",
+        "summary": "List all catalogs in `Datafusion`",
         "description": "# Errors\n- Internal server error",
         "operationId": "list_catalogs",
         "responses": {
@@ -233,6 +233,38 @@
         }
       }
     },
+    "/register": {
+      "get": {
+        "summary": "List all registered connections",
+        "description": "# Errors\n- Internal server error",
+        "operationId": "list_registered",
+        "responses": {
+          "200": {
+            "description": "List of registered connections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConnectionMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/register/{connector_id}": {
       "get": {
         "summary": "Register a connector. Useful when federating queries since registration is lazy",
@@ -251,11 +283,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Registered Connection",
+            "description": "Registered Connections",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConnectionMetadata"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConnectionMetadata"
+                  }
                 }
               }
             }
@@ -332,6 +367,40 @@
           "execute_sql",
           "list"
         ]
+      },
+      "ClickHouseCompression": {
+        "type": "string",
+        "description": "Compression options for `ClickHouse` tables.",
+        "enum": [
+          "none",
+          "lz4",
+          "zstd"
+        ]
+      },
+      "ClickHouseConfig": {
+        "type": "object",
+        "description": "Additional ClickHouse-specific configuration.",
+        "properties": {
+          "compression": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ClickHouseCompression"
+              }
+            ]
+          },
+          "settings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
       },
       "ConnectionDetailsRequest": {
         "type": "object",
@@ -430,6 +499,44 @@
           }
         }
       },
+      "ConnectionOptions": {
+        "type": "object",
+        "description": "Common connection options shared by database connectors.",
+        "required": [
+          "endpoint",
+          "username"
+        ],
+        "properties": {
+          "check": {
+            "type": "boolean",
+            "description": "Whether the connector should validate connections before use",
+            "default": false
+          },
+          "endpoint": {
+            "type": "string",
+            "description": "Endpoint, url, or path to the database"
+          },
+          "password": {
+            "type": "string",
+            "description": "Optional password for the database"
+          },
+          "tls": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TlsOptions",
+                "description": "TLS configuration if the database requires it"
+              }
+            ]
+          },
+          "username": {
+            "type": "string",
+            "description": "Username used to connect to the database"
+          }
+        }
+      },
       "ConnectionSearchQuery": {
         "type": "object",
         "description": "Query param for searching connections",
@@ -439,6 +546,48 @@
               "string",
               "null"
             ]
+          }
+        }
+      },
+      "Database": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "click_house"
+            ],
+            "properties": {
+              "click_house": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ClickHouseConfig"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`."
+      },
+      "DatabaseConfiguration": {
+        "type": "object",
+        "description": "Configuration for database-backed connectors.",
+        "required": [
+          "options",
+          "driver"
+        ],
+        "properties": {
+          "driver": {
+            "$ref": "#/components/schemas/Database"
+          },
+          "options": {
+            "$ref": "#/components/schemas/ConnectionOptions"
+          },
+          "pool": {
+            "$ref": "#/components/schemas/PoolOptions"
           }
         }
       },
@@ -531,6 +680,154 @@
         ],
         "description": "Summaries provided by listing"
       },
+      "ObjectStore": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "aws"
+            ],
+            "properties": {
+              "aws": {
+                "$ref": "#/components/schemas/ObjectStoreOptions"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "gcp"
+            ],
+            "properties": {
+              "gcp": {
+                "$ref": "#/components/schemas/ObjectStoreOptions"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "azure"
+            ],
+            "properties": {
+              "azure": {
+                "$ref": "#/components/schemas/ObjectStoreOptions"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "local"
+            ],
+            "properties": {
+              "local": {
+                "$ref": "#/components/schemas/ObjectStoreOptions"
+              }
+            }
+          }
+        ],
+        "description": "Supported object store providers."
+      },
+      "ObjectStoreConfiguration": {
+        "type": "object",
+        "description": "Configuration for an object store-backed connector.",
+        "properties": {
+          "format": {
+            "$ref": "#/components/schemas/ObjectStoreFormat",
+            "description": "The format to read/write within the store."
+          },
+          "store": {
+            "$ref": "#/components/schemas/ObjectStore",
+            "description": "Provider specific configuration for the store itself."
+          }
+        }
+      },
+      "ObjectStoreFormat": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Apache Parquet format with optional key/value overrides.",
+            "required": [
+              "parquet"
+            ],
+            "properties": {
+              "parquet": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "Apache Parquet format with optional key/value overrides.",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "propertyNames": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "description": "Supported file formats for object-store connectors."
+      },
+      "ObjectStoreOptions": {
+        "type": "object",
+        "description": "Provider-agnostic object store settings.",
+        "required": [
+          "bucket"
+        ],
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "description": "*Required* bucket name (or base directory for local stores)."
+          },
+          "from_env": {
+            "type": "boolean",
+            "description": "Whether credentials should be resolved from environment variables."
+          },
+          "options": {
+            "type": "object",
+            "description": "Additional provider-specific configuration parameters.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PoolOptions": {
+        "type": "object",
+        "description": "Common configuration options shared across connector types.",
+        "properties": {
+          "connect_timeout": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "minimum": 0
+          },
+          "pool_size": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Configure the maximum number of connections to the database. Note, not all connectors\nsupport pools.",
+            "minimum": 0
+          },
+          "transaction_timeout": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
       "QueryRequest": {
         "type": "object",
         "description": "Request to execute a SQL query",
@@ -550,6 +847,10 @@
             "description": "SQL query to execute (can use URL tables like `s3://bucket/path/*.parquet`)"
           }
         }
+      },
+      "Secret": {
+        "type": "string",
+        "description": "Newtype to protect secrets from being logged\nA wrapper type for sensitive string data like passwords.\n\nThis type provides protection against accidental exposure of sensitive data\nin logs, debug output, or error messages. The inner value is not displayed\nin `Debug` implementations.\n\n# Example\n```\nuse stately_arrow::database::Secret;\n\nlet password = Secret::new(\"my_password\");\nprintln!(\"{password:?}\"); // Prints: Secret(*******)\n```"
       },
       "SessionCapability": {
         "type": "string",
@@ -586,6 +887,28 @@
             ],
             "format": "int64",
             "minimum": 0
+          }
+        }
+      },
+      "TlsOptions": {
+        "type": "object",
+        "description": "TLS options for databases that require secure connections.",
+        "properties": {
+          "cafile": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "domain": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "enable": {
+            "type": "boolean",
+            "default": false
           }
         }
       }

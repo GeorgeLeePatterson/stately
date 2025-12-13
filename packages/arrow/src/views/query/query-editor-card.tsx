@@ -41,7 +41,7 @@ export function QueryEditorCard({
   Omit<QueryEditorProps, 'value' | 'onChange'> &
   Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
   return (
-    <Card {...rest} className={cn(['query-editor-card gap-4', rest?.className])}>
+    <Card {...rest} className={cn(['query-editor-card gap-4 min-h-fit', rest?.className])}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 justify-between">
           <span className="flex items-center gap-2">
@@ -69,12 +69,12 @@ export function QueryEditorCard({
         </CardTitle>
         <CardDescription>Compose SQL, then stream Arrow results instantly.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-auto flex flex-col gap-4">
+      <CardContent className="flex-auto flex flex-col gap-4 max-h-full overflow-hidden">
         {/* Query error */}
         {error && <Note message={error} mode="error" />}
 
         <QueryEditor
-          className="flex-auto"
+          className="flex-auto max-h-full"
           isActive={isActive}
           isExecuting={isExecuting}
           onChange={onSql}

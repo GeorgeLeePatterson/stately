@@ -24,6 +24,7 @@ export const ARROW_OPERATIONS = createOperationBindingsFactory<paths, operations
   execute_query: { method: 'post', path: '/query' },
   list_catalogs: { method: 'get', path: '/catalogs' },
   list_connectors: { method: 'get', path: '/connectors' },
+  list_registered: { method: 'get', path: '/register' },
   register: { method: 'get', path: '/register/{connector_id}' },
 } as const);
 

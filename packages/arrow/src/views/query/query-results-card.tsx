@@ -33,10 +33,13 @@ export function QueryResultsCard({
   ...rest
 }: QueryResultsCardProps & Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>) {
   return (
-    <Card className={cn(['query-results-card gap-4 flex-auto min-w-0 max-h-dvh', rest?.className])}>
+    <Card
+      className={cn(['query-results-card gap-4 flex-auto min-w-0 max-h-dvh', rest?.className])}
+      id={hrefId || DEFAULT_RESULTS_HREF_ID}
+    >
       <CardHeader>
         <CardTitle className="flex items-center gap-2 justify-between">
-          <div className="flex items-center gap-2" id={hrefId || DEFAULT_RESULTS_HREF_ID}>
+          <div className="flex items-center gap-2">
             {(!title || typeof title === 'string') && <TableIcon className="h-4 w-4" />}
             {title ?? 'Results'}
           </div>
@@ -48,7 +51,8 @@ export function QueryResultsCard({
           // Loading
           <div
             className={cn([
-              'flex flex-col h-full items-center justify-center gap-2',
+              'overflow-hidden',
+              'flex flex-col h-full items-center justify-start gap-2',
               'text-sm text-muted-foreground',
             ])}
           >
@@ -60,7 +64,7 @@ export function QueryResultsCard({
           // Error
           <div
             className={cn([
-              'min-h-[360px]',
+              'min-h-full',
               'flex h-full items-center justify-center',
               'rounded-lg border bg-destructive/5',
               'text-sm text-destructive',
@@ -83,18 +87,18 @@ export function QueryResultsCard({
 function LoadingRow() {
   return (
     <div className="flex flex-row flex-nowrap gap-2 w-full h-12 min-w-0">
-      <Skeleton className="h-full w-12" />
-      <Skeleton className="h-full flex-auto" />
-      <Skeleton className="h-full flex-auto" />
-      <Skeleton className="h-full flex-auto" />
-      <Skeleton className="h-full flex-auto" />
+      <Skeleton className="dark:bg-muted h-full w-12" />
+      <Skeleton className="dark:bg-muted h-full flex-auto" />
+      <Skeleton className="dark:bg-muted h-full flex-auto" />
+      <Skeleton className="dark:bg-muted h-full flex-auto" />
+      <Skeleton className="dark:bg-muted h-full flex-auto" />
     </div>
   );
 }
 
 export function EmptyResults() {
   return (
-    <Empty className="border p-6 md:p-6">
+    <Empty className="border p-6 md:p-6 min-h-full">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <Sheet />

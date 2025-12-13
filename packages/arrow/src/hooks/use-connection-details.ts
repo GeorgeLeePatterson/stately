@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import type { ConnectionDetailsRequest, ConnectionSearchQuery } from '@/types/api';
 import { useArrowApi } from './use-arrow-api';
 
@@ -23,6 +23,7 @@ export function useMultiConnectionDetails({ connectors, fail_on_error }: Connect
   const api = useArrowApi();
   return useQuery({
     enabled: Object.keys(connectors ?? {}).length > 0,
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       if (!api) throw new Error('Arrow API is unavailable');
       if (!connectors) return;

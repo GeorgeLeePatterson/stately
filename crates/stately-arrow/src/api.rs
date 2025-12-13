@@ -8,7 +8,8 @@ use datafusion::prelude::SessionContext;
 
 use crate::{QueryContext, QuerySession};
 
-/// Create the API router
+/// Create the `stately-arrow` API router
+///
 /// This can be mounted at any path (e.g., /api/v1/arrow)
 pub fn router<S, Session>(state: S) -> Router<S>
 where
@@ -23,6 +24,7 @@ where
                 .post(handlers::connector_list_many::<Session>),
         )
         .route("/connectors/{connector_id}", get(handlers::connector_list::<Session>))
+        .route("/register", get(handlers::list_registered::<Session>))
         .route("/register/{connector_id}", get(handlers::register::<Session>))
         .route("/catalogs", get(handlers::list_catalogs::<Session>))
         .route("/query", post(handlers::execute_query::<Session>))

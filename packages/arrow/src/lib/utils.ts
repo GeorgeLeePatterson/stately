@@ -1,7 +1,7 @@
 import { stripLeading, stripTrailing } from '@stately/ui/base';
 import type { Table } from 'apache-arrow';
 import type { ArrowTableDataView } from '@/components/arrow-table';
-import type { ConnectionMetadata, ListSummary } from '@/types/api';
+import type { ConnectionKind, ConnectionMetadata, ListSummary } from '@/types/api';
 
 /**
  * Converts an Apache Arrow Table to an ArrowTableDataView for rendering.
@@ -34,14 +34,10 @@ export const createConnectionKindDisplay = (connection: ConnectionMetadata) => {
 /**
  * Whether additional "searching" is available based on the Connector and ListSummary type
  */
-export const isSearchEnabled = (summary?: ListSummary, connector?: ConnectionMetadata) => {
+export const isSearchEnabled = (summary?: ListSummary, connectorKind?: ConnectionKind) => {
   if (!summary) return false;
   if (summary?.type === 'tables' || summary?.type === 'files') return false;
-  return (
-    !connector ||
-    connector.metadata.kind === 'database' ||
-    connector.metadata.kind === 'object_store'
-  );
+  return !connectorKind || connectorKind === 'database' || connectorKind === 'object_store';
 };
 
 /**
@@ -59,8 +55,6 @@ export const createConnectionItemIdentifier = ({
   sep: string;
 }): string => {
   let identifiers = '';
-  // TODO: Remove
-  console.debug('Connection Ident ========> ', { catalog, database, name, sep });
   if (catalog) identifiers = `${identifiers}${stripTrailing(catalog, sep)}${sep}`;
   if (database) identifiers = `${identifiers}${stripTrailing(database, sep)}${sep}`;
   const itemName = identifiers ? stripLeading(name, sep) : name;

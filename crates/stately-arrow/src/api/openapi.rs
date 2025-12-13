@@ -83,6 +83,7 @@ impl utoipa::OpenApi for OpenApiDoc {
         let paths = PathsBuilder::new()
             .path_from::<super::handlers::__path_list_connectors>()
             .path_from::<super::handlers::__path_list_catalogs>()
+            .path_from::<super::handlers::__path_list_registered>()
             .path_from::<super::handlers::__path_connector_list>()
             .path_from::<super::handlers::__path_connector_list_many>()
             .path_from::<super::handlers::__path_execute_query>()

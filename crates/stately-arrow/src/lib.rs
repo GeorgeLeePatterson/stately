@@ -15,7 +15,9 @@ pub mod object_store;
 pub mod types;
 
 pub use api::QueryState;
-pub use connectors::{Backend, BackendMetadata, Capability, ConnectionMetadata, ConnectorRegistry};
+pub use connectors::{
+    Backend, BackendMetadata, Capability, ConnectionKind, ConnectionMetadata, ConnectorRegistry,
+};
 pub use context::{QueryContext, QuerySession, SessionCapability};
 pub use error::{Error, Result};
 pub use types::*;

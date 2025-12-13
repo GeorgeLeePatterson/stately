@@ -127,7 +127,6 @@ export function useStreamingQuery({
   // Sync the arrow store updates with react state
   const snapshot = useSyncExternalStore(storeRef.current.subscribe, storeRef.current.getSnapshot);
 
-  // TODO: Remove
   devLog.debug('Arrow', 'stream query props', {
     derived: `idle=${isIdle}, pending=${isPending}, streaming=${isStreaming}, active=${isActive}`,
     queryRequest,
