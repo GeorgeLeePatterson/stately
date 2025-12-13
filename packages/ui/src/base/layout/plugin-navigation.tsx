@@ -99,6 +99,7 @@ export function PluginNavigation({
         <CollapsibleContent>
           <SidebarMenuSub>
             {items
+              .sort((a, b) => a.label.localeCompare(b.label))
               ?.filter(item => item?.to && item?.label)
               .map(item => routeOverrides[item.to] ?? item)
               .map(({ badge: PluginBadge, ...item }) => (

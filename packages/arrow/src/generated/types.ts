@@ -228,6 +228,21 @@ export interface components {
             search?: string | null;
         };
         /**
+         * @description Connector Stately `entity` type.
+         *
+         *     Use this with [`Connectors`] and [`Registry`] to create a turnkey connector registry.
+         */
+        Connector: {
+            config: components["schemas"]["ConnectorType"];
+            /** @description Human-readable name for this connection. */
+            name?: string;
+        };
+        ConnectorType: {
+            object_store: components["schemas"]["ObjectStoreConfiguration"];
+        } | {
+            database: components["schemas"]["DatabaseConfiguration"];
+        };
+        /**
          * @description Supported databases for the default backend lineup.
          *
          *     Default implementations will be provided and over time the list will grow. For that reason, this

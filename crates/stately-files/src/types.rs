@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use utoipa::{ToResponse, ToSchema};
+use utoipa::{IntoParams, ToResponse, ToSchema};
 
 #[derive(Debug, Deserialize, ToSchema)]
 pub struct FileSaveRequest {
@@ -9,13 +9,17 @@ pub struct FileSaveRequest {
     pub name:    Option<String>,
 }
 
-#[derive(Debug, Deserialize, ToSchema)]
+/// Optional path relative to upload directory
+#[derive(Debug, Deserialize, IntoParams, ToSchema)]
+#[into_params(parameter_in = Query)]
 pub struct FileListQuery {
-    /// Optional path to list files from (relative to data directory)
+    /// Optional path to list files from (relative to upload directory)
     pub path: Option<String>,
 }
 
-#[derive(Debug, Deserialize, ToSchema)]
+/// Optional specific version UUID. If not provided, returns the latest version.
+#[derive(Debug, Deserialize, IntoParams, ToSchema)]
+#[into_params(parameter_in = Query)]
 pub struct FileDownloadQuery {
     /// Optional specific version UUID. If not provided, returns the latest version.
     pub version: Option<String>,

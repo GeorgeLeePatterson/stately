@@ -21,6 +21,22 @@ export const PARSED_SCHEMAS = {
       "status"
     ]
   },
+  "FileDownloadQuery": {
+    "description": "Optional specific version UUID. If not provided, returns the latest version.",
+    "nodeType": "object",
+    "properties": {
+      "version": {
+        "description": "Optional specific version UUID. If not provided, returns the latest version.",
+        "innerSchema": {
+          "description": "Optional specific version UUID. If not provided, returns the latest version.",
+          "nodeType": "primitive",
+          "primitiveType": "string"
+        },
+        "nodeType": "nullable"
+      }
+    },
+    "required": []
+  },
   "FileEntryType": {
     "nodeType": "enum",
     "values": [
@@ -117,12 +133,13 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "FileListQuery": {
+    "description": "Optional path relative to upload directory",
     "nodeType": "object",
     "properties": {
       "path": {
-        "description": "Optional path to list files from (relative to data directory)",
+        "description": "Optional path to list files from (relative to upload directory)",
         "innerSchema": {
-          "description": "Optional path to list files from (relative to data directory)",
+          "description": "Optional path to list files from (relative to upload directory)",
           "nodeType": "primitive",
           "primitiveType": "string"
         },
@@ -370,7 +387,75 @@ export const PARSED_SCHEMAS = {
   },
   "UserDefinedPath": {
     "description": "Path that can be either managed by the application or user-defined.\n\nUse this type when a path could be either:\n- An uploaded file managed by the app (with version resolution)\n- A user-provided path on the filesystem\n\n# Examples\n```\n// Managed: uploads/config.json (resolved to latest UUID)\nUserDefinedPath::Managed(RelativePath::Data(VersionedPath::new(\"uploads/config.json\")))\n\n// External: /usr/local/bin/script.sh\nUserDefinedPath::External(\"/usr/local/bin/script.sh\".to_string())\n```",
-    "nodeType": "unknown"
+    "nodeType": "union",
+    "variants": [
+      {
+        "schema": {
+          "description": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead.",
+          "discriminator": "dir",
+          "nodeType": "taggedUnion",
+          "variants": [
+            {
+              "schema": {
+                "nodeType": "object",
+                "properties": {
+                  "path": {
+                    "description": "Path relative to the cache directory",
+                    "nodeType": "primitive",
+                    "primitiveType": "string"
+                  }
+                },
+                "required": [
+                  "path"
+                ]
+              },
+              "tag": "cache"
+            },
+            {
+              "schema": {
+                "nodeType": "object",
+                "properties": {
+                  "path": {
+                    "description": "Path relative to the data directory (non-versioned files)",
+                    "nodeType": "primitive",
+                    "primitiveType": "string"
+                  }
+                },
+                "required": [
+                  "path"
+                ]
+              },
+              "tag": "data"
+            },
+            {
+              "schema": {
+                "nodeType": "object",
+                "properties": {
+                  "path": {
+                    "nodeType": "primitive",
+                    "description": "Newtype wrapper for versioned file paths.\n\nRepresents a logical file name that resolves to the latest UUID-versioned\nfile in a directory (e.g., \"config.json\" → \"uploads/config.json/{latest-uuid}\").\n\nThe inner string is not directly accessible to prevent bypassing version resolution.",
+                    "primitiveType": "string"
+                  }
+                },
+                "required": [
+                  "path"
+                ]
+              },
+              "tag": "upload"
+            }
+          ]
+        },
+        "label": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead."
+      },
+      {
+        "schema": {
+          "description": "User-provided external path (filesystem path or URL)",
+          "nodeType": "primitive",
+          "primitiveType": "string"
+        },
+        "label": "User-provided external path (filesystem path or URL)"
+      }
+    ]
   },
   "VersionedPath": {
     "nodeType": "primitive",

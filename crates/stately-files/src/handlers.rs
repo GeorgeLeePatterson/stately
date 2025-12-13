@@ -128,9 +128,7 @@ pub async fn save_file(
 #[utoipa::path(
     get,
     path = "/list",
-    params(
-        ("path" = Option<String>, Query, description = "Optional path relative to data directory (e.g., 'uploads'). Defaults to root data directory if not specified.")
-    ),
+    params(FileListQuery),
     responses(
         (status = 200, description = "Files and directories listed successfully", body = FileListResponse),
         (status = 400, description = "Bad request", body = stately::ApiError),
@@ -385,7 +383,7 @@ pub async fn download_data(
     path = "/file/upload/{path}",
     params(
         ("path" = String, Path, description = "Path to versioned file relative to uploads directory"),
-        ("version" = Option<String>, Query, description = "Optional specific version UUID. If not provided, returns the latest version.")
+        FileDownloadQuery
     ),
     responses(
         (status = 200, description = "File content", content_type = "application/octet-stream"),

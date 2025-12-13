@@ -1,18 +1,21 @@
 import { cn } from '@stately/ui/base/lib/utils';
 import { Button } from '@stately/ui/base/ui';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Download } from 'lucide-react';
 import { useFilesStatelyUi } from '@/context';
+import { useDownload } from '@/hooks/use-download';
 import type { FileInfo } from '@/types/api';
 import { filesUiUtils } from '@/utils';
 import { VersionedFileDetails } from './versioned-file-details';
 
 export interface FileDetailsProps {
   entry: FileInfo;
+  currentPath?: string;
   onClose: () => void;
 }
 
 export function FileDetails({
   entry,
+  currentPath,
   onClose,
   ...rest
 }: FileDetailsProps & React.HTMLAttributes<HTMLDivElement>) {
@@ -21,17 +24,28 @@ export function FileDetails({
   return (
     <div {...rest} className={cn(['file-details', 'flex-1 min-w-0', rest?.className])}>
       {entry.type === 'versioned_file' ? (
-        <VersionedFileDetails entry={entry} onClose={onClose} />
+        <VersionedFileDetails currentPath={currentPath} entry={entry} onClose={onClose} />
       ) : entry.type !== 'directory' ? (
-        <GenericFileDetails entry={entry} onClose={onClose} />
+        <GenericFileDetails currentPath={currentPath} entry={entry} onClose={onClose} />
       ) : null}
     </div>
   );
 }
 
-export function GenericFileDetails({ entry, onClose }: FileDetailsProps) {
+export function GenericFileDetails({ entry, currentPath, onClose }: FileDetailsProps) {
   const { plugins } = useFilesStatelyUi();
   const formatTimestamp = plugins.files.utils?.formatTimestamp || filesUiUtils.formatTimestamp;
+  const { mutate: download, isPending: isDownloading } = useDownload();
+
+  const fullPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
+
+  const handleDownload = () => {
+    const target =
+      fullPath.startsWith('cache/') || currentPath?.startsWith('cache') ? 'cache' : 'data';
+    const path = fullPath.replace(/^(cache|data)\//, '');
+    download({ path, target });
+  };
+
   return (
     <div className="space-y-4">
       {/* Back button for mobile */}
@@ -70,6 +84,17 @@ export function GenericFileDetails({ entry, onClose }: FileDetailsProps) {
           ) : null;
         })()}
       </div>
+
+      <Button
+        className="w-full"
+        disabled={isDownloading}
+        onClick={handleDownload}
+        size="sm"
+        variant="outline"
+      >
+        <Download className="h-4 w-4 mr-2" />
+        {isDownloading ? 'Downloading...' : 'Download'}
+      </Button>
     </div>
   );
 }

@@ -33,23 +33,26 @@ export function useClickTracking() {
     loadTopClicks();
   }, [loadTopClicks]);
 
-  const trackClick = (path: string, label: string) => {
-    try {
-      const data = localStorage.getItem(CLICK_TRACK_STORAGE_KEY);
-      const clicks: Record<string, ClickTrack> = data ? JSON.parse(data) : {};
+  const trackClick = useCallback(
+    (path: string, label: string) => {
+      try {
+        const data = localStorage.getItem(CLICK_TRACK_STORAGE_KEY);
+        const clicks: Record<string, ClickTrack> = data ? JSON.parse(data) : {};
 
-      if (clicks[path]) {
-        clicks[path].count += 1;
-      } else {
-        clicks[path] = { count: 1, label, path };
+        if (clicks[path]) {
+          clicks[path].count += 1;
+        } else {
+          clicks[path] = { count: 1, label, path };
+        }
+
+        localStorage.setItem(CLICK_TRACK_STORAGE_KEY, JSON.stringify(clicks));
+        loadTopClicks();
+      } catch (error) {
+        console.error('Failed to track click:', error);
       }
-
-      localStorage.setItem(CLICK_TRACK_STORAGE_KEY, JSON.stringify(clicks));
-      loadTopClicks();
-    } catch (error) {
-      console.error('Failed to track click:', error);
-    }
-  };
+    },
+    [loadTopClicks],
+  );
 
   return { topClicks, trackClick };
 }

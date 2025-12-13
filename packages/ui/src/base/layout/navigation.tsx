@@ -1,7 +1,7 @@
 import type { AvatarImageProps } from '@radix-ui/react-avatar';
 import type { Defined } from '@stately/schema/helpers';
 import type { StatelySchemas } from '@stately/schema/schema';
-import type { ComponentType } from 'react';
+import { type ComponentType, useCallback, useMemo } from 'react';
 import { useBaseStatelyUi } from '@/base/context';
 import { useClickTracking } from '@/base/hooks';
 import type { UiNavigationOptions } from '@/base/runtime';
@@ -57,27 +57,34 @@ export function Navigation<S extends StatelySchemas<any, any> = StatelySchemas<a
 
   const { trackClick } = useClickTracking();
 
-  const handleNavClick = (path: string, label: string) => {
-    // Don't track root clicks - too common
-    if (path !== sidebarTo) {
-      trackClick(path, label);
-    }
-  };
+  const handleNavClick = useCallback(
+    (path: string, label: string) => {
+      // Don't track root clicks - too common
+      if (path !== sidebarTo) {
+        trackClick(path, label);
+      }
+    },
+    [trackClick, sidebarTo],
+  );
 
-  const sidebarLinks = sidebarNavItems.map(item => (
-    <SidebarMenuItem key={`app-link-${item.to}`}>
-      <SidebarMenuButton asChild isActive={currentPath === `${basePath}${item.to}`}>
-        <a
-          href={`${basePath}${item.to}`}
-          onClick={() => handleNavClick(`${basePath}${item.to}`, item.label)}
-        >
-          {item.icon && <item.icon />}
-          <span>{item.label}</span>
-          {item.badge && <item.badge {...item} />}
-        </a>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-  ));
+  const sidebarLinks = useMemo(
+    () =>
+      sidebarNavItems.map(item => (
+        <SidebarMenuItem key={`app-link-${item.to}`}>
+          <SidebarMenuButton asChild isActive={currentPath === `${basePath}${item.to}`}>
+            <a
+              href={`${basePath}${item.to}`}
+              onClick={() => handleNavClick(`${basePath}${item.to}`, item.label)}
+            >
+              {item.icon && <item.icon />}
+              <span>{item.label}</span>
+              {item.badge && <item.badge {...item} />}
+            </a>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      )),
+    [sidebarNavItems, currentPath, basePath, handleNavClick],
+  );
 
   const pluginItems = Object.values(plugins)
     .map(plugin => plugin.routes)

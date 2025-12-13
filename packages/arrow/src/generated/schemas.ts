@@ -445,9 +445,631 @@ export const PARSED_SCHEMAS = {
     },
     "required": []
   },
-  "Database": {
-    "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
+  "Connector": {
+    "description": "Connector Stately `entity` type.\n\nUse this with [`Connectors`] and [`Registry`] to create a turnkey connector registry.",
+    "nodeType": "object",
+    "properties": {
+      "config": {
+        "nodeType": "untaggedEnum",
+        "variants": [
+          {
+            "schema": {
+              "nodeType": "object",
+              "description": "Configuration for an object store-backed connector.",
+              "properties": {
+                "format": {
+                  "nodeType": "untaggedEnum",
+                  "description": "Supported file formats for object-store connectors.",
+                  "variants": [
+                    {
+                      "schema": {
+                        "description": "Apache Parquet format with optional key/value overrides.",
+                        "innerSchema": {
+                          "description": "Apache Parquet format with optional key/value overrides.",
+                          "nodeType": "map",
+                          "valueSchema": {
+                            "nodeType": "primitive",
+                            "primitiveType": "string"
+                          }
+                        },
+                        "nodeType": "nullable"
+                      },
+                      "tag": "parquet"
+                    }
+                  ]
+                },
+                "store": {
+                  "nodeType": "untaggedEnum",
+                  "description": "Supported object store providers.",
+                  "variants": [
+                    {
+                      "schema": {
+                        "nodeType": "object",
+                        "description": "Provider-agnostic object store settings.",
+                        "properties": {
+                          "bucket": {
+                            "description": "*Required* bucket name (or base directory for local stores).",
+                            "nodeType": "primitive",
+                            "primitiveType": "string"
+                          },
+                          "from_env": {
+                            "description": "Whether credentials should be resolved from environment variables.",
+                            "nodeType": "primitive",
+                            "primitiveType": "boolean"
+                          },
+                          "options": {
+                            "description": "Additional provider-specific configuration parameters.",
+                            "nodeType": "map",
+                            "valueSchema": {
+                              "nodeType": "primitive",
+                              "primitiveType": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "bucket"
+                        ]
+                      },
+                      "tag": "aws"
+                    },
+                    {
+                      "schema": {
+                        "nodeType": "object",
+                        "description": "Provider-agnostic object store settings.",
+                        "properties": {
+                          "bucket": {
+                            "description": "*Required* bucket name (or base directory for local stores).",
+                            "nodeType": "primitive",
+                            "primitiveType": "string"
+                          },
+                          "from_env": {
+                            "description": "Whether credentials should be resolved from environment variables.",
+                            "nodeType": "primitive",
+                            "primitiveType": "boolean"
+                          },
+                          "options": {
+                            "description": "Additional provider-specific configuration parameters.",
+                            "nodeType": "map",
+                            "valueSchema": {
+                              "nodeType": "primitive",
+                              "primitiveType": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "bucket"
+                        ]
+                      },
+                      "tag": "gcp"
+                    },
+                    {
+                      "schema": {
+                        "nodeType": "object",
+                        "description": "Provider-agnostic object store settings.",
+                        "properties": {
+                          "bucket": {
+                            "description": "*Required* bucket name (or base directory for local stores).",
+                            "nodeType": "primitive",
+                            "primitiveType": "string"
+                          },
+                          "from_env": {
+                            "description": "Whether credentials should be resolved from environment variables.",
+                            "nodeType": "primitive",
+                            "primitiveType": "boolean"
+                          },
+                          "options": {
+                            "description": "Additional provider-specific configuration parameters.",
+                            "nodeType": "map",
+                            "valueSchema": {
+                              "nodeType": "primitive",
+                              "primitiveType": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "bucket"
+                        ]
+                      },
+                      "tag": "azure"
+                    },
+                    {
+                      "schema": {
+                        "nodeType": "object",
+                        "description": "Provider-agnostic object store settings.",
+                        "properties": {
+                          "bucket": {
+                            "description": "*Required* bucket name (or base directory for local stores).",
+                            "nodeType": "primitive",
+                            "primitiveType": "string"
+                          },
+                          "from_env": {
+                            "description": "Whether credentials should be resolved from environment variables.",
+                            "nodeType": "primitive",
+                            "primitiveType": "boolean"
+                          },
+                          "options": {
+                            "description": "Additional provider-specific configuration parameters.",
+                            "nodeType": "map",
+                            "valueSchema": {
+                              "nodeType": "primitive",
+                              "primitiveType": "string"
+                            }
+                          }
+                        },
+                        "required": [
+                          "bucket"
+                        ]
+                      },
+                      "tag": "local"
+                    }
+                  ]
+                }
+              },
+              "required": []
+            },
+            "tag": "object_store"
+          },
+          {
+            "schema": {
+              "nodeType": "object",
+              "description": "Configuration for database-backed connectors.",
+              "properties": {
+                "driver": {
+                  "nodeType": "untaggedEnum",
+                  "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
+                  "variants": [
+                    {
+                      "schema": {
+                        "innerSchema": {
+                          "description": "Additional ClickHouse-specific configuration.",
+                          "nodeType": "object",
+                          "properties": {
+                            "compression": {
+                              "innerSchema": {
+                                "description": "Compression options for `ClickHouse` tables.",
+                                "nodeType": "enum",
+                                "values": [
+                                  "none",
+                                  "lz4",
+                                  "zstd"
+                                ]
+                              },
+                              "nodeType": "nullable"
+                            },
+                            "settings": {
+                              "nodeType": "map",
+                              "valueSchema": {
+                                "nodeType": "primitive",
+                                "primitiveType": "string"
+                              }
+                            }
+                          },
+                          "required": []
+                        },
+                        "nodeType": "nullable"
+                      },
+                      "tag": "click_house"
+                    }
+                  ]
+                },
+                "options": {
+                  "description": "Common connection options shared by database connectors.",
+                  "nodeType": "object",
+                  "properties": {
+                    "check": {
+                      "description": "Whether the connector should validate connections before use",
+                      "nodeType": "primitive",
+                      "primitiveType": "boolean"
+                    },
+                    "endpoint": {
+                      "description": "Endpoint, url, or path to the database",
+                      "nodeType": "primitive",
+                      "primitiveType": "string"
+                    },
+                    "password": {
+                      "description": "Optional password for the database",
+                      "nodeType": "primitive",
+                      "primitiveType": "string"
+                    },
+                    "tls": {
+                      "innerSchema": {
+                        "nodeType": "object",
+                        "description": "TLS options for databases that require secure connections.",
+                        "properties": {
+                          "cafile": {
+                            "innerSchema": {
+                              "nodeType": "primitive",
+                              "primitiveType": "string"
+                            },
+                            "nodeType": "nullable"
+                          },
+                          "domain": {
+                            "innerSchema": {
+                              "nodeType": "primitive",
+                              "primitiveType": "string"
+                            },
+                            "nodeType": "nullable"
+                          },
+                          "enable": {
+                            "nodeType": "primitive",
+                            "primitiveType": "boolean"
+                          }
+                        },
+                        "required": []
+                      },
+                      "nodeType": "nullable"
+                    },
+                    "username": {
+                      "description": "Username used to connect to the database",
+                      "nodeType": "primitive",
+                      "primitiveType": "string"
+                    }
+                  },
+                  "required": [
+                    "endpoint",
+                    "username"
+                  ]
+                },
+                "pool": {
+                  "nodeType": "object",
+                  "description": "Common configuration options shared across connector types.",
+                  "properties": {
+                    "connect_timeout": {
+                      "innerSchema": {
+                        "format": "int32",
+                        "nodeType": "primitive",
+                        "primitiveType": "integer"
+                      },
+                      "nodeType": "nullable"
+                    },
+                    "pool_size": {
+                      "description": "Configure the maximum number of connections to the database. Note, not all connectors\nsupport pools.",
+                      "innerSchema": {
+                        "description": "Configure the maximum number of connections to the database. Note, not all connectors\nsupport pools.",
+                        "format": "int32",
+                        "nodeType": "primitive",
+                        "primitiveType": "integer"
+                      },
+                      "nodeType": "nullable"
+                    },
+                    "transaction_timeout": {
+                      "innerSchema": {
+                        "format": "int32",
+                        "nodeType": "primitive",
+                        "primitiveType": "integer"
+                      },
+                      "nodeType": "nullable"
+                    }
+                  },
+                  "required": []
+                }
+              },
+              "required": [
+                "options",
+                "driver"
+              ]
+            },
+            "tag": "database"
+          }
+        ]
+      },
+      "name": {
+        "description": "Human-readable name for this connection.",
+        "nodeType": "primitive",
+        "primitiveType": "string"
+      }
+    },
+    "required": [
+      "config"
+    ]
+  },
+  "ConnectorType": {
     "nodeType": "untaggedEnum",
+    "variants": [
+      {
+        "schema": {
+          "nodeType": "object",
+          "description": "Configuration for an object store-backed connector.",
+          "properties": {
+            "format": {
+              "nodeType": "untaggedEnum",
+              "description": "Supported file formats for object-store connectors.",
+              "variants": [
+                {
+                  "schema": {
+                    "description": "Apache Parquet format with optional key/value overrides.",
+                    "innerSchema": {
+                      "description": "Apache Parquet format with optional key/value overrides.",
+                      "nodeType": "map",
+                      "valueSchema": {
+                        "nodeType": "primitive",
+                        "primitiveType": "string"
+                      }
+                    },
+                    "nodeType": "nullable"
+                  },
+                  "tag": "parquet"
+                }
+              ]
+            },
+            "store": {
+              "nodeType": "untaggedEnum",
+              "description": "Supported object store providers.",
+              "variants": [
+                {
+                  "schema": {
+                    "nodeType": "object",
+                    "description": "Provider-agnostic object store settings.",
+                    "properties": {
+                      "bucket": {
+                        "description": "*Required* bucket name (or base directory for local stores).",
+                        "nodeType": "primitive",
+                        "primitiveType": "string"
+                      },
+                      "from_env": {
+                        "description": "Whether credentials should be resolved from environment variables.",
+                        "nodeType": "primitive",
+                        "primitiveType": "boolean"
+                      },
+                      "options": {
+                        "description": "Additional provider-specific configuration parameters.",
+                        "nodeType": "map",
+                        "valueSchema": {
+                          "nodeType": "primitive",
+                          "primitiveType": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "bucket"
+                    ]
+                  },
+                  "tag": "aws"
+                },
+                {
+                  "schema": {
+                    "nodeType": "object",
+                    "description": "Provider-agnostic object store settings.",
+                    "properties": {
+                      "bucket": {
+                        "description": "*Required* bucket name (or base directory for local stores).",
+                        "nodeType": "primitive",
+                        "primitiveType": "string"
+                      },
+                      "from_env": {
+                        "description": "Whether credentials should be resolved from environment variables.",
+                        "nodeType": "primitive",
+                        "primitiveType": "boolean"
+                      },
+                      "options": {
+                        "description": "Additional provider-specific configuration parameters.",
+                        "nodeType": "map",
+                        "valueSchema": {
+                          "nodeType": "primitive",
+                          "primitiveType": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "bucket"
+                    ]
+                  },
+                  "tag": "gcp"
+                },
+                {
+                  "schema": {
+                    "nodeType": "object",
+                    "description": "Provider-agnostic object store settings.",
+                    "properties": {
+                      "bucket": {
+                        "description": "*Required* bucket name (or base directory for local stores).",
+                        "nodeType": "primitive",
+                        "primitiveType": "string"
+                      },
+                      "from_env": {
+                        "description": "Whether credentials should be resolved from environment variables.",
+                        "nodeType": "primitive",
+                        "primitiveType": "boolean"
+                      },
+                      "options": {
+                        "description": "Additional provider-specific configuration parameters.",
+                        "nodeType": "map",
+                        "valueSchema": {
+                          "nodeType": "primitive",
+                          "primitiveType": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "bucket"
+                    ]
+                  },
+                  "tag": "azure"
+                },
+                {
+                  "schema": {
+                    "nodeType": "object",
+                    "description": "Provider-agnostic object store settings.",
+                    "properties": {
+                      "bucket": {
+                        "description": "*Required* bucket name (or base directory for local stores).",
+                        "nodeType": "primitive",
+                        "primitiveType": "string"
+                      },
+                      "from_env": {
+                        "description": "Whether credentials should be resolved from environment variables.",
+                        "nodeType": "primitive",
+                        "primitiveType": "boolean"
+                      },
+                      "options": {
+                        "description": "Additional provider-specific configuration parameters.",
+                        "nodeType": "map",
+                        "valueSchema": {
+                          "nodeType": "primitive",
+                          "primitiveType": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "bucket"
+                    ]
+                  },
+                  "tag": "local"
+                }
+              ]
+            }
+          },
+          "required": []
+        },
+        "tag": "object_store"
+      },
+      {
+        "schema": {
+          "nodeType": "object",
+          "description": "Configuration for database-backed connectors.",
+          "properties": {
+            "driver": {
+              "nodeType": "untaggedEnum",
+              "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
+              "variants": [
+                {
+                  "schema": {
+                    "innerSchema": {
+                      "description": "Additional ClickHouse-specific configuration.",
+                      "nodeType": "object",
+                      "properties": {
+                        "compression": {
+                          "innerSchema": {
+                            "description": "Compression options for `ClickHouse` tables.",
+                            "nodeType": "enum",
+                            "values": [
+                              "none",
+                              "lz4",
+                              "zstd"
+                            ]
+                          },
+                          "nodeType": "nullable"
+                        },
+                        "settings": {
+                          "nodeType": "map",
+                          "valueSchema": {
+                            "nodeType": "primitive",
+                            "primitiveType": "string"
+                          }
+                        }
+                      },
+                      "required": []
+                    },
+                    "nodeType": "nullable"
+                  },
+                  "tag": "click_house"
+                }
+              ]
+            },
+            "options": {
+              "description": "Common connection options shared by database connectors.",
+              "nodeType": "object",
+              "properties": {
+                "check": {
+                  "description": "Whether the connector should validate connections before use",
+                  "nodeType": "primitive",
+                  "primitiveType": "boolean"
+                },
+                "endpoint": {
+                  "description": "Endpoint, url, or path to the database",
+                  "nodeType": "primitive",
+                  "primitiveType": "string"
+                },
+                "password": {
+                  "description": "Optional password for the database",
+                  "nodeType": "primitive",
+                  "primitiveType": "string"
+                },
+                "tls": {
+                  "innerSchema": {
+                    "nodeType": "object",
+                    "description": "TLS options for databases that require secure connections.",
+                    "properties": {
+                      "cafile": {
+                        "innerSchema": {
+                          "nodeType": "primitive",
+                          "primitiveType": "string"
+                        },
+                        "nodeType": "nullable"
+                      },
+                      "domain": {
+                        "innerSchema": {
+                          "nodeType": "primitive",
+                          "primitiveType": "string"
+                        },
+                        "nodeType": "nullable"
+                      },
+                      "enable": {
+                        "nodeType": "primitive",
+                        "primitiveType": "boolean"
+                      }
+                    },
+                    "required": []
+                  },
+                  "nodeType": "nullable"
+                },
+                "username": {
+                  "description": "Username used to connect to the database",
+                  "nodeType": "primitive",
+                  "primitiveType": "string"
+                }
+              },
+              "required": [
+                "endpoint",
+                "username"
+              ]
+            },
+            "pool": {
+              "nodeType": "object",
+              "description": "Common configuration options shared across connector types.",
+              "properties": {
+                "connect_timeout": {
+                  "innerSchema": {
+                    "format": "int32",
+                    "nodeType": "primitive",
+                    "primitiveType": "integer"
+                  },
+                  "nodeType": "nullable"
+                },
+                "pool_size": {
+                  "description": "Configure the maximum number of connections to the database. Note, not all connectors\nsupport pools.",
+                  "innerSchema": {
+                    "description": "Configure the maximum number of connections to the database. Note, not all connectors\nsupport pools.",
+                    "format": "int32",
+                    "nodeType": "primitive",
+                    "primitiveType": "integer"
+                  },
+                  "nodeType": "nullable"
+                },
+                "transaction_timeout": {
+                  "innerSchema": {
+                    "format": "int32",
+                    "nodeType": "primitive",
+                    "primitiveType": "integer"
+                  },
+                  "nodeType": "nullable"
+                }
+              },
+              "required": []
+            }
+          },
+          "required": [
+            "options",
+            "driver"
+          ]
+        },
+        "tag": "database"
+      }
+    ]
+  },
+  "Database": {
+    "nodeType": "untaggedEnum",
+    "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
     "variants": [
       {
         "schema": {
@@ -484,12 +1106,12 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "DatabaseConfiguration": {
-    "description": "Configuration for database-backed connectors.",
     "nodeType": "object",
+    "description": "Configuration for database-backed connectors.",
     "properties": {
       "driver": {
-        "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
         "nodeType": "untaggedEnum",
+        "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
         "variants": [
           {
             "schema": {
@@ -752,8 +1374,8 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "ObjectStore": {
-    "description": "Supported object store providers.",
     "nodeType": "untaggedEnum",
+    "description": "Supported object store providers.",
     "variants": [
       {
         "schema": {
@@ -878,8 +1500,8 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "ObjectStoreConfiguration": {
-    "description": "Configuration for an object store-backed connector.",
     "nodeType": "object",
+    "description": "Configuration for an object store-backed connector.",
     "properties": {
       "format": {
         "nodeType": "untaggedEnum",
@@ -903,8 +1525,8 @@ export const PARSED_SCHEMAS = {
         ]
       },
       "store": {
-        "description": "Supported object store providers.",
         "nodeType": "untaggedEnum",
+        "description": "Supported object store providers.",
         "variants": [
           {
             "schema": {

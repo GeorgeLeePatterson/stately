@@ -2,6 +2,81 @@
 // DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
 
 export interface paths {
+    "/file/cache/{path}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download a file from the cache directory
+         * @description Returns the raw file content with appropriate Content-Type header.
+         *     No version resolution is performed - the path is used directly.
+         *
+         *     # Errors
+         *     - `Error::NotFound` if the file does not exist
+         *     - `Error::Internal` if the file could not be read
+         */
+        get: operations["download_cache"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/file/data/{path}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download a file from the data directory
+         * @description Returns the raw file content with appropriate Content-Type header.
+         *     No version resolution is performed - the path is used directly.
+         *
+         *     # Errors
+         *     - `Error::NotFound` if the file does not exist
+         *     - `Error::Internal` if the file could not be read
+         */
+        get: operations["download_data"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/file/upload/{path}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download a file from the uploads directory
+         * @description Returns the raw file content with appropriate Content-Type header.
+         *     Automatically resolves to the latest version unless a specific version UUID is provided.
+         *
+         *     # Errors
+         *     - `Error::NotFound` if the file does not exist
+         *     - `Error::Internal` if the file could not be read
+         */
+        get: operations["download_upload"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/list": {
         parameters: {
             query?: never;
@@ -91,6 +166,11 @@ export interface components {
             /** Format: int32 */
             status: number;
         };
+        /** @description Optional specific version UUID. If not provided, returns the latest version. */
+        FileDownloadQuery: {
+            /** @description Optional specific version UUID. If not provided, returns the latest version. */
+            version?: string | null;
+        };
         /** @enum {string} */
         FileEntryType: "directory" | "file" | "versioned_file";
         FileInfo: {
@@ -116,8 +196,9 @@ export interface components {
             /** @description List of all versions (only populated for versioned files) */
             versions?: components["schemas"]["FileVersion"][] | null;
         };
+        /** @description Optional path relative to upload directory */
         FileListQuery: {
-            /** @description Optional path to list files from (relative to data directory) */
+            /** @description Optional path to list files from (relative to upload directory) */
             path?: string | null;
         };
         FileListResponse: {
@@ -256,10 +337,136 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    download_cache: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Path to file relative to cache directory */
+                path: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description File content */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": unknown;
+                };
+            };
+            /** @description File not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    download_data: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Path to file relative to data directory */
+                path: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description File content */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": unknown;
+                };
+            };
+            /** @description File not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    download_upload: {
+        parameters: {
+            query?: {
+                /** @description Optional specific version UUID. If not provided, returns the latest version. */
+                version?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Path to versioned file relative to uploads directory */
+                path: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description File content */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": unknown;
+                };
+            };
+            /** @description File not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     list_files: {
         parameters: {
             query?: {
-                /** @description Optional path relative to data directory (e.g., 'uploads'). Defaults to root data directory if not specified. */
+                /** @description Optional path to list files from (relative to upload directory) */
                 path?: string;
             };
             header?: never;

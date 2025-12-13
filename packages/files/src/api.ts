@@ -22,6 +22,9 @@ export type FilesOperations = DefineOperations<operations>;
  * These paths do NOT include any prefix - that's provided by the user.
  */
 export const FILES_OPERATIONS = createOperationBindingsFactory<paths, operations>()({
+  download_cache: { method: 'get', path: '/file/cache/{path}' },
+  download_data: { method: 'get', path: '/file/data/{path}' },
+  download_upload: { method: 'get', path: '/file/upload/{path}' },
   list_files: { method: 'get', path: '/list' },
   save_file: { method: 'post', path: '/save' },
   upload: { method: 'post', path: '/upload' },

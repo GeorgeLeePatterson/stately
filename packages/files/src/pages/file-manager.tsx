@@ -115,6 +115,7 @@ export function FileManager({ initialPath }: FileManagerProps) {
           {selectedEntry && (
             <FileDetails
               className="sm:w-96 p-4"
+              currentPath={currentPath}
               entry={selectedEntry}
               onClose={() => setSelectedEntry(null)}
             />

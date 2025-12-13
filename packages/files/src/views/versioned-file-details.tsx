@@ -1,20 +1,31 @@
 import { Button, ScrollArea } from '@stately/ui/base/ui';
-import { ArrowLeft, History } from 'lucide-react';
+import { ArrowLeft, Download, History } from 'lucide-react';
 import { useFilesStatelyUi } from '@/context';
+import { useDownload } from '@/hooks/use-download';
 import type { FileInfo } from '@/types/api';
 import { filesUiUtils } from '@/utils';
 
 export interface VersionedFileDetailsProps {
   entry: FileInfo;
+  currentPath?: string;
   onClose: () => void;
 }
 
-export function VersionedFileDetails({ entry, onClose }: VersionedFileDetailsProps) {
+export function VersionedFileDetails({ entry, currentPath, onClose }: VersionedFileDetailsProps) {
   const { plugins } = useFilesStatelyUi();
   const formatTimestamp = plugins.files.utils?.formatTimestamp || filesUiUtils.formatTimestamp;
+  const { mutate: download, isPending: isDownloading } = useDownload();
 
   const versions = entry.versions || [];
   const latestVersion = versions[0]; // Versions are sorted newest first
+
+  // For versioned files, the path is relative to uploads directory
+  const fullPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
+  const uploadPath = fullPath.replace(/^uploads\//, '');
+
+  const handleDownload = (version?: string) => {
+    download({ path: uploadPath, target: 'upload', version });
+  };
 
   return (
     <div className="versioned-file-details space-y-4">
@@ -65,6 +76,17 @@ export function VersionedFileDetails({ entry, onClose }: VersionedFileDetailsPro
         </div>
       </div>
 
+      <Button
+        className="w-full"
+        disabled={isDownloading}
+        onClick={() => handleDownload()}
+        size="sm"
+        variant="outline"
+      >
+        <Download className="h-4 w-4 mr-2" />
+        {isDownloading ? 'Downloading...' : 'Download Latest'}
+      </Button>
+
       {/* Version list */}
       <div className="pt-4 border-t">
         <h4 className="text-sm font-medium mb-2">Version History</h4>
@@ -88,11 +110,25 @@ export function VersionedFileDetails({ entry, onClose }: VersionedFileDetailsPro
                   <div className="text-muted-foreground font-mono truncate text-[10px]">
                     {version.uuid ?? 'unknown'}
                   </div>
-                  <span className="text-muted-foreground">
-                    {typeof version.size === 'number'
-                      ? `${(version.size / 1024).toFixed(1)}kb`
-                      : 'N/A'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">
+                      {typeof version.size === 'number'
+                        ? `${(version.size / 1024).toFixed(1)}kb`
+                        : 'N/A'}
+                    </span>
+                    {version.uuid && (
+                      <Button
+                        className="h-5 w-5 p-0"
+                        disabled={isDownloading}
+                        onClick={() => handleDownload(version.uuid)}
+                        size="sm"
+                        title="Download this version"
+                        variant="ghost"
+                      >
+                        <Download className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

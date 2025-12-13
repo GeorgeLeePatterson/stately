@@ -14,6 +14,162 @@
     "version": "0.3.2"
   },
   "paths": {
+    "/file/cache/{path}": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Download a file from the cache directory",
+        "description": "Returns the raw file content with appropriate Content-Type header.\nNo version resolution is performed - the path is used directly.\n\n# Errors\n- `Error::NotFound` if the file does not exist\n- `Error::Internal` if the file could not be read",
+        "operationId": "download_cache",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "description": "Path to file relative to cache directory",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File content",
+            "content": {
+              "application/octet-stream": {}
+            }
+          },
+          "404": {
+            "description": "File not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/data/{path}": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Download a file from the data directory",
+        "description": "Returns the raw file content with appropriate Content-Type header.\nNo version resolution is performed - the path is used directly.\n\n# Errors\n- `Error::NotFound` if the file does not exist\n- `Error::Internal` if the file could not be read",
+        "operationId": "download_data",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "description": "Path to file relative to data directory",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File content",
+            "content": {
+              "application/octet-stream": {}
+            }
+          },
+          "404": {
+            "description": "File not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/upload/{path}": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Download a file from the uploads directory",
+        "description": "Returns the raw file content with appropriate Content-Type header.\nAutomatically resolves to the latest version unless a specific version UUID is provided.\n\n# Errors\n- `Error::NotFound` if the file does not exist\n- `Error::Internal` if the file could not be read",
+        "operationId": "download_upload",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "description": "Path to versioned file relative to uploads directory",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "Optional specific version UUID. If not provided, returns the latest version.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File content",
+            "content": {
+              "application/octet-stream": {}
+            }
+          },
+          "404": {
+            "description": "File not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/list": {
       "get": {
         "tags": [
@@ -26,7 +182,7 @@
           {
             "name": "path",
             "in": "query",
-            "description": "Optional path relative to data directory (e.g., 'uploads'). Defaults to root data directory if not specified.",
+            "description": "Optional path to list files from (relative to upload directory)",
             "required": false,
             "schema": {
               "type": "string"
@@ -192,6 +348,19 @@
           }
         }
       },
+      "FileDownloadQuery": {
+        "type": "object",
+        "description": "Optional specific version UUID. If not provided, returns the latest version.",
+        "properties": {
+          "version": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional specific version UUID. If not provided, returns the latest version."
+          }
+        }
+      },
       "FileEntryType": {
         "type": "string",
         "enum": [
@@ -254,13 +423,14 @@
       },
       "FileListQuery": {
         "type": "object",
+        "description": "Optional path relative to upload directory",
         "properties": {
           "path": {
             "type": [
               "string",
               "null"
             ],
-            "description": "Optional path to list files from (relative to data directory)"
+            "description": "Optional path to list files from (relative to upload directory)"
           }
         }
       },

@@ -549,6 +549,48 @@
           }
         }
       },
+      "Connector": {
+        "type": "object",
+        "description": "Connector Stately `entity` type.\n\nUse this with [`Connectors`] and [`Registry`] to create a turnkey connector registry.",
+        "required": [
+          "config"
+        ],
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/ConnectorType"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this connection."
+          }
+        }
+      },
+      "ConnectorType": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "object_store"
+            ],
+            "properties": {
+              "object_store": {
+                "$ref": "#/components/schemas/ObjectStoreConfiguration"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "database"
+            ],
+            "properties": {
+              "database": {
+                "$ref": "#/components/schemas/DatabaseConfiguration"
+              }
+            }
+          }
+        ]
+      },
       "Database": {
         "oneOf": [
           {
