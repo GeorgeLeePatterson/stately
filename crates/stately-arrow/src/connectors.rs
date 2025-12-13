@@ -1,18 +1,8 @@
-use std::sync::Arc;
-
 use async_trait::async_trait;
 use datafusion::execution::context::SessionContext;
 
 use crate::ListSummary;
 use crate::error::{Error, Result};
-
-/// Registry responsible for supplying connectors to the viewer.
-#[async_trait]
-pub trait ConnectorRegistry: Send + Sync {
-    async fn get(&self, id: &str) -> Result<Arc<dyn Backend>>;
-    async fn list(&self) -> Result<Vec<ConnectionMetadata>>;
-    async fn registered(&self) -> Result<Vec<ConnectionMetadata>>;
-}
 
 /// Runtime behaviour for a connector that can be queried via the viewer.
 #[async_trait]

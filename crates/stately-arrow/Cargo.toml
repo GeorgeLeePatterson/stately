@@ -19,6 +19,8 @@ object-store = ["dep:object_store"]
 database = []
 clickhouse = ["database", "dep:clickhouse-datafusion"]
 
+registry = ["clickhouse", "object-store", "dep:tokio", "dep:uuid"]
+
 [dependencies]
 async-trait = "0.1"
 arrow = { version = "56", features = ["default", "prettyprint"] }
@@ -32,16 +34,17 @@ tracing = "0.1"
 utoipa = { version = "5", features = ["axum_extras", "macros"] }
 
 stately = { path = "../stately", features = ["axum"] }
-uuid.workspace = true
 
 # Optional
 clickhouse-datafusion = { version = "0.1", optional = true }
-strum_macros = { version = "0.27", optional = true }
 object_store = { version = "0.12", optional = true, default-features = false, features = [
     "aws",
     "azure",
     "gcp"
 ]}
+strum_macros = { version = "0.27", optional = true }
+tokio = { version = "1", optional = true, features = ["sync"] }
+uuid = { workspace = true, optional = true }
 
 [[bin]]
 name = "generate-openapi"

@@ -58,7 +58,7 @@ where
 ///     pub fn new(state: Arc<RwLock<StatelyState>>) -> Self {
 ///         Self {
 ///             state,
-///             registered: Arc::new(RwLock::new(FxHashMap::default())),
+///             registered: Arc::new(RwLock::new(HashMap::default())),
 ///             options: RegistryOptions::default(),
 ///         }
 ///     }

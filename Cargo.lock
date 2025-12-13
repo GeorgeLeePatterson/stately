@@ -3359,6 +3359,7 @@ dependencies = [
  "stately",
  "strum_macros 0.27.2",
  "thiserror",
+ "tokio",
  "tracing",
  "utoipa",
  "uuid",
