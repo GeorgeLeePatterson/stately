@@ -18,10 +18,10 @@ use serde::{Deserialize, Serialize};
 use tracing::debug;
 
 use super::{ConnectionOptions, PoolOptions, Secret};
-use crate::connectors::{Backend, Capability, ConnectionKind, ConnectionMetadata};
-use crate::context::DEFAULT_SESSION_CAPABILITIES;
-use crate::error::Error;
-use crate::{BackendMetadata, ListSummary, QuerySession, Result, SessionCapability, TableSummary};
+use crate::backend::{Backend, BackendMetadata, Capability, ConnectionKind, ConnectionMetadata};
+use crate::context::{DEFAULT_SESSION_CAPABILITIES, QuerySession, SessionCapability};
+use crate::error::{Error, Result};
+use crate::response::{ListSummary, TableSummary};
 
 static CLICKHOUSE_METADATA: LazyLock<BackendMetadata> = LazyLock::new(|| BackendMetadata {
     kind:         ConnectionKind::Database,

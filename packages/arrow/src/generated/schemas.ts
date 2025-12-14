@@ -22,14 +22,14 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "BackendMetadata": {
-    "description": "Static metadata describing a backend connection.\n\nA backend is the underlying implementation of a connector/connection. For this reason, the\nbackend provides its capabilities, kind, and catalog.",
+    "description": "Static metadata describing a backend implementation.\n\nBackends provide this metadata to indicate their type and capabilities.\nUse the builder methods to construct instances.",
     "nodeType": "object",
     "properties": {
       "capabilities": {
-        "description": "A list of capabilities the connector supports.",
+        "description": "Capabilities this backend supports.",
         "items": {
           "nodeType": "enum",
-          "description": "Capabilities a connector can expose to the viewer.",
+          "description": "Capabilities a connector can expose.",
           "values": [
             "execute_sql",
             "list"
@@ -39,7 +39,7 @@ export const PARSED_SCHEMAS = {
       },
       "kind": {
         "nodeType": "untaggedEnum",
-        "description": "The types of connectors supported",
+        "description": "The type of data source a connector connects to.",
         "variants": [
           {
             "schema": null,
@@ -51,6 +51,7 @@ export const PARSED_SCHEMAS = {
           },
           {
             "schema": {
+              "description": "Custom connector type.",
               "nodeType": "primitive",
               "primitiveType": "string"
             },
@@ -66,7 +67,7 @@ export const PARSED_SCHEMAS = {
   },
   "Capability": {
     "nodeType": "enum",
-    "description": "Capabilities a connector can expose to the viewer.",
+    "description": "Capabilities a connector can expose.",
     "values": [
       "execute_sql",
       "list"
@@ -108,18 +109,20 @@ export const PARSED_SCHEMAS = {
     "required": []
   },
   "ConnectionDetailsRequest": {
-    "description": "Request for multiple connection details",
+    "description": "Request for fetching details from multiple connectors.",
     "nodeType": "object",
     "properties": {
       "connectors": {
-        "description": "IDs -> searches of each connector to list",
+        "description": "Map of connector IDs to their search parameters.",
         "nodeType": "map",
         "valueSchema": {
           "nodeType": "object",
-          "description": "Query param for searching connections",
+          "description": "Query parameters for searching connection contents.",
           "properties": {
             "search": {
+              "description": "Optional search term to filter results.",
               "innerSchema": {
+                "description": "Optional search term to filter results.",
                 "nodeType": "primitive",
                 "primitiveType": "string"
               },
@@ -130,7 +133,7 @@ export const PARSED_SCHEMAS = {
         }
       },
       "fail_on_error": {
-        "description": "Whether one failure should fail the entire request",
+        "description": "If true, a failure in any connector fails the entire request.\nIf false (default), failures are skipped and successful results returned.",
         "nodeType": "primitive",
         "primitiveType": "boolean"
       }
@@ -140,15 +143,15 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "ConnectionDetailsResponse": {
-    "description": "Response to execute a SQL query",
+    "description": "Response containing details from multiple connectors.",
     "nodeType": "object",
     "properties": {
       "connections": {
-        "description": "IDs -> `ListSummary` of each connector to list",
+        "description": "Map of connector IDs to their listing results.",
         "nodeType": "map",
         "valueSchema": {
           "nodeType": "taggedUnion",
-          "description": "Summaries provided by listing",
+          "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context.",
           "discriminator": "type",
           "variants": [
             {
@@ -156,6 +159,7 @@ export const PARSED_SCHEMAS = {
                 "nodeType": "object",
                 "properties": {
                   "summary": {
+                    "description": "List of database names (for database connectors at root level).",
                     "items": {
                       "nodeType": "primitive",
                       "primitiveType": "string"
@@ -174,16 +178,20 @@ export const PARSED_SCHEMAS = {
                 "nodeType": "object",
                 "properties": {
                   "summary": {
+                    "description": "List of tables with metadata (for database connectors within a database).",
                     "items": {
                       "nodeType": "object",
-                      "description": "Lightweight description of a table/file exposed by a connector.",
+                      "description": "Summary information about a table or file.",
                       "properties": {
                         "name": {
+                          "description": "Table or file name/path.",
                           "nodeType": "primitive",
                           "primitiveType": "string"
                         },
                         "rows": {
+                          "description": "Number of rows (if known).",
                           "innerSchema": {
+                            "description": "Number of rows (if known).",
                             "format": "int64",
                             "nodeType": "primitive",
                             "primitiveType": "integer"
@@ -191,7 +199,9 @@ export const PARSED_SCHEMAS = {
                           "nodeType": "nullable"
                         },
                         "size_bytes": {
+                          "description": "Size in bytes (if known).",
                           "innerSchema": {
+                            "description": "Size in bytes (if known).",
                             "format": "int64",
                             "nodeType": "primitive",
                             "primitiveType": "integer"
@@ -217,6 +227,7 @@ export const PARSED_SCHEMAS = {
                 "nodeType": "object",
                 "properties": {
                   "summary": {
+                    "description": "List of path prefixes (for object store connectors at root level).",
                     "items": {
                       "nodeType": "primitive",
                       "primitiveType": "string"
@@ -235,16 +246,20 @@ export const PARSED_SCHEMAS = {
                 "nodeType": "object",
                 "properties": {
                   "summary": {
+                    "description": "List of files with metadata (for object store connectors within a path).",
                     "items": {
                       "nodeType": "object",
-                      "description": "Lightweight description of a table/file exposed by a connector.",
+                      "description": "Summary information about a table or file.",
                       "properties": {
                         "name": {
+                          "description": "Table or file name/path.",
                           "nodeType": "primitive",
                           "primitiveType": "string"
                         },
                         "rows": {
+                          "description": "Number of rows (if known).",
                           "innerSchema": {
+                            "description": "Number of rows (if known).",
                             "format": "int64",
                             "nodeType": "primitive",
                             "primitiveType": "integer"
@@ -252,7 +267,9 @@ export const PARSED_SCHEMAS = {
                           "nodeType": "nullable"
                         },
                         "size_bytes": {
+                          "description": "Size in bytes (if known).",
                           "innerSchema": {
+                            "description": "Size in bytes (if known).",
                             "format": "int64",
                             "nodeType": "primitive",
                             "primitiveType": "integer"
@@ -283,7 +300,7 @@ export const PARSED_SCHEMAS = {
   },
   "ConnectionKind": {
     "nodeType": "untaggedEnum",
-    "description": "The types of connectors supported",
+    "description": "The type of data source a connector connects to.",
     "variants": [
       {
         "schema": null,
@@ -295,6 +312,7 @@ export const PARSED_SCHEMAS = {
       },
       {
         "schema": {
+          "description": "Custom connector type.",
           "nodeType": "primitive",
           "primitiveType": "string"
         },
@@ -303,31 +321,32 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "ConnectionMetadata": {
-    "description": "Runtime metadata describing a connector instance.\n\nA connection refers to a connector in the context of the underlying query engine.",
+    "description": "Runtime metadata describing a connector instance.\n\nThis combines the connector's identity with its backend metadata,\nincluding the `DataFusion` catalog it's registered under.",
     "nodeType": "object",
     "properties": {
       "catalog": {
-        "description": "The datafusion catalog the connector is registered in.",
+        "description": "The `DataFusion` catalog this connector is registered under.",
         "innerSchema": {
-          "description": "The datafusion catalog the connector is registered in.",
+          "description": "The `DataFusion` catalog this connector is registered under.",
           "nodeType": "primitive",
           "primitiveType": "string"
         },
         "nodeType": "nullable"
       },
       "id": {
+        "description": "Unique identifier for this connector.",
         "nodeType": "primitive",
         "primitiveType": "string"
       },
       "metadata": {
-        "description": "Static metadata describing a backend connection.\n\nA backend is the underlying implementation of a connector/connection. For this reason, the\nbackend provides its capabilities, kind, and catalog.",
+        "description": "Static metadata describing a backend implementation.\n\nBackends provide this metadata to indicate their type and capabilities.\nUse the builder methods to construct instances.",
         "nodeType": "object",
         "properties": {
           "capabilities": {
-            "description": "A list of capabilities the connector supports.",
+            "description": "Capabilities this backend supports.",
             "items": {
               "nodeType": "enum",
-              "description": "Capabilities a connector can expose to the viewer.",
+              "description": "Capabilities a connector can expose.",
               "values": [
                 "execute_sql",
                 "list"
@@ -337,7 +356,7 @@ export const PARSED_SCHEMAS = {
           },
           "kind": {
             "nodeType": "untaggedEnum",
-            "description": "The types of connectors supported",
+            "description": "The type of data source a connector connects to.",
             "variants": [
               {
                 "schema": null,
@@ -349,6 +368,7 @@ export const PARSED_SCHEMAS = {
               },
               {
                 "schema": {
+                  "description": "Custom connector type.",
                   "nodeType": "primitive",
                   "primitiveType": "string"
                 },
@@ -363,6 +383,7 @@ export const PARSED_SCHEMAS = {
         ]
       },
       "name": {
+        "description": "Human-readable name.",
         "nodeType": "primitive",
         "primitiveType": "string"
       }
@@ -433,10 +454,12 @@ export const PARSED_SCHEMAS = {
   },
   "ConnectionSearchQuery": {
     "nodeType": "object",
-    "description": "Query param for searching connections",
+    "description": "Query parameters for searching connection contents.",
     "properties": {
       "search": {
+        "description": "Optional search term to filter results.",
         "innerSchema": {
+          "description": "Optional search term to filter results.",
           "nodeType": "primitive",
           "primitiveType": "string"
         },
@@ -1246,7 +1269,7 @@ export const PARSED_SCHEMAS = {
   },
   "ListSummary": {
     "nodeType": "taggedUnion",
-    "description": "Summaries provided by listing",
+    "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context.",
     "discriminator": "type",
     "variants": [
       {
@@ -1254,6 +1277,7 @@ export const PARSED_SCHEMAS = {
           "nodeType": "object",
           "properties": {
             "summary": {
+              "description": "List of database names (for database connectors at root level).",
               "items": {
                 "nodeType": "primitive",
                 "primitiveType": "string"
@@ -1272,16 +1296,20 @@ export const PARSED_SCHEMAS = {
           "nodeType": "object",
           "properties": {
             "summary": {
+              "description": "List of tables with metadata (for database connectors within a database).",
               "items": {
                 "nodeType": "object",
-                "description": "Lightweight description of a table/file exposed by a connector.",
+                "description": "Summary information about a table or file.",
                 "properties": {
                   "name": {
+                    "description": "Table or file name/path.",
                     "nodeType": "primitive",
                     "primitiveType": "string"
                   },
                   "rows": {
+                    "description": "Number of rows (if known).",
                     "innerSchema": {
+                      "description": "Number of rows (if known).",
                       "format": "int64",
                       "nodeType": "primitive",
                       "primitiveType": "integer"
@@ -1289,7 +1317,9 @@ export const PARSED_SCHEMAS = {
                     "nodeType": "nullable"
                   },
                   "size_bytes": {
+                    "description": "Size in bytes (if known).",
                     "innerSchema": {
+                      "description": "Size in bytes (if known).",
                       "format": "int64",
                       "nodeType": "primitive",
                       "primitiveType": "integer"
@@ -1315,6 +1345,7 @@ export const PARSED_SCHEMAS = {
           "nodeType": "object",
           "properties": {
             "summary": {
+              "description": "List of path prefixes (for object store connectors at root level).",
               "items": {
                 "nodeType": "primitive",
                 "primitiveType": "string"
@@ -1333,16 +1364,20 @@ export const PARSED_SCHEMAS = {
           "nodeType": "object",
           "properties": {
             "summary": {
+              "description": "List of files with metadata (for object store connectors within a path).",
               "items": {
                 "nodeType": "object",
-                "description": "Lightweight description of a table/file exposed by a connector.",
+                "description": "Summary information about a table or file.",
                 "properties": {
                   "name": {
+                    "description": "Table or file name/path.",
                     "nodeType": "primitive",
                     "primitiveType": "string"
                   },
                   "rows": {
+                    "description": "Number of rows (if known).",
                     "innerSchema": {
+                      "description": "Number of rows (if known).",
                       "format": "int64",
                       "nodeType": "primitive",
                       "primitiveType": "integer"
@@ -1350,7 +1385,9 @@ export const PARSED_SCHEMAS = {
                     "nodeType": "nullable"
                   },
                   "size_bytes": {
+                    "description": "Size in bytes (if known).",
                     "innerSchema": {
+                      "description": "Size in bytes (if known).",
                       "format": "int64",
                       "nodeType": "primitive",
                       "primitiveType": "integer"
@@ -1735,20 +1772,20 @@ export const PARSED_SCHEMAS = {
     "required": []
   },
   "QueryRequest": {
-    "description": "Request to execute a SQL query",
+    "description": "Request to execute a SQL query.",
     "nodeType": "object",
     "properties": {
       "connector_id": {
-        "description": "ID of the connector to use",
+        "description": "ID of the connector to use. If not provided, the query runs against\nthe session's default catalog (if supported).",
         "innerSchema": {
-          "description": "ID of the connector to use",
+          "description": "ID of the connector to use. If not provided, the query runs against\nthe session's default catalog (if supported).",
           "nodeType": "primitive",
           "primitiveType": "string"
         },
         "nodeType": "nullable"
       },
       "sql": {
-        "description": "SQL query to execute (can use URL tables like `s3://bucket/path/*.parquet`)",
+        "description": "SQL query to execute. Supports URL tables like `s3://bucket/path/*.parquet`.",
         "nodeType": "primitive",
         "primitiveType": "string"
       }
@@ -1775,14 +1812,17 @@ export const PARSED_SCHEMAS = {
   },
   "TableSummary": {
     "nodeType": "object",
-    "description": "Lightweight description of a table/file exposed by a connector.",
+    "description": "Summary information about a table or file.",
     "properties": {
       "name": {
+        "description": "Table or file name/path.",
         "nodeType": "primitive",
         "primitiveType": "string"
       },
       "rows": {
+        "description": "Number of rows (if known).",
         "innerSchema": {
+          "description": "Number of rows (if known).",
           "format": "int64",
           "nodeType": "primitive",
           "primitiveType": "integer"
@@ -1790,7 +1830,9 @@ export const PARSED_SCHEMAS = {
         "nodeType": "nullable"
       },
       "size_bytes": {
+        "description": "Size in bytes (if known).",
         "innerSchema": {
+          "description": "Size in bytes (if known).",
           "format": "int64",
           "nodeType": "primitive",
           "primitiveType": "integer"

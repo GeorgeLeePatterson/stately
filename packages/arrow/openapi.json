@@ -135,6 +135,7 @@
           {
             "name": "search",
             "in": "query",
+            "description": "Optional search term to filter results.",
             "required": false,
             "schema": {
               "type": [
@@ -341,7 +342,7 @@
       },
       "BackendMetadata": {
         "type": "object",
-        "description": "Static metadata describing a backend connection.\n\nA backend is the underlying implementation of a connector/connection. For this reason, the\nbackend provides its capabilities, kind, and catalog.",
+        "description": "Static metadata describing a backend implementation.\n\nBackends provide this metadata to indicate their type and capabilities.\nUse the builder methods to construct instances.",
         "required": [
           "kind",
           "capabilities"
@@ -352,17 +353,17 @@
             "items": {
               "$ref": "#/components/schemas/Capability"
             },
-            "description": "A list of capabilities the connector supports."
+            "description": "Capabilities this backend supports."
           },
           "kind": {
             "$ref": "#/components/schemas/ConnectionKind",
-            "description": "The 'kind' of connector"
+            "description": "The kind of data source this backend connects to."
           }
         }
       },
       "Capability": {
         "type": "string",
-        "description": "Capabilities a connector can expose to the viewer.",
+        "description": "Capabilities a connector can expose.",
         "enum": [
           "execute_sql",
           "list"
@@ -404,14 +405,14 @@
       },
       "ConnectionDetailsRequest": {
         "type": "object",
-        "description": "Request for multiple connection details",
+        "description": "Request for fetching details from multiple connectors.",
         "required": [
           "connectors"
         ],
         "properties": {
           "connectors": {
             "type": "object",
-            "description": "IDs -> searches of each connector to list",
+            "description": "Map of connector IDs to their search parameters.",
             "additionalProperties": {
               "$ref": "#/components/schemas/ConnectionSearchQuery"
             },
@@ -421,20 +422,20 @@
           },
           "fail_on_error": {
             "type": "boolean",
-            "description": "Whether one failure should fail the entire request"
+            "description": "If true, a failure in any connector fails the entire request.\nIf false (default), failures are skipped and successful results returned."
           }
         }
       },
       "ConnectionDetailsResponse": {
         "type": "object",
-        "description": "Response to execute a SQL query",
+        "description": "Response containing details from multiple connectors.",
         "required": [
           "connections"
         ],
         "properties": {
           "connections": {
             "type": "object",
-            "description": "IDs -> `ListSummary` of each connector to list",
+            "description": "Map of connector IDs to their listing results.",
             "additionalProperties": {
               "$ref": "#/components/schemas/ListSummary"
             },
@@ -448,33 +449,37 @@
         "oneOf": [
           {
             "type": "string",
+            "description": "Object storage (S3, GCS, Azure, local filesystem).",
             "enum": [
               "object_store"
             ]
           },
           {
             "type": "string",
+            "description": "Relational database (`ClickHouse`, `PostgreSQL`, etc.).",
             "enum": [
               "database"
             ]
           },
           {
             "type": "object",
+            "description": "Custom connector type.",
             "required": [
               "other"
             ],
             "properties": {
               "other": {
-                "type": "string"
+                "type": "string",
+                "description": "Custom connector type."
               }
             }
           }
         ],
-        "description": "The types of connectors supported"
+        "description": "The type of data source a connector connects to."
       },
       "ConnectionMetadata": {
         "type": "object",
-        "description": "Runtime metadata describing a connector instance.\n\nA connection refers to a connector in the context of the underlying query engine.",
+        "description": "Runtime metadata describing a connector instance.\n\nThis combines the connector's identity with its backend metadata,\nincluding the `DataFusion` catalog it's registered under.",
         "required": [
           "id",
           "name",
@@ -486,16 +491,19 @@
               "string",
               "null"
             ],
-            "description": "The datafusion catalog the connector is registered in."
+            "description": "The `DataFusion` catalog this connector is registered under."
           },
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Unique identifier for this connector."
           },
           "metadata": {
-            "$ref": "#/components/schemas/BackendMetadata"
+            "$ref": "#/components/schemas/BackendMetadata",
+            "description": "Backend metadata (kind and capabilities)."
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Human-readable name."
           }
         }
       },
@@ -539,13 +547,14 @@
       },
       "ConnectionSearchQuery": {
         "type": "object",
-        "description": "Query param for searching connections",
+        "description": "Query parameters for searching connection contents.",
         "properties": {
           "search": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Optional search term to filter results."
           }
         }
       },
@@ -637,6 +646,7 @@
         "oneOf": [
           {
             "type": "object",
+            "description": "List of database names (for database connectors at root level).",
             "required": [
               "summary",
               "type"
@@ -646,7 +656,8 @@
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "description": "List of database names (for database connectors at root level)."
               },
               "type": {
                 "type": "string",
@@ -658,6 +669,7 @@
           },
           {
             "type": "object",
+            "description": "List of tables with metadata (for database connectors within a database).",
             "required": [
               "summary",
               "type"
@@ -667,7 +679,8 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/TableSummary"
-                }
+                },
+                "description": "List of tables with metadata (for database connectors within a database)."
               },
               "type": {
                 "type": "string",
@@ -679,6 +692,7 @@
           },
           {
             "type": "object",
+            "description": "List of path prefixes (for object store connectors at root level).",
             "required": [
               "summary",
               "type"
@@ -688,7 +702,8 @@
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "description": "List of path prefixes (for object store connectors at root level)."
               },
               "type": {
                 "type": "string",
@@ -700,6 +715,7 @@
           },
           {
             "type": "object",
+            "description": "List of files with metadata (for object store connectors within a path).",
             "required": [
               "summary",
               "type"
@@ -709,7 +725,8 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/TableSummary"
-                }
+                },
+                "description": "List of files with metadata (for object store connectors within a path)."
               },
               "type": {
                 "type": "string",
@@ -720,7 +737,7 @@
             }
           }
         ],
-        "description": "Summaries provided by listing"
+        "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context."
       },
       "ObjectStore": {
         "oneOf": [
@@ -872,7 +889,7 @@
       },
       "QueryRequest": {
         "type": "object",
-        "description": "Request to execute a SQL query",
+        "description": "Request to execute a SQL query.",
         "required": [
           "sql"
         ],
@@ -882,11 +899,11 @@
               "string",
               "null"
             ],
-            "description": "ID of the connector to use"
+            "description": "ID of the connector to use. If not provided, the query runs against\nthe session's default catalog (if supported)."
           },
           "sql": {
             "type": "string",
-            "description": "SQL query to execute (can use URL tables like `s3://bucket/path/*.parquet`)"
+            "description": "SQL query to execute. Supports URL tables like `s3://bucket/path/*.parquet`."
           }
         }
       },
@@ -906,13 +923,14 @@
       },
       "TableSummary": {
         "type": "object",
-        "description": "Lightweight description of a table/file exposed by a connector.",
+        "description": "Summary information about a table or file.",
         "required": [
           "name"
         ],
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "Table or file name/path."
           },
           "rows": {
             "type": [
@@ -920,6 +938,7 @@
               "null"
             ],
             "format": "int64",
+            "description": "Number of rows (if known).",
             "minimum": 0
           },
           "size_bytes": {
@@ -928,6 +947,7 @@
               "null"
             ],
             "format": "int64",
+            "description": "Size in bytes (if known).",
             "minimum": 0
           }
         }
@@ -957,19 +977,19 @@
     },
     "responses": {
       "ConnectionDetailsResponse": {
-        "description": "Response to execute a SQL query",
+        "description": "Response containing details from multiple connectors.",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
-              "description": "Response to execute a SQL query",
+              "description": "Response containing details from multiple connectors.",
               "required": [
                 "connections"
               ],
               "properties": {
                 "connections": {
                   "type": "object",
-                  "description": "IDs -> `ListSummary` of each connector to list",
+                  "description": "Map of connector IDs to their listing results.",
                   "additionalProperties": {
                     "$ref": "#/components/schemas/ListSummary"
                   },
@@ -983,13 +1003,14 @@
         }
       },
       "ListSummary": {
-        "description": "Summaries provided by listing",
+        "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context.",
         "content": {
           "application/json": {
             "schema": {
               "oneOf": [
                 {
                   "type": "object",
+                  "description": "List of database names (for database connectors at root level).",
                   "required": [
                     "summary",
                     "type"
@@ -999,7 +1020,8 @@
                       "type": "array",
                       "items": {
                         "type": "string"
-                      }
+                      },
+                      "description": "List of database names (for database connectors at root level)."
                     },
                     "type": {
                       "type": "string",
@@ -1011,6 +1033,7 @@
                 },
                 {
                   "type": "object",
+                  "description": "List of tables with metadata (for database connectors within a database).",
                   "required": [
                     "summary",
                     "type"
@@ -1020,7 +1043,8 @@
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/TableSummary"
-                      }
+                      },
+                      "description": "List of tables with metadata (for database connectors within a database)."
                     },
                     "type": {
                       "type": "string",
@@ -1032,6 +1056,7 @@
                 },
                 {
                   "type": "object",
+                  "description": "List of path prefixes (for object store connectors at root level).",
                   "required": [
                     "summary",
                     "type"
@@ -1041,7 +1066,8 @@
                       "type": "array",
                       "items": {
                         "type": "string"
-                      }
+                      },
+                      "description": "List of path prefixes (for object store connectors at root level)."
                     },
                     "type": {
                       "type": "string",
@@ -1053,6 +1079,7 @@
                 },
                 {
                   "type": "object",
+                  "description": "List of files with metadata (for object store connectors within a path).",
                   "required": [
                     "summary",
                     "type"
@@ -1062,7 +1089,8 @@
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/TableSummary"
-                      }
+                      },
+                      "description": "List of files with metadata (for object store connectors within a path)."
                     },
                     "type": {
                       "type": "string",
@@ -1073,24 +1101,25 @@
                   }
                 }
               ],
-              "description": "Summaries provided by listing"
+              "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context."
             }
           }
         }
       },
       "TableSummary": {
-        "description": "Lightweight description of a table/file exposed by a connector.",
+        "description": "Summary information about a table or file.",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
-              "description": "Lightweight description of a table/file exposed by a connector.",
+              "description": "Summary information about a table or file.",
               "required": [
                 "name"
               ],
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Table or file name/path."
                 },
                 "rows": {
                   "type": [
@@ -1098,6 +1127,7 @@
                     "null"
                   ],
                   "format": "int64",
+                  "description": "Number of rows (if known).",
                   "minimum": 0
                 },
                 "size_bytes": {
@@ -1106,6 +1136,7 @@
                     "null"
                   ],
                   "format": "int64",
+                  "description": "Size in bytes (if known).",
                   "minimum": 0
                 }
               }

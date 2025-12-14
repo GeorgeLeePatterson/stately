@@ -148,19 +148,19 @@ export interface components {
             status: number;
         };
         /**
-         * @description Static metadata describing a backend connection.
+         * @description Static metadata describing a backend implementation.
          *
-         *     A backend is the underlying implementation of a connector/connection. For this reason, the
-         *     backend provides its capabilities, kind, and catalog.
+         *     Backends provide this metadata to indicate their type and capabilities.
+         *     Use the builder methods to construct instances.
          */
         BackendMetadata: {
-            /** @description A list of capabilities the connector supports. */
+            /** @description Capabilities this backend supports. */
             capabilities: components["schemas"]["Capability"][];
-            /** @description The 'kind' of connector */
+            /** @description The kind of data source this backend connects to. */
             kind: components["schemas"]["ConnectionKind"];
         };
         /**
-         * @description Capabilities a connector can expose to the viewer.
+         * @description Capabilities a connector can expose.
          * @enum {string}
          */
         Capability: "execute_sql" | "list";
@@ -176,36 +176,44 @@ export interface components {
                 [key: string]: string;
             };
         };
-        /** @description Request for multiple connection details */
+        /** @description Request for fetching details from multiple connectors. */
         ConnectionDetailsRequest: {
-            /** @description IDs -> searches of each connector to list */
+            /** @description Map of connector IDs to their search parameters. */
             connectors: {
                 [key: string]: components["schemas"]["ConnectionSearchQuery"];
             };
-            /** @description Whether one failure should fail the entire request */
+            /**
+             * @description If true, a failure in any connector fails the entire request.
+             *     If false (default), failures are skipped and successful results returned.
+             */
             fail_on_error?: boolean;
         };
-        /** @description Response to execute a SQL query */
+        /** @description Response containing details from multiple connectors. */
         ConnectionDetailsResponse: {
-            /** @description IDs -> `ListSummary` of each connector to list */
+            /** @description Map of connector IDs to their listing results. */
             connections: {
                 [key: string]: components["schemas"]["ListSummary"];
             };
         };
-        /** @description The types of connectors supported */
+        /** @description The type of data source a connector connects to. */
         ConnectionKind: "object_store" | "database" | {
+            /** @description Custom connector type. */
             other: string;
         };
         /**
          * @description Runtime metadata describing a connector instance.
          *
-         *     A connection refers to a connector in the context of the underlying query engine.
+         *     This combines the connector's identity with its backend metadata,
+         *     including the `DataFusion` catalog it's registered under.
          */
         ConnectionMetadata: {
-            /** @description The datafusion catalog the connector is registered in. */
+            /** @description The `DataFusion` catalog this connector is registered under. */
             catalog?: string | null;
+            /** @description Unique identifier for this connector. */
             id: string;
+            /** @description Backend metadata (kind and capabilities). */
             metadata: components["schemas"]["BackendMetadata"];
+            /** @description Human-readable name. */
             name: string;
         };
         /** @description Common connection options shared by database connectors. */
@@ -223,8 +231,9 @@ export interface components {
             /** @description Username used to connect to the database */
             username: string;
         };
-        /** @description Query param for searching connections */
+        /** @description Query parameters for searching connection contents. */
         ConnectionSearchQuery: {
+            /** @description Optional search term to filter results. */
             search?: string | null;
         };
         /**
@@ -257,20 +266,29 @@ export interface components {
             options: components["schemas"]["ConnectionOptions"];
             pool?: components["schemas"]["PoolOptions"];
         };
-        /** @description Summaries provided by listing */
+        /**
+         * @description Summary of items available in a connector.
+         *
+         *     The variant indicates what type of items were found based on the connector
+         *     type and search context.
+         */
         ListSummary: {
+            /** @description List of database names (for database connectors at root level). */
             summary: string[];
             /** @enum {string} */
             type: "databases";
         } | {
+            /** @description List of tables with metadata (for database connectors within a database). */
             summary: components["schemas"]["TableSummary"][];
             /** @enum {string} */
             type: "tables";
         } | {
+            /** @description List of path prefixes (for object store connectors at root level). */
             summary: string[];
             /** @enum {string} */
             type: "paths";
         } | {
+            /** @description List of files with metadata (for object store connectors within a path). */
             summary: components["schemas"]["TableSummary"][];
             /** @enum {string} */
             type: "files";
@@ -323,11 +341,14 @@ export interface components {
             /** Format: int32 */
             transaction_timeout?: number | null;
         };
-        /** @description Request to execute a SQL query */
+        /** @description Request to execute a SQL query. */
         QueryRequest: {
-            /** @description ID of the connector to use */
+            /**
+             * @description ID of the connector to use. If not provided, the query runs against
+             *     the session's default catalog (if supported).
+             */
             connector_id?: string | null;
-            /** @description SQL query to execute (can use URL tables like `s3://bucket/path/*.parquet`) */
+            /** @description SQL query to execute. Supports URL tables like `s3://bucket/path/*.parquet`. */
             sql: string;
         };
         /**
@@ -353,12 +374,19 @@ export interface components {
          */
         SessionCapability: "execute_without_connector";
         String: string;
-        /** @description Lightweight description of a table/file exposed by a connector. */
+        /** @description Summary information about a table or file. */
         TableSummary: {
+            /** @description Table or file name/path. */
             name: string;
-            /** Format: int64 */
+            /**
+             * Format: int64
+             * @description Number of rows (if known).
+             */
             rows?: number | null;
-            /** Format: int64 */
+            /**
+             * Format: int64
+             * @description Size in bytes (if known).
+             */
             size_bytes?: number | null;
         };
         /** @description TLS options for databases that require secure connections. */
@@ -370,56 +398,72 @@ export interface components {
         };
     };
     responses: {
-        /** @description Response to execute a SQL query */
+        /** @description Response containing details from multiple connectors. */
         ConnectionDetailsResponse: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
                 "application/json": {
-                    /** @description IDs -> `ListSummary` of each connector to list */
+                    /** @description Map of connector IDs to their listing results. */
                     connections: {
                         [key: string]: components["schemas"]["ListSummary"];
                     };
                 };
             };
         };
-        /** @description Summaries provided by listing */
+        /**
+         * @description Summary of items available in a connector.
+         *
+         *     The variant indicates what type of items were found based on the connector
+         *     type and search context.
+         */
         ListSummary: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
                 "application/json": {
+                    /** @description List of database names (for database connectors at root level). */
                     summary: string[];
                     /** @enum {string} */
                     type: "databases";
                 } | {
+                    /** @description List of tables with metadata (for database connectors within a database). */
                     summary: components["schemas"]["TableSummary"][];
                     /** @enum {string} */
                     type: "tables";
                 } | {
+                    /** @description List of path prefixes (for object store connectors at root level). */
                     summary: string[];
                     /** @enum {string} */
                     type: "paths";
                 } | {
+                    /** @description List of files with metadata (for object store connectors within a path). */
                     summary: components["schemas"]["TableSummary"][];
                     /** @enum {string} */
                     type: "files";
                 };
             };
         };
-        /** @description Lightweight description of a table/file exposed by a connector. */
+        /** @description Summary information about a table or file. */
         TableSummary: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
                 "application/json": {
+                    /** @description Table or file name/path. */
                     name: string;
-                    /** Format: int64 */
+                    /**
+                     * Format: int64
+                     * @description Number of rows (if known).
+                     */
                     rows?: number | null;
-                    /** Format: int64 */
+                    /**
+                     * Format: int64
+                     * @description Size in bytes (if known).
+                     */
                     size_bytes?: number | null;
                 };
             };
@@ -535,6 +579,7 @@ export interface operations {
     connector_list: {
         parameters: {
             query?: {
+                /** @description Optional search term to filter results. */
                 search?: string | null;
             };
             header?: never;

@@ -4,13 +4,13 @@ use axum::Json;
 use axum::extract::{Path, Query, State};
 use tracing::debug;
 
-use super::QueryState;
 use super::ipc::arrow_ipc_response;
+use crate::backend::ConnectionMetadata;
+use crate::context::QuerySession;
 use crate::error::Result;
-use crate::{
-    ConnectionDetailsRequest, ConnectionDetailsResponse, ConnectionMetadata, ConnectionSearchQuery,
-    ListSummary, QueryRequest, QuerySession,
-};
+use crate::request::{ConnectionDetailsRequest, ConnectionSearchQuery, QueryRequest};
+use crate::response::{ConnectionDetailsResponse, ListSummary};
+use crate::state::QueryState;
 
 pub(super) const IDENT: &str = "[stately-arrow]";
 

@@ -15,7 +15,7 @@
 //! Uploaded files are stored with automatic versioning:
 //!
 //! ```text
-//! data/uploads/{filename}/__versions__/{uuid}
+//! {data_dir}/uploads/{filename}/__versions__/{uuid}
 //! ```
 //!
 //! UUID v7 identifiers are time-sortable, so the latest version is the lexicographically
@@ -38,15 +38,42 @@
 //! | `POST` | `/upload` | Upload via multipart form |
 //! | `POST` | `/save` | Save from JSON body |
 //! | `GET` | `/list` | List files and directories |
-//! | `GET` | `/file/cache/*path` | Download from cache |
-//! | `GET` | `/file/data/*path` | Download from data |
-//! | `GET` | `/file/upload/*path` | Download uploaded file |
+//! | `GET` | `/file/cache/{path}` | Download from cache |
+//! | `GET` | `/file/data/{path}` | Download from data |
+//! | `GET` | `/file/upload/{path}` | Download uploaded file |
+//!
+//! # Usage
+//!
+//! ```rust,ignore
+//! use axum::Router;
+//! use stately_files::{router, state::FileState, settings::Dirs};
+//!
+//! // Create app state with custom directories
+//! let dirs = Dirs::new(
+//!     "/app/cache".into(),
+//!     "/app/data".into(),
+//! );
+//!
+//! // Mount the files router
+//! let app = Router::new()
+//!     .nest("/files", router::router(FileState::new(dirs)));
+//! ```
 
-pub mod api;
 pub mod error;
 pub mod handlers;
+pub mod openapi;
 pub mod path;
+pub mod request;
+pub mod response;
 pub mod router;
 pub mod settings;
-pub mod types;
+pub mod state;
 pub mod utils;
+
+// Re-export commonly used types at crate root
+pub use openapi::OpenApiDoc;
+pub use path::{RelativePath, UserDefinedPath, VersionedPath};
+pub use request::{FileDownloadQuery, FileListQuery, FileSaveRequest};
+pub use response::{FileEntryType, FileInfo, FileListResponse, FileUploadResponse, FileVersion};
+pub use settings::Dirs;
+pub use state::FileState;

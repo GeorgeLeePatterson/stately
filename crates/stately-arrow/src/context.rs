@@ -46,9 +46,10 @@ use datafusion::execution::context::SessionContext;
 use datafusion::prelude::SessionConfig;
 use tracing::error;
 
-use crate::connectors::{Capability, ConnectionMetadata};
+use crate::backend::{Capability, ConnectionMetadata};
 use crate::error::{Error, Result};
-use crate::{ConnectorRegistry, ListSummary};
+use crate::registry::ConnectorRegistry;
+use crate::response::ListSummary;
 
 pub const DEFAULT_SESSION_CAPABILITIES: &[SessionCapability] =
     &[SessionCapability::ExecuteWithoutConnector];
@@ -158,7 +159,7 @@ where
                     };
 
                     if session.runtime_env().object_store(&url).is_ok() {
-                        catalogs.push(catalog.to_string());
+                        catalogs.push(catalog.clone());
                     }
                 }
             }

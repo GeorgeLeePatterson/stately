@@ -8,15 +8,13 @@ use tokio::fs::{self, File};
 use tokio::io::AsyncWriteExt;
 use tokio_util::io::ReaderStream;
 
-use super::api::FileState;
 use super::error::{Error, Result};
 use super::path::VersionedPath;
-use super::types::{
-    FileDownloadQuery, FileListQuery, FileListResponse, FileSaveRequest, FileUploadResponse,
-};
+use super::request::{FileDownloadQuery, FileListQuery, FileSaveRequest};
+use super::response::{FileEntryType, FileInfo, FileListResponse, FileUploadResponse, FileVersion};
+use super::state::FileState;
 use super::utils;
 use crate::settings::{Dirs, IGNORE_FILES, UPLOAD_DIR, VERSION_DIR};
-use crate::types::{FileEntryType, FileInfo, FileVersion};
 
 // TODO: Remove - notes
 //   * Upload is for managed files, add handler for uploading *anywhere*

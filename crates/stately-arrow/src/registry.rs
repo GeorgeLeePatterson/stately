@@ -2,8 +2,8 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 
+use crate::backend::{Backend, ConnectionMetadata};
 use crate::error::Result;
-use crate::{Backend, ConnectionMetadata};
 
 /// Registry responsible for supplying connectors to the viewer.
 #[async_trait]
@@ -27,14 +27,13 @@ pub mod generic {
     use tokio::sync::RwLock;
 
     use super::ConnectorRegistry;
-    #[cfg(feature = "database")]
-    use crate::connectors::{BackendMetadata, ConnectionKind};
+    use crate::backend::{Backend, BackendMetadata, ConnectionKind, ConnectionMetadata};
     #[cfg(feature = "clickhouse")]
     use crate::database::Database as DatabaseType;
     #[cfg(feature = "clickhouse")]
     use crate::database::clickhouse::{CLICKHOUSE_CATALOG, ClickHouseBackend};
+    use crate::error::{Error, Result};
     use crate::object_store::ObjectStoreBackend;
-    use crate::{Backend, ConnectionMetadata, Error, Result};
 
     fn default_connector_name() -> String {
         let id = uuid::Uuid::now_v7().to_string();

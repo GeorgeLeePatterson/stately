@@ -1,16 +1,32 @@
+//! HTTP API module for stately-arrow.
+//!
+//! This module provides the axum router and handlers for the Arrow query API.
+
 pub mod handlers;
 pub mod ipc;
 pub mod openapi;
 
 use axum::Router;
 use axum::routing::{get, post};
-use datafusion::prelude::SessionContext;
 
-use crate::{QueryContext, QuerySession};
+use crate::QuerySession;
+use crate::state::QueryState;
 
-/// Create the `stately-arrow` API router
+/// Create the stately-arrow API router.
 ///
-/// This can be mounted at any path (e.g., /api/v1/arrow)
+/// Mount this router at any path (e.g., `/api/v1/arrow` or `/arrow`).
+///
+/// # Example
+///
+/// ```rust,ignore
+/// use axum::Router;
+/// use stately_arrow::{api, QueryContext, QueryState};
+///
+/// let query_context = QueryContext::new(registry);
+/// let arrow_router = api::router(QueryState::new(query_context));
+///
+/// let app = Router::new().nest("/arrow", arrow_router);
+/// ```
 pub fn router<S, Session>(state: S) -> Router<S>
 where
     S: Send + Sync + Clone + 'static,
@@ -29,72 +45,4 @@ where
         .route("/catalogs", get(handlers::list_catalogs::<Session>))
         .route("/query", post(handlers::execute_query::<Session>))
         .with_state(state)
-}
-
-/// State required by the API handlers
-///
-/// Implement `FromRef` to allow `QueryState` to be extracted from application API state.
-/// This enables using `QueryState` handlers with any router requiring state.
-///
-/// ```rust,ignore
-/// use stately_arrow::database::clickhouse::QuerySessionContext;
-///
-/// pub struct ApiState {
-///     pub query_context: stately_arrow::QueryContext<QuerySessionContext>,
-///     pub other_state: String,
-/// }
-///
-/// impl axum::extract::FromRef<ApiState> for stately_arrow::api::QueryState<QuerySessionContext> {
-///     fn from_ref(state: &ApiState) -> Self { Self::new(state.query_context.clone()) }
-/// }
-///
-/// pub struct Registry {
-///     state:      Arc<RwLock<StatelyState>>,
-///     registered: Arc<RwLock<BackendCache>>,
-///     options:    RegistryOptions,
-/// }
-///
-/// impl Registry {
-///     pub fn new(state: Arc<RwLock<StatelyState>>) -> Self {
-///         Self {
-///             state,
-///             registered: Arc::new(RwLock::new(HashMap::default())),
-///             options: RegistryOptions::default(),
-///         }
-///     }
-///
-///     #[must_use]
-///     pub fn with_options(mut self, options: RegistryOptions) -> Self {
-///         self.options = options;
-///         self
-///     }
-/// }
-///
-///
-/// fn create_api_state() -> ApiState {
-///     // Create query context with `ClickHouse`
-///     let session = QuerySessionContext::default();
-///
-///     let opts = RegistryOptions { max_lifetime: None, max_pool_size: Some(2) };
-///     let registry: Arc<dyn arrow_ui::ConnectorRegistry> =
-///         Arc::new(xeo4_query::Registry::new(Arc::clone(&state)).with_options(opts));
-///     let query_context = arrow_ui::QueryContext::with_session(session, registry);
-///
-///     ApiState { queryContext, other_state: "Other".to_string() }
-/// }
-/// ```
-#[derive(Clone)]
-pub struct QueryState<S = SessionContext>
-where
-    S: QuerySession,
-{
-    pub query_context: QueryContext<S>,
-}
-
-impl<S> QueryState<S>
-where
-    S: QuerySession,
-{
-    /// Create `QueryState` from `QueryContext`
-    pub fn new(query_context: QueryContext<S>) -> Self { Self { query_context } }
 }

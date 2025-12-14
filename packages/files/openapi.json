@@ -133,7 +133,7 @@
           {
             "name": "version",
             "in": "query",
-            "description": "Optional specific version UUID. If not provided, returns the latest version.",
+            "description": "Specific version UUID to download.\nIf not provided, returns the latest version.",
             "required": false,
             "schema": {
               "type": "string"
@@ -182,7 +182,7 @@
           {
             "name": "path",
             "in": "query",
-            "description": "Optional path to list files from (relative to upload directory)",
+            "description": "Path to list files from, relative to the uploads directory.\nIf not provided, lists the root uploads directory.",
             "required": false,
             "schema": {
               "type": "string"
@@ -350,19 +350,20 @@
       },
       "FileDownloadQuery": {
         "type": "object",
-        "description": "Optional specific version UUID. If not provided, returns the latest version.",
+        "description": "Query parameters for downloading files.",
         "properties": {
           "version": {
             "type": [
               "string",
               "null"
             ],
-            "description": "Optional specific version UUID. If not provided, returns the latest version."
+            "description": "Specific version UUID to download.\nIf not provided, returns the latest version."
           }
         }
       },
       "FileEntryType": {
         "type": "string",
+        "description": "Type of file system entry.",
         "enum": [
           "directory",
           "file",
@@ -371,6 +372,7 @@
       },
       "FileInfo": {
         "type": "object",
+        "description": "Information about a file or directory entry.",
         "required": [
           "name",
           "size",
@@ -383,7 +385,7 @@
               "null"
             ],
             "format": "int64",
-            "description": "Creation timestamp (Unix epoch seconds) - oldest version for versioned files",
+            "description": "Creation timestamp as Unix epoch seconds.\nFor versioned files, this is when the first version was created.",
             "minimum": 0
           },
           "modified": {
@@ -392,22 +394,22 @@
               "null"
             ],
             "format": "int64",
-            "description": "Last modified timestamp (Unix epoch seconds) - newest version for versioned files",
+            "description": "Last modified timestamp as Unix epoch seconds.\nFor versioned files, this is when the latest version was created.",
             "minimum": 0
           },
           "name": {
             "type": "string",
-            "description": "File name (relative path from target directory)"
+            "description": "Entry name (filename or directory name)."
           },
           "size": {
             "type": "integer",
             "format": "int64",
-            "description": "File size in bytes",
+            "description": "Size in bytes. For versioned files, this is the size of the latest version.\nFor directories, this is 0.",
             "minimum": 0
           },
           "type": {
             "$ref": "#/components/schemas/FileEntryType",
-            "description": "Entry type: `directory`, `file`, or `versioned_file`"
+            "description": "Type of this entry."
           },
           "versions": {
             "type": [
@@ -417,25 +419,26 @@
             "items": {
               "$ref": "#/components/schemas/FileVersion"
             },
-            "description": "List of all versions (only populated for versioned files)"
+            "description": "List of all versions, sorted newest first.\nOnly populated for versioned files."
           }
         }
       },
       "FileListQuery": {
         "type": "object",
-        "description": "Optional path relative to upload directory",
+        "description": "Query parameters for listing files.",
         "properties": {
           "path": {
             "type": [
               "string",
               "null"
             ],
-            "description": "Optional path to list files from (relative to upload directory)"
+            "description": "Path to list files from, relative to the uploads directory.\nIf not provided, lists the root uploads directory."
           }
         }
       },
       "FileListResponse": {
         "type": "object",
+        "description": "Response from listing files in a directory.",
         "required": [
           "files"
         ],
@@ -445,31 +448,33 @@
             "items": {
               "$ref": "#/components/schemas/FileInfo"
             },
-            "description": "List of files"
+            "description": "List of files and directories."
           }
         }
       },
       "FileSaveRequest": {
         "type": "object",
+        "description": "Request body for saving file content directly.",
         "required": [
           "content"
         ],
         "properties": {
           "content": {
             "type": "string",
-            "description": "File content as string"
+            "description": "File content as string."
           },
           "name": {
             "type": [
               "string",
               "null"
             ],
-            "description": "Optional filename"
+            "description": "Optional filename. Defaults to \"unnamed.txt\" if not provided."
           }
         }
       },
       "FileUploadResponse": {
         "type": "object",
+        "description": "Response from file upload or save operations.",
         "required": [
           "success",
           "path",
@@ -479,24 +484,25 @@
         "properties": {
           "full_path": {
             "type": "string",
-            "description": "Full absolute path on the server"
+            "description": "Full absolute path on the server filesystem."
           },
           "path": {
             "type": "string",
-            "description": "Relative path from data directory (e.g., \"uploads/config.json\")"
+            "description": "Relative path from uploads directory (e.g., \"config.json\")."
           },
           "success": {
             "type": "boolean",
-            "description": "Whether the operation was successful"
+            "description": "Whether the operation was successful."
           },
           "uuid": {
             "type": "string",
-            "description": "The UUID version identifier"
+            "description": "The UUID version identifier for this upload."
           }
         }
       },
       "FileVersion": {
         "type": "object",
+        "description": "Information about a specific file version.",
         "required": [
           "uuid",
           "size"
@@ -508,18 +514,18 @@
               "null"
             ],
             "format": "int64",
-            "description": "Creation timestamp (Unix epoch seconds)",
+            "description": "Creation timestamp as Unix epoch seconds.",
             "minimum": 0
           },
           "size": {
             "type": "integer",
             "format": "int64",
-            "description": "Size of this specific version in bytes",
+            "description": "Size of this version in bytes.",
             "minimum": 0
           },
           "uuid": {
             "type": "string",
-            "description": "UUID identifier for this version"
+            "description": "UUID v7 identifier for this version."
           }
         }
       },
@@ -633,11 +639,12 @@
         }
       },
       "FileListResponse": {
-        "description": "",
+        "description": "Response from listing files in a directory.",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
+              "description": "Response from listing files in a directory.",
               "required": [
                 "files"
               ],
@@ -647,7 +654,7 @@
                   "items": {
                     "$ref": "#/components/schemas/FileInfo"
                   },
-                  "description": "List of files"
+                  "description": "List of files and directories."
                 }
               }
             }
@@ -655,11 +662,12 @@
         }
       },
       "FileUploadResponse": {
-        "description": "",
+        "description": "Response from file upload or save operations.",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
+              "description": "Response from file upload or save operations.",
               "required": [
                 "success",
                 "path",
@@ -669,19 +677,19 @@
               "properties": {
                 "full_path": {
                   "type": "string",
-                  "description": "Full absolute path on the server"
+                  "description": "Full absolute path on the server filesystem."
                 },
                 "path": {
                   "type": "string",
-                  "description": "Relative path from data directory (e.g., \"uploads/config.json\")"
+                  "description": "Relative path from uploads directory (e.g., \"config.json\")."
                 },
                 "success": {
                   "type": "boolean",
-                  "description": "Whether the operation was successful"
+                  "description": "Whether the operation was successful."
                 },
                 "uuid": {
                   "type": "string",
-                  "description": "The UUID version identifier"
+                  "description": "The UUID version identifier for this upload."
                 }
               }
             }

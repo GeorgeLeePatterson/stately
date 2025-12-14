@@ -166,73 +166,93 @@ export interface components {
             /** Format: int32 */
             status: number;
         };
-        /** @description Optional specific version UUID. If not provided, returns the latest version. */
+        /** @description Query parameters for downloading files. */
         FileDownloadQuery: {
-            /** @description Optional specific version UUID. If not provided, returns the latest version. */
+            /**
+             * @description Specific version UUID to download.
+             *     If not provided, returns the latest version.
+             */
             version?: string | null;
         };
-        /** @enum {string} */
+        /**
+         * @description Type of file system entry.
+         * @enum {string}
+         */
         FileEntryType: "directory" | "file" | "versioned_file";
+        /** @description Information about a file or directory entry. */
         FileInfo: {
             /**
              * Format: int64
-             * @description Creation timestamp (Unix epoch seconds) - oldest version for versioned files
+             * @description Creation timestamp as Unix epoch seconds.
+             *     For versioned files, this is when the first version was created.
              */
             created?: number | null;
             /**
              * Format: int64
-             * @description Last modified timestamp (Unix epoch seconds) - newest version for versioned files
+             * @description Last modified timestamp as Unix epoch seconds.
+             *     For versioned files, this is when the latest version was created.
              */
             modified?: number | null;
-            /** @description File name (relative path from target directory) */
+            /** @description Entry name (filename or directory name). */
             name: string;
             /**
              * Format: int64
-             * @description File size in bytes
+             * @description Size in bytes. For versioned files, this is the size of the latest version.
+             *     For directories, this is 0.
              */
             size: number;
-            /** @description Entry type: `directory`, `file`, or `versioned_file` */
+            /** @description Type of this entry. */
             type: components["schemas"]["FileEntryType"];
-            /** @description List of all versions (only populated for versioned files) */
+            /**
+             * @description List of all versions, sorted newest first.
+             *     Only populated for versioned files.
+             */
             versions?: components["schemas"]["FileVersion"][] | null;
         };
-        /** @description Optional path relative to upload directory */
+        /** @description Query parameters for listing files. */
         FileListQuery: {
-            /** @description Optional path to list files from (relative to upload directory) */
+            /**
+             * @description Path to list files from, relative to the uploads directory.
+             *     If not provided, lists the root uploads directory.
+             */
             path?: string | null;
         };
+        /** @description Response from listing files in a directory. */
         FileListResponse: {
-            /** @description List of files */
+            /** @description List of files and directories. */
             files: components["schemas"]["FileInfo"][];
         };
+        /** @description Request body for saving file content directly. */
         FileSaveRequest: {
-            /** @description File content as string */
+            /** @description File content as string. */
             content: string;
-            /** @description Optional filename */
+            /** @description Optional filename. Defaults to "unnamed.txt" if not provided. */
             name?: string | null;
         };
+        /** @description Response from file upload or save operations. */
         FileUploadResponse: {
-            /** @description Full absolute path on the server */
+            /** @description Full absolute path on the server filesystem. */
             full_path: string;
-            /** @description Relative path from data directory (e.g., "uploads/config.json") */
+            /** @description Relative path from uploads directory (e.g., "config.json"). */
             path: string;
-            /** @description Whether the operation was successful */
+            /** @description Whether the operation was successful. */
             success: boolean;
-            /** @description The UUID version identifier */
+            /** @description The UUID version identifier for this upload. */
             uuid: string;
         };
+        /** @description Information about a specific file version. */
         FileVersion: {
             /**
              * Format: int64
-             * @description Creation timestamp (Unix epoch seconds)
+             * @description Creation timestamp as Unix epoch seconds.
              */
             created?: number | null;
             /**
              * Format: int64
-             * @description Size of this specific version in bytes
+             * @description Size of this version in bytes.
              */
             size: number;
-            /** @description UUID identifier for this version */
+            /** @description UUID v7 identifier for this version. */
             uuid: string;
         };
         /**
@@ -301,30 +321,32 @@ export interface components {
                 };
             };
         };
+        /** @description Response from listing files in a directory. */
         FileListResponse: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
                 "application/json": {
-                    /** @description List of files */
+                    /** @description List of files and directories. */
                     files: components["schemas"]["FileInfo"][];
                 };
             };
         };
+        /** @description Response from file upload or save operations. */
         FileUploadResponse: {
             headers: {
                 [name: string]: unknown;
             };
             content: {
                 "application/json": {
-                    /** @description Full absolute path on the server */
+                    /** @description Full absolute path on the server filesystem. */
                     full_path: string;
-                    /** @description Relative path from data directory (e.g., "uploads/config.json") */
+                    /** @description Relative path from uploads directory (e.g., "config.json"). */
                     path: string;
-                    /** @description Whether the operation was successful */
+                    /** @description Whether the operation was successful. */
                     success: boolean;
-                    /** @description The UUID version identifier */
+                    /** @description The UUID version identifier for this upload. */
                     uuid: string;
                 };
             };
@@ -422,7 +444,10 @@ export interface operations {
     download_upload: {
         parameters: {
             query?: {
-                /** @description Optional specific version UUID. If not provided, returns the latest version. */
+                /**
+                 * @description Specific version UUID to download.
+                 *     If not provided, returns the latest version.
+                 */
                 version?: string;
             };
             header?: never;
@@ -466,7 +491,10 @@ export interface operations {
     list_files: {
         parameters: {
             query?: {
-                /** @description Optional path to list files from (relative to upload directory) */
+                /**
+                 * @description Path to list files from, relative to the uploads directory.
+                 *     If not provided, lists the root uploads directory.
+                 */
                 path?: string;
             };
             header?: never;

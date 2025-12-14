@@ -22,13 +22,13 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "FileDownloadQuery": {
-    "description": "Optional specific version UUID. If not provided, returns the latest version.",
+    "description": "Query parameters for downloading files.",
     "nodeType": "object",
     "properties": {
       "version": {
-        "description": "Optional specific version UUID. If not provided, returns the latest version.",
+        "description": "Specific version UUID to download.\nIf not provided, returns the latest version.",
         "innerSchema": {
-          "description": "Optional specific version UUID. If not provided, returns the latest version.",
+          "description": "Specific version UUID to download.\nIf not provided, returns the latest version.",
           "nodeType": "primitive",
           "primitiveType": "string"
         },
@@ -38,6 +38,7 @@ export const PARSED_SCHEMAS = {
     "required": []
   },
   "FileEntryType": {
+    "description": "Type of file system entry.",
     "nodeType": "enum",
     "values": [
       "directory",
@@ -46,12 +47,13 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "FileInfo": {
+    "description": "Information about a file or directory entry.",
     "nodeType": "object",
     "properties": {
       "created": {
-        "description": "Creation timestamp (Unix epoch seconds) - oldest version for versioned files",
+        "description": "Creation timestamp as Unix epoch seconds.\nFor versioned files, this is when the first version was created.",
         "innerSchema": {
-          "description": "Creation timestamp (Unix epoch seconds) - oldest version for versioned files",
+          "description": "Creation timestamp as Unix epoch seconds.\nFor versioned files, this is when the first version was created.",
           "format": "int64",
           "nodeType": "primitive",
           "primitiveType": "integer"
@@ -59,9 +61,9 @@ export const PARSED_SCHEMAS = {
         "nodeType": "nullable"
       },
       "modified": {
-        "description": "Last modified timestamp (Unix epoch seconds) - newest version for versioned files",
+        "description": "Last modified timestamp as Unix epoch seconds.\nFor versioned files, this is when the latest version was created.",
         "innerSchema": {
-          "description": "Last modified timestamp (Unix epoch seconds) - newest version for versioned files",
+          "description": "Last modified timestamp as Unix epoch seconds.\nFor versioned files, this is when the latest version was created.",
           "format": "int64",
           "nodeType": "primitive",
           "primitiveType": "integer"
@@ -69,17 +71,18 @@ export const PARSED_SCHEMAS = {
         "nodeType": "nullable"
       },
       "name": {
-        "description": "File name (relative path from target directory)",
+        "description": "Entry name (filename or directory name).",
         "nodeType": "primitive",
         "primitiveType": "string"
       },
       "size": {
-        "description": "File size in bytes",
+        "description": "Size in bytes. For versioned files, this is the size of the latest version.\nFor directories, this is 0.",
         "format": "int64",
         "nodeType": "primitive",
         "primitiveType": "integer"
       },
       "type": {
+        "description": "Type of file system entry.",
         "nodeType": "enum",
         "values": [
           "directory",
@@ -88,16 +91,17 @@ export const PARSED_SCHEMAS = {
         ]
       },
       "versions": {
-        "description": "List of all versions (only populated for versioned files)",
+        "description": "List of all versions, sorted newest first.\nOnly populated for versioned files.",
         "innerSchema": {
-          "description": "List of all versions (only populated for versioned files)",
+          "description": "List of all versions, sorted newest first.\nOnly populated for versioned files.",
           "items": {
             "nodeType": "object",
+            "description": "Information about a specific file version.",
             "properties": {
               "created": {
-                "description": "Creation timestamp (Unix epoch seconds)",
+                "description": "Creation timestamp as Unix epoch seconds.",
                 "innerSchema": {
-                  "description": "Creation timestamp (Unix epoch seconds)",
+                  "description": "Creation timestamp as Unix epoch seconds.",
                   "format": "int64",
                   "nodeType": "primitive",
                   "primitiveType": "integer"
@@ -105,13 +109,13 @@ export const PARSED_SCHEMAS = {
                 "nodeType": "nullable"
               },
               "size": {
-                "description": "Size of this specific version in bytes",
+                "description": "Size of this version in bytes.",
                 "format": "int64",
                 "nodeType": "primitive",
                 "primitiveType": "integer"
               },
               "uuid": {
-                "description": "UUID identifier for this version",
+                "description": "UUID v7 identifier for this version.",
                 "nodeType": "primitive",
                 "primitiveType": "string"
               }
@@ -133,13 +137,13 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "FileListQuery": {
-    "description": "Optional path relative to upload directory",
+    "description": "Query parameters for listing files.",
     "nodeType": "object",
     "properties": {
       "path": {
-        "description": "Optional path to list files from (relative to upload directory)",
+        "description": "Path to list files from, relative to the uploads directory.\nIf not provided, lists the root uploads directory.",
         "innerSchema": {
-          "description": "Optional path to list files from (relative to upload directory)",
+          "description": "Path to list files from, relative to the uploads directory.\nIf not provided, lists the root uploads directory.",
           "nodeType": "primitive",
           "primitiveType": "string"
         },
@@ -149,17 +153,19 @@ export const PARSED_SCHEMAS = {
     "required": []
   },
   "FileListResponse": {
+    "description": "Response from listing files in a directory.",
     "nodeType": "object",
     "properties": {
       "files": {
-        "description": "List of files",
+        "description": "List of files and directories.",
         "items": {
+          "description": "Information about a file or directory entry.",
           "nodeType": "object",
           "properties": {
             "created": {
-              "description": "Creation timestamp (Unix epoch seconds) - oldest version for versioned files",
+              "description": "Creation timestamp as Unix epoch seconds.\nFor versioned files, this is when the first version was created.",
               "innerSchema": {
-                "description": "Creation timestamp (Unix epoch seconds) - oldest version for versioned files",
+                "description": "Creation timestamp as Unix epoch seconds.\nFor versioned files, this is when the first version was created.",
                 "format": "int64",
                 "nodeType": "primitive",
                 "primitiveType": "integer"
@@ -167,9 +173,9 @@ export const PARSED_SCHEMAS = {
               "nodeType": "nullable"
             },
             "modified": {
-              "description": "Last modified timestamp (Unix epoch seconds) - newest version for versioned files",
+              "description": "Last modified timestamp as Unix epoch seconds.\nFor versioned files, this is when the latest version was created.",
               "innerSchema": {
-                "description": "Last modified timestamp (Unix epoch seconds) - newest version for versioned files",
+                "description": "Last modified timestamp as Unix epoch seconds.\nFor versioned files, this is when the latest version was created.",
                 "format": "int64",
                 "nodeType": "primitive",
                 "primitiveType": "integer"
@@ -177,17 +183,18 @@ export const PARSED_SCHEMAS = {
               "nodeType": "nullable"
             },
             "name": {
-              "description": "File name (relative path from target directory)",
+              "description": "Entry name (filename or directory name).",
               "nodeType": "primitive",
               "primitiveType": "string"
             },
             "size": {
-              "description": "File size in bytes",
+              "description": "Size in bytes. For versioned files, this is the size of the latest version.\nFor directories, this is 0.",
               "format": "int64",
               "nodeType": "primitive",
               "primitiveType": "integer"
             },
             "type": {
+              "description": "Type of file system entry.",
               "nodeType": "enum",
               "values": [
                 "directory",
@@ -196,16 +203,17 @@ export const PARSED_SCHEMAS = {
               ]
             },
             "versions": {
-              "description": "List of all versions (only populated for versioned files)",
+              "description": "List of all versions, sorted newest first.\nOnly populated for versioned files.",
               "innerSchema": {
-                "description": "List of all versions (only populated for versioned files)",
+                "description": "List of all versions, sorted newest first.\nOnly populated for versioned files.",
                 "items": {
                   "nodeType": "object",
+                  "description": "Information about a specific file version.",
                   "properties": {
                     "created": {
-                      "description": "Creation timestamp (Unix epoch seconds)",
+                      "description": "Creation timestamp as Unix epoch seconds.",
                       "innerSchema": {
-                        "description": "Creation timestamp (Unix epoch seconds)",
+                        "description": "Creation timestamp as Unix epoch seconds.",
                         "format": "int64",
                         "nodeType": "primitive",
                         "primitiveType": "integer"
@@ -213,13 +221,13 @@ export const PARSED_SCHEMAS = {
                       "nodeType": "nullable"
                     },
                     "size": {
-                      "description": "Size of this specific version in bytes",
+                      "description": "Size of this version in bytes.",
                       "format": "int64",
                       "nodeType": "primitive",
                       "primitiveType": "integer"
                     },
                     "uuid": {
-                      "description": "UUID identifier for this version",
+                      "description": "UUID v7 identifier for this version.",
                       "nodeType": "primitive",
                       "primitiveType": "string"
                     }
@@ -248,17 +256,18 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "FileSaveRequest": {
+    "description": "Request body for saving file content directly.",
     "nodeType": "object",
     "properties": {
       "content": {
-        "description": "File content as string",
+        "description": "File content as string.",
         "nodeType": "primitive",
         "primitiveType": "string"
       },
       "name": {
-        "description": "Optional filename",
+        "description": "Optional filename. Defaults to \"unnamed.txt\" if not provided.",
         "innerSchema": {
-          "description": "Optional filename",
+          "description": "Optional filename. Defaults to \"unnamed.txt\" if not provided.",
           "nodeType": "primitive",
           "primitiveType": "string"
         },
@@ -270,25 +279,26 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "FileUploadResponse": {
+    "description": "Response from file upload or save operations.",
     "nodeType": "object",
     "properties": {
       "full_path": {
-        "description": "Full absolute path on the server",
+        "description": "Full absolute path on the server filesystem.",
         "nodeType": "primitive",
         "primitiveType": "string"
       },
       "path": {
-        "description": "Relative path from data directory (e.g., \"uploads/config.json\")",
+        "description": "Relative path from uploads directory (e.g., \"config.json\").",
         "nodeType": "primitive",
         "primitiveType": "string"
       },
       "success": {
-        "description": "Whether the operation was successful",
+        "description": "Whether the operation was successful.",
         "nodeType": "primitive",
         "primitiveType": "boolean"
       },
       "uuid": {
-        "description": "The UUID version identifier",
+        "description": "The UUID version identifier for this upload.",
         "nodeType": "primitive",
         "primitiveType": "string"
       }
@@ -302,11 +312,12 @@ export const PARSED_SCHEMAS = {
   },
   "FileVersion": {
     "nodeType": "object",
+    "description": "Information about a specific file version.",
     "properties": {
       "created": {
-        "description": "Creation timestamp (Unix epoch seconds)",
+        "description": "Creation timestamp as Unix epoch seconds.",
         "innerSchema": {
-          "description": "Creation timestamp (Unix epoch seconds)",
+          "description": "Creation timestamp as Unix epoch seconds.",
           "format": "int64",
           "nodeType": "primitive",
           "primitiveType": "integer"
@@ -314,13 +325,13 @@ export const PARSED_SCHEMAS = {
         "nodeType": "nullable"
       },
       "size": {
-        "description": "Size of this specific version in bytes",
+        "description": "Size of this version in bytes.",
         "format": "int64",
         "nodeType": "primitive",
         "primitiveType": "integer"
       },
       "uuid": {
-        "description": "UUID identifier for this version",
+        "description": "UUID v7 identifier for this version.",
         "nodeType": "primitive",
         "primitiveType": "string"
       }

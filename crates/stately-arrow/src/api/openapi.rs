@@ -6,12 +6,12 @@
 use utoipa::openapi::tag::TagBuilder;
 use utoipa::openapi::{ComponentsBuilder, InfoBuilder, OpenApiBuilder, PathsBuilder};
 
-use crate::connectors::ConnectionKind;
-use crate::{
-    BackendMetadata, Capability, ConnectionDetailsRequest, ConnectionDetailsResponse,
-    ConnectionMetadata, ConnectionSearchQuery, ConnectionSearchTerm, ListSummary, QueryRequest,
-    SessionCapability, TableSummary,
+use crate::backend::{BackendMetadata, Capability, ConnectionKind, ConnectionMetadata};
+use crate::context::SessionCapability;
+use crate::request::{
+    ConnectionDetailsRequest, ConnectionSearchQuery, ConnectionSearchTerm, QueryRequest,
 };
+use crate::response::{ConnectionDetailsResponse, ListSummary, TableSummary};
 
 /// `OpenAPI` documentation struct for the stately-arrow API.
 #[derive(Clone, Copy)]

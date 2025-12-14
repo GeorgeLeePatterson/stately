@@ -5,7 +5,7 @@
 //! This outputs `openapi.json` to the specified directory,
 //! which can then be processed by `@stately/codegen` to generate TypeScript types.
 #![allow(unused_crate_dependencies)]
-use stately_files::api::OpenApiDoc;
+use stately_files::OpenApiDoc;
 
 fn main() {
     let output_dir = std::env::args().nth(1).unwrap_or_else(|| {

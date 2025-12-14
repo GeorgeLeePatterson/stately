@@ -51,9 +51,9 @@ use object_store::path::Path as ObjectStorePath;
 use serde::{Deserialize, Serialize};
 use tracing::{debug, error};
 
-use crate::connectors::{Backend, Capability, ConnectionKind, ConnectionMetadata};
-use crate::error::Error;
-use crate::{BackendMetadata, ListSummary, Result, TableSummary};
+use crate::backend::{Backend, BackendMetadata, Capability, ConnectionKind, ConnectionMetadata};
+use crate::error::{Error, Result};
+use crate::response::{ListSummary, TableSummary};
 
 const IGNORE_FILES: &[&str] = &[".DS_Store", ".git", ".env"];
 
