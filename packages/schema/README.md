@@ -153,7 +153,7 @@ type AllNodes = MySchemas['plugin']['AnyNode'];
 The `@stately/codegen` CLI generates the files this package consumes:
 
 ```bash
-npx stately-codegen ./openapi.json --output ./src/generated
+npx @stately/codegen ./openapi.json ./src/generated
 ```
 
 This produces:

@@ -17,10 +17,10 @@ pnpm add -D @stately/codegen
 
 ```bash
 # Basic usage
-npx stately-codegen ./openapi.json ./src/generated
+npx @stately/codegen ./openapi.json ./src/generated
 
 # With custom plugins
-npx stately-codegen ./openapi.json ./src/generated ./stately.codegen.config.ts
+npx @stately/codegen ./openapi.json ./src/generated ./stately.codegen.config.ts
 ```
 
 ### Generated Files
@@ -123,7 +123,7 @@ Custom plugins only need to handle additional node types specific to your applic
 
 1. **Backend changes**: Update your Rust entities
 2. **Generate OpenAPI**: Export your backend's OpenAPI spec
-3. **Run codegen**: `npx stately-codegen ./openapi.json ./src/generated`
+3. **Run codegen**: `npx @stately/codegen ./openapi.json ./src/generated`
 4. **Types updated**: Your frontend now has updated types
 
 For backend plugins like `stately-files` or `stately-arrow`, run codegen after any API changes:
@@ -149,7 +149,7 @@ const schema = stately<MySchemas>(openapiDoc, PARSED_SCHEMAS);
 ## CLI Reference
 
 ```
-Usage: stately-codegen <openapi.json> <output_dir> [pluginConfig.js]
+Usage: npx @stately/codegen <openapi.json> <output_dir> [pluginConfig.js]
 
 Arguments:
   openapi.json      Path to OpenAPI 3.x specification
@@ -157,8 +157,8 @@ Arguments:
   pluginConfig.js   Optional path to plugin configuration
 
 Example:
-  stately-codegen ./openapi.json ./src/generated
-  stately-codegen ./openapi.json ./src/generated ./stately.codegen.config.ts
+  npx @stately/codegen ./openapi.json ./src/generated
+  npx @stately/codegen ./openapi.json ./src/generated ./stately.codegen.config.ts
 ```
 
 ## License

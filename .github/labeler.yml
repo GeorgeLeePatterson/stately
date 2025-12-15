@@ -37,27 +37,55 @@ examples:
       - 'examples/**'
       - '**/examples/**'
 
+# ---
+# Rust
+# ---
+
 stately:
   - changed-files:
     - any-glob-to-any-file:
       - '**/crates/stately/**'
 
-macros:
+stately-derive:
   - changed-files:
     - any-glob-to-any-file:
-      - '**/stately-derive/**'
+      - '**/crates/stately-derive/**'
 
-stately-ui:
+stately-files:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/crates/stately-files/**'
+
+stately-arrow:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/crates/stately-arrow/**'
+
+# ---
+# Typescript
+# ---
+
+'@stately/ui':
   - changed-files:
     - any-glob-to-any-file:
       - '**/packages/ui/**'
 
-stately-codegen:
+'@stately/codegen':
   - changed-files:
     - any-glob-to-any-file:
       - '**/packages/codegen/**'
 
-stately-schema:
+'@stately/schema':
   - changed-files:
     - any-glob-to-any-file:
       - '**/packages/schema/**'
+
+'@stately/files':
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/packages/files/**'
+
+'@stately/arrow':
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/packages/arrow/**'

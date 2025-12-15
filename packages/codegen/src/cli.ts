@@ -2,7 +2,7 @@
 /**
  * CLI for @stately/codegen
  *
- * Usage: stately-codegen <openapi.json> <output_dir> [pluginConfig.js]
+ * Usage: npx @stately/codegen <openapi.json> <output_dir> [pluginConfig.js]
  *
  * Generates:
  *   <output_dir>/schemas.ts  - Parsed schema nodes for form generation
@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 const args = process.argv.slice(2);
 
 if (args.length < 2 || args.length > 3) {
-  console.error('Usage: stately-codegen <openapi.json> <output_dir> [pluginConfig.js]');
+  console.error('Usage: npx @stately/codegen <openapi.json> <output_dir> [pluginConfig.js]');
   console.error('');
   console.error('Generates:');
   console.error('  <output_dir>/schemas.ts  - Parsed schema nodes for form generation');
@@ -27,7 +27,7 @@ if (args.length < 2 || args.length > 3) {
   console.error('');
   console.error('Example:');
   console.error(
-    '  stately-codegen ./openapi.json ./src/generated ./stately.codegen.config.ts',
+    '  npx @stately/codegen ./openapi.json ./src/generated ./stately.codegen.config.ts',
   );
   process.exit(1);
 }

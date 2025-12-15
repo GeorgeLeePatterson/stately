@@ -123,7 +123,7 @@ pnpm add @stately/ui @stately/schema @tanstack/react-query @tanstack/react-route
 pnpm add -D @stately/codegen
 
 # Generate types from your backend's OpenAPI spec
-npx stately-codegen ./openapi.json --output ./src/generated
+npx @stately/codegen ./openapi.json ./src/generated
 ```
 
 ```typescript

@@ -60,7 +60,7 @@ This architecture serves two purposes:
 First, generate TypeScript types from your backend's OpenAPI spec:
 
 ```bash
-npx stately-codegen ./openapi.json --output ./src/generated
+npx @stately/codegen ./openapi.json ./src/generated
 ```
 
 This creates:
