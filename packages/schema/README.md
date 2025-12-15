@@ -1,107 +1,241 @@
-# @stately/schema-types
+# @stately/schema
 
-Generic type definitions for Stately schema nodes that preserve semantic meaning across the type system.
+[![npm](https://img.shields.io/npm/v/@stately/schema)](https://www.npmjs.com/package/@stately/schema)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
 
-## Overview
+> Type definitions and schema parsing for Stately applications
 
-This package provides TypeScript types for representing OpenAPI schemas as an Abstract Syntax Tree (AST), with full type safety for Stately-specific contracts.
-
-**Key Feature**: Enforces `Entity.type === StateEntry` at compile time, matching Rust's proc macro guarantees.
+This package provides the foundational type system for Stately's frontend. It parses OpenAPI schemas into a typed AST (Abstract Syntax Tree) that powers the UI's form generation, validation, and type safety.
 
 ## Installation
 
 ```bash
-pnpm add @stately/schema-types
+pnpm add @stately/schema
 ```
 
-## Quick Start
+> **Note**: Most users should use `@stately/ui` which re-exports this package with additional UI integration. Use `@stately/schema` directly only if building custom tooling or plugins without the UI layer.
+
+## Core Concepts
+
+### Schema Nodes
+
+OpenAPI schemas are parsed into **nodes** - typed representations of each schema element:
 
 ```typescript
-// TODO
+// A string field
+{ nodeType: 'string', nullable: false }
+
+// An object with properties
+{ 
+  nodeType: 'object',
+  properties: {
+    name: { nodeType: 'string', nullable: false },
+    age: { nodeType: 'integer', nullable: true },
+  },
+  required: ['name'],
+}
+
+// A reference to another entity
+{ nodeType: 'link', inner: { nodeType: 'ref', $ref: '#/components/schemas/SourceConfig' } }
 ```
 
-## Core Design Principle
+### The `Schemas` Type
 
-**StatelySchemas is the SINGLE SOURCE OF TRUTH**
+The `Schemas` type is the **single source of truth** for your application's type system. It combines:
 
-- All type derivations CASCADE from `StatelySchemas`
-- `Entity.type === StateEntry` is ENFORCED (matching Rust guarantees)
-- As we discover new required types, we ADD them to `StatelySchemas`
-- Everything else derives from there
+1. **Config**: Your OpenAPI-generated types (components, paths, operations)
+2. **Plugins**: Type augmentations from installed plugins
+3. **Derived Types**: EntityData, StateEntry, and other computed types
 
-## Node Types - Core and Beyond
+```typescript
+import type { Schemas, DefineConfig } from '@stately/schema';
+import type { components, paths, operations } from './generated/types';
 
-// TODO:
+type MySchemas = Schemas<
+  DefineConfig<components, DefinePaths<paths>, DefineOperations<operations>, typeof PARSED_SCHEMAS>
+>;
+```
+
+### Plugin System
+
+Plugins extend the schema with additional node types:
+
+```typescript
+import type { DefinePlugin, NodeMap } from '@stately/schema';
+
+// Define custom nodes
+interface MyNodes extends NodeMap {
+  myCustomType: { nodeType: 'myCustomType'; value: string };
+}
+
+// Create plugin type
+export type MyPlugin = DefinePlugin<'my-plugin', MyNodes>;
+
+// Use with Schemas
+type AppSchemas = Schemas<MyConfig, readonly [MyPlugin]>;
+```
+
+## Usage
+
+### Creating a Stately Runtime
+
+```typescript
+import { createStately } from '@stately/schema';
+import { PARSED_SCHEMAS } from './generated/schemas';
+import openapiDoc from './openapi.json';
+
+const stately = createStately<MySchemas>(openapiDoc, PARSED_SCHEMAS);
+
+// Access schema utilities
+const entityNode = stately.utils.getNode('Pipeline');
+const isValid = stately.utils.validate(data, 'Pipeline');
+```
+
+### With Plugins
+
+```typescript
+import { createStately } from '@stately/schema';
+import { filesPlugin } from '@stately/files';
+
+const stately = createStately<MySchemas>(openapiDoc, PARSED_SCHEMAS)
+  .withPlugin(filesPlugin());
+
+// Plugin utilities are now available
+stately.plugins.files.utils.formatPath('/some/path');
+```
 
 ## Type Helpers
 
-// TODO: Remove - When stable, add type helpers, for plugin authors v user
+### DefineConfig
+
+Combines your generated types into a schema configuration:
 
 ```typescript
-// Extract types from your schemas
-type StateEntry = ...;
+type MyConfig = DefineConfig<
+  components,           // OpenAPI components
+  DefinePaths<paths>,   // API paths
+  DefineOperations<operations>,  // Operations
+  typeof PARSED_SCHEMAS // Generated schema nodes
+>;
 ```
 
-## Validation
+### DefinePlugin
 
-The package validates that `Entity.type === StateEntry` at compile time:
+Declares a plugin's type augmentations:
 
 ```typescript
-// TODO: Remove - When stable, correct this
-throw new Error("Not implemented");
+type MyPlugin = DefinePlugin<
+  'my-plugin',     // Unique name (string literal)
+  MyNodes,         // Node map
+  MyTypes,         // Additional types
+  MyData,          // Data utilities
+  MyUtils          // Utility functions
+>;
+```
 
-// ✓ Valid: Entity.type matches StateEntry
-interface GoodComponents {
-  StateEntry: 'a' | 'b';
-  Entity: { type: 'a'; data: any } | { type: 'b'; data: any };
-  EntityId: string;
-}
+### Extracting Types
 
-// ❌ Invalid: Entity has extra type not in StateEntry
-interface BadComponents {
-  StateEntry: 'a' | 'b';
-  Entity:
-    | { type: 'a'; data: any }
-    | { type: 'b'; data: any }
-    | { type: 'c'; data: any }; // ← Not in StateEntry!
-  EntityId: string;
-}
+```typescript
+import type { Schemas } from '@stately/schema';
 
-type Bad = StatelySchemas<BadComponents>;
-type Invalid = ExtractStateEntry<Bad>; // Result: never (validation failed)
+// Get the StateEntry union (entity type names)
+type StateEntry = MySchemas['config']['components']['schemas']['StateEntry'];
+
+// Get entity data types
+type EntityData = MySchemas['types']['EntityData'];
+
+// Get all nodes from plugins
+type AllNodes = MySchemas['plugin']['AnyNode'];
 ```
 
 ## Integration with @stately/codegen
 
-Use `@stately/codegen` to generate schema nodes from your OpenAPI spec:
+The `@stately/codegen` CLI generates the files this package consumes:
 
 ```bash
-$ npx stately-codegen openapi.json --output src/generated-schemas.ts
+npx stately-codegen ./openapi.json --output ./src/generated
 ```
 
-This generates:
+This produces:
+- `types.ts` - TypeScript interfaces matching your OpenAPI spec
+- `schemas.ts` - Parsed `PARSED_SCHEMAS` object for runtime use
+
+## Node Types
+
+### Primitives
+
+| Node Type | Description |
+|-----------|-------------|
+| `string` | String values, with optional format (date, uri, etc.) |
+| `integer` | Integer numbers |
+| `number` | Floating point numbers |
+| `boolean` | Boolean values |
+| `null` | Null values |
+
+### Composites
+
+| Node Type | Description |
+|-----------|-------------|
+| `object` | Objects with typed properties |
+| `array` | Arrays with typed items |
+| `record` | Dictionaries with string keys |
+| `tuple` | Fixed-length arrays with typed positions |
+
+### References
+
+| Node Type | Description |
+|-----------|-------------|
+| `ref` | Reference to another schema (`$ref`) |
+| `link` | Stately `Link<T>` - inline or by-reference entity |
+
+### Unions
+
+| Node Type | Description |
+|-----------|-------------|
+| `union` | Union of multiple types (`oneOf`) |
+| `enum` | Enumeration of string values |
+| `discriminatedUnion` | Tagged union with discriminator property |
+
+### Special
+
+| Node Type | Description |
+|-----------|-------------|
+| `unknown` | Unknown/any type |
+| `const` | Constant value |
+
+## Validation
 
 ```typescript
-// TODO: Remove
+import type { ValidationResult } from '@stately/schema';
+
+const result: ValidationResult = stately.utils.validate(data, 'Pipeline');
+
+if (!result.valid) {
+  console.log(result.errors);
+  // [{ path: ['name'], message: 'Required field missing' }]
+}
 ```
 
-## Benefits
+## API Reference
 
-1. ✅ **Type-safe everywhere**: Routes, hooks, parsing, rendering
-2. ✅ **Semantic preservation**: StateEntry isn't "string", it's YOUR entity types
-3. ✅ **Zero runtime overhead**: Pure TypeScript, compiles to same JavaScript
-4. ✅ **Compile-time validation**: Typos caught by tsc, not at runtime
-5. ✅ **Excellent IDE support**: Autocomplete, go-to-definition, refactoring
-6. ✅ **Reusable**: Works with ANY Stately backend, not hardcoded
+### `createStately(openapiDoc, parsedSchemas)`
 
-## Documentation
+Creates a Stately schema runtime.
 
-// TODO:
+### `isNodeOfType(node, nodeType)`
+
+Type guard for checking node types:
+
+```typescript
+if (isNodeOfType(node, 'string')) {
+  // node is typed as StringNode
+}
+```
+
+### `createOperationBindingsFactory()`
+
+Creates typed API operation bindings from paths.
 
 ## License
 
 Apache-2.0
-
-## Contributing
-
-This package is part of the [Stately](https://github.com/georgeleepatterson/stately) monorepo.
