@@ -55,24 +55,38 @@ export const ObjectWizardEdit = <
     formData,
     handleAdditionalFieldChange,
     handleFieldChange,
+    handleMergedFieldChange,
     handleSave,
     handleCancel: _,
     fields,
     isValid,
+    mergedFields,
   } = useObjectField<Schema>({ label, node, onSave, value });
 
   const requiredFields = new Set(node.required || []);
 
-  // Include additionalProperties as a final step if present
+  // Calculate step ranges:
+  // - Merged fields first (from allOf composition)
+  // - Then regular property fields
+  // - Finally additionalProperties if present
   const hasAdditionalProperties = !!node.additionalProperties;
-  const totalSteps = fields.length + (hasAdditionalProperties ? 1 : 0);
+  const totalSteps = mergedFields.length + fields.length + (hasAdditionalProperties ? 1 : 0);
 
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Determine if we're on the additionalProperties step
-  const isAdditionalPropertiesStep = hasAdditionalProperties && currentStep === fields.length;
+  // Determine which section we're in based on step index
+  const isMergedStep = currentStep < mergedFields.length;
+  const isPropertyStep =
+    currentStep >= mergedFields.length && currentStep < mergedFields.length + fields.length;
+  const isAdditionalPropertiesStep =
+    hasAdditionalProperties && currentStep === mergedFields.length + fields.length;
 
-  const currentField = fields[currentStep];
+  // Get current merged field if on a merged step
+  const currentMergedField = isMergedStep ? mergedFields[currentStep] : null;
+
+  // Get current property field if on a property step
+  const propertyIndex = currentStep - mergedFields.length;
+  const currentField = isPropertyStep ? fields[propertyIndex] : null;
 
   const [fieldName, propNode] = currentField ?? ['', null];
   const isRequired = requiredFields.has(fieldName);
@@ -93,6 +107,17 @@ export const ObjectWizardEdit = <
     // Additional properties step is always valid (optional by nature)
     if (isAdditionalPropertiesStep) return true;
 
+    // Merged field step - validate the merged schema
+    if (isMergedStep && currentMergedField) {
+      const fieldValidationResult = schema.validate({
+        data: currentMergedField.value,
+        path: `${label ?? ''}[ObjectNode][merged]`,
+        schema: currentMergedField.schema,
+      });
+      return fieldValidationResult.valid;
+    }
+
+    // Property field step
     if (!propNode) return false;
 
     if (isNullable) return true;
@@ -103,10 +128,20 @@ export const ObjectWizardEdit = <
       schema: propNode,
     });
     return fieldValidationResult.valid;
-  }, [isAdditionalPropertiesStep, propNode, isNullable, schema, fieldValue, label]);
+  }, [
+    isAdditionalPropertiesStep,
+    isMergedStep,
+    currentMergedField,
+    propNode,
+    isNullable,
+    schema,
+    fieldValue,
+    label,
+  ]);
 
-  // For regular field steps, we need a current field
-  if (!isAdditionalPropertiesStep && !currentField) return null;
+  // For regular property field steps, we need a current field
+  // Merged steps and additional properties steps are handled separately
+  if (isPropertyStep && !currentField) return null;
 
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === totalSteps - 1;
@@ -145,6 +180,18 @@ export const ObjectWizardEdit = <
       <FieldGroup className="min-h-48 flex flex-col justify-center">
         {isLoading ? (
           <Skeleton className="h-32 w-full" />
+        ) : isMergedStep && currentMergedField ? (
+          // Merged field step (from allOf composition)
+          <FieldSet className="min-w-0">
+            <FieldEdit<Schema>
+              formId={`${formId}-merged-${currentStep}`}
+              isRequired
+              isWizard
+              node={currentMergedField.schema}
+              onChange={v => handleMergedFieldChange(v as AnyRecord)}
+              value={currentMergedField.value}
+            />
+          </FieldSet>
         ) : isAdditionalPropertiesStep && additionalPropertiesMapNode ? (
           <FieldSet className="min-w-0">
             <FieldLegend variant="label">Additional Properties</FieldLegend>
