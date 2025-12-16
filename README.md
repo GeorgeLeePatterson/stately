@@ -2,7 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/stately.svg)](https://crates.io/crates/stately)
 [![Documentation](https://docs.rs/stately/badge.svg)](https://docs.rs/stately)
-[![npm](https://img.shields.io/npm/v/@stately/ui)](https://www.npmjs.com/package/@stately/ui)
+[![npm](https://img.shields.io/npm/v/@statelyjs/ui)](https://www.npmjs.com/package/@statelyjs/ui)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 > Full-stack type-safe state management with auto-generated UI and a plugin architecture
@@ -36,16 +36,16 @@ Stately is a full-stack framework for building data-driven applications. The Rus
 │  │                        FRONTEND (React)                              ││
 │  ├─────────────────────────────────────────────────────────────────────┤│
 │  │                                                                      ││
-│  │  @stately/ui                                                         ││
+│  │  @statelyjs/ui                                                         ││
 │  │  ├── base/     → Layout, theme, plugin runtime, registry            ││
 │  │  └── core/     → Entity CRUD views, hooks, schema integration       ││
 │  │                                                                      ││
-│  │  @stately/schema  → Type definitions, schema parsing, validation    ││
-│  │  @stately/codegen → Generate types from OpenAPI spec                ││
+│  │  @statelyjs/schema  → Type definitions, schema parsing, validation    ││
+│  │  @statelyjs/codegen → Generate types from OpenAPI spec                ││
 │  │                                                                      ││
 │  │  PLUGINS:                                                            ││
-│  │  @stately/files   → File browser UI (pairs with stately-files)      ││
-│  │  @stately/arrow   → SQL query UI (pairs with stately-arrow)         ││
+│  │  @statelyjs/files   → File browser UI (pairs with stately-files)      ││
+│  │  @statelyjs/arrow   → SQL query UI (pairs with stately-arrow)         ││
 │  │                                                                      ││
 │  └─────────────────────────────────────────────────────────────────────┘│
 │                                    │                                     │
@@ -117,20 +117,20 @@ See [`crates/stately`](crates/stately) for complete backend documentation.
 
 ```bash
 # Install packages
-pnpm add @stately/ui @stately/schema @tanstack/react-query @tanstack/react-router
+pnpm add @statelyjs/ui @statelyjs/schema @tanstack/react-query @tanstack/react-router
 
 # Install codegen (dev dependency)
-pnpm add -D @stately/codegen
+pnpm add -D @statelyjs/codegen
 
 # Generate types from your backend's OpenAPI spec
-npx @stately/codegen ./openapi.json ./src/generated
+pnpm exec @statelyjs/codegen ./openapi.json ./src/generated
 ```
 
 ```typescript
 // src/lib/stately-integration.ts
-import { stately } from '@stately/ui/schema';
-import { statelyUi, statelyUiProvider, useStatelyUi } from '@stately/ui';
-import type { DefineConfig, Schemas } from '@stately/ui/schema';
+import { stately } from '@statelyjs/ui/schema';
+import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/ui';
+import type { DefineConfig, Schemas } from '@statelyjs/ui/schema';
 import { PARSED_SCHEMAS } from './generated/schemas';
 import type { components, operations, paths } from './generated/types';
 import openapiDoc from '../openapi.json';
@@ -176,11 +176,11 @@ See [`packages/ui`](packages/ui) for complete frontend documentation.
 
 | Package | Description |
 |---------|-------------|
-| [`@stately/schema`](packages/schema) | Schema type definitions, parsing, validation |
-| [`@stately/codegen`](packages/codegen) | CLI tool for generating types from OpenAPI |
-| [`@stately/ui`](packages/ui) | React components - base runtime + core entity UI |
-| [`@stately/files`](packages/files) | File browser UI plugin |
-| [`@stately/arrow`](packages/arrow) | SQL query UI plugin with Arrow IPC streaming |
+| [`@statelyjs/schema`](packages/schema) | Schema type definitions, parsing, validation |
+| [`@statelyjs/codegen`](packages/codegen) | CLI tool for generating types from OpenAPI |
+| [`@statelyjs/ui`](packages/ui) | React components - base runtime + core entity UI |
+| [`@statelyjs/files`](packages/files) | File browser UI plugin |
+| [`@statelyjs/arrow`](packages/arrow) | SQL query UI plugin with Arrow IPC streaming |
 
 ## Plugin Architecture
 
@@ -198,8 +198,8 @@ stately-arrow = "0.1"
 
 ```typescript
 // Frontend: Add plugins to your runtime
-import { filesPlugin, filesUiPlugin } from '@stately/files';
-import { arrowPlugin, arrowUiPlugin } from '@stately/arrow';
+import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
+import { arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
 
 const schema = stately<AppSchemas>(openapiDoc, PARSED_SCHEMAS)
   .withPlugin(filesPlugin())
@@ -256,6 +256,6 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for detai
 
 - [Rust Documentation](https://docs.rs/stately)
 - [Crates.io](https://crates.io/crates/stately)
-- [npm](https://www.npmjs.com/package/@stately/ui)
+- [npm](https://www.npmjs.com/package/@statelyjs/ui)
 - [Repository](https://github.com/georgeleepatterson/stately)
 - [Issue Tracker](https://github.com/georgeleepatterson/stately/issues)

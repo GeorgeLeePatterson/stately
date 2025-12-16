@@ -1,5 +1,5 @@
-import { Editor } from '@stately/ui/base/components';
-import { cn } from '@stately/ui/base/lib/utils';
+import { Editor } from '@statelyjs/ui/base/components';
+import { cn } from '@statelyjs/ui/base/lib/utils';
 import {
   Button,
   ButtonGroup,
@@ -12,8 +12,8 @@ import {
   SelectLabel,
   SelectTrigger,
   Spinner,
-} from '@stately/ui/base/ui';
-import type { StringMode } from '@stately/ui/core/fields/edit';
+} from '@statelyjs/ui/base/ui';
+import type { StringMode } from '@statelyjs/ui/core/fields/edit';
 import { ExternalLink, FilePlus2, FileSearch2, FileText } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';

@@ -1,5 +1,5 @@
-import { Note } from '@stately/ui/base/components';
-import { cn, messageFromError } from '@stately/ui/base/lib/utils';
+import { Note } from '@statelyjs/ui/base/components';
+import { cn, messageFromError } from '@statelyjs/ui/base/lib/utils';
 import {
   Badge,
   Button,
@@ -12,7 +12,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
   Spinner,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import { PlugZap, SquareStack } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';

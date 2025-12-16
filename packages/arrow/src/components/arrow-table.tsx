@@ -1,4 +1,4 @@
-import { cn } from '@stately/ui/base/lib/utils';
+import { cn } from '@statelyjs/ui/base/lib/utils';
 import {
   Button,
   Table,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import {
   type ColumnDef,
   createColumnHelper,

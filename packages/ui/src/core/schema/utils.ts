@@ -1,10 +1,10 @@
 /**
- * @stately/schema/utils
+ * @statelyjs/schema/utils
  *
  * Helper utilities for working with Stately schemas
  */
 
-import { type BaseNode, type DefineUtils, isNodeOfType } from '@stately/schema';
+import { type BaseNode, type DefineUtils, isNodeOfType } from '@statelyjs/schema';
 import {
   type ArrayNode,
   type CoreNodes,

@@ -5,7 +5,7 @@ import type {
   NodeValues,
   PluginAnyNode,
   PluginFactory,
-} from '@stately/schema';
+} from '@statelyjs/schema';
 import { type CoreData, generateCoreData } from './data.js';
 import type { CoreStatelyConfig } from './generated.js';
 import type { Schemas } from './index.js';

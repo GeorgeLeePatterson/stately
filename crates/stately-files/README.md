@@ -4,7 +4,7 @@ File upload, versioning, and download management for stately applications.
 
 ## Overview
 
-This crate provides HTTP endpoints and path types for managing files with automatic UUID-based versioning. It's designed to be mounted as an axum router and pairs with the [`@stately/files`](../../packages/files/README.md) frontend plugin.
+This crate provides HTTP endpoints and path types for managing files with automatic UUID-based versioning. It's designed to be mounted as an axum router and pairs with the [`@statelyjs/files`](../../packages/files/README.md) frontend plugin.
 
 ## Features
 
@@ -215,7 +215,7 @@ Generate the OpenAPI spec for frontend codegen:
 cargo run --bin generate-openapi -- ./packages/files/src/generated
 ```
 
-This outputs `openapi.json` which is consumed by `@stately/codegen` to generate TypeScript types.
+This outputs `openapi.json` which is consumed by `@statelyjs/codegen` to generate TypeScript types.
 
 ## Module Structure
 

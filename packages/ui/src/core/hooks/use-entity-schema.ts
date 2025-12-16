@@ -1,4 +1,4 @@
-import { isNodeOfType } from '@stately/schema/schema';
+import { isNodeOfType } from '@statelyjs/schema/schema';
 import type { CoreStateEntry } from '@/core';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';

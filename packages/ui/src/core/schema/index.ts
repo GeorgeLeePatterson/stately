@@ -11,13 +11,13 @@ import type {
   PluginNodeUnion as BasePluginNodeUnion,
   Stately as BaseStately,
   StatelyBuilder as BaseStatelyBuilder,
-} from '@stately/schema';
+} from '@statelyjs/schema';
 import {
   type AnySchemaAugments,
   createStately,
   type DefineOpenApi,
   type StatelySchemas,
-} from '@stately/schema';
+} from '@statelyjs/schema';
 import type { CoreStatelyConfig } from './generated.js';
 import { CoreNodeType, PrimitiveType } from './nodes.js';
 import { CORE_PLUGIN_NAME, type CorePlugin, corePlugin } from './plugin.js';

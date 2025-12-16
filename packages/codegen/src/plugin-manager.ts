@@ -31,7 +31,7 @@ export async function loadPluginsFromConfig(configPath?: string): Promise<Codege
   if (!configPath) return [];
   const resolved = path.resolve(process.cwd(), configPath);
   if (!fs.existsSync(resolved)) {
-    console.warn(`[@stately/codegen] Plugin config not found at ${resolved}`);
+    console.warn(`[@statelyjs/codegen] Plugin config not found at ${resolved}`);
     return [];
   }
 
@@ -44,11 +44,11 @@ export async function loadPluginsFromConfig(configPath?: string): Promise<Codege
     );
     const plugins = candidates.filter(isCodegenPlugin);
     if (!plugins.length) {
-      console.warn('[@stately/codegen] No plugins exported from config');
+      console.warn('[@statelyjs/codegen] No plugins exported from config');
     }
     return plugins;
   } catch (error) {
-    console.error('[@stately/codegen] Failed to load plugin config:', error);
+    console.error('[@statelyjs/codegen] Failed to load plugin config:', error);
     return [];
   }
 }

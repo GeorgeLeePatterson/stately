@@ -1,5 +1,33 @@
-import { CoreNodeType } from '@stately/ui/core/schema';
+import { CoreNodeType } from '@statelyjs/ui/core/schema';
 import type { CodegenPlugin, CodegenPluginContext } from '../plugin-manager.js';
+
+/**
+ * Creates an ObjectNode with all required properties.
+ * Use this helper everywhere an object node is created to ensure `keys` is always present.
+ */
+function createObjectNode(
+  properties: Record<string, any>,
+  required: readonly string[],
+  options?: { description?: string; additionalProperties?: any; merged?: any[] },
+): any {
+  const node: any = {
+    description: options?.description,
+    keys: Object.keys(properties),
+    nodeType: CoreNodeType.Object,
+    properties,
+    required,
+  };
+
+  if (options?.additionalProperties) {
+    node.additionalProperties = options.additionalProperties;
+  }
+
+  if (options?.merged && options.merged.length > 0) {
+    node.merged = options.merged;
+  }
+
+  return node;
+}
 
 export function createCoreCodegenPlugin(): CodegenPlugin {
   return {
@@ -43,26 +71,39 @@ function transformSchema(schema: any, ctx: CodegenPluginContext) {
     }
   }
 
-  // allOf composition
+  // allOf composition - intersection of all schemas
   if (schema.allOf && schema.allOf.length > 0) {
     let mergedProperties: Record<string, any> = {};
     let mergedRequired: string[] = [];
+    let mergedAdditionalProperties: any = null;
+    const mergedSchemas: any[] = [];
 
     for (const subSchema of schema.allOf) {
       const parsed = ctx.parseSchema(subSchema, ctx.schemaName);
-      if (parsed && parsed.nodeType === CoreNodeType.Object) {
+      if (!parsed) continue;
+
+      if (parsed.nodeType === CoreNodeType.Object) {
+        // Merge object: properties, required, additionalProperties
         mergedProperties = { ...mergedProperties, ...parsed.properties };
         mergedRequired = [...mergedRequired, ...(parsed.required || [])];
+        if (parsed.additionalProperties) {
+          mergedAdditionalProperties = parsed.additionalProperties;
+        }
+      } else {
+        // Collect all non-object schemas (unions, primitives, etc.)
+        mergedSchemas.push(parsed);
       }
     }
 
-    if (Object.keys(mergedProperties).length > 0) {
-      return {
+    const hasProperties = Object.keys(mergedProperties).length > 0;
+    const hasMerged = mergedSchemas.length > 0;
+
+    if (hasProperties || hasMerged || mergedAdditionalProperties) {
+      return createObjectNode(mergedProperties, [...new Set(mergedRequired)], {
+        additionalProperties: mergedAdditionalProperties,
         description: schema.description,
-        nodeType: CoreNodeType.Object,
-        properties: mergedProperties,
-        required: [...new Set(mergedRequired)],
-      };
+        merged: mergedSchemas,
+      });
     }
   }
 
@@ -116,18 +157,10 @@ function transformSchema(schema: any, ctx: CodegenPluginContext) {
       additionalProperties = ctx.parseSchema(schema.additionalProperties, ctx.schemaName);
     }
 
-    const node: any = {
+    return createObjectNode(properties, schema.required || [], {
+      additionalProperties,
       description: schema.description,
-      nodeType: CoreNodeType.Object,
-      properties,
-      required: schema.required || [],
-    };
-
-    if (additionalProperties) {
-      node.additionalProperties = additionalProperties;
-    }
-
-    return node;
+    });
   }
 
   // Primitives + enums
@@ -247,11 +280,7 @@ function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
         const tag = propertyKeys[0] || '';
         const innerPropertySchema = properties[tag];
         const parsed = ctx.parseSchema(innerPropertySchema, ctx.schemaName);
-        const variantSchema = parsed || {
-          nodeType: CoreNodeType.Object,
-          properties: {},
-          required: [],
-        };
+        const variantSchema = parsed || createObjectNode({}, []);
         untaggedVariants.push({ schema: variantSchema, tag });
       } else if (discriminatorField) {
         const discriminatorSchema = properties[discriminatorField];
@@ -267,28 +296,42 @@ function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
           }
         }
 
-        const variantSchema = {
-          nodeType: CoreNodeType.Object,
-          properties: variantProperties,
-          required: (resolved.required || []).filter((r: string) => r !== discriminatorField),
-        };
+        const variantSchema = createObjectNode(
+          variantProperties,
+          (resolved.required || []).filter((r: string) => r !== discriminatorField),
+        );
         taggedVariants.push({ schema: variantSchema, tag });
       }
     }
   }
 
   if (isUntaggedEnum && untaggedVariants.length > 0) {
+    // For untagged enums, the tag IS the key
+    const allKeys = untaggedVariants.map(v => v.tag);
+
     return {
       description: schema.description,
+      keys: allKeys,
       nodeType: CoreNodeType.UntaggedEnum,
       variants: untaggedVariants,
     };
   }
 
   if (discriminatorField && taggedVariants.length > 0) {
+    // Collect all possible keys: discriminator + all variant property keys
+    const allVariantKeys = new Set<string>([discriminatorField]);
+    for (const variant of taggedVariants) {
+      if (variant.schema?.properties) {
+        for (const key of Object.keys(variant.schema.properties)) {
+          allVariantKeys.add(key);
+        }
+      }
+    }
+
     return {
       description: schema.description,
       discriminator: discriminatorField,
+      keys: [...allVariantKeys],
       nodeType: CoreNodeType.TaggedUnion,
       variants: taggedVariants,
     };
@@ -300,12 +343,23 @@ function buildUnionNode(schema: any, ctx: CodegenPluginContext) {
       const resolved = resolveVariant(variant, ctx);
       if (!resolved || resolved.type === 'null') return null;
       const parsed = ctx.parseSchema(resolved, ctx.schemaName);
-      return { schema: parsed, label: resolved.description };
+      return { label: resolved.description, schema: parsed };
     })
     .filter(Boolean);
 
+  // Collect keys from all object-like variants
+  const allKeys = new Set<string>();
+  for (const variant of genericVariants) {
+    if (variant.schema?.keys) {
+      for (const key of variant.schema.keys) {
+        allKeys.add(key);
+      }
+    }
+  }
+
   return {
     description: schema.description,
+    keys: [...allKeys],
     nodeType: CoreNodeType.Union,
     variants: genericVariants,
   };

@@ -3,9 +3,9 @@ import type {
   DefineGeneratedNodes,
   DefineOperations,
   DefinePaths,
-} from '@stately/schema';
-import { createOperationBindingsFactory } from '@stately/schema';
-import type { NodeMap } from '@stately/schema/nodes';
+} from '@statelyjs/schema';
+import { createOperationBindingsFactory } from '@statelyjs/schema';
+import type { NodeMap } from '@statelyjs/schema/nodes';
 import type { DefineCoreConfig, Schemas } from './core/index.js';
 import { CORE_PLUGIN_NAME, coreSchemaUtils, stately } from './core/index.js';
 
@@ -47,7 +47,7 @@ export type {
   OperationBindings,
   PluginFactory,
   PluginNodeUnion,
-} from '@stately/schema';
+} from '@statelyjs/schema';
 export type {
   Stately,
   StatelyBuilder,

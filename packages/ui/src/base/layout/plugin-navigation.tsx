@@ -1,7 +1,8 @@
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { useBaseStatelyUi } from '../context';
-import { cn, devLog } from '../lib/utils';
+import { devLog } from '../lib/logging';
+import { cn } from '../lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import {
   SidebarMenuButton,
@@ -36,7 +37,7 @@ export function PluginNavigation({
   const { badge: sidebarBadge, items, ...sidebarItem } = sidebar;
   const { label: sidebarLabel, to: sidebarTo, icon: SidebarGroupIcon } = sidebarItem;
 
-  devLog.debug('Base', 'rendering plugin items for ', sidebarTo, ' :', {
+  devLog.debug('Base', `rendering plugin items for ${sidebarTo}:`, {
     basePath,
     currentPath,
     sidebar,

@@ -7,7 +7,7 @@
  * 3. Stately builder API usage
  * 4. Type narrowing in validation functions (the key fix we made)
  *
- * Run: npx tsc --noEmit tests/test-plugin-runtime.ts
+ * Run: pnpx tsc --noEmit tests/test-plugin-runtime.ts
  */
 import type { CoreStatelyConfig } from '../src/core/generated.js';
 import { CoreNodeType, type ObjectNode } from '../src/core/nodes.js';

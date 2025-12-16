@@ -1,5 +1,5 @@
-import { cn } from '@stately/ui/base';
-import { Note } from '@stately/ui/base/components';
+import { cn } from '@statelyjs/ui/base';
+import { Note } from '@statelyjs/ui/base/components';
 import {
   Card,
   CardContent,
@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import { Database } from 'lucide-react';
 import { useCallback } from 'react';
 import { AnyIsLoading } from '@/components/any-is-loading';

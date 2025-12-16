@@ -13,6 +13,7 @@ export default defineConfig({
     "base/hooks/index": "src/base/hooks/index.ts",
     "base/layout/index": "src/base/layout/index.ts",
     "base/lib/utils": "src/base/lib/utils.ts",
+    "base/lib/logging": "src/base/lib/logging.ts",
     "base/ui/index": "src/base/ui/index.ts",
     // Core
     "core/index": "src/core/index.ts",

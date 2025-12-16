@@ -8,7 +8,7 @@
  * runtime.plugins.core.utilFunction resolves to type `unknown` instead of the
  * specific util function type.
  *
- * Run: npx tsc --noEmit tests/test-plugin-utils-access.ts
+ * Run: pnpx tsc --noEmit tests/test-plugin-utils-access.ts
  */
 import type { CoreStatelyConfig } from '../src/core/generated.js';
 import { type CoreNodeMap, CoreNodeType } from '../src/core/nodes.js';

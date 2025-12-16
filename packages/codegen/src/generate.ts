@@ -48,7 +48,7 @@ async function main() {
   const typesOutputPath = path.join(resolvedOutputDir, 'types.ts');
   const userPlugins = await loadPluginsFromConfig(pluginConfigPath);
   if (userPlugins.length) {
-    console.log(`🔌 Loaded ${userPlugins.length} @stately/codegen plugin(s)`);
+    console.log(`🔌 Loaded ${userPlugins.length} @statelyjs/codegen plugin(s)`);
   }
   const plugins = [...userPlugins, createCoreCodegenPlugin()];
   setCodegenPlugins(plugins);
@@ -138,7 +138,7 @@ async function main() {
           return result;
         }
       } catch (error) {
-        console.warn(`[@stately/codegen] Plugin "${plugin.name}" failed:`, error);
+        console.warn(`[@statelyjs/codegen] Plugin "${plugin.name}" failed:`, error);
       }
     }
 
@@ -178,7 +178,7 @@ async function main() {
   console.log(`✅ Parsed ${Object.keys(parsedSchemas).length} schemas`);
 
   const output = `// Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
+// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
 
 export const PARSED_SCHEMAS = ${JSON.stringify(parsedSchemas, null, 2)} as const;
 
@@ -198,7 +198,7 @@ export type ParsedSchemaName = keyof typeof PARSED_SCHEMAS;
     const typesString = astToString(ast);
 
     const typesFileContent = `// Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
+// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
 
 ${typesString}
 `;
@@ -215,6 +215,6 @@ ${typesString}
 }
 
 main().catch(error => {
-  console.error('[@stately/codegen] generation failed:', error);
+  console.error('[@statelyjs/codegen] generation failed:', error);
   process.exit(1);
 });

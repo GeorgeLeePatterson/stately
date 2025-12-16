@@ -1,7 +1,7 @@
 /**
  * NOTE: These types are the *internal* building blocks for the public API that
  * lives in `src/index.ts`. Consumers and plugin authors should import from
- * `@stately/schema` rather than referencing this module directly. Keeping the
+ * `@statelyjs/schema` rather than referencing this module directly. Keeping the
  * internals in one place makes it easier to reason about how the Generated/Plugin
  * views are assembled while still presenting a clean surface at the package root.
  */

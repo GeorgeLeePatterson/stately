@@ -1,4 +1,4 @@
-import type { AnyRecord } from '@stately/schema/helpers';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown, Variable } from 'lucide-react';
 import { useState } from 'react';
 import { NotSet } from '@/base/components/not-set';

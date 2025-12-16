@@ -1,5 +1,5 @@
 /**
- * @stately/schema - Plugin System
+ * @statelyjs/schema - Plugin System
  *
  * Defines the plugin interfaces + helper types for extending Stately schemas.
  *

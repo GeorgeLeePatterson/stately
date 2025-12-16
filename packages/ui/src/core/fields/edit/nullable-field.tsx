@@ -4,6 +4,7 @@ import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { Checkbox } from '@/base/ui/checkbox';
 import { Field, FieldContent, FieldLabel } from '@/base/ui/field';
+import { generateFieldFormId } from '@/base/utils';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
 import { EntityPropertyEdit } from '@/core/views/entity/entity-property-edit';
@@ -55,7 +56,7 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
 
   const field = (
     <FieldEdit<Schema>
-      formId={nullableFormId}
+      formId={generateFieldFormId(innerSchema.nodeType, label || '', nullableFormId)}
       isWizard={isWizard}
       label={label}
       node={innerSchema}

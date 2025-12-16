@@ -65,27 +65,27 @@ stately-arrow:
 # Typescript
 # ---
 
-'@stately/ui':
+'@statelyjs/ui':
   - changed-files:
     - any-glob-to-any-file:
       - '**/packages/ui/**'
 
-'@stately/codegen':
+'@statelyjs/codegen':
   - changed-files:
     - any-glob-to-any-file:
       - '**/packages/codegen/**'
 
-'@stately/schema':
+'@statelyjs/schema':
   - changed-files:
     - any-glob-to-any-file:
       - '**/packages/schema/**'
 
-'@stately/files':
+'@statelyjs/files':
   - changed-files:
     - any-glob-to-any-file:
       - '**/packages/files/**'
 
-'@stately/arrow':
+'@statelyjs/arrow':
   - changed-files:
     - any-glob-to-any-file:
       - '**/packages/arrow/**'

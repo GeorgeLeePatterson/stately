@@ -1,6 +1,6 @@
-import type { BaseNode } from '@stately/schema/nodes';
-import { isNodeOfType } from '@stately/schema/schema';
-import type { Stately } from '@stately/schema/stately';
+import type { BaseNode } from '@statelyjs/schema/nodes';
+import { isNodeOfType } from '@statelyjs/schema/schema';
+import type { Stately } from '@statelyjs/schema/stately';
 import { Braces, Brackets, Cog, Dot, SendToBack, Shapes, TextCursorInput } from 'lucide-react';
 import type { ComponentType } from 'react';
 import type { AnyUiPlugin, StatelyUiRuntime } from '@/base';

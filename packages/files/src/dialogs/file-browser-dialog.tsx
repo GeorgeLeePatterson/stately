@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import { FileSearch } from 'lucide-react';
 import { FileManager } from '@/pages';
 

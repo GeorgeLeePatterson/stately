@@ -1,4 +1,4 @@
-import type { AnyRecord } from '@stately/schema/helpers';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useCallback, useId, useState } from 'react';
 import { GlowingSave } from '@/base/components/glowing-save';
@@ -20,6 +20,7 @@ import {
 } from '@/base/ui/input-group';
 import { Item, ItemContent, ItemGroup } from '@/base/ui/item';
 import { Separator } from '@/base/ui/separator';
+import { generateFieldFormId } from '@/base/utils';
 import type { CoreNodeUnion } from '@/core';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
@@ -206,7 +207,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
                 >
                   {key === editKey ? (
                     <ValueEdit
-                      formId={formId}
+                      formId={generateFieldFormId(CoreNodeType.Map, key, formId)}
                       handleAdd={onAddEdit}
                       hasKey={true}
                       isWizard={isWizard}
@@ -265,7 +266,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
 
           {/*Value*/}
           <ValueEdit<Schema>
-            formId={formId}
+            formId={generateFieldFormId(node.valueSchema.nodeType, newKey ?? '', formId)}
             handleAdd={val => onAddNew(val ?? newValue)}
             hasKey={!!newKey}
             isDisabled={!!editKey}

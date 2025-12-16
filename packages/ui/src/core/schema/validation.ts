@@ -1,5 +1,5 @@
 /**
- * @stately/schema/validation
+ * @statelyjs/schema/validation
  *
  * Validation functions for Stately schemas
  */
@@ -9,7 +9,8 @@ import type {
   ValidationError,
   ValidationOptions,
   ValidationResult,
-} from '@stately/schema';
+} from '@statelyjs/schema';
+import { devLog } from '@/base';
 import type { Schemas } from './index.js';
 import { CoreNodeType } from './nodes.js';
 import { isObject } from './utils.js';
@@ -46,7 +47,7 @@ export function validateNode<S extends Schemas = Schemas>({
   options = {},
 }: ValidateArgs<S>): ValidationResult {
   const { debug = true } = options;
-  if (debug) console.debug('[stately/schema/core] (Validation)', { data, options, path, schema });
+  if (debug) devLog.debug('Core/Validation', 'Validation', { data, options, path, schema });
 
   // Check cache first
   const cacheKey = createValidationCacheKey(path, data);
@@ -55,11 +56,11 @@ export function validateNode<S extends Schemas = Schemas>({
 
   const { depth = 0, warnDepth = 15, maxDepth = 20, onDepthWarning } = options;
 
-  if (debug) console.debug(`[Validation] ${path} at depth ${depth}`, { data, schema });
+  if (debug) devLog.debug('Core/Validation', `${path} at depth ${depth}`, { data, schema });
 
   // Check depth limits
   if (depth >= maxDepth) {
-    if (debug) console.warn(`[Validation] Maximum depth (${maxDepth}) reached at ${path}`);
+    if (debug) devLog.warn('Core/Validation', `Maximum depth (${maxDepth}) reached at ${path}`);
     onDepthWarning?.(path, depth);
     return { errors: [], valid: true };
   }
@@ -267,9 +268,7 @@ export function validateObject<S extends Schemas>(args: ValidateArgs<S>): Valida
   const { path, data, schema, options } = args;
   const { debug = false } = options || {};
 
-  if (debug) {
-    console.debug(`[Validation] Object at ${path}`, { data, schema });
-  }
+  if (debug) devLog.debug('Core/Validation', `Object at ${path}`, { data, schema });
 
   if (!data || typeof data !== 'object') {
     return { errors: [{ message: 'Expected an object', path, value: data }], valid: false };

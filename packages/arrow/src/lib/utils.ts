@@ -1,7 +1,12 @@
-import { stripLeading, stripTrailing } from '@stately/ui/base';
+import { devLogger, stripLeading, stripTrailing } from '@statelyjs/ui/base';
 import type { Table } from 'apache-arrow';
 import type { ArrowTableDataView } from '@/components/arrow-table';
 import type { ConnectionKind, ConnectionMetadata, ListSummary } from '@/types/api';
+
+/**
+ * Re-export logger for plugin
+ */
+export const log = devLogger('@statelyjs/arrow');
 
 /**
  * Converts an Apache Arrow Table to an ArrowTableDataView for rendering.

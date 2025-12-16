@@ -2,8 +2,8 @@
  * Implementation Design Specification
  *
  * This file shows the complete design split into:
- * 1. @stately/schema - Type utilities (schema-level)
- * 2. @stately/ui/base - Runtime implementation (ui-level)
+ * 1. @statelyjs/schema - Type utilities (schema-level)
+ * 2. @statelyjs/ui/base - Runtime implementation (ui-level)
  * 3. Plugin author usage - How to define plugin APIs
  *
  * Run: pnpm tsc --noEmit tests/test-implementation-design.test.ts
@@ -12,7 +12,7 @@
 import type { Client } from 'openapi-fetch';
 
 // =============================================================================
-// SECTION 1: @stately/schema - Type Utilities
+// SECTION 1: @statelyjs/schema - Type Utilities
 // =============================================================================
 // Location: packages/schema/src/api.ts (new file)
 
@@ -48,7 +48,7 @@ export type OperationMap<Paths extends Record<string, any>> = Record<
 export type DefineOperations<Paths extends Record<string, any>> = OperationMap<Paths>;
 
 // =============================================================================
-// SECTION 2: @stately/ui/base - Runtime Implementation
+// SECTION 2: @statelyjs/ui/base - Runtime Implementation
 // =============================================================================
 // Location: packages/ui/src/base/api.ts (new file)
 
@@ -245,12 +245,12 @@ function test_reactQuery() {
 // =============================================================================
 
 /**
- * TODO - @stately/schema:
+ * TODO - @statelyjs/schema:
  * [ ] Create packages/schema/src/api.ts
  * [ ] Add exports: PrefixPath, OperationDef, OperationMap, DefineOperations
  * [ ] Update packages/schema/src/index.ts to export from api.ts
  *
- * TODO - @stately/ui:
+ * TODO - @statelyjs/ui:
  * [ ] Create packages/ui/src/base/api.ts
  * [ ] Implement createOperations() function
  * [ ] Add type utilities: TypedOperations, GetOperation, GetParams, GetBody, GetResponse

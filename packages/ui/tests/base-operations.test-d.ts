@@ -1,4 +1,4 @@
-import type { AnyPaths, OperationBindings, OperationEntry } from '@stately/schema/api';
+import type { AnyPaths, OperationBindings, OperationEntry } from '@statelyjs/schema/api';
 import type { HttpMethod } from 'openapi-typescript-helpers';
 import type { Client } from 'openapi-fetch';
 import { createOperations, type TypedOperations } from '../src/base/api';

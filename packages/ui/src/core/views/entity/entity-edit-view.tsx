@@ -1,4 +1,4 @@
-import type { AnyRecord } from '@stately/schema/helpers';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { FileJson, FormInput, WandSparkles } from 'lucide-react';
 import { useState } from 'react';
 import { JsonEdit } from '@/base/form/json-edit';

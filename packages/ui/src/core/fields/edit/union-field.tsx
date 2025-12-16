@@ -4,6 +4,7 @@ import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { FieldSet } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
+import { generateFieldFormId } from '@/base/utils';
 import { CoreNodeType, PrimitiveType, type Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
@@ -154,7 +155,11 @@ export function UnionEdit<Schema extends Schemas = Schemas>({
       {currentVariant?.schema && selectedIndex !== null && (
         <FieldSet className="p-2 min-w-0">
           <FieldEdit<Schema>
-            formId={`union-${selectedIndex}-${formId}`}
+            formId={generateFieldFormId(
+              currentVariant.schema.nodeType,
+              `${currentVariant?.label || 'union-field'}-${selectedIndex}`,
+              formId,
+            )}
             isWizard={isWizard}
             label={generateVariantLabel(currentVariant, selectedIndex)}
             node={currentVariant.schema}

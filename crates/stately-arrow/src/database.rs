@@ -73,13 +73,13 @@ pub struct TlsOptions {
 /// Default implementations will be provided and over time the list will grow. For that reason, this
 /// enum is marked as `non_exhaustive`.
 #[non_exhaustive]
-#[cfg_attr(not(feature = "clickhouse"), allow(missing_copy_implementations))]
+#[allow(missing_copy_implementations)] // Depending on feature flags, this triggers
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, utoipa::ToSchema)]
 #[cfg_attr(feature = "strum", derive(strum_macros::AsRefStr))]
 #[serde(rename_all = "snake_case")]
 pub enum Database {
     #[cfg(feature = "clickhouse")]
-    #[serde(alias = "clickhouse")]
+    #[serde(rename = "clickhouse", alias = "click_house")]
     ClickHouse(
         #[serde(default, skip_serializing_if = "Option::is_none")]
         Option<clickhouse::ClickHouseConfig>,

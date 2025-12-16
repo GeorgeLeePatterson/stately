@@ -1,6 +1,6 @@
-# @stately/schema
+# @statelyjs/schema
 
-[![npm](https://img.shields.io/npm/v/@stately/schema)](https://www.npmjs.com/package/@stately/schema)
+[![npm](https://img.shields.io/npm/v/@statelyjs/schema)](https://www.npmjs.com/package/@statelyjs/schema)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
 
 > Type definitions and schema parsing for Stately applications
@@ -10,10 +10,10 @@ This package provides the foundational type system for Stately's frontend. It pa
 ## Installation
 
 ```bash
-pnpm add @stately/schema
+pnpm add @statelyjs/schema
 ```
 
-> **Note**: Most users should use `@stately/ui` which re-exports this package with additional UI integration. Use `@stately/schema` directly only if building custom tooling or plugins without the UI layer.
+> **Note**: Most users should use `@statelyjs/ui` which re-exports this package with additional UI integration. Use `@statelyjs/schema` directly only if building custom tooling or plugins without the UI layer.
 
 ## Core Concepts
 
@@ -48,7 +48,7 @@ The `Schemas` type is the **single source of truth** for your application's type
 3. **Derived Types**: EntityData, StateEntry, and other computed types
 
 ```typescript
-import type { Schemas, DefineConfig } from '@stately/schema';
+import type { Schemas, DefineConfig } from '@statelyjs/schema';
 import type { components, paths, operations } from './generated/types';
 
 type MySchemas = Schemas<
@@ -61,7 +61,7 @@ type MySchemas = Schemas<
 Plugins extend the schema with additional node types:
 
 ```typescript
-import type { DefinePlugin, NodeMap } from '@stately/schema';
+import type { DefinePlugin, NodeMap } from '@statelyjs/schema';
 
 // Define custom nodes
 interface MyNodes extends NodeMap {
@@ -80,7 +80,7 @@ type AppSchemas = Schemas<MyConfig, readonly [MyPlugin]>;
 ### Creating a Stately Runtime
 
 ```typescript
-import { createStately } from '@stately/schema';
+import { createStately } from '@statelyjs/schema';
 import { PARSED_SCHEMAS } from './generated/schemas';
 import openapiDoc from './openapi.json';
 
@@ -94,8 +94,8 @@ const isValid = stately.utils.validate(data, 'Pipeline');
 ### With Plugins
 
 ```typescript
-import { createStately } from '@stately/schema';
-import { filesPlugin } from '@stately/files';
+import { createStately } from '@statelyjs/schema';
+import { filesPlugin } from '@statelyjs/files';
 
 const stately = createStately<MySchemas>(openapiDoc, PARSED_SCHEMAS)
   .withPlugin(filesPlugin());
@@ -136,7 +136,7 @@ type MyPlugin = DefinePlugin<
 ### Extracting Types
 
 ```typescript
-import type { Schemas } from '@stately/schema';
+import type { Schemas } from '@statelyjs/schema';
 
 // Get the StateEntry union (entity type names)
 type StateEntry = MySchemas['config']['components']['schemas']['StateEntry'];
@@ -148,12 +148,12 @@ type EntityData = MySchemas['types']['EntityData'];
 type AllNodes = MySchemas['plugin']['AnyNode'];
 ```
 
-## Integration with @stately/codegen
+## Integration with @statelyjs/codegen
 
-The `@stately/codegen` CLI generates the files this package consumes:
+The `@statelyjs/codegen` CLI generates the files this package consumes:
 
 ```bash
-npx @stately/codegen ./openapi.json ./src/generated
+pnpx @statelyjs/codegen ./openapi.json ./src/generated
 ```
 
 This produces:
@@ -206,7 +206,7 @@ This produces:
 ## Validation
 
 ```typescript
-import type { ValidationResult } from '@stately/schema';
+import type { ValidationResult } from '@statelyjs/schema';
 
 const result: ValidationResult = stately.utils.validate(data, 'Pipeline');
 

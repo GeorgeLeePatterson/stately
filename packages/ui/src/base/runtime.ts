@@ -1,8 +1,8 @@
-import type { StatelySchemas } from '@stately/schema/schema';
-import type { Stately } from '@stately/schema/stately';
+import type { StatelySchemas } from '@statelyjs/schema/schema';
+import type { Stately } from '@statelyjs/schema/stately';
 import type { Client } from 'openapi-fetch';
 import type { RouteOption } from './layout/navigation';
-import { devLog } from './lib/utils';
+import { devLog } from './lib/logging';
 import type { AllUiPlugins, AnyUiPlugin, UiPluginFactory } from './plugin';
 import type { UiRegistry } from './registry';
 import type { ThemeProviderProps } from './theme';
@@ -132,7 +132,7 @@ export function createStatelyUi<
       ...state,
       withPlugin(plugin: UiPluginFactory<Schema, Augments>): StatelyUiBuilder<Schema, Augments> {
         const nextState = plugin(state);
-        devLog.debug('merged w/ state: ', { state: nextState });
+        devLog.debug('Base', 'merged w/ state: ', { state: nextState });
         return makeBuilder({ ...nextState, utils: runtimeUtils(nextState.plugins) });
       },
     });

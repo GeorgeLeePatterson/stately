@@ -1,26 +1,26 @@
-# @stately/codegen
+# @statelyjs/codegen
 
-[![npm](https://img.shields.io/npm/v/@stately/codegen)](https://www.npmjs.com/package/@stately/codegen)
+[![npm](https://img.shields.io/npm/v/@statelyjs/codegen)](https://www.npmjs.com/package/@statelyjs/codegen)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
 
 > Build-time code generation for Stately UI
 
-Generate TypeScript types and schema definitions from OpenAPI specifications for use with `@stately/ui` components.
+Generate TypeScript types and schema definitions from OpenAPI specifications for use with `@statelyjs/ui` components.
 
 ## Installation
 
 ```bash
-pnpm add -D @stately/codegen
+pnpm add -D @statelyjs/codegen
 ```
 
 ## Usage
 
 ```bash
 # Basic usage
-npx @stately/codegen ./openapi.json ./src/generated
+pnpx @statelyjs/codegen ./openapi.json ./src/generated
 
 # With custom plugins
-npx @stately/codegen ./openapi.json ./src/generated ./stately.codegen.config.ts
+pnpx @statelyjs/codegen ./openapi.json ./src/generated ./stately.codegen.config.ts
 ```
 
 ### Generated Files
@@ -65,7 +65,7 @@ Plugins allow you to handle custom schema formats or transformations:
 
 ```typescript
 // stately.codegen.config.ts
-import type { CodegenPlugin } from '@stately/codegen';
+import type { CodegenPlugin } from '@statelyjs/codegen';
 
 const relativePathPlugin: CodegenPlugin = {
   name: 'relative-path',
@@ -109,7 +109,7 @@ interface CodegenPluginContext {
 
 ### Built-in Core Plugin
 
-`@stately/codegen` always includes the core plugin, which handles:
+`@statelyjs/codegen` always includes the core plugin, which handles:
 
 - Primitive types (string, number, boolean, integer)
 - Objects and arrays
@@ -123,7 +123,7 @@ Custom plugins only need to handle additional node types specific to your applic
 
 1. **Backend changes**: Update your Rust entities
 2. **Generate OpenAPI**: Export your backend's OpenAPI spec
-3. **Run codegen**: `npx @stately/codegen ./openapi.json ./src/generated`
+3. **Run codegen**: `pnpx @statelyjs/codegen ./openapi.json ./src/generated`
 4. **Types updated**: Your frontend now has updated types
 
 For backend plugins like `stately-files` or `stately-arrow`, run codegen after any API changes:
@@ -133,12 +133,12 @@ For backend plugins like `stately-files` or `stately-arrow`, run codegen after a
 pnpm codegen
 ```
 
-## Integration with @stately/ui
+## Integration with @statelyjs/ui
 
 The generated files are consumed by the Stately UI runtime:
 
 ```typescript
-import { stately } from '@stately/ui/schema';
+import { stately } from '@statelyjs/ui/schema';
 import { PARSED_SCHEMAS } from './generated/schemas';
 import type { components, operations, paths } from './generated/types';
 import openapiDoc from './openapi.json';
@@ -149,7 +149,7 @@ const schema = stately<MySchemas>(openapiDoc, PARSED_SCHEMAS);
 ## CLI Reference
 
 ```
-Usage: npx @stately/codegen <openapi.json> <output_dir> [pluginConfig.js]
+Usage: pnpx @statelyjs/codegen <openapi.json> <output_dir> [pluginConfig.js]
 
 Arguments:
   openapi.json      Path to OpenAPI 3.x specification
@@ -157,8 +157,8 @@ Arguments:
   pluginConfig.js   Optional path to plugin configuration
 
 Example:
-  npx @stately/codegen ./openapi.json ./src/generated
-  npx @stately/codegen ./openapi.json ./src/generated ./stately.codegen.config.ts
+  pnpx @statelyjs/codegen ./openapi.json ./src/generated
+  pnpx @statelyjs/codegen ./openapi.json ./src/generated ./stately.codegen.config.ts
 ```
 
 ## License

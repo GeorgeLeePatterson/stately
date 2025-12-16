@@ -10,7 +10,7 @@ import {
   createOperationBindingsFactory,
   type DefineOperations,
   type DefinePaths,
-} from '@stately/schema';
+} from '@statelyjs/schema';
 import type { operations, paths } from './generated-types';
 
 export type CorePaths = DefinePaths<paths>;

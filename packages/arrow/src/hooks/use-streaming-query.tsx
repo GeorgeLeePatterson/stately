@@ -1,4 +1,3 @@
-import { devLog } from '@stately/ui/base';
 import {
   queryOptions,
   experimental_streamedQuery as streamedQuery,
@@ -15,6 +14,7 @@ import {
   createArrowTableStore,
 } from '@/lib/arrow-table-store';
 import { streamQuery } from '@/lib/stream-query';
+import { log } from '@/lib/utils';
 import type { QueryRequest } from '@/types/api';
 import { useArrowApi } from './use-arrow-api';
 
@@ -127,7 +127,7 @@ export function useStreamingQuery({
   // Sync the arrow store updates with react state
   const snapshot = useSyncExternalStore(storeRef.current.subscribe, storeRef.current.getSnapshot);
 
-  devLog.debug('Arrow', 'stream query props', {
+  log.debug('Arrow', 'stream query props', {
     derived: `idle=${isIdle}, pending=${isPending}, streaming=${isStreaming}, active=${isActive}`,
     queryRequest,
     snapshot,
@@ -180,7 +180,7 @@ export const streamQueryOptions = ({
         return store.table;
       },
       streamFn: async context => {
-        devLog.debug('Arrow', 'stream fn*', { payload, store });
+        log.debug('Arrow', 'stream fn*', { payload, store });
 
         if (!api) throw new Error('Arrow API is unavailable');
 

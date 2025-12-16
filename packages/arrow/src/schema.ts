@@ -1,10 +1,10 @@
 /**
- * @stately/arrow - Schema Extensions
+ * @statelyjs/arrow - Schema Extensions
  *
  * Defines the RelativePath node type for file path handling
  */
 
-import type { BaseNode, DefineData, DefineTypes } from '@stately/ui/schema';
+import type { BaseNode, DefineData, DefineTypes } from '@statelyjs/ui/schema';
 import type { components } from './generated/types';
 
 /**

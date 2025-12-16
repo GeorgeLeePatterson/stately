@@ -1,8 +1,8 @@
 /**
- * @stately/arrow - Plugin Implementation
+ * @statelyjs/arrow - Plugin Implementation
  *
  * This file contains both the schema plugin and UI plugin for the arrow package.
- * Following the canonical pattern from @stately/schema/core/plugin.ts and @stately/ui/core/plugin.ts
+ * Following the canonical pattern from @statelyjs/schema/core/plugin.ts and @statelyjs/ui/core/plugin.ts
  */
 
 import {
@@ -11,14 +11,14 @@ import {
   type DefineOptions,
   type DefineUiPlugin,
   type DefineUiUtils,
-  devLog,
   type UiNavigationOptions,
   type UiPluginFactory,
-} from '@stately/ui/base';
-import type { RouteOption } from '@stately/ui/base/layout';
-import type { DefinePlugin, PluginFactory, Schemas } from '@stately/ui/schema';
+} from '@statelyjs/ui/base';
+import type { RouteOption } from '@statelyjs/ui/base/layout';
+import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/ui/schema';
 import { Database } from 'lucide-react';
 import { ARROW_OPERATIONS, type ArrowPaths } from './api';
+import { log } from './lib/utils';
 import type { ArrowData, ArrowNodeMap, ArrowTypes } from './schema';
 
 // =============================================================================
@@ -92,7 +92,7 @@ export function arrowUiPlugin<
   Augments extends readonly AnyUiPlugin[] = [],
 >(options?: ArrowOptions): UiPluginFactory<Schema, Augments> {
   return runtime => {
-    devLog.debug('Arrow', 'registering', { options, runtime });
+    log.debug('Arrow', 'registering', { options, runtime });
 
     const { client } = runtime;
 
@@ -118,10 +118,10 @@ export function arrowUiPlugin<
       ARROW_OPERATIONS,
       pathPrefix,
     );
-    devLog.debug('Arrow', 'registered plugin', { options, pathPrefix, runtime });
+    log.debug('Arrow', 'registered plugin', { options, pathPrefix, runtime });
 
     const routes = { ...arrowRoutes, ...(options?.navigation?.routes || {}) };
-    devLog.debug('Arrow', 'registered routes', { routes });
+    log.debug('Arrow', 'registered routes', { routes });
 
     const plugin = { [ARROW_PLUGIN_NAME]: { api, options, routes } };
     return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };

@@ -1,4 +1,4 @@
-import type { AnyRecord } from '@stately/schema/helpers';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { Fragment, useCallback, useMemo, useState } from 'react';
 import { FieldEdit } from '@/base/form/field-edit';

@@ -3,6 +3,7 @@ import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { FieldSet } from '@/base/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
+import { generateFieldFormId } from '@/base/utils';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
@@ -83,7 +84,7 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
         <FieldSet className="p-2 min-w-0">
           {/* Render the variant schema directly */}
           <FieldEdit<Schema>
-            formId={`untagged-enum-${currentTag}-${formId}`}
+            formId={generateFieldFormId(currentVariant.schema.nodeType, currentTag, formId)}
             isWizard={isWizard}
             label={`${utils?.generateFieldLabel(currentTag)} Configuration`}
             node={currentVariant.schema}

@@ -1,6 +1,6 @@
-import { cn } from '@stately/ui/base';
-import { Note } from '@stately/ui/base/components';
-import { messageFromError } from '@stately/ui/base/lib/utils';
+import { cn } from '@statelyjs/ui/base';
+import { Note } from '@statelyjs/ui/base/components';
+import { messageFromError } from '@statelyjs/ui/base/lib/utils';
 import {
   Accordion,
   AccordionContent,
@@ -18,7 +18,7 @@ import {
   ItemMedia,
   ItemTitle,
   Spinner,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import { ChevronDown, ChevronUp, Database, FileStack, Layers2, RefreshCcw } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { AnyIsLoading } from '@/components/any-is-loading';

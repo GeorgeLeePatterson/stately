@@ -1,6 +1,6 @@
 import type { AvatarImageProps } from '@radix-ui/react-avatar';
-import type { Defined } from '@stately/schema/helpers';
-import type { StatelySchemas } from '@stately/schema/schema';
+import type { Defined } from '@statelyjs/schema/helpers';
+import type { StatelySchemas } from '@statelyjs/schema/schema';
 import { type ComponentType, useCallback, useMemo } from 'react';
 import { useBaseStatelyUi } from '@/base/context';
 import { useClickTracking } from '@/base/hooks';

@@ -7,6 +7,7 @@ import { FieldEdit } from '@/base/form/field-edit';
 import { cn } from '@/base/lib/utils';
 import { Button } from '@/base/ui/button';
 import { Field, FieldSet } from '@/base/ui/field';
+import { generateFieldFormId } from '@/base/utils';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
 import { useStatelyUi } from '@/index';
@@ -125,7 +126,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
                   {/* Field */}
                   <div className="flex-auto">
                     <FieldEdit
-                      formId={`${arrayFormId}-${index}`}
+                      formId={generateFieldFormId(itemNode.nodeType, `${arrayFormId}-${index}`)}
                       node={itemNode}
                       onChange={newValue => handleChange(index, newValue)}
                       value={item}
@@ -169,7 +170,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
 
                   {/*Field*/}
                   <FieldEdit
-                    formId={`${arrayFormId}-${index}`}
+                    formId={generateFieldFormId(itemNode.nodeType, `${arrayFormId}-${index}`)}
                     isWizard={isWizard}
                     label={''}
                     node={itemNode}

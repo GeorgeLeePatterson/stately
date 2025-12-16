@@ -1,4 +1,4 @@
-import type { StatelySchemas } from '@stately/schema/schema';
+import type { StatelySchemas } from '@statelyjs/schema/schema';
 import { type ComponentType, createContext, type PropsWithChildren, useContext } from 'react';
 import type { AnyUiPlugin } from '@/base/plugin';
 import type { StatelyUiRuntime, UiOptions } from '@/base/runtime';

@@ -1,5 +1,5 @@
 /**
- * @stately/ui - Main exports
+ * @statelyjs/ui - Main exports
  *
  * TODO: Docs:
  * 1. Base

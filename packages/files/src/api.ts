@@ -4,12 +4,12 @@
  * Defines the canonical API operations for the files plugin.
  */
 
-import type { TypedOperations } from '@stately/ui/base';
+import type { TypedOperations } from '@statelyjs/ui/base';
 import {
   createOperationBindingsFactory,
   type DefineOperations,
   type DefinePaths,
-} from '@stately/ui/schema';
+} from '@statelyjs/ui/schema';
 import type { operations, paths } from './generated/types';
 
 export type FilesPaths = DefinePaths<paths>;

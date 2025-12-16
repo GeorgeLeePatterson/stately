@@ -4,6 +4,7 @@ import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { Card, CardContent } from '@/base/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/base/ui/select';
+import { generateFieldFormId } from '@/base/utils';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
@@ -39,9 +40,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
 
   // Update formData when value changes (e.g., when API data loads)
   useEffect(() => {
-    if (value) {
-      setFormData(value);
-    }
+    if (value) setFormData(value);
   }, [value]);
 
   // Extract current tag from discriminator field
@@ -116,7 +115,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
                 ([fieldName, fieldSchema]) => {
                   const isRequired = currentVariant.schema?.required?.includes(fieldName);
                   const fieldValue = formData[fieldName];
-                  const fieldFormId = `${fieldName}-tagged-union-${formId}`;
+                  const fieldFormId = generateFieldFormId(fieldSchema.nodeType, fieldName, formId);
 
                   return (
                     <div key={fieldName}>

@@ -1,4 +1,4 @@
-import type { BaseNode, DefineNodeMap } from '@stately/schema';
+import type { BaseNode, DefineNodeMap } from '@statelyjs/schema';
 
 /**
  * Node types (AST representation of OpenAPI schemas)
@@ -73,13 +73,19 @@ export interface EnumNode extends BaseNode {
  *
  * `additionalProperties` captures the value schema for any dynamic keys
  * beyond the fixed `properties` (e.g., from `#[serde(flatten)]` on a HashMap).
+ *
+ * `merged` captures non-object schemas from `allOf` composition (e.g., flattened
+ * unions via `#[serde(flatten)]`). These schemas are intersected with the object.
+ *
+ * `keys` lists all property keys from this object (excludes additionalProperties and merged).
  */
 export interface ObjectNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.Object;
   properties: Readonly<Record<string, CoreNodes<ChildNode>>>;
   required: readonly string[];
+  keys: readonly string[];
   additionalProperties?: CoreNodes<ChildNode>;
-  merged?: TaggedUnionNode<ChildNode> | UntaggedEnumNode<ChildNode>;
+  merged?: ReadonlyArray<CoreNodes<ChildNode>>;
 }
 
 /**
@@ -111,6 +117,8 @@ export interface TupleNode<ChildNode extends BaseNode = never> extends BaseNode 
  * Tagged Union: Rust enum with explicit discriminator
  *
  * Unit variants (no associated data) have `schema: null`.
+ *
+ * `keys` lists all possible keys when flattened: discriminator + all variant property keys.
  */
 export interface TaggedUnionNode<
   ChildNode extends BaseNode = never,
@@ -118,6 +126,7 @@ export interface TaggedUnionNode<
 > extends BaseNode {
   nodeType: typeof CoreNodeType.TaggedUnion;
   discriminator: Discriminator;
+  keys: readonly string[];
   variants: ReadonlyArray<{ tag: string; schema: ObjectNode<ChildNode> | null }>;
 }
 
@@ -125,9 +134,12 @@ export interface TaggedUnionNode<
  * Untagged Enum: Rust enum with inferred discriminator
  *
  * Unit variants (no associated data) have `schema: null`.
+ *
+ * `keys` lists all variant tags (the tag IS the key for untagged enums).
  */
 export interface UntaggedEnumNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.UntaggedEnum;
+  keys: readonly string[];
   variants: ReadonlyArray<{ tag: string; schema: CoreNodes<ChildNode> | null }>;
 }
 
@@ -136,9 +148,12 @@ export interface UntaggedEnumNode<ChildNode extends BaseNode = never> extends Ba
  *
  * Used when we can't identify a specific tagged/untagged pattern.
  * The value is exactly one of the variant schemas - no tag wrapping.
+ *
+ * `keys` lists all possible keys from all object-like variants.
  */
 export interface UnionNode<ChildNode extends BaseNode = never> extends BaseNode {
   nodeType: typeof CoreNodeType.Union;
+  keys: readonly string[];
   variants: ReadonlyArray<{ schema: CoreNodes<ChildNode>; label?: string }>;
 }
 

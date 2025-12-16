@@ -1,5 +1,5 @@
 {
-  "name": "@stately/codegen",
+  "name": "@statelyjs/codegen",
   "version": "0.3.0",
   "description": "Code generator for Stately schemas from OpenAPI specs",
   "type": "module",
@@ -35,7 +35,7 @@
     "directory": "packages/codegen"
   },
   "dependencies": {
-    "@stately/ui": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
     "openapi-typescript": "^7.10.1"
   },
   "devDependencies": {

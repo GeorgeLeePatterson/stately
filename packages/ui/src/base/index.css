@@ -1,13 +1,13 @@
 /**
- * @stately/ui base styles
+ * @statelyjs/ui base styles
  *
  * REQUIRED SETUP for Tailwind CSS v4:
  *
  * In your app's main CSS file, add the following in this exact order:
  *
  * @import "tailwindcss";
- * @source "../node_modules/@stately/** /dist";
- * @import "@stately/ui/styles.css";
+ * @source "../node_modules/@statelyjs/** /dist";
+ * @import "@statelyjs/ui/styles.css";
  *
  * The wildcard @source pattern automatically includes all Stately packages
  * (core UI + plugins). This is required because node_modules is automatically

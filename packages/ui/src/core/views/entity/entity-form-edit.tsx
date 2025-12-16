@@ -1,10 +1,11 @@
-import type { AnyRecord } from '@stately/schema/helpers';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { useId, useMemo } from 'react';
 import { devLog } from '@/base';
 import { FieldEdit } from '@/base/form/field-edit';
 import { Field, FieldGroup, FieldSet } from '@/base/ui/field';
 import { Separator } from '@/base/ui/separator';
 import { Skeleton } from '@/base/ui/skeleton';
+import { generateFieldFormId } from '@/base/utils';
 import type { CoreEntity } from '@/core';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
@@ -44,6 +45,8 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
     [node.properties, entityData, required, schema.plugins.core.sortEntityProperties],
   );
 
+  const fieldTypePrefix = isRootEntity ? 'Entity' : 'LinkedEntity';
+
   devLog.debug('Core', 'EntityFormEdit', { formDisabled, isLoading, isRootEntity, node, value });
 
   return (
@@ -57,7 +60,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
                 <Skeleton className="h-20 w-full" />
               ) : (
                 <FieldEdit<Schema>
-                  formId={`name-${formId}`}
+                  formId={generateFieldFormId(fieldTypePrefix, 'name', formId)}
                   label="Name"
                   node={node.properties.name}
                   onChange={newValue =>
@@ -77,13 +80,17 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
           const isRequired = required.has(fieldName);
           const label = utils?.generateFieldLabel(fieldName);
           const fieldValue = entityData[fieldName];
-          const fieldId = `${fieldName}-${formId}`;
+          const fieldFormId = generateFieldFormId(
+            `${fieldTypePrefix}-${propNode.nodeType}`,
+            fieldName,
+            formId,
+          );
 
           const field = isLoading ? (
             <Skeleton className="h-20 w-full" />
           ) : (
             <FieldEdit<Schema, typeof propNode>
-              formId={fieldId}
+              formId={fieldFormId}
               isRequired={isRequired}
               label={label}
               node={propNode}

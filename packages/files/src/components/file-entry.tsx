@@ -1,5 +1,5 @@
-import { cn } from '@stately/ui/base/lib/utils';
-import { Button } from '@stately/ui/base/ui';
+import { cn } from '@statelyjs/ui/base/lib/utils';
+import { Button } from '@statelyjs/ui/base/ui';
 import { ChevronRight, FileText, Folder, FolderOpen, History } from 'lucide-react';
 import type { FileInfo } from '@/types/api';
 

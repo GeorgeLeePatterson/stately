@@ -1,5 +1,5 @@
 // Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
+// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
 
 export interface paths {
   '/admin/cancel': {

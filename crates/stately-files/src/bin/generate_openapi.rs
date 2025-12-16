@@ -3,7 +3,7 @@
 //! Run with: `cargo run --bin generate-openapi -- <output_dir>`
 //!
 //! This outputs `openapi.json` to the specified directory,
-//! which can then be processed by `@stately/codegen` to generate TypeScript types.
+//! which can then be processed by `@statelyjs/codegen` to generate TypeScript types.
 #![allow(unused_crate_dependencies)]
 use stately_files::OpenApiDoc;
 

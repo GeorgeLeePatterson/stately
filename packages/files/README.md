@@ -1,4 +1,4 @@
-# @stately/files
+# @statelyjs/files
 
 File system integration plugin for [Stately UI](../ui/README.md). Provides file browsing, versioned file management, uploads, downloads, and relative path handling.
 
@@ -14,7 +14,7 @@ This package connects your application to a `stately-files` backend (Rust), givi
 ## Installation
 
 ```bash
-pnpm add @stately/files
+pnpm add @statelyjs/files
 ```
 
 ## Quick Start
@@ -22,8 +22,8 @@ pnpm add @stately/files
 Register the plugin when creating your Stately UI runtime:
 
 ```typescript
-import { createStatelyUi } from '@stately/ui';
-import { filesPlugin, filesUiPlugin } from '@stately/files';
+import { createStatelyUi } from '@statelyjs/ui';
+import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
 
 const stately = createStatelyUi({
   // Your base URL for API requests
@@ -47,7 +47,7 @@ const stately = createStatelyUi({
 Wrap your app with the Stately provider:
 
 ```tsx
-import { StatelyProvider } from '@stately/ui';
+import { StatelyProvider } from '@statelyjs/ui';
 
 function App() {
   return (
@@ -63,7 +63,7 @@ function App() {
 The plugin provides a `FileManager` page component. Add it to your router:
 
 ```tsx
-import { FileManager } from '@stately/files/pages';
+import { FileManager } from '@statelyjs/files/pages';
 
 // Example with React Router
 <Route path="/files" element={<FileManager />} />
@@ -78,7 +78,7 @@ All hooks use the files API through the plugin context:
 Browse files and directories:
 
 ```tsx
-import { useFileExplore } from '@stately/files/hooks';
+import { useFileExplore } from '@statelyjs/files/hooks';
 
 function FileBrowser() {
   const { data, isLoading } = useFileExplore({ path: 'data/configs' });
@@ -98,7 +98,7 @@ function FileBrowser() {
 Get version history for a file:
 
 ```tsx
-import { useFileVersions } from '@stately/files/hooks';
+import { useFileVersions } from '@statelyjs/files/hooks';
 
 const { data: versions } = useFileVersions({
   target: 'data',
@@ -111,7 +111,7 @@ const { data: versions } = useFileVersions({
 Download files (supports versioned downloads):
 
 ```tsx
-import { useDownload } from '@stately/files/hooks';
+import { useDownload } from '@statelyjs/files/hooks';
 
 function DownloadButton({ path }: { path: string }) {
   const { mutate: download, isPending } = useDownload();
@@ -132,7 +132,7 @@ function DownloadButton({ path }: { path: string }) {
 Upload files:
 
 ```tsx
-import { useUpload } from '@stately/files/hooks';
+import { useUpload } from '@statelyjs/files/hooks';
 
 const { mutate: upload, isPending } = useUpload({
   onSuccess: () => console.log('Upload complete'),
@@ -146,7 +146,7 @@ upload({ file, path: 'uploads/my-file.txt' });
 Save content to a file:
 
 ```tsx
-import { useSaveFile } from '@stately/files/hooks';
+import { useSaveFile } from '@statelyjs/files/hooks';
 
 const { mutate: save } = useSaveFile();
 
@@ -165,7 +165,7 @@ Reusable view components for building file interfaces:
 Directory browser with navigation:
 
 ```tsx
-import { FileExplorer } from '@stately/files/views';
+import { FileExplorer } from '@statelyjs/files/views';
 
 <FileExplorer
   path="data/configs"
@@ -179,7 +179,7 @@ import { FileExplorer } from '@stately/files/views';
 File picker dialog:
 
 ```tsx
-import { FileSelector } from '@stately/files/views';
+import { FileSelector } from '@statelyjs/files/views';
 
 <FileSelector
   value={selectedPath}
@@ -193,7 +193,7 @@ import { FileSelector } from '@stately/files/views';
 Display file metadata and actions:
 
 ```tsx
-import { FileDetails, VersionedFileDetails } from '@stately/files/views';
+import { FileDetails, VersionedFileDetails } from '@statelyjs/files/views';
 
 // For simple files
 <FileDetails entry={fileEntry} currentPath={path} onClose={handleClose} />
@@ -219,7 +219,7 @@ Full-featured file management page with:
 - Download buttons
 
 ```tsx
-import { FileManager } from '@stately/files/pages';
+import { FileManager } from '@statelyjs/files/pages';
 
 <Route path="/files/*" element={<FileManager />} />
 ```
@@ -229,8 +229,8 @@ import { FileManager } from '@stately/files/pages';
 The package includes a codegen plugin that detects `RelativePath` schemas from your OpenAPI spec:
 
 ```typescript
-import { createCodegen } from '@stately/codegen';
-import { filesCodegenPlugin } from '@stately/files/codegen';
+import { createCodegen } from '@statelyjs/codegen';
+import { filesCodegenPlugin } from '@statelyjs/files/codegen';
 
 const codegen = createCodegen({
   plugins: [filesCodegenPlugin],
@@ -263,7 +263,7 @@ For plugin authors, this package demonstrates the Stately plugin pattern:
 Extends the node type system:
 
 ```typescript
-import { filesPlugin } from '@stately/files';
+import { filesPlugin } from '@statelyjs/files';
 
 // Adds FilesNodeType.RelativePath to the schema
 schemaPlugins: [filesPlugin]
@@ -274,7 +274,7 @@ schemaPlugins: [filesPlugin]
 Registers components and API bindings:
 
 ```typescript
-import { filesUiPlugin } from '@stately/files';
+import { filesUiPlugin } from '@statelyjs/files';
 
 uiPlugins: [
   filesUiPlugin({
@@ -293,7 +293,7 @@ The UI plugin:
 Access the files runtime from components:
 
 ```typescript
-import { useFilesStatelyUi } from '@stately/files';
+import { useFilesStatelyUi } from '@statelyjs/files';
 
 function MyComponent() {
   const runtime = useFilesStatelyUi();

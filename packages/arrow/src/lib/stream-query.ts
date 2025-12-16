@@ -1,7 +1,7 @@
-import { devLog } from '@stately/ui/base';
 import { type RecordBatch, RecordBatchReader } from 'apache-arrow';
 import type { ArrowApi } from '@/api';
 import type { QueryRequest } from '@/types/api';
+import { log } from './utils';
 
 /**
  * Stream Arrow IPC data as RecordBatches from a query.
@@ -26,7 +26,7 @@ export async function* streamQuery(
   payload: QueryRequest,
   signal?: AbortSignal,
 ): AsyncGenerator<RecordBatch> {
-  devLog.debug('Arrow', 'running streamQuery', { payload });
+  log.debug('Arrow', 'running streamQuery', { payload });
   const { response, error } = await api.execute_query({ body: payload, parseAs: 'stream', signal });
 
   if (error) {
@@ -36,16 +36,16 @@ export async function* streamQuery(
 
   try {
     const reader = await RecordBatchReader.from(response);
-    devLog.debug('Arrow', 'created stream reader');
+    log.debug('Arrow', 'created stream reader');
 
     for await (const batch of reader) {
       if (signal?.aborted) break;
       yield batch;
     }
   } catch (error) {
-    devLog.error('Arrow', 'Error streaming record batches: ', { error, payload });
+    log.error('Arrow', 'Error streaming record batches: ', { error, payload });
     throw error;
   } finally {
-    devLog.debug('Arrow', 'Exiting record batch stream', { payload });
+    log.debug('Arrow', 'Exiting record batch stream', { payload });
   }
 }

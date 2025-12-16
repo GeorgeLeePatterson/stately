@@ -1,7 +1,7 @@
 //! Code generation utilities for plugin authors.
 //!
 //! This module provides helpers for generating `OpenAPI` specs that can then be
-//! processed by `@stately/codegen` to produce TypeScript types.
+//! processed by `@statelyjs/codegen` to produce TypeScript types.
 //!
 //! # Usage
 //!
@@ -27,7 +27,7 @@
 //! }
 //! ```
 //!
-//! After running `cargo run --bin generate-openapi`, use the `@stately/codegen`
+//! After running `cargo run --bin generate-openapi`, use the `@statelyjs/codegen`
 //! package to generate TypeScript types from the spec.
 
 use std::io;

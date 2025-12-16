@@ -3,6 +3,7 @@ import { GlowingSave } from '@/base/components/glowing-save';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
 import { FieldSet } from '@/base/ui/field';
+import { generateFieldFormId } from '@/base/utils';
 import type { Schemas } from '@/core/schema';
 
 export type TupleEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
@@ -78,13 +79,18 @@ export function TupleEdit<Schema extends Schemas = Schemas>({
         />
         {node.items.length > 1 && (
           <FieldSet className="min-w-0" disabled={!firstSet}>
-            {node.items.slice(1).map((itemNode: any, idx: number) => {
+            {node.items.slice(1).map((itemNode, idx) => {
               const index = idx + 1;
               const itemLabel = twoTuple ? 'Value' : `${label} ${index + 1}`;
+              const fieldFormId = generateFieldFormId(
+                itemNode.nodeType,
+                `${itemLabel}-${idx}`,
+                formId,
+              );
               return (
                 <div key={`${itemLabel}-${index}`}>
                   <FieldEdit
-                    formId={`tuple-${formId}-${idx}`}
+                    formId={fieldFormId}
                     isWizard={isWizard}
                     label={itemLabel}
                     node={itemNode}

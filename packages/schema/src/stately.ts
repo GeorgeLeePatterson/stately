@@ -66,16 +66,19 @@ function runValidationPipeline<P extends { [key: string]: { validate?: ValidateH
 
   const { schema, options } = args ?? {};
   const debug = options?.debug;
-  if (debug) console.debug('[stately/schema] (Validation) validating:', { args, pluginNames });
+  if (debug) console.debug('[@statelyjs/schema] (Validation) validating', { args, pluginNames });
 
   // Handle unknown nodeTypes from codegen - skip validation
   if (schema.nodeType === UnknownNodeType) {
-    if (debug) console.debug(`[Validation] Skipping unknown nodeType: ${args.schema.nodeType}`);
+    if (debug)
+      console.debug(
+        `[@statelyjs/schema] (Validation) Skipping unknown nodeType: ${args.schema.nodeType}`,
+      );
     return { errors: [], valid: true };
   }
 
   if (hooks.length === 0) {
-    console.debug('[Validation] no validations registered', { args });
+    console.debug('[@statelyjs/schema] (Validation) no validations registered', { args });
     return { errors: [], valid: true };
   }
 

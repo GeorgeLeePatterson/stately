@@ -1,4 +1,4 @@
-import type { AnyRecord } from '@stately/schema/helpers';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { useMemo } from 'react';
 import { DescriptionLabel } from '@/base/components/description-label';
 import { NotSet } from '@/base/components/not-set';

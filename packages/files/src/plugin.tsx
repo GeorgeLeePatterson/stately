@@ -1,8 +1,8 @@
 /**
- * @stately/files - Plugin Implementation
+ * @statelyjs/files - Plugin Implementation
  *
  * This file contains both the schema plugin and UI plugin for the files package.
- * Following the canonical pattern from @stately/schema/core/plugin.ts and @stately/ui/core/plugin.ts
+ * Following the canonical pattern from @statelyjs/schema/core/plugin.ts and @statelyjs/ui/core/plugin.ts
  */
 
 import {
@@ -11,13 +11,12 @@ import {
   createOperations,
   type DefineOptions,
   type DefineUiPlugin,
-  devLog,
   type UiNavigationOptions,
   type UiPluginFactory,
-} from '@stately/ui/base';
-import type { RouteOption } from '@stately/ui/base/layout';
-import { CoreNodeType } from '@stately/ui/core';
-import type { DefinePlugin, PluginFactory, Schemas } from '@stately/ui/schema';
+} from '@statelyjs/ui/base';
+import type { RouteOption } from '@statelyjs/ui/base/layout';
+import { CoreNodeType } from '@statelyjs/ui/core';
+import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/ui/schema';
 import { Files } from 'lucide-react';
 import { FILES_OPERATIONS, type FilesPaths } from './api';
 import { primitiveStringTransformer } from './fields/edit/primitive-string';
@@ -25,7 +24,7 @@ import { RelativePathEdit } from './fields/edit/relative-path-field';
 import { RelativePathView } from './fields/view/relative-path-field';
 import type { FilesData, FilesNodeMap, FilesTypes } from './schema';
 import { FilesNodeType } from './schema';
-import { type FilesUiUtils, type FilesUtils, filesUiUtils } from './utils';
+import { type FilesUiUtils, type FilesUtils, filesUiUtils, log } from './utils';
 
 // =============================================================================
 // SCHEMA PLUGIN
@@ -92,7 +91,7 @@ export function filesUiPlugin<
   Augments extends readonly AnyUiPlugin[] = [],
 >(options?: FilesOptions): UiPluginFactory<Schema, Augments> {
   return runtime => {
-    devLog.debug('Files', 'registering', { options, runtime });
+    log.debug('Files', 'registering', { options, runtime });
 
     const { registry, client } = runtime;
 
@@ -121,11 +120,11 @@ export function filesUiPlugin<
       FILES_OPERATIONS,
       pathPrefix,
     );
-    devLog.debug('Files', 'registered plugin', { options, pathPrefix, runtime });
+    log.debug('Files', 'registered plugin', { options, pathPrefix, runtime });
 
     // Files only supports a top level route, only provides a single page.
     const routes = { ...filesRoutes, ...(options?.navigation?.routes || {}) };
-    devLog.debug('Files', 'registered routes', { routes });
+    log.debug('Files', 'registered routes', { routes });
 
     const plugin = { [FILES_PLUGIN_NAME]: { api, options, routes, utils: filesUiUtils } };
     return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };

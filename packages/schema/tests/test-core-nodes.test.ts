@@ -1,10 +1,10 @@
 // biome-ignore-all lint/correctness/noUnusedVariables: type-level test file
 // biome-ignore-all lint/correctness/noUnusedFunctionParameters: type-level test file
 /**
- * Verifies that the canonical node helpers exported from @stately/schema
+ * Verifies that the canonical node helpers exported from @statelyjs/schema
  * align with the core node definitions (PrimitiveNode, ObjectNode, etc.).
  *
- * Run: npx tsc --noEmit tests/test-core-nodes.ts
+ * Run: pnpx tsc --noEmit tests/test-core-nodes.ts
  */
 import type { CoreStatelyConfig } from '../src/core/generated.js';
 import {

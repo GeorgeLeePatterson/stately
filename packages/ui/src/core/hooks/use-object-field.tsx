@@ -1,15 +1,22 @@
-import type { AnyRecord } from '@stately/schema/helpers';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
+
+export interface MergedField<S extends Schemas = Schemas> {
+  schema: S['plugin']['AnyNode'];
+  value: AnyRecord;
+}
 
 export interface ObjectFieldState<S extends Schemas = Schemas> {
   formData: Record<string, any>;
   handleFieldChange: (fieldName: string, isNullable: boolean, newValue: any) => void;
-  handleAdditionalFieldChange: (newExtras: AnyRecord) => void;
+  handleMergedFieldChange: (newMergedData: AnyRecord) => void;
+  handleAdditionalFieldChange: (newAdditionalData: AnyRecord) => void;
   handleSave: () => void;
   handleCancel: () => void;
   fields: Array<[string, S['plugin']['AnyNode']]>;
+  mergedFields: Array<MergedField<S>>;
   extraFieldsValue: AnyRecord;
   isDirty: boolean;
   isValid: boolean;
@@ -22,7 +29,7 @@ export function useObjectField<S extends Schemas = Schemas>({
   onSave,
 }: {
   label?: string;
-  node: any;
+  node: S['plugin']['Nodes']['object'];
   value: any;
   onSave: (formData: AnyRecord) => void;
 }): ObjectFieldState {
@@ -30,26 +37,53 @@ export function useObjectField<S extends Schemas = Schemas>({
   const [formData, setFormData] = useState<Record<string, any>>(value ?? {});
   const [isDirty, setIsDirty] = useState(false);
 
+  const changes = useRef<Map<string, any>>(new Map());
+
   const required = new Set<string>(node?.required || []);
-  const mergedFields = (node as any).merged
-    ? [['Additional', (node as any).merged] as [string, any]]
-    : [];
-  const baseValueFields = Object.entries(node.properties).filter(
-    ([fieldName]) => fieldName !== 'id',
-  );
-  const valueFields = [...baseValueFields, ...mergedFields];
+  const valueFields = Object.entries(node.properties).filter(([fieldName]) => fieldName !== 'id');
   const fields = schema.plugins.core.sortEntityProperties<S['plugin']['AnyNode']>(
     valueFields,
     value,
     required,
   );
 
-  // For additionalProperties: track known keys and derive extra fields
-  const knownKeys = useMemo(() => new Set(Object.keys(node.properties)), [node.properties]);
+  // Merged schemas from allOf composition - handled separately from regular properties
+  const merged = node.merged ?? null;
+
+  // Collect keys from merged schemas (object-like schemas have a 'keys' property)
+  const mergedKeys = useMemo(() => {
+    if (!merged || merged.length === 0) return new Set<string>();
+    const keys = new Set<string>();
+    for (const schema of merged) {
+      if ('keys' in schema && Array.isArray(schema.keys)) {
+        for (const key of schema.keys) {
+          keys.add(key);
+        }
+      }
+    }
+    return keys;
+  }, [merged]);
+
+  // Property keys from the object schema itself
+  const propertyKeys = useMemo(() => new Set(node.keys ?? []), [node.keys]);
+
+  // Zip merged schemas with their values (each schema gets its own subset of formData)
+  const mergedFields = useMemo(() => {
+    if (!merged || merged.length === 0) return [];
+    return merged.map(schema => {
+      const schemaKeys = new Set('keys' in schema && Array.isArray(schema.keys) ? schema.keys : []);
+      const value = Object.fromEntries(Object.entries(formData).filter(([k]) => schemaKeys.has(k)));
+      return { schema, value };
+    });
+  }, [merged, formData]);
+
+  // Derive additional fields value (not in properties, not in merged)
   const extraFieldsValue = useMemo(() => {
     if (!node.additionalProperties || !formData) return {};
-    return Object.fromEntries(Object.entries(formData).filter(([k]) => !knownKeys.has(k)));
-  }, [node.additionalProperties, formData, knownKeys]);
+    return Object.fromEntries(
+      Object.entries(formData).filter(([k]) => !propertyKeys.has(k) && !mergedKeys.has(k)),
+    );
+  }, [node.additionalProperties, formData, propertyKeys, mergedKeys]);
 
   const objectValidation = schema.validate({
     data: formData,
@@ -73,6 +107,9 @@ export function useObjectField<S extends Schemas = Schemas>({
   }, [formData, isValid, onSave]);
 
   const handleFieldChange = useCallback((fieldName: string, isNullable: boolean, newValue: any) => {
+    // Update the map tracking changes
+    changes.current.set(fieldName, newValue);
+
     if ((isNullable && newValue === null) || newValue === undefined) {
       setFormData(({ [fieldName]: _, ...d }) => d);
     } else {
@@ -81,25 +118,95 @@ export function useObjectField<S extends Schemas = Schemas>({
     setIsDirty(true);
   }, []);
 
-  // Handle changes to additionalProperties (extra fields beyond known properties)
-  const handleAdditionalFieldChange = useCallback(
-    (newExtras: AnyRecord) => {
+  // Handle changes to merged fields (from allOf composition)
+  const handleMergedFieldChange = useCallback(
+    (newMergedData: AnyRecord) => {
+      // Track changes
+      for (const [k, v] of Object.entries(newMergedData)) {
+        changes.current.set(k, v);
+      }
+
       setFormData(d => {
-        // Keep only known fields from current data, merge with new extras
-        const knownFieldsData = Object.fromEntries(
-          Object.entries(d).filter(([k]) => knownKeys.has(k)),
+        // Keep property keys and additional keys, replace merged keys
+        const nonMergedData = Object.fromEntries(
+          Object.entries(d).filter(([k]) => !mergedKeys.has(k)),
         );
-        return { ...knownFieldsData, ...newExtras };
+        return { ...nonMergedData, ...newMergedData };
       });
       setIsDirty(true);
     },
-    [knownKeys],
+    [mergedKeys],
+  );
+
+  // Handle changes to additionalProperties (dynamic user-added keys)
+  const handleAdditionalFieldChange = useCallback(
+    (newAdditionalData: AnyRecord) => {
+      // Track changes
+      for (const [k, v] of Object.entries(newAdditionalData)) {
+        changes.current.set(k, v);
+      }
+
+      setFormData(d => {
+        // Keep property keys and merged keys, replace additional keys
+        const nonAdditionalData = Object.fromEntries(
+          Object.entries(d).filter(([k]) => propertyKeys.has(k) || mergedKeys.has(k)),
+        );
+        return { ...nonAdditionalData, ...newAdditionalData };
+      });
+      setIsDirty(true);
+    },
+    [propertyKeys, mergedKeys],
   );
 
   const handleCancel = useCallback(() => {
+    // Reset map tracking changes
+    changes.current = new Map();
+
     setFormData(value ?? {});
     setIsDirty(false);
   }, [value]);
+
+  const changed = useMemo(() => {
+    if (!value && !formData) return false;
+    if ((!value && formData) || (value && !formData)) return true;
+    const safeValue = value ?? {};
+    const safeFormData = formData ?? {};
+
+    // Start false
+    let isChanged = false;
+    for (const [name, val] of changes.current) {
+      // If neither are defined, skip
+      if (!(name in safeFormData) && !(name in safeValue)) continue;
+      // if form data has been cleared
+      if (!(name in safeFormData) && name in safeValue) {
+        isChanged = true;
+        break;
+      }
+      // If form data has been set
+      if (name in safeFormData && !(name in safeValue)) {
+        isChanged = true;
+        break;
+      }
+      // If the types are different at all
+      if (typeof safeFormData[name] !== typeof safeValue[name]) {
+        isChanged = true;
+        break;
+      }
+      // If it's an object like value, rely on isDirty, sacrifices depth for simplicity
+      if (
+        [safeValue[name], safeFormData[name]].some(v => Array.isArray(v) || typeof v === 'object')
+      ) {
+        isChanged = isDirty;
+      }
+      // Finally, check primitive values
+      if (safeValue[name] !== val) {
+        isChanged = true;
+        break;
+      }
+    }
+
+    return isChanged;
+  }, [value, formData, isDirty]);
 
   return {
     extraFieldsValue,
@@ -108,8 +215,10 @@ export function useObjectField<S extends Schemas = Schemas>({
     handleAdditionalFieldChange,
     handleCancel,
     handleFieldChange,
+    handleMergedFieldChange,
     handleSave,
-    isDirty,
+    isDirty: changed,
     isValid,
+    mergedFields,
   } as ObjectFieldState;
 }

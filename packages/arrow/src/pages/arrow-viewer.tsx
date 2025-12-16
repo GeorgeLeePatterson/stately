@@ -1,6 +1,6 @@
-import { Layout } from '@stately/ui';
-import { cn, devLog, messageFromError } from '@stately/ui/base/lib/utils';
-import { Button, useSidebar } from '@stately/ui/base/ui';
+import { Layout } from '@statelyjs/ui';
+import { cn, messageFromError } from '@statelyjs/ui/base/lib/utils';
+import { Button, useSidebar } from '@statelyjs/ui/base/ui';
 import { Binary, PanelLeftOpen, PanelRightOpen, SquareSigma, Timer } from 'lucide-react';
 import {
   type ButtonHTMLAttributes,
@@ -15,7 +15,7 @@ import type { QueryEditorStat } from '@/components/query-editor';
 import { useConnectors } from '@/hooks/use-connectors';
 import { useStreamingQuery } from '@/hooks/use-streaming-query';
 import type { ArrowTableStore } from '@/lib/arrow-table-store';
-import { formatBytes, tableToDataView } from '@/lib/utils';
+import { formatBytes, log, tableToDataView } from '@/lib/utils';
 import type { ConnectionMetadata, ListSummary } from '@/types/api';
 import { ConnectorMenuCard, ConnectorsRegisterCard } from '@/views/connectors';
 import { DEFAULT_RESULTS_HREF_ID, QueryEditorCard, QueryResultsCard } from '@/views/query';
@@ -79,7 +79,7 @@ function Root(props: ArrowViewerProps) {
   const handleRun = useCallback(
     (_?: ButtonClickArg, s?: string) => {
       const sqlCommand = s || sql;
-      devLog.debug('Arrow', 'handleRun', { id: currentConnector?.id, sqlCommand });
+      log.debug('Arrow', 'handleRun', { id: currentConnector?.id, sqlCommand });
       if (!sqlCommand.trim()) return;
       execute({ connector_id: currentConnector?.id, sql: sqlCommand });
     },
@@ -236,7 +236,7 @@ function Root(props: ArrowViewerProps) {
 /**
  * Visualize stately arrow data.
  *
- * Note: `ArrowViewer` assumes using `@stately/ui/core`'s `Layout.Root` component,
+ * Note: `ArrowViewer` assumes using `@statelyjs/ui/core`'s `Layout.Root` component,
  * or more specifically, that a `SidebarProvider` is available. If one is not, use
  * `ArrowViewer.Root` directly.
  *

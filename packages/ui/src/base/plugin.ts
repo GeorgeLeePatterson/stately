@@ -1,6 +1,6 @@
-import type { AnyPaths, OperationBindings } from '@stately/schema/api';
-import type { AnyRecord, EmptyRecord, RequireLiteral } from '@stately/schema/helpers';
-import type { StatelySchemas } from '@stately/schema/schema';
+import type { AnyPaths, OperationBindings } from '@statelyjs/schema/api';
+import type { AnyRecord, EmptyRecord, RequireLiteral } from '@statelyjs/schema/helpers';
+import type { StatelySchemas } from '@statelyjs/schema/schema';
 import type { ComponentType } from 'react';
 import type { TypedOperations } from './api';
 import type { StatelyUiRuntime, UiNavigationOptions } from './runtime';
@@ -11,7 +11,7 @@ import type { UiUtils } from './utils';
  * Takes runtime and returns runtime with SAME augments type.
  * Augments are declared upfront; factories populate runtime data to match.
  *
- * Pattern matches @stately/schema's PluginFactory.
+ * Pattern matches @statelyjs/schema's PluginFactory.
  */
 export type UiPluginFactory<
   Schema extends StatelySchemas<any, any>,

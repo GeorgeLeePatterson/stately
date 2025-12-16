@@ -1,5 +1,5 @@
-import type { CorePaths } from '@stately/schema/core';
-import { CORE_OPERATIONS } from '@stately/schema/core/api';
+import type { CorePaths } from '@statelyjs/schema/core';
+import { CORE_OPERATIONS } from '@statelyjs/schema/core/api';
 import type { Client, FetchResponse } from 'openapi-fetch';
 import { createOperations } from '../src/base/api';
 

@@ -1,4 +1,4 @@
-import type { AnyRecord } from '@stately/schema/helpers';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { FieldLegend } from '@/base/ui/field';
 import type { CoreEntity, CoreStateEntry } from '@/core';
 import type { Schemas } from '@/core/schema';

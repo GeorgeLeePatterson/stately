@@ -1,4 +1,4 @@
-import { CopyButton } from '@stately/ui/base/components';
+import { CopyButton } from '@statelyjs/ui/base/components';
 import {
   Button,
   Drawer,
@@ -8,7 +8,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 
 export interface DrawerRowValue {
   key: string;

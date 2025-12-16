@@ -79,7 +79,7 @@ export type {
 export { defaultUiOptions, createStatelyUi };
 
 // Utils
-import { cn, devLog } from './lib/utils.js';
+import { cn } from './lib/utils.js';
 import {
   camelCaseToKebabCase,
   mergePathPrefixOptions,
@@ -94,7 +94,6 @@ import {
 export type { UiUtils } from './utils.js';
 export {
   cn,
-  devLog,
   stripLeading,
   stripTrailing,
   camelCaseToKebabCase,
@@ -104,3 +103,7 @@ export {
   runtimeUtils,
   mergePathPrefixOptions,
 };
+
+// Logging
+import { devLog, devLogger } from './lib/logging.js';
+export { devLogger, devLog };

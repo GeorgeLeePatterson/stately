@@ -1,9 +1,13 @@
 // Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
+// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
 
 export const PARSED_SCHEMAS = {
   "ApiError": {
     "description": "Standard error shape returned by handlers",
+    "keys": [
+      "error",
+      "status"
+    ],
     "nodeType": "object",
     "properties": {
       "error": {
@@ -23,6 +27,10 @@ export const PARSED_SCHEMAS = {
   },
   "BackendMetadata": {
     "description": "Static metadata describing a backend implementation.\n\nBackends provide this metadata to indicate their type and capabilities.\nUse the builder methods to construct instances.",
+    "keys": [
+      "capabilities",
+      "kind"
+    ],
     "nodeType": "object",
     "properties": {
       "capabilities": {
@@ -40,6 +48,11 @@ export const PARSED_SCHEMAS = {
       "kind": {
         "nodeType": "untaggedEnum",
         "description": "The type of data source a connector connects to.",
+        "keys": [
+          "object_store",
+          "database",
+          "other"
+        ],
         "variants": [
           {
             "schema": null,
@@ -84,6 +97,10 @@ export const PARSED_SCHEMAS = {
   },
   "ClickHouseConfig": {
     "description": "Additional ClickHouse-specific configuration.",
+    "keys": [
+      "compression",
+      "settings"
+    ],
     "nodeType": "object",
     "properties": {
       "compression": {
@@ -110,6 +127,10 @@ export const PARSED_SCHEMAS = {
   },
   "ConnectionDetailsRequest": {
     "description": "Request for fetching details from multiple connectors.",
+    "keys": [
+      "connectors",
+      "fail_on_error"
+    ],
     "nodeType": "object",
     "properties": {
       "connectors": {
@@ -118,6 +139,9 @@ export const PARSED_SCHEMAS = {
         "valueSchema": {
           "nodeType": "object",
           "description": "Query parameters for searching connection contents.",
+          "keys": [
+            "search"
+          ],
           "properties": {
             "search": {
               "description": "Optional search term to filter results.",
@@ -144,6 +168,9 @@ export const PARSED_SCHEMAS = {
   },
   "ConnectionDetailsResponse": {
     "description": "Response containing details from multiple connectors.",
+    "keys": [
+      "connections"
+    ],
     "nodeType": "object",
     "properties": {
       "connections": {
@@ -153,9 +180,16 @@ export const PARSED_SCHEMAS = {
           "nodeType": "taggedUnion",
           "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context.",
           "discriminator": "type",
+          "keys": [
+            "type",
+            "summary"
+          ],
           "variants": [
             {
               "schema": {
+                "keys": [
+                  "summary"
+                ],
                 "nodeType": "object",
                 "properties": {
                   "summary": {
@@ -175,6 +209,9 @@ export const PARSED_SCHEMAS = {
             },
             {
               "schema": {
+                "keys": [
+                  "summary"
+                ],
                 "nodeType": "object",
                 "properties": {
                   "summary": {
@@ -182,6 +219,11 @@ export const PARSED_SCHEMAS = {
                     "items": {
                       "nodeType": "object",
                       "description": "Summary information about a table or file.",
+                      "keys": [
+                        "name",
+                        "rows",
+                        "size_bytes"
+                      ],
                       "properties": {
                         "name": {
                           "description": "Table or file name/path.",
@@ -224,6 +266,9 @@ export const PARSED_SCHEMAS = {
             },
             {
               "schema": {
+                "keys": [
+                  "summary"
+                ],
                 "nodeType": "object",
                 "properties": {
                   "summary": {
@@ -243,6 +288,9 @@ export const PARSED_SCHEMAS = {
             },
             {
               "schema": {
+                "keys": [
+                  "summary"
+                ],
                 "nodeType": "object",
                 "properties": {
                   "summary": {
@@ -250,6 +298,11 @@ export const PARSED_SCHEMAS = {
                     "items": {
                       "nodeType": "object",
                       "description": "Summary information about a table or file.",
+                      "keys": [
+                        "name",
+                        "rows",
+                        "size_bytes"
+                      ],
                       "properties": {
                         "name": {
                           "description": "Table or file name/path.",
@@ -301,6 +354,11 @@ export const PARSED_SCHEMAS = {
   "ConnectionKind": {
     "nodeType": "untaggedEnum",
     "description": "The type of data source a connector connects to.",
+    "keys": [
+      "object_store",
+      "database",
+      "other"
+    ],
     "variants": [
       {
         "schema": null,
@@ -322,6 +380,12 @@ export const PARSED_SCHEMAS = {
   },
   "ConnectionMetadata": {
     "description": "Runtime metadata describing a connector instance.\n\nThis combines the connector's identity with its backend metadata,\nincluding the `DataFusion` catalog it's registered under.",
+    "keys": [
+      "catalog",
+      "id",
+      "metadata",
+      "name"
+    ],
     "nodeType": "object",
     "properties": {
       "catalog": {
@@ -340,6 +404,10 @@ export const PARSED_SCHEMAS = {
       },
       "metadata": {
         "description": "Static metadata describing a backend implementation.\n\nBackends provide this metadata to indicate their type and capabilities.\nUse the builder methods to construct instances.",
+        "keys": [
+          "capabilities",
+          "kind"
+        ],
         "nodeType": "object",
         "properties": {
           "capabilities": {
@@ -357,6 +425,11 @@ export const PARSED_SCHEMAS = {
           "kind": {
             "nodeType": "untaggedEnum",
             "description": "The type of data source a connector connects to.",
+            "keys": [
+              "object_store",
+              "database",
+              "other"
+            ],
             "variants": [
               {
                 "schema": null,
@@ -396,6 +469,13 @@ export const PARSED_SCHEMAS = {
   },
   "ConnectionOptions": {
     "description": "Common connection options shared by database connectors.",
+    "keys": [
+      "check",
+      "endpoint",
+      "password",
+      "tls",
+      "username"
+    ],
     "nodeType": "object",
     "properties": {
       "check": {
@@ -417,6 +497,11 @@ export const PARSED_SCHEMAS = {
         "innerSchema": {
           "nodeType": "object",
           "description": "TLS options for databases that require secure connections.",
+          "keys": [
+            "cafile",
+            "domain",
+            "enable"
+          ],
           "properties": {
             "cafile": {
               "innerSchema": {
@@ -455,6 +540,9 @@ export const PARSED_SCHEMAS = {
   "ConnectionSearchQuery": {
     "nodeType": "object",
     "description": "Query parameters for searching connection contents.",
+    "keys": [
+      "search"
+    ],
     "properties": {
       "search": {
         "description": "Optional search term to filter results.",
@@ -470,19 +558,34 @@ export const PARSED_SCHEMAS = {
   },
   "Connector": {
     "description": "Connector Stately `entity` type.\n\nUse this with [`Connectors`] and [`Registry`] to create a turnkey connector registry.",
+    "keys": [
+      "config",
+      "name"
+    ],
     "nodeType": "object",
     "properties": {
       "config": {
         "nodeType": "untaggedEnum",
+        "keys": [
+          "object_store",
+          "database"
+        ],
         "variants": [
           {
             "schema": {
               "nodeType": "object",
               "description": "Configuration for an object store-backed connector.",
+              "keys": [
+                "format",
+                "store"
+              ],
               "properties": {
                 "format": {
                   "nodeType": "untaggedEnum",
                   "description": "Supported file formats for object-store connectors.",
+                  "keys": [
+                    "parquet"
+                  ],
                   "variants": [
                     {
                       "schema": {
@@ -504,11 +607,22 @@ export const PARSED_SCHEMAS = {
                 "store": {
                   "nodeType": "untaggedEnum",
                   "description": "Supported object store providers.",
+                  "keys": [
+                    "aws",
+                    "gcp",
+                    "azure",
+                    "local"
+                  ],
                   "variants": [
                     {
                       "schema": {
                         "nodeType": "object",
                         "description": "Provider-agnostic object store settings.",
+                        "keys": [
+                          "bucket",
+                          "from_env",
+                          "options"
+                        ],
                         "properties": {
                           "bucket": {
                             "description": "*Required* bucket name (or base directory for local stores).",
@@ -539,6 +653,11 @@ export const PARSED_SCHEMAS = {
                       "schema": {
                         "nodeType": "object",
                         "description": "Provider-agnostic object store settings.",
+                        "keys": [
+                          "bucket",
+                          "from_env",
+                          "options"
+                        ],
                         "properties": {
                           "bucket": {
                             "description": "*Required* bucket name (or base directory for local stores).",
@@ -569,6 +688,11 @@ export const PARSED_SCHEMAS = {
                       "schema": {
                         "nodeType": "object",
                         "description": "Provider-agnostic object store settings.",
+                        "keys": [
+                          "bucket",
+                          "from_env",
+                          "options"
+                        ],
                         "properties": {
                           "bucket": {
                             "description": "*Required* bucket name (or base directory for local stores).",
@@ -599,6 +723,11 @@ export const PARSED_SCHEMAS = {
                       "schema": {
                         "nodeType": "object",
                         "description": "Provider-agnostic object store settings.",
+                        "keys": [
+                          "bucket",
+                          "from_env",
+                          "options"
+                        ],
                         "properties": {
                           "bucket": {
                             "description": "*Required* bucket name (or base directory for local stores).",
@@ -636,15 +765,27 @@ export const PARSED_SCHEMAS = {
             "schema": {
               "nodeType": "object",
               "description": "Configuration for database-backed connectors.",
+              "keys": [
+                "driver",
+                "options",
+                "pool"
+              ],
               "properties": {
                 "driver": {
                   "nodeType": "untaggedEnum",
                   "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
+                  "keys": [
+                    "clickhouse"
+                  ],
                   "variants": [
                     {
                       "schema": {
                         "innerSchema": {
                           "description": "Additional ClickHouse-specific configuration.",
+                          "keys": [
+                            "compression",
+                            "settings"
+                          ],
                           "nodeType": "object",
                           "properties": {
                             "compression": {
@@ -671,12 +812,19 @@ export const PARSED_SCHEMAS = {
                         },
                         "nodeType": "nullable"
                       },
-                      "tag": "click_house"
+                      "tag": "clickhouse"
                     }
                   ]
                 },
                 "options": {
                   "description": "Common connection options shared by database connectors.",
+                  "keys": [
+                    "check",
+                    "endpoint",
+                    "password",
+                    "tls",
+                    "username"
+                  ],
                   "nodeType": "object",
                   "properties": {
                     "check": {
@@ -698,6 +846,11 @@ export const PARSED_SCHEMAS = {
                       "innerSchema": {
                         "nodeType": "object",
                         "description": "TLS options for databases that require secure connections.",
+                        "keys": [
+                          "cafile",
+                          "domain",
+                          "enable"
+                        ],
                         "properties": {
                           "cafile": {
                             "innerSchema": {
@@ -736,6 +889,11 @@ export const PARSED_SCHEMAS = {
                 "pool": {
                   "nodeType": "object",
                   "description": "Common configuration options shared across connector types.",
+                  "keys": [
+                    "connect_timeout",
+                    "pool_size",
+                    "transaction_timeout"
+                  ],
                   "properties": {
                     "connect_timeout": {
                       "innerSchema": {
@@ -788,15 +946,26 @@ export const PARSED_SCHEMAS = {
   },
   "ConnectorType": {
     "nodeType": "untaggedEnum",
+    "keys": [
+      "object_store",
+      "database"
+    ],
     "variants": [
       {
         "schema": {
           "nodeType": "object",
           "description": "Configuration for an object store-backed connector.",
+          "keys": [
+            "format",
+            "store"
+          ],
           "properties": {
             "format": {
               "nodeType": "untaggedEnum",
               "description": "Supported file formats for object-store connectors.",
+              "keys": [
+                "parquet"
+              ],
               "variants": [
                 {
                   "schema": {
@@ -818,11 +987,22 @@ export const PARSED_SCHEMAS = {
             "store": {
               "nodeType": "untaggedEnum",
               "description": "Supported object store providers.",
+              "keys": [
+                "aws",
+                "gcp",
+                "azure",
+                "local"
+              ],
               "variants": [
                 {
                   "schema": {
                     "nodeType": "object",
                     "description": "Provider-agnostic object store settings.",
+                    "keys": [
+                      "bucket",
+                      "from_env",
+                      "options"
+                    ],
                     "properties": {
                       "bucket": {
                         "description": "*Required* bucket name (or base directory for local stores).",
@@ -853,6 +1033,11 @@ export const PARSED_SCHEMAS = {
                   "schema": {
                     "nodeType": "object",
                     "description": "Provider-agnostic object store settings.",
+                    "keys": [
+                      "bucket",
+                      "from_env",
+                      "options"
+                    ],
                     "properties": {
                       "bucket": {
                         "description": "*Required* bucket name (or base directory for local stores).",
@@ -883,6 +1068,11 @@ export const PARSED_SCHEMAS = {
                   "schema": {
                     "nodeType": "object",
                     "description": "Provider-agnostic object store settings.",
+                    "keys": [
+                      "bucket",
+                      "from_env",
+                      "options"
+                    ],
                     "properties": {
                       "bucket": {
                         "description": "*Required* bucket name (or base directory for local stores).",
@@ -913,6 +1103,11 @@ export const PARSED_SCHEMAS = {
                   "schema": {
                     "nodeType": "object",
                     "description": "Provider-agnostic object store settings.",
+                    "keys": [
+                      "bucket",
+                      "from_env",
+                      "options"
+                    ],
                     "properties": {
                       "bucket": {
                         "description": "*Required* bucket name (or base directory for local stores).",
@@ -950,15 +1145,27 @@ export const PARSED_SCHEMAS = {
         "schema": {
           "nodeType": "object",
           "description": "Configuration for database-backed connectors.",
+          "keys": [
+            "driver",
+            "options",
+            "pool"
+          ],
           "properties": {
             "driver": {
               "nodeType": "untaggedEnum",
               "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
+              "keys": [
+                "clickhouse"
+              ],
               "variants": [
                 {
                   "schema": {
                     "innerSchema": {
                       "description": "Additional ClickHouse-specific configuration.",
+                      "keys": [
+                        "compression",
+                        "settings"
+                      ],
                       "nodeType": "object",
                       "properties": {
                         "compression": {
@@ -985,12 +1192,19 @@ export const PARSED_SCHEMAS = {
                     },
                     "nodeType": "nullable"
                   },
-                  "tag": "click_house"
+                  "tag": "clickhouse"
                 }
               ]
             },
             "options": {
               "description": "Common connection options shared by database connectors.",
+              "keys": [
+                "check",
+                "endpoint",
+                "password",
+                "tls",
+                "username"
+              ],
               "nodeType": "object",
               "properties": {
                 "check": {
@@ -1012,6 +1226,11 @@ export const PARSED_SCHEMAS = {
                   "innerSchema": {
                     "nodeType": "object",
                     "description": "TLS options for databases that require secure connections.",
+                    "keys": [
+                      "cafile",
+                      "domain",
+                      "enable"
+                    ],
                     "properties": {
                       "cafile": {
                         "innerSchema": {
@@ -1050,6 +1269,11 @@ export const PARSED_SCHEMAS = {
             "pool": {
               "nodeType": "object",
               "description": "Common configuration options shared across connector types.",
+              "keys": [
+                "connect_timeout",
+                "pool_size",
+                "transaction_timeout"
+              ],
               "properties": {
                 "connect_timeout": {
                   "innerSchema": {
@@ -1093,11 +1317,18 @@ export const PARSED_SCHEMAS = {
   "Database": {
     "nodeType": "untaggedEnum",
     "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
+    "keys": [
+      "clickhouse"
+    ],
     "variants": [
       {
         "schema": {
           "innerSchema": {
             "description": "Additional ClickHouse-specific configuration.",
+            "keys": [
+              "compression",
+              "settings"
+            ],
             "nodeType": "object",
             "properties": {
               "compression": {
@@ -1124,22 +1355,34 @@ export const PARSED_SCHEMAS = {
           },
           "nodeType": "nullable"
         },
-        "tag": "click_house"
+        "tag": "clickhouse"
       }
     ]
   },
   "DatabaseConfiguration": {
     "nodeType": "object",
     "description": "Configuration for database-backed connectors.",
+    "keys": [
+      "driver",
+      "options",
+      "pool"
+    ],
     "properties": {
       "driver": {
         "nodeType": "untaggedEnum",
         "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`.",
+        "keys": [
+          "clickhouse"
+        ],
         "variants": [
           {
             "schema": {
               "innerSchema": {
                 "description": "Additional ClickHouse-specific configuration.",
+                "keys": [
+                  "compression",
+                  "settings"
+                ],
                 "nodeType": "object",
                 "properties": {
                   "compression": {
@@ -1166,12 +1409,19 @@ export const PARSED_SCHEMAS = {
               },
               "nodeType": "nullable"
             },
-            "tag": "click_house"
+            "tag": "clickhouse"
           }
         ]
       },
       "options": {
         "description": "Common connection options shared by database connectors.",
+        "keys": [
+          "check",
+          "endpoint",
+          "password",
+          "tls",
+          "username"
+        ],
         "nodeType": "object",
         "properties": {
           "check": {
@@ -1193,6 +1443,11 @@ export const PARSED_SCHEMAS = {
             "innerSchema": {
               "nodeType": "object",
               "description": "TLS options for databases that require secure connections.",
+              "keys": [
+                "cafile",
+                "domain",
+                "enable"
+              ],
               "properties": {
                 "cafile": {
                   "innerSchema": {
@@ -1231,6 +1486,11 @@ export const PARSED_SCHEMAS = {
       "pool": {
         "nodeType": "object",
         "description": "Common configuration options shared across connector types.",
+        "keys": [
+          "connect_timeout",
+          "pool_size",
+          "transaction_timeout"
+        ],
         "properties": {
           "connect_timeout": {
             "innerSchema": {
@@ -1271,9 +1531,16 @@ export const PARSED_SCHEMAS = {
     "nodeType": "taggedUnion",
     "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context.",
     "discriminator": "type",
+    "keys": [
+      "type",
+      "summary"
+    ],
     "variants": [
       {
         "schema": {
+          "keys": [
+            "summary"
+          ],
           "nodeType": "object",
           "properties": {
             "summary": {
@@ -1293,6 +1560,9 @@ export const PARSED_SCHEMAS = {
       },
       {
         "schema": {
+          "keys": [
+            "summary"
+          ],
           "nodeType": "object",
           "properties": {
             "summary": {
@@ -1300,6 +1570,11 @@ export const PARSED_SCHEMAS = {
               "items": {
                 "nodeType": "object",
                 "description": "Summary information about a table or file.",
+                "keys": [
+                  "name",
+                  "rows",
+                  "size_bytes"
+                ],
                 "properties": {
                   "name": {
                     "description": "Table or file name/path.",
@@ -1342,6 +1617,9 @@ export const PARSED_SCHEMAS = {
       },
       {
         "schema": {
+          "keys": [
+            "summary"
+          ],
           "nodeType": "object",
           "properties": {
             "summary": {
@@ -1361,6 +1639,9 @@ export const PARSED_SCHEMAS = {
       },
       {
         "schema": {
+          "keys": [
+            "summary"
+          ],
           "nodeType": "object",
           "properties": {
             "summary": {
@@ -1368,6 +1649,11 @@ export const PARSED_SCHEMAS = {
               "items": {
                 "nodeType": "object",
                 "description": "Summary information about a table or file.",
+                "keys": [
+                  "name",
+                  "rows",
+                  "size_bytes"
+                ],
                 "properties": {
                   "name": {
                     "description": "Table or file name/path.",
@@ -1413,11 +1699,22 @@ export const PARSED_SCHEMAS = {
   "ObjectStore": {
     "nodeType": "untaggedEnum",
     "description": "Supported object store providers.",
+    "keys": [
+      "aws",
+      "gcp",
+      "azure",
+      "local"
+    ],
     "variants": [
       {
         "schema": {
           "nodeType": "object",
           "description": "Provider-agnostic object store settings.",
+          "keys": [
+            "bucket",
+            "from_env",
+            "options"
+          ],
           "properties": {
             "bucket": {
               "description": "*Required* bucket name (or base directory for local stores).",
@@ -1448,6 +1745,11 @@ export const PARSED_SCHEMAS = {
         "schema": {
           "nodeType": "object",
           "description": "Provider-agnostic object store settings.",
+          "keys": [
+            "bucket",
+            "from_env",
+            "options"
+          ],
           "properties": {
             "bucket": {
               "description": "*Required* bucket name (or base directory for local stores).",
@@ -1478,6 +1780,11 @@ export const PARSED_SCHEMAS = {
         "schema": {
           "nodeType": "object",
           "description": "Provider-agnostic object store settings.",
+          "keys": [
+            "bucket",
+            "from_env",
+            "options"
+          ],
           "properties": {
             "bucket": {
               "description": "*Required* bucket name (or base directory for local stores).",
@@ -1508,6 +1815,11 @@ export const PARSED_SCHEMAS = {
         "schema": {
           "nodeType": "object",
           "description": "Provider-agnostic object store settings.",
+          "keys": [
+            "bucket",
+            "from_env",
+            "options"
+          ],
           "properties": {
             "bucket": {
               "description": "*Required* bucket name (or base directory for local stores).",
@@ -1539,10 +1851,17 @@ export const PARSED_SCHEMAS = {
   "ObjectStoreConfiguration": {
     "nodeType": "object",
     "description": "Configuration for an object store-backed connector.",
+    "keys": [
+      "format",
+      "store"
+    ],
     "properties": {
       "format": {
         "nodeType": "untaggedEnum",
         "description": "Supported file formats for object-store connectors.",
+        "keys": [
+          "parquet"
+        ],
         "variants": [
           {
             "schema": {
@@ -1564,11 +1883,22 @@ export const PARSED_SCHEMAS = {
       "store": {
         "nodeType": "untaggedEnum",
         "description": "Supported object store providers.",
+        "keys": [
+          "aws",
+          "gcp",
+          "azure",
+          "local"
+        ],
         "variants": [
           {
             "schema": {
               "nodeType": "object",
               "description": "Provider-agnostic object store settings.",
+              "keys": [
+                "bucket",
+                "from_env",
+                "options"
+              ],
               "properties": {
                 "bucket": {
                   "description": "*Required* bucket name (or base directory for local stores).",
@@ -1599,6 +1929,11 @@ export const PARSED_SCHEMAS = {
             "schema": {
               "nodeType": "object",
               "description": "Provider-agnostic object store settings.",
+              "keys": [
+                "bucket",
+                "from_env",
+                "options"
+              ],
               "properties": {
                 "bucket": {
                   "description": "*Required* bucket name (or base directory for local stores).",
@@ -1629,6 +1964,11 @@ export const PARSED_SCHEMAS = {
             "schema": {
               "nodeType": "object",
               "description": "Provider-agnostic object store settings.",
+              "keys": [
+                "bucket",
+                "from_env",
+                "options"
+              ],
               "properties": {
                 "bucket": {
                   "description": "*Required* bucket name (or base directory for local stores).",
@@ -1659,6 +1999,11 @@ export const PARSED_SCHEMAS = {
             "schema": {
               "nodeType": "object",
               "description": "Provider-agnostic object store settings.",
+              "keys": [
+                "bucket",
+                "from_env",
+                "options"
+              ],
               "properties": {
                 "bucket": {
                   "description": "*Required* bucket name (or base directory for local stores).",
@@ -1693,6 +2038,9 @@ export const PARSED_SCHEMAS = {
   "ObjectStoreFormat": {
     "nodeType": "untaggedEnum",
     "description": "Supported file formats for object-store connectors.",
+    "keys": [
+      "parquet"
+    ],
     "variants": [
       {
         "schema": {
@@ -1714,6 +2062,11 @@ export const PARSED_SCHEMAS = {
   "ObjectStoreOptions": {
     "nodeType": "object",
     "description": "Provider-agnostic object store settings.",
+    "keys": [
+      "bucket",
+      "from_env",
+      "options"
+    ],
     "properties": {
       "bucket": {
         "description": "*Required* bucket name (or base directory for local stores).",
@@ -1741,6 +2094,11 @@ export const PARSED_SCHEMAS = {
   "PoolOptions": {
     "nodeType": "object",
     "description": "Common configuration options shared across connector types.",
+    "keys": [
+      "connect_timeout",
+      "pool_size",
+      "transaction_timeout"
+    ],
     "properties": {
       "connect_timeout": {
         "innerSchema": {
@@ -1773,6 +2131,10 @@ export const PARSED_SCHEMAS = {
   },
   "QueryRequest": {
     "description": "Request to execute a SQL query.",
+    "keys": [
+      "connector_id",
+      "sql"
+    ],
     "nodeType": "object",
     "properties": {
       "connector_id": {
@@ -1794,6 +2156,37 @@ export const PARSED_SCHEMAS = {
       "sql"
     ]
   },
+  "RegistryOptions": {
+    "description": "Generic registry options.\n\nProvided as a convenience if using state entity types directly, ie [`Connector`]",
+    "keys": [
+      "max_lifetime",
+      "max_pool_size"
+    ],
+    "nodeType": "object",
+    "properties": {
+      "max_lifetime": {
+        "description": "Set the maximum lifetime that a connection should be kept around for.",
+        "innerSchema": {
+          "description": "Set the maximum lifetime that a connection should be kept around for.",
+          "format": "int64",
+          "nodeType": "primitive",
+          "primitiveType": "integer"
+        },
+        "nodeType": "nullable"
+      },
+      "max_pool_size": {
+        "description": "Set the maximum size any connector will use for its pool. Set to 0 to disable pooling.",
+        "innerSchema": {
+          "description": "Set the maximum size any connector will use for its pool. Set to 0 to disable pooling.",
+          "format": "int32",
+          "nodeType": "primitive",
+          "primitiveType": "integer"
+        },
+        "nodeType": "nullable"
+      }
+    },
+    "required": []
+  },
   "Secret": {
     "description": "Newtype to protect secrets from being logged\nA wrapper type for sensitive string data like passwords.\n\nThis type provides protection against accidental exposure of sensitive data\nin logs, debug output, or error messages. The inner value is not displayed\nin `Debug` implementations.\n\n# Example\n```\nuse stately_arrow::database::Secret;\n\nlet password = Secret::new(\"my_password\");\nprintln!(\"{password:?}\"); // Prints: Secret(*******)\n```",
     "nodeType": "primitive",
@@ -1813,6 +2206,11 @@ export const PARSED_SCHEMAS = {
   "TableSummary": {
     "nodeType": "object",
     "description": "Summary information about a table or file.",
+    "keys": [
+      "name",
+      "rows",
+      "size_bytes"
+    ],
     "properties": {
       "name": {
         "description": "Table or file name/path.",
@@ -1847,6 +2245,11 @@ export const PARSED_SCHEMAS = {
   "TlsOptions": {
     "nodeType": "object",
     "description": "TLS options for databases that require secure connections.",
+    "keys": [
+      "cafile",
+      "domain",
+      "enable"
+    ],
     "properties": {
       "cafile": {
         "innerSchema": {

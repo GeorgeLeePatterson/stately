@@ -1,6 +1,6 @@
-# @stately/ui
+# @statelyjs/ui
 
-[![npm](https://img.shields.io/npm/v/@stately/ui)](https://www.npmjs.com/package/@stately/ui)
+[![npm](https://img.shields.io/npm/v/@statelyjs/ui)](https://www.npmjs.com/package/@statelyjs/ui)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
 
 > React UI components and runtime for Stately applications
@@ -10,20 +10,20 @@ This package provides the complete UI layer for Stately applications, including 
 ## Installation
 
 ```bash
-pnpm add @stately/ui @stately/schema @tanstack/react-query @tanstack/react-router openapi-fetch
+pnpm add @statelyjs/ui @statelyjs/schema @tanstack/react-query @tanstack/react-router openapi-fetch
 ```
 
 ## Architecture: Base vs Core
 
-The `@stately/ui` package is organized into two layers:
+The `@statelyjs/ui` package is organized into two layers:
 
 ```
-@stately/ui
+@statelyjs/ui
 ├── base/     → Plugin runtime, layout, theme, registry (no backend assumptions)
 └── core/     → Entity CRUD, schema integration, hooks (requires stately backend)
 ```
 
-### Base Layer (`@stately/ui/base`)
+### Base Layer (`@statelyjs/ui/base`)
 
 The **base** layer provides infrastructure that works with *any* backend. It has no knowledge of Stately's entity system:
 
@@ -50,7 +50,7 @@ The **core** layer is itself a plugin that adds Stately entity management:
 
 This architecture serves two purposes:
 
-1. **For users**: Import `@stately/ui` and get everything working immediately
+1. **For users**: Import `@statelyjs/ui` and get everything working immediately
 2. **For plugin authors**: The base layer demonstrates how plugins are structured. Core is just a plugin that happens to ship with the package.
 
 ## Quick Start
@@ -60,7 +60,7 @@ This architecture serves two purposes:
 First, generate TypeScript types from your backend's OpenAPI spec:
 
 ```bash
-npx @stately/codegen ./openapi.json ./src/generated
+pnpx @statelyjs/codegen ./openapi.json ./src/generated
 ```
 
 This creates:
@@ -71,9 +71,9 @@ This creates:
 
 ```typescript
 // src/lib/stately-integration.ts
-import { stately } from '@stately/ui/schema';
-import { statelyUi, statelyUiProvider, useStatelyUi } from '@stately/ui';
-import type { DefineConfig, DefineOperations, DefinePaths, Schemas } from '@stately/ui/schema';
+import { stately } from '@statelyjs/ui/schema';
+import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/ui';
+import type { DefineConfig, DefineOperations, DefinePaths, Schemas } from '@statelyjs/ui/schema';
 import createClient from 'openapi-fetch';
 
 import { PARSED_SCHEMAS } from '@/generated/schemas';
@@ -178,8 +178,8 @@ export function EntityListPage() {
 Plugins extend both the schema (types) and UI (components) layers:
 
 ```typescript
-import { filesPlugin, filesUiPlugin } from '@stately/files';
-import { arrowPlugin, arrowUiPlugin } from '@stately/arrow';
+import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
+import { arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
 
 // Extend schema types
 export type AppSchemas = Schemas<
@@ -204,7 +204,7 @@ export const appStatelyUi = statelyUi<AppSchemas, readonly [FilesUiPlugin, Arrow
 
 ## Exports
 
-### Main Export (`@stately/ui`)
+### Main Export (`@statelyjs/ui`)
 
 ```typescript
 import {
@@ -224,12 +224,12 @@ import {
   // Types
   type StatelyUi,
   type StatelyConfiguration,
-} from '@stately/ui';
+} from '@statelyjs/ui';
 ```
 
-### Schema Export (`@stately/ui/schema`)
+### Schema Export (`@statelyjs/ui/schema`)
 
-Re-exports from `@stately/schema` plus core schema utilities:
+Re-exports from `@statelyjs/schema` plus core schema utilities:
 
 ```typescript
 import {
@@ -241,10 +241,10 @@ import {
   type Schemas,
   type DefineConfig,
   type DefinePlugin,
-} from '@stately/ui/schema';
+} from '@statelyjs/ui/schema';
 ```
 
-### Base Export (`@stately/ui/base`)
+### Base Export (`@statelyjs/ui/base`)
 
 Lower-level utilities for plugin authors:
 
@@ -261,10 +261,10 @@ import {
   cn,
   toTitleCase,
   toKebabCase,
-} from '@stately/ui/base';
+} from '@statelyjs/ui/base';
 ```
 
-### Core Export (`@stately/ui/core`)
+### Core Export (`@statelyjs/ui/core`)
 
 Direct access to core plugin internals:
 
@@ -278,7 +278,7 @@ import {
   type CorePlugin,
   type CoreStateEntry,
   type CoreEntity,
-} from '@stately/ui/core';
+} from '@statelyjs/ui/core';
 ```
 
 ## Configuration Options
@@ -326,7 +326,7 @@ statelyUi({
 
 ## Writing a Plugin
 
-Plugins follow the same pattern as core. See [`@stately/files`](../files) and [`@stately/arrow`](../arrow) for examples.
+Plugins follow the same pattern as core. See [`@statelyjs/files`](../files) and [`@statelyjs/arrow`](../arrow) for examples.
 
 A UI plugin provides:
 
@@ -334,7 +334,7 @@ A UI plugin provides:
 2. **UI Plugin**: Components, hooks, routes, API operations
 
 ```typescript
-import type { DefineUiPlugin } from '@stately/ui/base';
+import type { DefineUiPlugin } from '@statelyjs/ui/base';
 
 export type MyUiPlugin = DefineUiPlugin<
   'my-plugin',

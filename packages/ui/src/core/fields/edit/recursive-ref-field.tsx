@@ -1,5 +1,6 @@
 import type { FieldEditProps } from '@/base/form/field-edit';
 import { FieldEdit } from '@/base/form/field-edit';
+import { generateFieldFormId } from '@/base/utils';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
@@ -23,6 +24,12 @@ export function RecursiveRefEdit<Schema extends Schemas = Schemas>({
       </div>
     );
   }
+
+  const formId = generateFieldFormId(
+    referencedSchema.nodeType,
+    `recursive-ref-${rest.label || 'field'}`,
+    rest.formId,
+  );
   // Recursively render with the looked-up schema
-  return <FieldEdit {...rest} node={referencedSchema} />;
+  return <FieldEdit {...rest} formId={formId} node={referencedSchema} />;
 }

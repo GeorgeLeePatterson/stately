@@ -96,10 +96,10 @@ pub mod generic {
     /// ```
     pub trait Connectors {
         /// Returns an iterator over all (id, connector) pairs.
-        fn iter(&self) -> impl Iterator<Item = (&str, &Connector)>;
+        fn list(&self) -> Vec<(String, Connector)>;
 
         /// Gets a connector by ID or name.
-        fn get(&self, id: &str) -> Option<&Connector>;
+        fn get(&self, id: &str) -> Option<Connector>;
     }
 
     fn metadata_from_connector(id: String, connector: &Connector) -> ConnectionMetadata {
@@ -135,7 +135,9 @@ pub mod generic {
     /// Generic registry options.
     ///
     /// Provided as a convenience if using state entity types directly, ie [`Connector`]
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+    #[derive(
+        Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize, utoipa::ToSchema,
+    )]
     pub struct RegistryOptions {
         /// Set the maximum lifetime that a connection should be kept around for.
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -188,8 +190,9 @@ pub mod generic {
                 .state
                 .read()
                 .await
-                .iter()
-                .map(|(id, conn)| metadata_from_connector(id.to_string(), conn))
+                .list()
+                .into_iter()
+                .map(|(id, conn)| metadata_from_connector(id, &conn))
                 .collect())
         }
 
@@ -211,7 +214,6 @@ pub mod generic {
                     .read()
                     .await
                     .get(id)
-                    .cloned()
                     .ok_or_else(|| Error::ConnectionNotFound(id.to_string()))?
             };
 

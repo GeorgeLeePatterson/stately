@@ -1,5 +1,5 @@
 {
-  "name": "@stately/arrow",
+  "name": "@statelyjs/arrow",
   "version": "0.1.0",
   "type": "module",
   "files": [
@@ -11,10 +11,10 @@
     "dev": "tsdown --watch",
     "codegen": "pnpm run generate:openapi && pnpm run generate:types",
     "generate:openapi": "cargo run -p stately-arrow --all-features --bin generate-openapi -- .",
-    "generate:types": "npx @stately/codegen ./openapi.json ./src/generated"
+    "generate:types": "pnpm exec codegen ./openapi.json ./src/generated"
   },
   "peerDependencies": {
-    "@stately/ui": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.10",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.12",
@@ -28,8 +28,8 @@
     "clsx": "^2.1.1"
   },
   "devDependencies": {
-    "@stately/codegen": "workspace:*",
-    "@stately/ui": "workspace:*",
+    "@statelyjs/codegen": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.11",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.12",

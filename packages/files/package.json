@@ -1,5 +1,5 @@
 {
-  "name": "@stately/files",
+  "name": "@statelyjs/files",
   "version": "0.1.0",
   "type": "module",
   "files": [
@@ -11,11 +11,11 @@
     "dev": "tsdown --watch",
     "codegen": "pnpm run generate:openapi && pnpm run generate:types",
     "generate:openapi": "cargo run -p stately-files --bin generate-openapi -- .",
-    "generate:types": "npx @stately/codegen ./openapi.json ./src/generated"
+    "generate:types": "pnpm exec codegen ./openapi.json ./src/generated"
   },
   "peerDependencies": {
-    "@stately/codegen": "workspace:*",
-    "@stately/ui": "workspace:*",
+    "@statelyjs/codegen": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.10",
     "@types/react": "^18.0.0 || ^19.0.0",
     "@types/react-dom": "^18.0.0 || ^19.0.0",
@@ -29,8 +29,8 @@
     "class-variance-authority": "^0.7.1"
   },
   "devDependencies": {
-    "@stately/codegen": "workspace:*",
-    "@stately/ui": "workspace:*",
+    "@statelyjs/codegen": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "lucide-react": "^0.554.0",

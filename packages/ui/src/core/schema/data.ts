@@ -1,10 +1,10 @@
 /**
- * @stately/schema/parsers
+ * @statelyjs/schema/parsers
  *
  * Parsing logic for extracting entity metadata from OpenAPI specs
  */
 
-import type { DefineData } from '@stately/schema';
+import type { DefineData } from '@statelyjs/schema';
 import { toKebabCase, toTitleCase } from '@/base/utils.js';
 import type { CoreStatelyConfig } from './generated.js';
 import type { NodeValue, StateEntry } from './helpers.js';

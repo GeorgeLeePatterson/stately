@@ -1,4 +1,4 @@
-import { cn, toTitleCase } from '@stately/ui/base';
+import { cn, toTitleCase } from '@statelyjs/ui/base';
 import {
   Badge,
   Button,
@@ -11,7 +11,7 @@ import {
   InputGroupText,
   Label,
   ScrollArea,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import { ChevronRight, ListFilter, Search, X } from 'lucide-react';
 import { useCallback, useId, useState } from 'react';
 import { AnyIsLoading } from '@/components/any-is-loading';

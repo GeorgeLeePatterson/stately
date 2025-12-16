@@ -1,6 +1,6 @@
 import type { Client, FetchResponse, MaybeOptionalInit } from 'openapi-fetch';
 import type { HttpMethod, MediaType, RequiredKeysOf } from 'openapi-typescript-helpers';
-import { devLog } from './lib/utils';
+import { devLog } from './lib/logging';
 
 /**
  * Helper type to determine if init parameter should be optional.
@@ -45,7 +45,7 @@ export function createOperations<
 ): TypedOperations<Paths, Bindings, Media> {
   const strippedPrefix = prefix?.endsWith('/') ? prefix.slice(0, -1) : prefix;
 
-  devLog.debug('creating operations: ', { bindings, prefix: strippedPrefix });
+  devLog.debug('Base', 'creating operations: ', { bindings, prefix: strippedPrefix });
   const result = {} as TypedOperations<Paths, Bindings, Media>;
 
   for (const key of Object.keys(bindings) as (keyof Bindings)[]) {

@@ -1,4 +1,4 @@
-import type { AnyRecord } from '@stately/schema/helpers';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { FieldItem } from '@/base/components/field';
 import type { FieldViewProps } from '@/base/form/field-view';
 import type { Schemas } from '@/core/schema';

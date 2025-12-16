@@ -1,4 +1,4 @@
-import { cn } from '@stately/ui/base';
+import { cn } from '@statelyjs/ui/base';
 import {
   Card,
   CardContent,
@@ -9,7 +9,7 @@ import {
   EmptyMedia,
   EmptyTitle,
   Skeleton,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import { Sheet, TableIcon } from 'lucide-react';
 import { AnyIsLoading } from '@/components/any-is-loading';
 import { ArrowTable, type ArrowTableDataView } from '@/components/arrow-table';

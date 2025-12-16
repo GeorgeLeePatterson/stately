@@ -1,8 +1,14 @@
-import type { DefineUiUtils } from '@stately/ui';
+import type { DefineUiUtils } from '@statelyjs/ui';
+import { devLogger } from '@statelyjs/ui/base';
 import { Files, FileText, Folder, FolderOpen, History } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { FilesNodeType } from './schema';
 import type { FileEntryType } from './types/api';
+
+/**
+ * Re-export logger for files plugin
+ */
+export const log = devLogger('@statelyjs/files');
 
 /**
  * Files plugin utilities

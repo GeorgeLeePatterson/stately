@@ -1,5 +1,5 @@
 // Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
+// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
 
 export interface paths {
     "/catalogs": {
@@ -258,7 +258,7 @@ export interface components {
          *     enum is marked as `non_exhaustive`.
          */
         Database: {
-            click_house: null | components["schemas"]["ClickHouseConfig"];
+            clickhouse: null | components["schemas"]["ClickHouseConfig"];
         };
         /** @description Configuration for database-backed connectors. */
         DatabaseConfiguration: {
@@ -350,6 +350,23 @@ export interface components {
             connector_id?: string | null;
             /** @description SQL query to execute. Supports URL tables like `s3://bucket/path/*.parquet`. */
             sql: string;
+        };
+        /**
+         * @description Generic registry options.
+         *
+         *     Provided as a convenience if using state entity types directly, ie [`Connector`]
+         */
+        RegistryOptions: {
+            /**
+             * Format: int64
+             * @description Set the maximum lifetime that a connection should be kept around for.
+             */
+            max_lifetime?: number | null;
+            /**
+             * Format: int32
+             * @description Set the maximum size any connector will use for its pool. Set to 0 to disable pooling.
+             */
+            max_pool_size?: number | null;
         };
         /**
          * @description Newtype to protect secrets from being logged

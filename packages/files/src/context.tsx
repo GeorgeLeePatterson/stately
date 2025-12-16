@@ -1,5 +1,5 @@
-import { useStatelyUi } from '@stately/ui';
-import type { Schemas } from '@stately/ui/schema';
+import { useStatelyUi } from '@statelyjs/ui';
+import type { Schemas } from '@statelyjs/ui/schema';
 import type { FilesUiPlugin } from './plugin';
 
 /**

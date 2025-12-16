@@ -1,9 +1,13 @@
 // Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'npm run generate-schemas' to regenerate
+// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
 
 export const PARSED_SCHEMAS = {
   "ApiError": {
     "description": "Standard error shape returned by handlers",
+    "keys": [
+      "error",
+      "status"
+    ],
     "nodeType": "object",
     "properties": {
       "error": {
@@ -23,6 +27,9 @@ export const PARSED_SCHEMAS = {
   },
   "FileDownloadQuery": {
     "description": "Query parameters for downloading files.",
+    "keys": [
+      "version"
+    ],
     "nodeType": "object",
     "properties": {
       "version": {
@@ -48,6 +55,14 @@ export const PARSED_SCHEMAS = {
   },
   "FileInfo": {
     "description": "Information about a file or directory entry.",
+    "keys": [
+      "created",
+      "modified",
+      "name",
+      "size",
+      "type",
+      "versions"
+    ],
     "nodeType": "object",
     "properties": {
       "created": {
@@ -97,6 +112,11 @@ export const PARSED_SCHEMAS = {
           "items": {
             "nodeType": "object",
             "description": "Information about a specific file version.",
+            "keys": [
+              "created",
+              "size",
+              "uuid"
+            ],
             "properties": {
               "created": {
                 "description": "Creation timestamp as Unix epoch seconds.",
@@ -138,6 +158,9 @@ export const PARSED_SCHEMAS = {
   },
   "FileListQuery": {
     "description": "Query parameters for listing files.",
+    "keys": [
+      "path"
+    ],
     "nodeType": "object",
     "properties": {
       "path": {
@@ -154,12 +177,23 @@ export const PARSED_SCHEMAS = {
   },
   "FileListResponse": {
     "description": "Response from listing files in a directory.",
+    "keys": [
+      "files"
+    ],
     "nodeType": "object",
     "properties": {
       "files": {
         "description": "List of files and directories.",
         "items": {
           "description": "Information about a file or directory entry.",
+          "keys": [
+            "created",
+            "modified",
+            "name",
+            "size",
+            "type",
+            "versions"
+          ],
           "nodeType": "object",
           "properties": {
             "created": {
@@ -209,6 +243,11 @@ export const PARSED_SCHEMAS = {
                 "items": {
                   "nodeType": "object",
                   "description": "Information about a specific file version.",
+                  "keys": [
+                    "created",
+                    "size",
+                    "uuid"
+                  ],
                   "properties": {
                     "created": {
                       "description": "Creation timestamp as Unix epoch seconds.",
@@ -257,6 +296,10 @@ export const PARSED_SCHEMAS = {
   },
   "FileSaveRequest": {
     "description": "Request body for saving file content directly.",
+    "keys": [
+      "content",
+      "name"
+    ],
     "nodeType": "object",
     "properties": {
       "content": {
@@ -280,6 +323,12 @@ export const PARSED_SCHEMAS = {
   },
   "FileUploadResponse": {
     "description": "Response from file upload or save operations.",
+    "keys": [
+      "full_path",
+      "path",
+      "success",
+      "uuid"
+    ],
     "nodeType": "object",
     "properties": {
       "full_path": {
@@ -313,6 +362,11 @@ export const PARSED_SCHEMAS = {
   "FileVersion": {
     "nodeType": "object",
     "description": "Information about a specific file version.",
+    "keys": [
+      "created",
+      "size",
+      "uuid"
+    ],
     "properties": {
       "created": {
         "description": "Creation timestamp as Unix epoch seconds.",
@@ -344,10 +398,17 @@ export const PARSED_SCHEMAS = {
   "RelativePath": {
     "description": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead.",
     "discriminator": "dir",
+    "keys": [
+      "dir",
+      "path"
+    ],
     "nodeType": "taggedUnion",
     "variants": [
       {
         "schema": {
+          "keys": [
+            "path"
+          ],
           "nodeType": "object",
           "properties": {
             "path": {
@@ -364,6 +425,9 @@ export const PARSED_SCHEMAS = {
       },
       {
         "schema": {
+          "keys": [
+            "path"
+          ],
           "nodeType": "object",
           "properties": {
             "path": {
@@ -380,6 +444,9 @@ export const PARSED_SCHEMAS = {
       },
       {
         "schema": {
+          "keys": [
+            "path"
+          ],
           "nodeType": "object",
           "properties": {
             "path": {
@@ -398,16 +465,28 @@ export const PARSED_SCHEMAS = {
   },
   "UserDefinedPath": {
     "description": "Path that can be either managed by the application or user-defined.\n\nUse this type when a path could be either:\n- An uploaded file managed by the app (with version resolution)\n- A user-provided path on the filesystem\n\n# Examples\n```\n// Managed: uploads/config.json (resolved to latest UUID)\nUserDefinedPath::Managed(RelativePath::Data(VersionedPath::new(\"uploads/config.json\")))\n\n// External: /usr/local/bin/script.sh\nUserDefinedPath::External(\"/usr/local/bin/script.sh\".to_string())\n```",
+    "keys": [
+      "dir",
+      "path"
+    ],
     "nodeType": "union",
     "variants": [
       {
+        "label": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead.",
         "schema": {
           "description": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead.",
           "discriminator": "dir",
+          "keys": [
+            "dir",
+            "path"
+          ],
           "nodeType": "taggedUnion",
           "variants": [
             {
               "schema": {
+                "keys": [
+                  "path"
+                ],
                 "nodeType": "object",
                 "properties": {
                   "path": {
@@ -424,6 +503,9 @@ export const PARSED_SCHEMAS = {
             },
             {
               "schema": {
+                "keys": [
+                  "path"
+                ],
                 "nodeType": "object",
                 "properties": {
                   "path": {
@@ -440,6 +522,9 @@ export const PARSED_SCHEMAS = {
             },
             {
               "schema": {
+                "keys": [
+                  "path"
+                ],
                 "nodeType": "object",
                 "properties": {
                   "path": {
@@ -455,16 +540,15 @@ export const PARSED_SCHEMAS = {
               "tag": "upload"
             }
           ]
-        },
-        "label": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead."
+        }
       },
       {
+        "label": "User-provided external path (filesystem path or URL)",
         "schema": {
           "description": "User-provided external path (filesystem path or URL)",
           "nodeType": "primitive",
           "primitiveType": "string"
-        },
-        "label": "User-provided external path (filesystem path or URL)"
+        }
       }
     ]
   },

@@ -1,4 +1,4 @@
-import { cn } from '@stately/ui/base/lib/utils';
+import { cn } from '@statelyjs/ui/base/lib/utils';
 import {
   Button,
   DropdownMenu,
@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import type { Column } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from 'lucide-react';
 

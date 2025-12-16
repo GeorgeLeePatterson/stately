@@ -1,4 +1,4 @@
-import { cn } from '@stately/ui/base/lib/utils';
+import { cn } from '@statelyjs/ui/base/lib/utils';
 import {
   Button,
   Empty,
@@ -11,7 +11,7 @@ import {
   InputGroupInput,
   InputGroupText,
   ScrollArea,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import { Filter, Folder, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { FileEntry, type FileEntryProps } from '@/components/file-entry';

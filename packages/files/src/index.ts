@@ -1,5 +1,5 @@
 /**
- * @stately/files
+ * @statelyjs/files
  *
  * File system integration plugin for Stately UI
  * Provides relative path handling, file browsing, and file operations

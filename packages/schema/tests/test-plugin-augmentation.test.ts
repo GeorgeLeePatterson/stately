@@ -7,7 +7,7 @@
  * 3. Access nodes from different plugins
  * 4. Extend core with additional node types
  *
- * Run: npx tsc --noEmit tests/test-plugin-augmentation.ts
+ * Run: pnpx tsc --noEmit tests/test-plugin-augmentation.ts
  */
 import type { CoreStatelyConfig } from '../src/core/generated.js';
 import type { ObjectNode, PrimitiveNode } from '../src/core/nodes.js';

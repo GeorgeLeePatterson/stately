@@ -1,4 +1,4 @@
-import { Explain, NotSet } from '@stately/ui/base/components';
+import { Explain, NotSet } from '@statelyjs/ui/base/components';
 import { Database, ExternalLink, FolderOpen, HardDrive, HardDriveUpload } from 'lucide-react';
 import { FileBrowserDialog } from '@/dialogs/file-browser-dialog';
 import { RELATIVE_PATH_MODES } from '../edit/relative-path-field';

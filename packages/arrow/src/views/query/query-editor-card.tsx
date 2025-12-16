@@ -1,5 +1,5 @@
-import { Note } from '@stately/ui/base/components';
-import { cn } from '@stately/ui/base/lib/utils';
+import { Note } from '@statelyjs/ui/base/components';
+import { cn } from '@statelyjs/ui/base/lib/utils';
 import {
   Button,
   Card,
@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import { RefreshCw, TextSearch } from 'lucide-react';
 import { AnyIsLoading } from '@/components/any-is-loading';
 import { QueryEditor, type QueryEditorProps } from '@/components/query-editor';

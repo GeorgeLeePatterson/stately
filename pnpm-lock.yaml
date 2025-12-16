@@ -42,10 +42,10 @@ importers:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.0
     devDependencies:
-      '@stately/codegen':
+      '@statelyjs/codegen':
         specifier: workspace:*
         version: link:../codegen
-      '@stately/ui':
+      '@statelyjs/ui':
         specifier: workspace:*
         version: link:../ui
       '@tanstack/react-query':
@@ -72,7 +72,7 @@ importers:
 
   packages/codegen:
     dependencies:
-      '@stately/ui':
+      '@statelyjs/ui':
         specifier: workspace:*
         version: link:../ui
       openapi-typescript:
@@ -107,10 +107,10 @@ importers:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
     devDependencies:
-      '@stately/codegen':
+      '@statelyjs/codegen':
         specifier: workspace:*
         version: link:../codegen
-      '@stately/ui':
+      '@statelyjs/ui':
         specifier: workspace:*
         version: link:../ui
       '@types/react':
@@ -207,7 +207,7 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.8
         version: 1.2.8(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@stately/schema':
+      '@statelyjs/schema':
         specifier: workspace:*
         version: link:../schema
       '@uiw/codemirror-extensions-basic-setup':

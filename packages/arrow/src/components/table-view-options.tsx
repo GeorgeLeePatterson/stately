@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@stately/ui/base/ui';
+} from '@statelyjs/ui/base/ui';
 import type { Table } from '@tanstack/react-table';
 import { Settings2 } from 'lucide-react';
 

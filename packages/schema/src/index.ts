@@ -1,5 +1,5 @@
 /**
- * @stately/schema
+ * @statelyjs/schema
  *
  * Generic type definitions for Stately schema nodes that work with user-provided OpenAPI-generated
  * types and plugin augmentations.

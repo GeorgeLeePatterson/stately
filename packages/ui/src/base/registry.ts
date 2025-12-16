@@ -1,7 +1,7 @@
-import type { PluginNodeUnion } from '@stately/schema';
-import type { StatelyConfig } from '@stately/schema/generated';
-import type { BaseNode } from '@stately/schema/nodes';
-import type { StatelySchemas } from '@stately/schema/schema';
+import type { PluginNodeUnion } from '@statelyjs/schema';
+import type { StatelyConfig } from '@statelyjs/schema/generated';
+import type { BaseNode } from '@statelyjs/schema/nodes';
+import type { StatelySchemas } from '@statelyjs/schema/schema';
 import type { ComponentType } from 'react';
 import type { FieldEditProps } from '@/base/form/field-edit';
 import type { FieldViewProps } from '@/base/form/field-view';

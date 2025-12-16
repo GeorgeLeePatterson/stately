@@ -2,9 +2,9 @@
  * QueryEditor - Pure SQL input component with flexible sql input field
  */
 
-import { Editor } from '@stately/ui/base/components';
-import { cn } from '@stately/ui/base/lib/utils';
-import { Badge, Button, Spinner } from '@stately/ui/base/ui';
+import { Editor } from '@statelyjs/ui/base/components';
+import { cn } from '@statelyjs/ui/base/lib/utils';
+import { Badge, Button, Spinner } from '@statelyjs/ui/base/ui';
 import { Table as TableIcon } from 'lucide-react';
 import { useId } from 'react';
 

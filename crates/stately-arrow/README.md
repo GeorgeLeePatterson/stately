@@ -4,7 +4,7 @@ Arrow-based data connectivity and query execution over HTTP APIs.
 
 ## Overview
 
-This crate provides a flexible abstraction layer over DataFusion for building data query services with support for multiple backend connectors. It's designed to be mounted as an axum router and pairs with the [`@stately/arrow`](../../packages/arrow/README.md) frontend plugin.
+This crate provides a flexible abstraction layer over DataFusion for building data query services with support for multiple backend connectors. It's designed to be mounted as an axum router and pairs with the [`@statelyjs/arrow`](../../packages/arrow/README.md) frontend plugin.
 
 ## Features
 

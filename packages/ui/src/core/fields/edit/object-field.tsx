@@ -1,4 +1,4 @@
-import type { AnyRecord } from '@stately/schema/helpers';
+import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { FormInput, WandSparkles } from 'lucide-react';
 import { Fragment, useId } from 'react';
 import { DescriptionLabel } from '@/base/components/description-label';
@@ -15,6 +15,7 @@ import {
   FieldSet,
 } from '@/base/ui/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/base/ui/tabs';
+import { generateFieldFormId } from '@/base/utils';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
@@ -63,7 +64,7 @@ export function ObjectEdit<Schema extends Schemas = Schemas>({
       </TabsList>
 
       {/* Form mode */}
-      <TabsContent value={ObjectEditMode.FORM}>
+      <TabsContent className="border-t border-border" value={ObjectEditMode.FORM}>
         <ObjectForm
           formId={objectFormId}
           label={label}
@@ -74,7 +75,7 @@ export function ObjectEdit<Schema extends Schemas = Schemas>({
       </TabsContent>
 
       {/* Wizard mode */}
-      <TabsContent value={ObjectEditMode.WIZARD}>
+      <TabsContent className="border-t border-border" value={ObjectEditMode.WIZARD}>
         <ObjectWizardEdit
           formId={objectFormId}
           isEmbedded
@@ -110,18 +111,39 @@ function ObjectForm<Schema extends Schemas = Schemas>({
     extraFieldsValue,
     fields,
     formData,
+    handleFieldChange,
+    handleMergedFieldChange,
     handleAdditionalFieldChange,
     handleCancel,
-    handleFieldChange,
     handleSave,
     isDirty,
     isValid,
+    mergedFields,
   } = useObjectField<Schema>({ label, node, onSave: onChange, value });
 
   return (
     <div className="flex-1 border-l-4 border-border rounded-xs pl-4 py-3 space-y-3">
       <FieldGroup className="space-y-4 pl-2">
         <FieldSet className="min-w-0">
+          {/* Render merged schemas from allOf composition */}
+          {mergedFields.length > 0 && (
+            <>
+              {mergedFields.map(({ schema, value }, index) => (
+                <Fragment key={`merged-${schema.nodeType}-${index}`}>
+                  <FieldEdit<Schema>
+                    formId={generateFieldFormId(schema.nodeType, `merged-${index}`, formId)}
+                    isRequired
+                    isWizard={isWizard}
+                    node={schema}
+                    onChange={v => handleMergedFieldChange(v as AnyRecord)}
+                    value={value}
+                  />
+                  <FieldSeparator />
+                </Fragment>
+              ))}
+            </>
+          )}
+
           {fields.map(([propName, propNode], index, arr) => {
             const isRequired = node.required.includes(propName);
             const propLabel = utils?.generateFieldLabel(propName) || '';
@@ -140,7 +162,11 @@ function ObjectForm<Schema extends Schemas = Schemas>({
             }
 
             const isWrappedNullable = propSchema.nodeType === CoreNodeType.Nullable;
-            const fieldFormId = `field-${propLabel || 'label'}-${formId}`;
+            const fieldFormId = generateFieldFormId(
+              propSchema.nodeType,
+              propLabel || 'object field',
+              formId,
+            );
 
             return (
               <Fragment key={propName}>
@@ -184,7 +210,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
             <FieldSet className="min-w-0">
               <FieldLegend variant="label">Additional Properties</FieldLegend>
               <FieldEdit<Schema>
-                formId={`additional-${formId}`}
+                formId={generateFieldFormId(CoreNodeType.Map, 'additional-properties', formId)}
                 isWizard={isWizard}
                 node={{ nodeType: CoreNodeType.Map, valueSchema: node.additionalProperties }}
                 onChange={v => handleAdditionalFieldChange(v as AnyRecord)}

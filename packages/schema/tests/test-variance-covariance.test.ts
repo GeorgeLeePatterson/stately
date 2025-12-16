@@ -4,12 +4,12 @@
  * Variance covariance smoke test
  *
  * Validates that the 'out' variance annotations on StatelyConfig work correctly
- * by testing plugin extension scenarios similar to how @stately/ui and xeo4 use
+ * by testing plugin extension scenarios similar to how @statelyjs/ui and xeo4 use
  * the schema package.
  *
  * This test ensures:
  * 1. Extended configs satisfy base config constraints (covariance)
- * 2. The statelyUi integration pattern works (like @stately/ui does)
+ * 2. The statelyUi integration pattern works (like @statelyjs/ui does)
  * 3. Plugin augmentation doesn't break with extended configs
  */
 
@@ -120,7 +120,7 @@ type ExtendedSchemas = Schemas<ExtendedConfig>;
 // extends BaseConfig. The real test is whether statelyUi accepts both configs.
 
 // =============================================================================
-// statelyUi Integration Test (matches @stately/ui pattern)
+// statelyUi Integration Test (matches @statelyjs/ui pattern)
 // =============================================================================
 
 declare const mockOpenApiDoc: any;
@@ -134,7 +134,7 @@ const extendedSchema = stately<ExtendedSchemas>(mockOpenApiDoc, {
   ...BASE_NODES,
 });
 
-// This function simulates how @stately/ui and xeo4 use the schema
+// This function simulates how @statelyjs/ui and xeo4 use the schema
 function statelyUi<Schema extends Schemas<any, any>>(
   state: Stately<Schema>,
   client: Client<Schema['config']['paths']>,

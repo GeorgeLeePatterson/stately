@@ -1,6 +1,6 @@
-import { Layout } from '@stately/ui';
-import type { PageProps } from '@stately/ui/base/layout';
-import { Button } from '@stately/ui/base/ui';
+import { Layout } from '@statelyjs/ui';
+import type { PageProps } from '@statelyjs/ui/base/layout';
+import { Button } from '@statelyjs/ui/base/ui';
 import { ChevronRight } from 'lucide-react';
 import { useFileExplore } from '@/hooks/use-file-explore';
 import { FileDetails } from '@/views/file-details';
@@ -11,7 +11,7 @@ export interface FileManagerProps {
 }
 
 /**
- * FileManagerPage - Convenience wrapper for FileManager with @stately/ui Layout.Page
+ * FileManagerPage - Convenience wrapper for FileManager with @statelyjs/ui Layout.Page
  */
 export function FileManagerPage({ initialPath, ...rest }: FileManagerProps & Partial<PageProps>) {
   return (

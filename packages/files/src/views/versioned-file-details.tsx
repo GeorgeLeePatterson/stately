@@ -1,4 +1,4 @@
-import { Button, ScrollArea } from '@stately/ui/base/ui';
+import { Button, ScrollArea } from '@statelyjs/ui/base/ui';
 import { ArrowLeft, Download, History } from 'lucide-react';
 import { useFilesStatelyUi } from '@/context';
 import { useDownload } from '@/hooks/use-download';

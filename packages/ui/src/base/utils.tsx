@@ -1,5 +1,5 @@
-import type { BaseNode } from '@stately/schema/nodes';
-import type { StatelySchemas } from '@stately/schema/schema';
+import type { BaseNode } from '@statelyjs/schema/nodes';
+import type { StatelySchemas } from '@statelyjs/schema/schema';
 import { Dot } from 'lucide-react';
 import type { ComponentType } from 'react';
 import type { AllUiPlugins, AnyUiPlugin } from './plugin';
@@ -47,6 +47,14 @@ export const mergePathPrefixOptions = (base?: string, incoming?: string): string
  */
 export function generateFieldLabel(field: string): string {
   return toSpaceCase(camelCaseToKebabCase(field));
+}
+
+/**
+ * Generate a unique form id for field routers (field-edit and field-view)
+ */
+export function generateFieldFormId(fieldType: string, propertyName: string, formId = ''): string {
+  const suffix = formId ? `__${formId}` : '';
+  return `[${[fieldType, propertyName].join('__')}]${suffix}`;
 }
 
 /**

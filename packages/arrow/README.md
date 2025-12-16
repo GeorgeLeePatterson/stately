@@ -1,4 +1,4 @@
-# @stately/arrow
+# @statelyjs/arrow
 
 Apache Arrow data visualization plugin for [Stately UI](../ui/README.md). Provides streaming SQL query execution, table visualization, and connector management for Arrow-based data sources.
 
@@ -14,7 +14,7 @@ This package connects your application to a `stately-arrow` backend (Rust), givi
 ## Installation
 
 ```bash
-pnpm add @stately/arrow
+pnpm add @statelyjs/arrow
 ```
 
 ## Quick Start
@@ -22,8 +22,8 @@ pnpm add @stately/arrow
 Register the plugin when creating your Stately UI runtime:
 
 ```typescript
-import { createStatelyUi } from '@stately/ui';
-import { arrowPlugin, arrowUiPlugin } from '@stately/arrow';
+import { createStatelyUi } from '@statelyjs/ui';
+import { arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
 
 const stately = createStatelyUi({
   // Your base URL for API requests
@@ -47,7 +47,7 @@ const stately = createStatelyUi({
 Wrap your app with the Stately provider:
 
 ```tsx
-import { StatelyProvider } from '@stately/ui';
+import { StatelyProvider } from '@statelyjs/ui';
 
 function App() {
   return (
@@ -63,7 +63,7 @@ function App() {
 The plugin provides an `ArrowViewer` page component. Add it to your router:
 
 ```tsx
-import { ArrowViewer } from '@stately/arrow/pages';
+import { ArrowViewer } from '@statelyjs/arrow/pages';
 
 // Example with React Router
 <Route path="/data" element={<ArrowViewer />} />
@@ -78,7 +78,7 @@ All hooks use the arrow API through the plugin context:
 Execute SQL queries with streaming results:
 
 ```tsx
-import { useStreamingQuery } from '@stately/arrow/hooks';
+import { useStreamingQuery } from '@statelyjs/arrow/hooks';
 
 function QueryRunner() {
   const { snapshot, execute, isPending, isStreaming } = useStreamingQuery();
@@ -108,7 +108,7 @@ function QueryRunner() {
 Manage connector state and selection:
 
 ```tsx
-import { useConnectors } from '@stately/arrow/hooks';
+import { useConnectors } from '@statelyjs/arrow/hooks';
 
 function ConnectorPicker() {
   const { connectors, currentConnector, setConnectorId } = useConnectors();
@@ -131,7 +131,7 @@ function ConnectorPicker() {
 Fetch available connectors:
 
 ```tsx
-import { useListConnectors } from '@stately/arrow/hooks';
+import { useListConnectors } from '@statelyjs/arrow/hooks';
 
 const { data: connectors, isLoading } = useListConnectors();
 ```
@@ -141,7 +141,7 @@ const { data: connectors, isLoading } = useListConnectors();
 Get registered catalog connections:
 
 ```tsx
-import { useListRegistered } from '@stately/arrow/hooks';
+import { useListRegistered } from '@statelyjs/arrow/hooks';
 
 const { data: registrations } = useListRegistered();
 ```
@@ -151,7 +151,7 @@ const { data: registrations } = useListRegistered();
 Get details for a specific connector:
 
 ```tsx
-import { useConnectionDetails } from '@stately/arrow/hooks';
+import { useConnectionDetails } from '@statelyjs/arrow/hooks';
 
 const { data: details } = useConnectionDetails(connectorId);
 ```
@@ -161,7 +161,7 @@ const { data: details } = useConnectionDetails(connectorId);
 Register a new connection:
 
 ```tsx
-import { useRegisterConnection } from '@stately/arrow/hooks';
+import { useRegisterConnection } from '@statelyjs/arrow/hooks';
 
 const { mutate: register } = useRegisterConnection();
 register({ connectorId: 'postgres-1' });
@@ -172,7 +172,7 @@ register({ connectorId: 'postgres-1' });
 List available catalogs:
 
 ```tsx
-import { useListCatalogs } from '@stately/arrow/hooks';
+import { useListCatalogs } from '@statelyjs/arrow/hooks';
 
 const { data: catalogs } = useListCatalogs();
 ```
@@ -186,7 +186,7 @@ Reusable components for building data interfaces:
 High-performance table for Arrow data:
 
 ```tsx
-import { ArrowTable } from '@stately/arrow/components';
+import { ArrowTable } from '@statelyjs/arrow/components';
 
 <ArrowTable
   data={tableDataView}
@@ -199,7 +199,7 @@ import { ArrowTable } from '@stately/arrow/components';
 SQL editor with run controls and stats:
 
 ```tsx
-import { QueryEditor } from '@stately/arrow/components';
+import { QueryEditor } from '@statelyjs/arrow/components';
 
 <QueryEditor
   sql={sql}
@@ -218,7 +218,7 @@ import { QueryEditor } from '@stately/arrow/components';
 Pagination controls for tables:
 
 ```tsx
-import { TablePagination } from '@stately/arrow/components';
+import { TablePagination } from '@statelyjs/arrow/components';
 
 <TablePagination table={reactTable} />
 ```
@@ -228,7 +228,7 @@ import { TablePagination } from '@stately/arrow/components';
 Column visibility toggles:
 
 ```tsx
-import { TableViewOptions } from '@stately/arrow/components';
+import { TableViewOptions } from '@statelyjs/arrow/components';
 
 <TableViewOptions table={reactTable} />
 ```
@@ -238,7 +238,7 @@ import { TableViewOptions } from '@stately/arrow/components';
 Drawer for viewing row details:
 
 ```tsx
-import { TableRowDrawer } from '@stately/arrow/components';
+import { TableRowDrawer } from '@statelyjs/arrow/components';
 
 <TableRowDrawer row={selectedRow} onClose={handleClose} />
 ```
@@ -250,7 +250,7 @@ Pre-built view cards for common layouts:
 ### Connectors
 
 ```tsx
-import { Connectors } from '@stately/arrow/views';
+import { Connectors } from '@statelyjs/arrow/views';
 
 // Connector selection dropdown
 <Connectors.ConnectorSelectCard
@@ -276,7 +276,7 @@ import { Connectors } from '@stately/arrow/views';
 ### Query
 
 ```tsx
-import { Query } from '@stately/arrow/views';
+import { Query } from '@statelyjs/arrow/views';
 
 // Query editor card
 <Query.QueryEditorCard
@@ -306,7 +306,7 @@ Full-featured data exploration page with:
 - Responsive layout with collapsible sidebar
 
 ```tsx
-import { ArrowViewer } from '@stately/arrow/pages';
+import { ArrowViewer } from '@statelyjs/arrow/pages';
 
 // Basic usage
 <Route path="/data" element={<ArrowViewer />} />
@@ -324,7 +324,7 @@ Low-level utilities for custom implementations:
 Zustand store for managing Arrow table state:
 
 ```typescript
-import { createArrowTableStore } from '@stately/arrow/lib';
+import { createArrowTableStore } from '@statelyjs/arrow/lib';
 
 const store = createArrowTableStore();
 store.subscribe(snapshot => {
@@ -337,7 +337,7 @@ store.subscribe(snapshot => {
 Execute streaming queries directly:
 
 ```typescript
-import { streamQuery } from '@stately/arrow/lib';
+import { streamQuery } from '@statelyjs/arrow/lib';
 
 await streamQuery({
   client,
@@ -352,7 +352,7 @@ await streamQuery({
 Convert Arrow table to component-friendly format:
 
 ```typescript
-import { tableToDataView } from '@stately/arrow/lib';
+import { tableToDataView } from '@statelyjs/arrow/lib';
 
 const view = tableToDataView(arrowTable);
 // { columns: [...], rows: [...] }
@@ -383,7 +383,7 @@ For plugin authors, this package follows the Stately plugin pattern:
 Extends the node type system:
 
 ```typescript
-import { arrowPlugin } from '@stately/arrow';
+import { arrowPlugin } from '@statelyjs/arrow';
 
 schemaPlugins: [arrowPlugin()]
 ```
@@ -393,7 +393,7 @@ schemaPlugins: [arrowPlugin()]
 Registers API bindings and navigation:
 
 ```typescript
-import { arrowUiPlugin } from '@stately/arrow';
+import { arrowUiPlugin } from '@statelyjs/arrow';
 
 uiPlugins: [
   arrowUiPlugin({

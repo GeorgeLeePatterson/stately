@@ -5,7 +5,7 @@ import type {
   DefineOperations,
   DefinePaths,
   StatelyConfig,
-} from '@stately/schema';
+} from '@statelyjs/schema';
 import type { CoreOperations, CorePaths } from './api';
 import type { components } from './generated-types';
 

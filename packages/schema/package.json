@@ -1,5 +1,5 @@
 {
-  "name": "@stately/schema",
+  "name": "@statelyjs/schema",
   "version": "0.3.0",
   "description": "Type definitions and schema parser for Stately",
   "type": "module",

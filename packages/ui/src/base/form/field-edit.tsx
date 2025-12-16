@@ -5,11 +5,11 @@
  * All base components are pre-registered in statelyUi()
  */
 
-import type { BaseNode } from '@stately/schema/nodes';
-import type { StatelySchemas } from '@stately/schema/schema';
+import type { BaseNode } from '@statelyjs/schema/nodes';
+import type { StatelySchemas } from '@statelyjs/schema/schema';
 import { getEditComponent } from '@/base/registry';
 import { useStatelyUi } from '@/index';
-import { devLog } from '../lib/utils';
+import { devLog } from '../lib/logging';
 
 export interface FieldEditProps<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
@@ -36,7 +36,7 @@ export function FieldEdit<
   const { registry } = useStatelyUi();
   const Edit = getEditComponent<S, N, V>(registry.components, node.nodeType);
 
-  devLog.debug('FieldEdit', 'rendering', { node, value: props.value });
+  devLog.debug('FieldEdit', `rendering id=${props?.formId}`, { node, value: props.value });
 
   if (!Edit) {
     console.warn('FieldEdit: No view component found for nodeType:', node.nodeType);

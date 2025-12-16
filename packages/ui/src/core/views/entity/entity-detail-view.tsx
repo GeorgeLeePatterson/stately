@@ -1,4 +1,4 @@
-import { Tuple } from '@stately/schema/helpers';
+import { Tuple } from '@statelyjs/schema/helpers';
 import { Fragment, useMemo, useState } from 'react';
 import { devLog } from '@/base';
 import { SimpleLabel } from '@/base/components/simple-label';

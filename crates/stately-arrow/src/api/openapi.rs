@@ -44,9 +44,12 @@ impl utoipa::OpenApi for OpenApiDoc {
         // Registry feature schemas
         #[cfg(feature = "registry")]
         {
-            use crate::registry::generic::{Connector, Type};
+            use crate::registry::generic::{Connector, RegistryOptions, Type};
 
-            components = components.schema_from::<Connector>().schema_from::<Type>();
+            components = components
+                .schema_from::<Connector>()
+                .schema_from::<RegistryOptions>()
+                .schema_from::<Type>();
         }
 
         // Database feature schemas

@@ -1,4 +1,4 @@
-import type { CodegenPlugin, CodegenPluginContext } from '@stately/codegen';
+import type { CodegenPlugin, CodegenPluginContext } from '@statelyjs/codegen';
 import { FilesNodeType } from './schema.js';
 
 const REQUIRED_DIRS = ['cache', 'data', 'upload'];
@@ -53,7 +53,7 @@ const isUserDefinedPathUnion = (schema: any, ctx: CodegenPluginContext) => {
 };
 
 export const filesCodegenPlugin: CodegenPlugin = {
-  description: 'Detects RelativePath nodes emitted by @stately/files',
+  description: 'Detects RelativePath nodes emitted by @statelyjs/files',
   match(schema) {
     return Boolean(schema?.oneOf);
   },
