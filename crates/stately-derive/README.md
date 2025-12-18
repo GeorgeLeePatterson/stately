@@ -61,4 +61,4 @@ For complete documentation and examples, see the [stately](https://docs.rs/state
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](../LICENSE) for details.
+Licensed under the Apache License, Version 2.0. See [LICENSE](../../LICENSE) for details.

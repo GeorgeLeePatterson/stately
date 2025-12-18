@@ -1,4 +1,4 @@
-import { Button } from '@statelyjs/ui/base/ui';
+import { Button } from '@statelyjs/ui/components/base/button';
 import { Loader2, Upload as UploadIcon } from 'lucide-react';
 import { useCallback, useId } from 'react';
 import { toast } from 'sonner';

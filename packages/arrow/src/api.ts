@@ -4,9 +4,9 @@
  * Defines the canonical API operations for the files plugin.
  */
 
-import type { TypedOperations } from '@statelyjs/ui/base';
-import type { DefinePaths } from '@statelyjs/ui/schema';
-import { createOperationBindingsFactory, type DefineOperations } from '@statelyjs/ui/schema';
+import type { DefinePaths } from '@statelyjs/stately/schema';
+import { createOperationBindingsFactory, type DefineOperations } from '@statelyjs/stately/schema';
+import type { TypedOperations } from '@statelyjs/ui';
 import type { operations, paths } from './generated/types';
 
 export type ArrowPaths = DefinePaths<paths>;

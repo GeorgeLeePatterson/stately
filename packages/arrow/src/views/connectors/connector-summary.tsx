@@ -1,17 +1,16 @@
-import { cn, toTitleCase } from '@statelyjs/ui/base';
+import { cn, toTitleCase } from '@statelyjs/ui';
+import { Badge } from '@statelyjs/ui/components/base/badge';
+import { Button } from '@statelyjs/ui/components/base/button';
+import { ButtonGroup, ButtonGroupText } from '@statelyjs/ui/components/base/button-group';
+import { FieldSet } from '@statelyjs/ui/components/base/field';
 import {
-  Badge,
-  Button,
-  ButtonGroup,
-  ButtonGroupText,
-  FieldSet,
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
   InputGroupText,
-  Label,
-  ScrollArea,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/input-group';
+import { Label } from '@statelyjs/ui/components/base/label';
+import { ScrollArea } from '@statelyjs/ui/components/base/scroll-area';
 import { ChevronRight, ListFilter, Search, X } from 'lucide-react';
 import { useCallback, useId, useState } from 'react';
 import { AnyIsLoading } from '@/components/any-is-loading';

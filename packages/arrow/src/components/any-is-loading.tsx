@@ -1,4 +1,4 @@
-import { Spinner } from '@statelyjs/ui/base/ui';
+import { Spinner } from '@statelyjs/ui/components/base/spinner';
 
 export function AnyIsLoading({
   isLoading,

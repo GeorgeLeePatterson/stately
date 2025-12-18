@@ -1,11 +1,3 @@
-LOG := env('RUST_LOG', '')
-
-# List of features
-features := 'openapi axum'
-
-# List of Examples
-examples := "basic axum_api"
-
 default:
     @just --list
 
@@ -98,7 +90,7 @@ checks:
     cargo +nightly fmt -- --check
     cargo +stable clippy --all-features --all-targets -- -D warnings
     cargo +nightly clippy --all-features --all-targets
-    just -f {{justfile()}} test
+    just -f {{ justfile() }} test
 
 # Check for outdated dependencies
 check-outdated:
@@ -114,7 +106,7 @@ prepare-release version:
     set -euo pipefail
 
     # Validate version format
-    if ! [[ "{{version}}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    if ! [[ "{{ version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         echo "Error: Version must be in format X.Y.Z (e.g., 0.2.0)"
         exit 1
     fi
@@ -126,7 +118,7 @@ prepare-release version:
     CURRENT_VERSION=$(grep -E '^version = ' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
 
     # Create release branch
-    git checkout -b "release-v{{version}}"
+    git checkout -b "release-v{{ version }}"
 
     # Generate demo documentation
     echo "Generating demo documentation..."
@@ -134,12 +126,12 @@ prepare-release version:
 
     # Update workspace version in root Cargo.toml (only in [workspace.package] section)
     # This uses a more specific pattern to only match the version under [workspace.package]
-    awk '/^\[workspace\.package\]/ {in_workspace=1} in_workspace && /^version = / {gsub(/"[^"]*"/, "\"{{version}}\""); in_workspace=0} {print}' Cargo.toml > Cargo.toml.tmp && mv Cargo.toml.tmp Cargo.toml
+    awk '/^\[workspace\.package\]/ {in_workspace=1} in_workspace && /^version = / {gsub(/"[^"]*"/, "\"{{ version }}\""); in_workspace=0} {print}' Cargo.toml > Cargo.toml.tmp && mv Cargo.toml.tmp Cargo.toml
 
     # Update stately-derive dependency version in crates/stately/Cargo.toml
     if [ -f "crates/stately/Cargo.toml" ]; then
         # Update stately-derive version reference (handles both "X.Y.Z" and "*")
-        sed -i '' "s/stately-derive = { path = \"..\/stately-derive\", version = \"[^\"]*\" }/stately-derive = { path = \"..\/stately-derive\", version = \"{{version}}\" }/" "crates/stately/Cargo.toml" || true
+        sed -i '' "s/stately-derive = { path = \"..\/stately-derive\", version = \"[^\"]*\" }/stately-derive = { path = \"..\/stately-derive\", version = \"{{ version }}\" }/" "crates/stately/Cargo.toml" || true
     fi
 
     # Update stately version references in README files (if they exist)
@@ -147,9 +139,9 @@ prepare-release version:
     for readme in README.md crates/stately/README.md; do
         if [ -f "$readme" ]; then
             # Update simple dependency format (handles both "X.Y" and "X.Y.Z")
-            sed -i '' -E "s/stately = \"[0-9]+\.[0-9]+(\.[0-9]+)?\"/stately = \"{{version}}\"/" "$readme" || true
+            sed -i '' -E "s/stately = \"[0-9]+\.[0-9]+(\.[0-9]+)?\"/stately = \"{{ version }}\"/" "$readme" || true
             # Update version field in dependency table format (handles both "X.Y" and "X.Y.Z")
-            sed -i '' -E "s/stately = \\{ version = \"[0-9]+\.[0-9]+(\.[0-9]+)?\"/stately = { version = \"{{version}}\"/" "$readme" || true
+            sed -i '' -E "s/stately = \\{ version = \"[0-9]+\.[0-9]+(\.[0-9]+)?\"/stately = { version = \"{{ version }}\"/" "$readme" || true
         fi
     done
 
@@ -158,11 +150,11 @@ prepare-release version:
 
     # Generate full changelog with the new version tagged
     echo "Generating changelog..."
-    git cliff --tag v{{version}} -o CHANGELOG.md
+    git cliff --tag v{{ version }} -o CHANGELOG.md
 
     # Generate release notes for this version
     echo "Generating release notes..."
-    git cliff --unreleased --tag v{{version}} --strip header -o RELEASE_NOTES.md
+    git cliff --unreleased --tag v{{ version }} --strip header -o RELEASE_NOTES.md
 
     # Stage all changes
     git add Cargo.toml Cargo.lock CHANGELOG.md RELEASE_NOTES.md
@@ -173,10 +165,10 @@ prepare-release version:
     git add crates/stately/src/demo.rs 2>/dev/null || true
 
     # Commit
-    git commit -m "chore: prepare release v{{version}}"
+    git commit -m "chore: prepare release v{{ version }}"
 
     # Push branch
-    git push origin "release-v{{version}}"
+    git push origin "release-v{{ version }}"
 
     echo ""
     echo "✅ Release preparation complete!"
@@ -186,9 +178,9 @@ prepare-release version:
     head -20 RELEASE_NOTES.md
     echo ""
     echo "Next steps:"
-    echo "1. Create a PR from the 'release-v{{version}}' branch"
+    echo "1. Create a PR from the 'release-v{{ version }}' branch"
     echo "2. Review and merge the PR"
-    echo "3. After merge, run: just tag-release {{version}}"
+    echo "3. After merge, run: just tag-release {{ version }}"
     echo ""
 
 # Tag a release after the PR is merged
@@ -202,8 +194,8 @@ tag-release version:
 
     # Verify the version in Cargo.toml matches
     CARGO_VERSION=$(grep -E '^version = ' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
-    if [ "$CARGO_VERSION" != "{{version}}" ]; then
-        echo "Error: Cargo.toml version ($CARGO_VERSION) does not match requested version ({{version}})"
+    if [ "$CARGO_VERSION" != "{{ version }}" ]; then
+        echo "Error: Cargo.toml version ($CARGO_VERSION) does not match requested version ({{ version }})"
         echo "Did the release PR merge successfully?"
         exit 1
     fi
@@ -214,19 +206,19 @@ tag-release version:
     cargo publish --dry-run -p stately-derive --no-verify
 
     # Create and push tag
-    git tag -a "v{{version}}" -m "Release v{{version}}"
-    git push origin "v{{version}}"
+    git tag -a "v{{ version }}" -m "Release v{{ version }}"
+    git push origin "v{{ version }}"
 
     echo ""
-    echo "✅ Tag v{{version}} created and pushed!"
+    echo "✅ Tag v{{ version }} created and pushed!"
     echo "The release workflow will now run automatically."
     echo ""
 
 # Preview what a release would do (dry run)
 release-dry version:
     @echo "This would:"
-    @echo "1. Create branch: release-v{{version}}"
-    @echo "2. Update version to {{version}} in:"
+    @echo "1. Create branch: release-v{{ version }}"
+    @echo "2. Update version to {{ version }} in:"
     @echo "   - Cargo.toml (workspace.package section only)"
     @echo "   - README files (if they contain crate version references)"
     @echo "3. Update Cargo.lock (usually done automatically with Cargo.toml change)"
@@ -234,6 +226,6 @@ release-dry version:
     @echo "5. Generate RELEASE_NOTES.md"
     @echo "6. Create commit and push branch"
     @echo ""
-    @echo "After PR merge, 'just tag-release {{version}}' would:"
-    @echo "1. Tag the merged commit as v{{version}}"
+    @echo "After PR merge, 'just tag-release {{ version }}' would:"
+    @echo "1. Tag the merged commit as v{{ version }}"
     @echo "2. Push the tag (triggering release workflow)"

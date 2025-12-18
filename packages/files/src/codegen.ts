@@ -1,4 +1,4 @@
-import type { CodegenPlugin, CodegenPluginContext } from '@statelyjs/codegen';
+import type { CodegenPlugin, CodegenPluginContext } from '@statelyjs/stately/codegen';
 import { FilesNodeType } from './schema.js';
 
 const REQUIRED_DIRS = ['cache', 'data', 'upload'];

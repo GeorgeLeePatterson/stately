@@ -1,4 +1,4 @@
-# Stately
+# 🏰 Stately
 
 [![Crates.io](https://img.shields.io/crates/v/stately.svg)](https://crates.io/crates/stately)
 [![Documentation](https://docs.rs/stately/badge.svg)](https://docs.rs/stately)

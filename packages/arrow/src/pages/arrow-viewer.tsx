@@ -1,6 +1,7 @@
 import { Layout } from '@statelyjs/ui';
-import { cn, messageFromError } from '@statelyjs/ui/base/lib/utils';
-import { Button, useSidebar } from '@statelyjs/ui/base/ui';
+import { Button } from '@statelyjs/ui/components/base/button';
+import { useSidebar } from '@statelyjs/ui/components/base/sidebar';
+import { cn, messageFromError } from '@statelyjs/ui/lib/utils';
 import { Binary, PanelLeftOpen, PanelRightOpen, SquareSigma, Timer } from 'lucide-react';
 import {
   type ButtonHTMLAttributes,

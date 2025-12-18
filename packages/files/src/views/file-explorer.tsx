@@ -1,21 +1,25 @@
-import { cn } from '@statelyjs/ui/base/lib/utils';
 import {
-  Button,
+  Button
+} from '@statelyjs/ui/components/base/button';
+import {
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyTitle,
+} from '@statelyjs/ui/components/base/empty';
+import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
   InputGroupText,
-  ScrollArea,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/input-group';
+import { cn } from '@statelyjs/ui/lib/utils';
 import { Filter, Folder, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { FileEntry, type FileEntryProps } from '@/components/file-entry';
 import type { FileInfo } from '../types/api';
+import { ScrollArea } from '@statelyjs/ui/components/base/scroll-area';
 
 export type FileExplorerProps = {
   files: FileInfo[];

@@ -1,4 +1,4 @@
-# @statelyjs/schema
+# 🏰 @statelyjs/schema
 
 [![npm](https://img.shields.io/npm/v/@statelyjs/schema)](https://www.npmjs.com/package/@statelyjs/schema)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
@@ -90,6 +90,23 @@ const stately = createStately<MySchemas>(openapiDoc, PARSED_SCHEMAS);
 const entityNode = stately.utils.getNode('Pipeline');
 const isValid = stately.utils.validate(data, 'Pipeline');
 ```
+
+### With Code Splitting
+
+When using `@statelyjs/codegen` with entry points, some schemas are split into a separate runtime bundle for lazy loading. Configure the loader to enable this:
+
+```typescript
+import { createStately } from '@statelyjs/schema';
+import { PARSED_SCHEMAS } from './generated/schemas';
+import openapiDoc from './openapi.json';
+
+const stately = createStately<MySchemas>(openapiDoc, PARSED_SCHEMAS, {
+  // Enable lazy loading for code-split schemas
+  runtimeSchemas: () => import('./generated/schemas.runtime').then(m => m.RUNTIME_SCHEMAS),
+});
+```
+
+This is optional - if no `schemas.runtime.ts` was generated, you don't need this option.
 
 ### With Plugins
 

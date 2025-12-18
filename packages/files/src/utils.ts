@@ -1,5 +1,5 @@
 import type { DefineUiUtils } from '@statelyjs/ui';
-import { devLogger } from '@statelyjs/ui/base';
+import { devLogger } from '@statelyjs/ui';
 import { Files, FileText, Folder, FolderOpen, History } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { FilesNodeType } from './schema';

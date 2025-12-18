@@ -3,215 +3,105 @@
 [![npm](https://img.shields.io/npm/v/@statelyjs/ui)](https://www.npmjs.com/package/@statelyjs/ui)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
 
-> React UI components and runtime for Stately applications
+> Base UI components, layout, and plugin infrastructure for Stately applications
 
-This package provides the complete UI layer for Stately applications, including the plugin runtime, theming, layout, and full CRUD interfaces for entities.
+This package provides the foundational UI layer for Stately: React components, theming, layout primitives, and the plugin runtime system. It has no knowledge of Stately's entity system or backend - those concerns live in `@statelyjs/stately`.
 
 ## Installation
 
 ```bash
-pnpm add @statelyjs/ui @statelyjs/schema @tanstack/react-query @tanstack/react-router openapi-fetch
+pnpm add @statelyjs/ui
 ```
 
-## Architecture: Base vs Core
+Most users should install `@statelyjs/stately` instead, which includes this package with the core plugin pre-configured. Use `@statelyjs/ui` directly when:
 
-The `@statelyjs/ui` package is organized into two layers:
+- Building a custom plugin
+- Need only the base components without Stately's entity system
+- Want fine-grained control over plugin composition
 
-```
-@statelyjs/ui
-├── base/     → Plugin runtime, layout, theme, registry (no backend assumptions)
-└── core/     → Entity CRUD, schema integration, hooks (requires stately backend)
-```
+## What's Included
 
-### Base Layer (`@statelyjs/ui/base`)
+### Components (`@statelyjs/ui/components`)
 
-The **base** layer provides infrastructure that works with *any* backend. It has no knowledge of Stately's entity system:
+Styled, accessible React components built on Radix UI primitives:
 
-- **Plugin Runtime**: `createStatelyUi()`, plugin registration, typed context
-- **Layout**: App shell with sidebar, header, mobile responsiveness
-- **Theme**: Dark/light mode toggle, theme provider
-- **Registry**: Component and transformer registries for schema nodes
-- **Utilities**: Path helpers, string transformations, logging
+- **Base components**: Button, Input, Select, Dialog, Dropdown, Tabs, etc.
+- **Form components**: Field wrappers, validation states, form actions
+- **Layout components**: Sidebar, Header, Navigation
+- **Utility components**: Spinner, Badge, Tooltip, etc.
 
-**Use base directly** when building a plugin or custom UI that doesn't need entity CRUD.
+### Layout (`@statelyjs/ui/layout`)
 
-### Core Layer (default export)
-
-The **core** layer is itself a plugin that adds Stately entity management:
-
-- **Entity Views**: List, create, edit, view pages
-- **Entity Hooks**: `useEntityData`, `useCreateEntity`, `useUpdateEntity`, etc.
-- **Schema Integration**: Entity/StateEntry types, validation
-- **Field Components**: Auto-generated form fields from schema nodes
-
-**Core is included by default** when you use `statelyUi()` - it's the "batteries included" experience.
-
-### Why This Separation?
-
-This architecture serves two purposes:
-
-1. **For users**: Import `@statelyjs/ui` and get everything working immediately
-2. **For plugin authors**: The base layer demonstrates how plugins are structured. Core is just a plugin that happens to ship with the package.
-
-## Quick Start
-
-### 1. Generate Types
-
-First, generate TypeScript types from your backend's OpenAPI spec:
-
-```bash
-pnpx @statelyjs/codegen ./openapi.json ./src/generated
-```
-
-This creates:
-- `types.ts` - TypeScript interfaces for your API
-- `schemas.ts` - Parsed schema nodes for the UI runtime
-
-### 2. Create Integration File
-
-```typescript
-// src/lib/stately-integration.ts
-import { stately } from '@statelyjs/ui/schema';
-import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/ui';
-import type { DefineConfig, DefineOperations, DefinePaths, Schemas } from '@statelyjs/ui/schema';
-import createClient from 'openapi-fetch';
-
-import { PARSED_SCHEMAS } from '@/generated/schemas';
-import type { components, operations, paths } from '@/generated/types';
-import openapiDoc from '../../openapi.json';
-
-// Type your schemas
-export type AppSchemas = Schemas<
-  DefineConfig<
-    components,
-    DefinePaths<paths>,
-    DefineOperations<operations>,
-    typeof PARSED_SCHEMAS
-  >
->;
-
-// Create API client
-const api = createClient<paths>({ baseUrl: 'http://localhost:3000' });
-
-// Create schema runtime (types + validation)
-export const appSchema = stately<AppSchemas>(openapiDoc, PARSED_SCHEMAS);
-
-// Create UI runtime (components + hooks)
-export const appStatelyUi = statelyUi<AppSchemas>({
-  client: api,
-  schema: appSchema,
-  core: {
-    api: { pathPrefix: '/entity' },
-    entities: {
-      icons: {
-        pipeline: PlayCircle,
-        source_config: Database,
-      },
-    },
-  },
-  options: {
-    api: { pathPrefix: '/api/v1' },
-    navigation: {
-      routes: {
-        label: 'My App',
-        to: '/',
-        items: [
-          { icon: LayoutDashboard, label: 'Dashboard', to: '/' },
-          { icon: Settings, label: 'Settings', to: '/settings' },
-        ],
-      },
-    },
-  },
-});
-
-// Export typed provider and hook
-export const AppStatelyUiProvider = statelyUiProvider<AppSchemas>();
-export const useAppStatelyUi = useStatelyUi<AppSchemas>;
-```
-
-### 3. Setup Provider
+App shell with responsive sidebar navigation:
 
 ```tsx
-// src/main.tsx
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { AppStatelyUiProvider, appStatelyUi } from '@/lib/stately-integration';
-import { routeTree } from './routeTree.gen';
-
-const queryClient = new QueryClient();
-const router = createRouter({ routeTree });
+import { Layout } from '@statelyjs/ui/layout';
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AppStatelyUiProvider value={appStatelyUi}>
-        <RouterProvider router={router} />
-      </AppStatelyUiProvider>
-    </QueryClientProvider>
+    <Layout>
+      <YourContent />
+    </Layout>
   );
 }
 ```
 
-### 4. Use Components and Hooks
+### Theme (`@statelyjs/ui`)
+
+Dark/light mode support with system preference detection:
 
 ```tsx
-// src/routes/entities/$type.tsx
-import { useParams } from '@tanstack/react-router';
-import { useAppStatelyUi } from '@/lib/stately-integration';
+import { ThemeProvider, ThemeToggle, useTheme } from '@statelyjs/ui';
 
-export function EntityListPage() {
-  const { type } = useParams({ from: '/entities/$type' });
-  const { plugins } = useAppStatelyUi();
-  
-  // Access core plugin utilities
-  const { hooks, views } = plugins.core;
-  const { data, isLoading } = hooks.useListEntities(type);
-  
-  if (isLoading) return <div>Loading...</div>;
-  
-  return <views.EntityListView data={data} type={type} />;
+function App() {
+  return (
+    <ThemeProvider defaultTheme="system">
+      <ThemeToggle />
+      <YourContent />
+    </ThemeProvider>
+  );
 }
 ```
 
-## Adding Plugins
+### Plugin Runtime
 
-Plugins extend both the schema (types) and UI (components) layers:
+Infrastructure for building and composing UI plugins:
 
-```typescript
-import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
-import { arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
+```tsx
+import { createStatelyUi, createUseStatelyUi, StatelyUiProvider } from '@statelyjs/ui';
 
-// Extend schema types
-export type AppSchemas = Schemas<
-  DefineConfig<components, DefinePaths<paths>, DefineOperations<operations>, typeof PARSED_SCHEMAS>,
-  readonly [FilesPlugin, ArrowPlugin]  // Plugin type augments
->;
+// Create a runtime with your schema
+const runtime = createStatelyUi({ schema, client, options });
 
-// Create schema with plugins
-export const appSchema = stately<AppSchemas>(openapiDoc, PARSED_SCHEMAS)
-  .withPlugin(filesPlugin())
-  .withPlugin(arrowPlugin());
+// Add plugins
+const runtimeWithPlugins = runtime
+  .withPlugin(myPlugin())
+  .withPlugin(anotherPlugin());
+```
 
-// Create UI with plugins
-export const appStatelyUi = statelyUi<AppSchemas, readonly [FilesUiPlugin, ArrowUiPlugin]>({
-  client: api,
-  schema: appSchema,
-  // ... options
-})
-  .withPlugin(filesUiPlugin({ api: { pathPrefix: '/files' } }))
-  .withPlugin(arrowUiPlugin({ api: { pathPrefix: '/arrow' } }));
+### Registry System
+
+Component and transformer registries for dynamic field rendering:
+
+```tsx
+import { registry } from '@statelyjs/ui';
+
+// Register a custom field component
+registry.components.register('myNodeType', 'edit', MyEditComponent);
+registry.components.register('myNodeType', 'view', MyViewComponent);
 ```
 
 ## Exports
 
-### Main Export (`@statelyjs/ui`)
+### Main (`@statelyjs/ui`)
 
 ```typescript
 import {
-  // Runtime creation
-  statelyUi,
-  statelyUiProvider,
-  useStatelyUi,
+  // Runtime
+  createStatelyUi,
+  createStatelyUiProvider,
+  createUseStatelyUi,
+  StatelyUiProvider,
   
   // Theme
   ThemeProvider,
@@ -221,38 +111,8 @@ import {
   // Layout
   Layout,
   
-  // Types
-  type StatelyUi,
-  type StatelyConfiguration,
-} from '@statelyjs/ui';
-```
-
-### Schema Export (`@statelyjs/ui/schema`)
-
-Re-exports from `@statelyjs/schema` plus core schema utilities:
-
-```typescript
-import {
-  stately,
-  coreSchemaUtils,
-  CORE_PLUGIN_NAME,
-  
-  // Type helpers
-  type Schemas,
-  type DefineConfig,
-  type DefinePlugin,
-} from '@statelyjs/ui/schema';
-```
-
-### Base Export (`@statelyjs/ui/base`)
-
-Lower-level utilities for plugin authors:
-
-```typescript
-import {
-  createStatelyUi,
-  createStatelyUiProvider,
-  createUseStatelyUi,
+  // Form
+  BaseForm,
   
   // Registry
   registry,
@@ -261,94 +121,97 @@ import {
   cn,
   toTitleCase,
   toKebabCase,
-} from '@statelyjs/ui/base';
+  devLog,
+} from '@statelyjs/ui';
 ```
 
-### Core Export (`@statelyjs/ui/core`)
+### Components (`@statelyjs/ui/components`)
 
-Direct access to core plugin internals:
+```typescript
+import { Editor, Note, CopyButton, GlowingSave } from '@statelyjs/ui/components';
+```
+
+### Base Components (`@statelyjs/ui/components/base`)
+
+All shadcn/ui style components:
 
 ```typescript
 import {
-  coreUiPlugin,
-  corePlugin,
-  
-  // Types
-  type CoreUiPlugin,
-  type CorePlugin,
-  type CoreStateEntry,
-  type CoreEntity,
-} from '@statelyjs/ui/core';
+  Button,
+  Input,
+  Select,
+  Dialog,
+  DropdownMenu,
+  Tabs,
+  Card,
+  Badge,
+  // ... and many more
+} from '@statelyjs/ui/components/base';
 ```
 
-## Configuration Options
-
-### Core Options
+### Form (`@statelyjs/ui/form`)
 
 ```typescript
-statelyUi({
-  core: {
-    api: {
-      pathPrefix: '/entity',  // API path prefix for entity endpoints
-    },
-    entities: {
-      icons: {
-        // Map entity types to Lucide icons
-        pipeline: PlayCircle,
-        source_config: Database,
-      },
-    },
-  },
-});
+import { BaseForm, FieldEdit, FieldView, FormActions } from '@statelyjs/ui/form';
 ```
 
-### Global Options
+### Hooks (`@statelyjs/ui/hooks`)
 
 ```typescript
-statelyUi({
-  options: {
-    api: {
-      pathPrefix: '/api/v1',  // Global API prefix
-    },
-    navigation: {
-      routes: {
-        label: 'App Name',
-        to: '/',
-        items: [
-          { icon: Home, label: 'Home', to: '/' },
-          { icon: Settings, label: 'Settings', to: '/settings' },
-        ],
-      },
-    },
-  },
-});
+import { useCopyToClipboard, useIsMobile, useLocalStorage } from '@statelyjs/ui/hooks';
 ```
+
+### Layout (`@statelyjs/ui/layout`)
+
+```typescript
+import { Layout, Header, PageHeader, Navigation } from '@statelyjs/ui/layout';
+```
+
+### Dialogs (`@statelyjs/ui/dialogs`)
+
+```typescript
+import { ConfirmationDialog, DeleteDialog } from '@statelyjs/ui/dialogs';
+```
+
+### Utilities
+
+```typescript
+import { cn } from '@statelyjs/ui/lib/utils';
+import { devLog, devLogger } from '@statelyjs/ui/lib/logging';
+```
+
+## Styling
+
+Import the CSS in your app's entry point:
+
+```typescript
+import '@statelyjs/ui/styles.css';
+```
+
+This includes Tailwind CSS utilities and component styles. Your app should have Tailwind configured to process these styles.
 
 ## Writing a Plugin
 
-Plugins follow the same pattern as core. See [`@statelyjs/files`](../files) and [`@statelyjs/arrow`](../arrow) for examples.
-
-A UI plugin provides:
-
-1. **Schema Plugin**: Type augmentations and utilities
-2. **UI Plugin**: Components, hooks, routes, API operations
+Plugins extend the UI runtime with custom functionality:
 
 ```typescript
-import type { DefineUiPlugin } from '@statelyjs/ui/base';
+import type { DefineUiPlugin, UiPluginFactory } from '@statelyjs/ui';
 
-export type MyUiPlugin = DefineUiPlugin<
-  'my-plugin',
-  MyPluginOptions,
-  MyPluginRoutes,
-  MyPluginUtils
+// Define plugin shape
+export type MyPlugin = DefineUiPlugin<
+  'my-plugin',           // Plugin name
+  MyPluginOptions,       // Options type
+  MyPluginRoutes,        // Routes type
+  MyPluginUtils          // Utils type
 >;
 
-export function myUiPlugin(options: MyPluginOptions): UiPluginFactory<MyUiPlugin> {
+// Create plugin factory
+export function myPlugin(options: MyPluginOptions): UiPluginFactory<MyPlugin> {
   return (runtime) => ({
     name: 'my-plugin',
     options,
-    routes: { /* ... */ },
-    utils: { /* ... */ },
+    routes: { /* navigation items */ },
+    utils: { /* helper functions */ },
     api: {
       operations: createOperations(runtime.client, options),
     },
@@ -356,11 +219,27 @@ export function myUiPlugin(options: MyPluginOptions): UiPluginFactory<MyUiPlugin
 }
 ```
 
+See [`@statelyjs/files`](../files) and [`@statelyjs/arrow`](../arrow) for complete plugin examples.
+
 ## Peer Dependencies
 
-- `react` >= 18
-- `@tanstack/react-query` >= 5
-- `openapi-fetch` >= 0.9
+- `react` ^18.0.0 || ^19.0.0
+- `react-dom` ^18.0.0 || ^19.0.0
+- `lucide-react` ^0.554.0
+- `sonner` ^2.0.7
+- `openapi-fetch` ^0.15
+- `openapi-typescript-helpers` ^0.0.15
+
+### Optional
+
+- `@uiw/react-codemirror` ^4.25.3 - Required for the Editor component
+
+## Related Packages
+
+- [`@statelyjs/stately`](../stately) - Full Stately runtime with core plugin and codegen
+- [`@statelyjs/schema`](../schema) - Schema types and plugin system
+- [`@statelyjs/files`](../files) - File management plugin
+- [`@statelyjs/arrow`](../arrow) - Arrow/connector plugin
 
 ## License
 

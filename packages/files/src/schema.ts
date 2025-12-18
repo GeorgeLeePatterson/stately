@@ -4,7 +4,7 @@
  * Defines the RelativePath node type for file path handling
  */
 
-import type { BaseNode, DefineData, DefineTypes } from '@statelyjs/ui/schema';
+import type { BaseNode, DefineData, DefineTypes } from '@statelyjs/stately/schema';
 import type { FileEntryType, FileInfo, FileSaveRequest, FileVersion } from './types/api';
 
 /**

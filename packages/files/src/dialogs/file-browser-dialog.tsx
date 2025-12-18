@@ -1,12 +1,12 @@
+import { Button } from '@statelyjs/ui/components/base/button';
 import {
-  Button,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/dialog';
 import { FileSearch } from 'lucide-react';
 import { FileManager } from '@/pages';
 

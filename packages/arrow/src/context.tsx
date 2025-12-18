@@ -1,5 +1,5 @@
-import { useStatelyUi } from '@statelyjs/ui';
-import type { Schemas } from '@statelyjs/ui/schema';
+import { useStatelyUi } from '@statelyjs/stately';
+import type { Schemas } from '@statelyjs/stately/schema';
 import type { ArrowUiPlugin } from './plugin';
 
 /**

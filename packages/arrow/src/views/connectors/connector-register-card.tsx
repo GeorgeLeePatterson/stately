@@ -1,18 +1,15 @@
-import { Note } from '@statelyjs/ui/base/components';
-import { cn, messageFromError } from '@statelyjs/ui/base/lib/utils';
+import { Note } from '@statelyjs/ui/components';
+import { Badge } from '@statelyjs/ui/components/base/badge';
+import { Button } from '@statelyjs/ui/components/base/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@statelyjs/ui/components/base/card';
 import {
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-  Spinner,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/dropdown-menu';
+import { Spinner } from '@statelyjs/ui/components/base/spinner';
+import { cn, messageFromError } from '@statelyjs/ui/lib/utils';
 import { PlugZap, SquareStack } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
@@ -111,21 +108,21 @@ export function ConnectorsRegisterCard({
             {registerError && <Note message={registerError} mode="error" />}
 
             {/* Catalogs */}
-            {registeredCatalogs.catalogs.map(c => (
+            {[...registeredCatalogs.catalogs.values()].map(c => (
               <Badge key={`catalog-${c}`} variant={isCurrentCatalog(c) ? 'default' : 'outline'}>
                 {c}
               </Badge>
             ))}
 
             {/* Databases */}
-            {registeredCatalogs.database.map(c => (
+            {[...registeredCatalogs.database.values()].map(c => (
               <Badge key={`catalog-${c}`} variant={isCurrentCatalog(c) ? 'default' : 'secondary'}>
                 {c}
               </Badge>
             ))}
 
             {/* Object store */}
-            {registeredCatalogs.object_store.map(c => (
+            {[...registeredCatalogs.object_store.values()].map(c => (
               <Badge
                 className={isCurrentCatalog(c) ? '' : 'bg-accent'}
                 key={`catalog-${c}`}
@@ -136,7 +133,7 @@ export function ConnectorsRegisterCard({
             ))}
 
             {/* Other */}
-            {registeredCatalogs.other.map(c => (
+            {[...registeredCatalogs.other.values()].map(c => (
               <Badge key={`catalog-${c}`} variant="outline">
                 {c}
               </Badge>

@@ -15,8 +15,7 @@ import {
   MenubarMenu,
   MenubarSeparator,
   MenubarTrigger,
-  Skeleton,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/menubar';
 import { FileSearch, MoreVertical, Upload, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';

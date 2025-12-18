@@ -11,7 +11,6 @@
     "dev": "tsdown --watch"
   },
   "peerDependencies": {
-    "@tanstack/react-query": "^5.90.10",
     "@types/react": "^18.0.0 || ^19.0.0",
     "@types/react-dom": "^18.0.0 || ^19.0.0",
     "@uiw/react-codemirror": "^4.25.3",
@@ -28,7 +27,6 @@
     }
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -64,7 +62,6 @@
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.17",
-    "@tanstack/react-query": "^5.90.11",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "lucide-react": "^0.554.0",
@@ -72,98 +69,92 @@
     "openapi-typescript-helpers": "^0.0.15",
     "sonner": "^2.0.7",
     "tailwindcss": "^4.1.17",
-    "tsdown": "0.17.0-beta.1",
+    "tsdown": "0.18.1",
     "typescript": "^5.9.3"
   },
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs"
-    },
-    "./styles.css": "./dist/styles.css",
-    "./schema": {
-      "types": "./dist/schema.d.ts",
-      "import": "./dist/schema.mjs"
-    },
-    "./base": {
-      "types": "./dist/base/index.d.ts",
-      "import": "./dist/base/index.mjs"
-    },
-    "./base/components": {
-      "types": "./dist/base/components/index.d.ts",
-      "import": "./dist/base/components/index.mjs"
-    },
-    "./base/dialogs": {
-      "types": "./dist/base/dialogs/index.d.ts",
-      "import": "./dist/base/dialogs/index.mjs"
-    },
-    "./base/form": {
-      "types": "./dist/base/form/index.d.ts",
-      "import": "./dist/base/form/index.mjs"
-    },
-    "./base/hooks": {
-      "types": "./dist/base/hooks/index.d.ts",
-      "import": "./dist/base/hooks/index.mjs"
-    },
-    "./base/layout": {
-      "types": "./dist/base/layout/index.d.ts",
-      "import": "./dist/base/layout/index.mjs"
-    },
-    "./base/lib/logging": {
-      "types": "./dist/base/lib/logging.d.ts",
-      "import": "./dist/base/lib/logging.mjs"
-    },
-    "./base/lib/utils": {
-      "types": "./dist/base/lib/utils.d.ts",
-      "import": "./dist/base/lib/utils.mjs"
-    },
-    "./base/ui": {
-      "types": "./dist/base/ui/index.d.ts",
-      "import": "./dist/base/ui/index.mjs"
-    },
-    "./core": {
-      "types": "./dist/core/index.d.ts",
-      "import": "./dist/core/index.mjs"
-    },
-    "./core/context": {
-      "types": "./dist/core/context/index.d.ts",
-      "import": "./dist/core/context/index.mjs"
-    },
-    "./core/dialogs": {
-      "types": "./dist/core/dialogs/index.d.ts",
-      "import": "./dist/core/dialogs/index.mjs"
-    },
-    "./core/fields": {
-      "types": "./dist/core/fields/index.d.ts",
-      "import": "./dist/core/fields/index.mjs"
-    },
-    "./core/fields/edit": {
-      "types": "./dist/core/fields/edit/index.d.ts",
-      "import": "./dist/core/fields/edit/index.mjs"
-    },
-    "./core/fields/view": {
-      "types": "./dist/core/fields/view/index.d.ts",
-      "import": "./dist/core/fields/view/index.mjs"
-    },
-    "./core/hooks": {
-      "types": "./dist/core/hooks/index.d.ts",
-      "import": "./dist/core/hooks/index.mjs"
-    },
-    "./core/pages": {
-      "types": "./dist/core/pages/index.d.ts",
-      "import": "./dist/core/pages/index.mjs"
-    },
-    "./core/schema": {
-      "types": "./dist/core/schema/index.d.ts",
-      "import": "./dist/core/schema/index.mjs"
-    },
-    "./core/views/entity": {
-      "types": "./dist/core/views/entity/index.d.ts",
-      "import": "./dist/core/views/entity/index.mjs"
-    },
-    "./core/views/link": {
-      "types": "./dist/core/views/link/index.d.ts",
-      "import": "./dist/core/views/link/index.mjs"
-    }
-  }
+    ".": "./dist/index.mjs",
+    "./api": "./dist/api.mjs",
+    "./components": "./dist/components/index.mjs",
+    "./components/array-index": "./dist/components/array-index.mjs",
+    "./components/base/accordion": "./dist/components/base/accordion.mjs",
+    "./components/base/alert": "./dist/components/base/alert.mjs",
+    "./components/base/alert-dialog": "./dist/components/base/alert-dialog.mjs",
+    "./components/base/avatar": "./dist/components/base/avatar.mjs",
+    "./components/base/badge": "./dist/components/base/badge.mjs",
+    "./components/base/breadcrumb": "./dist/components/base/breadcrumb.mjs",
+    "./components/base/button": "./dist/components/base/button.mjs",
+    "./components/base/button-group": "./dist/components/base/button-group.mjs",
+    "./components/base/card": "./dist/components/base/card.mjs",
+    "./components/base/checkbox": "./dist/components/base/checkbox.mjs",
+    "./components/base/collapsible": "./dist/components/base/collapsible.mjs",
+    "./components/base/dialog": "./dist/components/base/dialog.mjs",
+    "./components/base/drawer": "./dist/components/base/drawer.mjs",
+    "./components/base/dropdown-menu": "./dist/components/base/dropdown-menu.mjs",
+    "./components/base/empty": "./dist/components/base/empty.mjs",
+    "./components/base/field": "./dist/components/base/field.mjs",
+    "./components/base/form": "./dist/components/base/form.mjs",
+    "./components/base/input": "./dist/components/base/input.mjs",
+    "./components/base/input-group": "./dist/components/base/input-group.mjs",
+    "./components/base/item": "./dist/components/base/item.mjs",
+    "./components/base/label": "./dist/components/base/label.mjs",
+    "./components/base/menubar": "./dist/components/base/menubar.mjs",
+    "./components/base/popover": "./dist/components/base/popover.mjs",
+    "./components/base/progress": "./dist/components/base/progress.mjs",
+    "./components/base/scroll-area": "./dist/components/base/scroll-area.mjs",
+    "./components/base/select": "./dist/components/base/select.mjs",
+    "./components/base/separator": "./dist/components/base/separator.mjs",
+    "./components/base/sheet": "./dist/components/base/sheet.mjs",
+    "./components/base/sidebar": "./dist/components/base/sidebar.mjs",
+    "./components/base/skeleton": "./dist/components/base/skeleton.mjs",
+    "./components/base/sonner": "./dist/components/base/sonner.mjs",
+    "./components/base/spinner": "./dist/components/base/spinner.mjs",
+    "./components/base/switch": "./dist/components/base/switch.mjs",
+    "./components/base/table": "./dist/components/base/table.mjs",
+    "./components/base/tabs": "./dist/components/base/tabs.mjs",
+    "./components/base/textarea": "./dist/components/base/textarea.mjs",
+    "./components/base/toggle": "./dist/components/base/toggle.mjs",
+    "./components/base/toggle-group": "./dist/components/base/toggle-group.mjs",
+    "./components/base/tooltip": "./dist/components/base/tooltip.mjs",
+    "./components/copy-button": "./dist/components/copy-button.mjs",
+    "./components/description-label": "./dist/components/description-label.mjs",
+    "./components/editor": "./dist/components/editor.mjs",
+    "./components/explain": "./dist/components/explain.mjs",
+    "./components/field": "./dist/components/field.mjs",
+    "./components/glowing-save": "./dist/components/glowing-save.mjs",
+    "./components/not-set": "./dist/components/not-set.mjs",
+    "./components/note": "./dist/components/note.mjs",
+    "./components/simple-label": "./dist/components/simple-label.mjs",
+    "./context": "./dist/context.mjs",
+    "./dialogs": "./dist/dialogs/index.mjs",
+    "./dialogs/confirm-dialog": "./dist/dialogs/confirm-dialog.mjs",
+    "./form": "./dist/form/index.mjs",
+    "./form/field-edit": "./dist/form/field-edit.mjs",
+    "./form/field-view": "./dist/form/field-view.mjs",
+    "./form/form-actions": "./dist/form/form-actions.mjs",
+    "./form/json-edit": "./dist/form/json-edit.mjs",
+    "./form/json-view": "./dist/form/json-view.mjs",
+    "./hooks": "./dist/hooks/index.mjs",
+    "./hooks/use-click-tracking": "./dist/hooks/use-click-tracking.mjs",
+    "./hooks/use-mobile": "./dist/hooks/use-mobile.mjs",
+    "./hooks/use-view-more": "./dist/hooks/use-view-more.mjs",
+    "./layout": "./dist/layout/index.mjs",
+    "./layout/header": "./dist/layout/header.mjs",
+    "./layout/navigation": "./dist/layout/navigation.mjs",
+    "./layout/page": "./dist/layout/page.mjs",
+    "./layout/page-header": "./dist/layout/page-header.mjs",
+    "./layout/plugin-navigation": "./dist/layout/plugin-navigation.mjs",
+    "./layout/root": "./dist/layout/root.mjs",
+    "./lib/logging": "./dist/lib/logging.mjs",
+    "./lib/utils": "./dist/lib/utils.mjs",
+    "./plugin": "./dist/plugin.mjs",
+    "./registry": "./dist/registry.mjs",
+    "./runtime": "./dist/runtime.mjs",
+    "./theme": "./dist/theme.mjs",
+    "./utils": "./dist/utils.mjs",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts"
 }

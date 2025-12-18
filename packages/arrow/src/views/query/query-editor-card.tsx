@@ -1,13 +1,13 @@
-import { Note } from '@statelyjs/ui/base/components';
-import { cn } from '@statelyjs/ui/base/lib/utils';
+import { Note } from '@statelyjs/ui/components';
+import { Button } from '@statelyjs/ui/components/base/button';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/card';
+import { cn } from '@statelyjs/ui/lib/utils';
 import { RefreshCw, TextSearch } from 'lucide-react';
 import { AnyIsLoading } from '@/components/any-is-loading';
 import { QueryEditor, type QueryEditorProps } from '@/components/query-editor';

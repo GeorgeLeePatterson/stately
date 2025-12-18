@@ -1,19 +1,20 @@
-import { Editor } from '@statelyjs/ui/base/components';
-import { cn } from '@statelyjs/ui/base/lib/utils';
+import type { StringMode } from '@statelyjs/stately/core/fields/edit';
+import { Editor } from '@statelyjs/ui/components';
+import { Button } from '@statelyjs/ui/components/base/button';
+import { ButtonGroup } from '@statelyjs/ui/components/base/button-group';
+
+import { Input } from '@statelyjs/ui/components/base/input';
+import { InputGroup } from '@statelyjs/ui/components/base/input-group';
 import {
-  Button,
-  ButtonGroup,
-  Input,
-  InputGroup,
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  Spinner,
-} from '@statelyjs/ui/base/ui';
-import type { StringMode } from '@statelyjs/ui/core/fields/edit';
+} from '@statelyjs/ui/components/base/select';
+import { Spinner } from '@statelyjs/ui/components/base/spinner';
+import { cn } from '@statelyjs/ui/lib/utils';
 import { ExternalLink, FilePlus2, FileSearch2, FileText } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';

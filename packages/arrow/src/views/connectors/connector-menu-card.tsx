@@ -1,24 +1,23 @@
-import { cn } from '@statelyjs/ui/base';
-import { Note } from '@statelyjs/ui/base/components';
-import { messageFromError } from '@statelyjs/ui/base/lib/utils';
+import { cn } from '@statelyjs/ui';
+import { Note } from '@statelyjs/ui/components';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
+} from '@statelyjs/ui/components/base/accordion';
+import { Badge } from '@statelyjs/ui/components/base/badge';
+import { Button } from '@statelyjs/ui/components/base/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@statelyjs/ui/components/base/card';
+import {
   Item,
   ItemActions,
   ItemContent,
   ItemMedia,
   ItemTitle,
-  Spinner,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/item';
+import { Spinner } from '@statelyjs/ui/components/base/spinner';
+import { messageFromError } from '@statelyjs/ui/lib/utils';
 import { ChevronDown, ChevronUp, Database, FileStack, Layers2, RefreshCcw } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { AnyIsLoading } from '@/components/any-is-loading';

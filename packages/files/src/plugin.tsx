@@ -5,6 +5,8 @@
  * Following the canonical pattern from @statelyjs/schema/core/plugin.ts and @statelyjs/ui/core/plugin.ts
  */
 
+import { CoreNodeType } from '@statelyjs/stately/core';
+import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
 import {
   type AnyUiPlugin,
   registry as baseRegistry,
@@ -13,11 +15,10 @@ import {
   type DefineUiPlugin,
   type UiNavigationOptions,
   type UiPluginFactory,
-} from '@statelyjs/ui/base';
-import type { RouteOption } from '@statelyjs/ui/base/layout';
-import { CoreNodeType } from '@statelyjs/ui/core';
-import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/ui/schema';
+} from '@statelyjs/ui';
+import type { RouteOption } from '@statelyjs/ui/layout';
 import { Files } from 'lucide-react';
+
 import { FILES_OPERATIONS, type FilesPaths } from './api';
 import { primitiveStringTransformer } from './fields/edit/primitive-string';
 import { RelativePathEdit } from './fields/edit/relative-path-field';

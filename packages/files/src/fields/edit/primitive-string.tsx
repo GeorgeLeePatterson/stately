@@ -1,4 +1,4 @@
-import type { PrimitiveStringEditTransformerProps } from '@statelyjs/ui/core/fields/edit';
+import type { PrimitiveStringEditTransformerProps } from '@statelyjs/stately/core/fields/edit';
 import { Upload } from 'lucide-react';
 import { RelativePathEdit } from './relative-path-field';
 

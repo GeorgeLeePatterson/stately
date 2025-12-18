@@ -1,15 +1,7 @@
-import { cn } from '@statelyjs/ui/base';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Empty,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-  Skeleton,
-} from '@statelyjs/ui/base/ui';
+import { cn } from '@statelyjs/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@statelyjs/ui/components/base/card';
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@statelyjs/ui/components/base/empty';
+import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import { Sheet, TableIcon } from 'lucide-react';
 import { AnyIsLoading } from '@/components/any-is-loading';
 import { ArrowTable, type ArrowTableDataView } from '@/components/arrow-table';

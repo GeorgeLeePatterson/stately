@@ -6,10 +6,10 @@ import { useArrowApi } from './use-arrow-api';
 export const LIST_REGISTERED_QUERY_KEY = ['catalogs'] as const;
 
 export interface CatalogRegistration {
-  catalogs: string[];
-  database: string[];
-  object_store: string[];
-  other: string[];
+  catalogs: Set<string>;
+  database: Set<string>;
+  object_store: Set<string>;
+  other: Set<string>;
 }
 
 export function useListRegistered({
@@ -48,20 +48,26 @@ export function useListRegistered({
   // Api provided, and current
   const registeredCatalogs = useMemo<CatalogRegistration>(() => {
     return {
-      catalogs: catalogs.filter(c => !allRegistered.some(r => r.catalog === c)),
-      database: allRegistered
-        .filter(r => r.metadata.kind === 'database')
-        .map(r => r.catalog)
-        .filter((c): c is string => !!c),
-      object_store: allRegistered
-        .filter(r => r.metadata.kind === 'object_store')
-        .map(r => r.catalog)
-        .filter((c): c is string => !!c)
-        .map(c => (c.includes('://') ? c.split('://')[1] : c)),
-      other: allRegistered
-        .filter(r => typeof r.metadata.kind !== 'string')
-        .map(r => r.catalog)
-        .filter((c): c is string => !!c),
+      catalogs: new Set(catalogs.filter(c => !allRegistered.some(r => r.catalog === c))),
+      database: new Set(
+        allRegistered
+          .filter(r => r.metadata.kind === 'database')
+          .map(r => r.catalog)
+          .filter((c): c is string => !!c),
+      ),
+      object_store: new Set(
+        allRegistered
+          .filter(r => r.metadata.kind === 'object_store')
+          .map(r => r.catalog)
+          .filter((c): c is string => !!c)
+          .map(c => (c.includes('://') ? c.split('://')[1] : c)),
+      ),
+      other: new Set(
+        allRegistered
+          .filter(r => typeof r.metadata.kind !== 'string')
+          .map(r => r.catalog)
+          .filter((c): c is string => !!c),
+      ),
     };
   }, [allRegistered, catalogs]);
 

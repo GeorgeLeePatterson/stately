@@ -1,14 +1,14 @@
 'use client';
 
+import { Button } from '@statelyjs/ui/components/base/button';
 import {
-  Button,
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/dropdown-menu';
 import type { Table } from '@tanstack/react-table';
 import { Settings2 } from 'lucide-react';
 

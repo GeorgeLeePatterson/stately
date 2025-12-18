@@ -1,16 +1,13 @@
-import { cn } from '@statelyjs/ui/base';
-import { Note } from '@statelyjs/ui/base/components';
+import { cn } from '@statelyjs/ui';
+import { Note } from '@statelyjs/ui/components';
+import { Card, CardContent, CardHeader, CardTitle } from '@statelyjs/ui/components/base/card';
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/select';
 import { Database } from 'lucide-react';
 import { useCallback } from 'react';
 import { AnyIsLoading } from '@/components/any-is-loading';

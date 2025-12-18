@@ -5,18 +5,18 @@
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "src/base/index.css",
+    "css": "src/index.css",
     "baseColor": "zinc",
     "cssVariables": true,
     "prefix": ""
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@/base/components",
-    "hooks": "@/base/hooks",
-    "lib": "@/base/lib",
-    "ui": "@/base/ui",
-    "utils": "@/base/lib/utils"
+    "components": "@/components",
+    "hooks": "@/hooks",
+    "lib": "@/lib",
+    "ui": "@/components/base",
+    "utils": "@/lib/utils"
   },
   "registries": {}
 }

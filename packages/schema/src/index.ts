@@ -62,7 +62,13 @@ export type {
   PluginNodeUnion,
 } from './plugin.js';
 export type { PluginAnyNode, StatelySchemaConfig, StatelySchemas } from './schema.js';
-export type { PluginFactory, Stately, StatelyBuilder } from './stately.js';
+export type {
+  CreateStatelyOptions,
+  PluginFactory,
+  RuntimeSchemaLoader,
+  Stately,
+  StatelyBuilder,
+} from './stately.js';
 export type {
   ValidateArgs,
   ValidateHook,

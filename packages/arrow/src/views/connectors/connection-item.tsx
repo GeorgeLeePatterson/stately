@@ -1,4 +1,4 @@
-import { toSpaceCase } from '@statelyjs/ui/base';
+import { toSpaceCase } from '@statelyjs/ui';
 import { createConnectionKindDisplay } from '@/lib/utils';
 import type { ConnectionMetadata } from '@/types/api';
 

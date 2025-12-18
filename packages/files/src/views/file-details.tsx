@@ -1,5 +1,5 @@
-import { cn } from '@statelyjs/ui/base/lib/utils';
-import { Button } from '@statelyjs/ui/base/ui';
+import { Button } from '@statelyjs/ui/components/base/button';
+import { cn } from '@statelyjs/ui/lib/utils';
 import { ArrowLeft, Download } from 'lucide-react';
 import { useFilesStatelyUi } from '@/context';
 import { useDownload } from '@/hooks/use-download';

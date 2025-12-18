@@ -5,6 +5,7 @@
  * Following the canonical pattern from @statelyjs/schema/core/plugin.ts and @statelyjs/ui/core/plugin.ts
  */
 
+import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
 import {
   type AnyUiPlugin,
   createOperations,
@@ -13,9 +14,8 @@ import {
   type DefineUiUtils,
   type UiNavigationOptions,
   type UiPluginFactory,
-} from '@statelyjs/ui/base';
-import type { RouteOption } from '@statelyjs/ui/base/layout';
-import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/ui/schema';
+} from '@statelyjs/ui';
+import type { RouteOption } from '@statelyjs/ui/layout';
 import { Database } from 'lucide-react';
 import { ARROW_OPERATIONS, type ArrowPaths } from './api';
 import { log } from './lib/utils';

@@ -1,13 +1,13 @@
-import { cn } from '@statelyjs/ui/base/lib/utils';
+import { Button } from '@statelyjs/ui/components/base/button';
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from '@statelyjs/ui/base/ui';
+} from '@statelyjs/ui/components/base/table';
+import { cn } from '@statelyjs/ui/lib/utils';
 import {
   type ColumnDef,
   createColumnHelper,

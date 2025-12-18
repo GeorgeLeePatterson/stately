@@ -21,23 +21,47 @@ import type { ValidateArgs, ValidateHook, ValidationResult } from './validation.
  */
 export type PluginFactory<S extends StatelySchemas<any, any>> = (runtime: Stately<S>) => Stately<S>;
 
+/**
+ * Loader for code-split runtime schemas.
+ * Returns a promise resolving to schemas that were split out during codegen.
+ */
+export type RuntimeSchemaLoader<S extends StatelySchemas<any, any>> = () => Promise<
+  Partial<S['config']['nodes']>
+>;
+
 export interface Stately<S extends StatelySchemas<any, any>> {
   schema: { document: DefineOpenApi<any>; nodes: StatelySchemaConfig<S>['nodes'] };
   data: S['data'];
   plugins: S['utils'];
   validate: (args: ValidateArgs<S>) => ValidationResult;
+  /**
+   * Optional loader for code-split runtime schemas.
+   * When provided, RecursiveRef nodes can resolve schemas that were split out during codegen.
+   */
+  loadRuntimeSchemas?: RuntimeSchemaLoader<S>;
 }
 
 export interface StatelyBuilder<S extends StatelySchemas<any, any>> extends Stately<S> {
   withPlugin(plugin: PluginFactory<S>): StatelyBuilder<S>;
 }
 
+export interface CreateStatelyOptions<S extends StatelySchemas<any, any>> {
+  /**
+   * Optional loader for code-split runtime schemas.
+   * Provide this when using codegen with entry points to enable lazy loading
+   * of schemas that were split out (e.g., recursive schemas).
+   */
+  runtimeSchemas?: RuntimeSchemaLoader<S>;
+}
+
 export function createStately<S extends StatelySchemas<any, any>>(
   openapi: DefineOpenApi<any>,
   generatedNodes: S['config']['nodes'],
+  options?: CreateStatelyOptions<S>,
 ): StatelyBuilder<S> {
   const baseState: Stately<S> = {
     data: {} as S['data'],
+    loadRuntimeSchemas: options?.runtimeSchemas,
     plugins: {} as S['utils'],
     schema: { document: openapi, nodes: generatedNodes },
     validate: args => runValidationPipeline(baseState.plugins, args),
