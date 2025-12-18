@@ -1,3 +1,13 @@
+/**
+ * Streaming Query Hook
+ *
+ * This module provides React hooks for executing streaming SQL queries
+ * using Apache Arrow's columnar format. It leverages React Query's
+ * experimental streaming support for efficient data loading.
+ *
+ * @module
+ */
+
 import {
   queryOptions,
   experimental_streamedQuery as streamedQuery,
@@ -18,32 +28,46 @@ import { log } from '@/lib/utils';
 import type { QueryRequest } from '@/types/api';
 import { useArrowApi } from './use-arrow-api';
 
-/** Query key for streaming queries - export for use with queryClient */
+/**
+ * Query key for streaming queries.
+ *
+ * Use this key with React Query's `queryClient` for cache invalidation
+ * or manual query management.
+ *
+ * @example
+ * ```typescript
+ * // Invalidate all streaming queries
+ * queryClient.invalidateQueries({ queryKey: STREAMING_QUERY_KEY });
+ * ```
+ */
 export const STREAMING_QUERY_KEY = ['arrow', 'streaming-query'] as const;
 
 /**
- * Result type for useStreamingQuery hook.
+ * Result type for the {@link useStreamingQuery} hook.
+ *
+ * Provides comprehensive access to streaming query state, including
+ * execution controls, status flags, and the underlying Arrow table data.
  */
 export interface UseStreamingQueryResult {
   /** The underlying React Query result for full API access */
   query: UseQueryResult<Table | null, Error>;
   /** Current store snapshot with table and metrics */
   snapshot: ArrowTableStoreSnapshot;
-  /** Subscribe to low-level store snapshots */
+  /** Subscribe to low-level store snapshots for fine-grained updates */
   onSnapshot: (cb: (snapshot: ArrowTableStoreSnapshot) => void) => () => void;
-  /** Execute a streaming query */
+  /** Execute a streaming query with the given SQL and connector */
   execute: (payload: QueryRequest) => void;
-  /** Call `reset` and additionally reset the query request value to undefined */
+  /** Reset the query state and clear the current query request */
   restart: () => void;
-  /** Abort the current streaming query */
+  /** Abort the current streaming query (cancels in-flight request) */
   abort: () => void;
   /** True if no query has been executed yet */
   isIdle: boolean;
-  /** True if waiting for first batch */
+  /** True if waiting for the first batch of results */
   isPending: boolean;
-  /** True if actively receiving batches */
+  /** True if actively receiving batches (query in progress) */
   isStreaming: boolean;
-  /** True if a sql query has been run */
+  /** True if a SQL query has been submitted */
   isActive: boolean;
 }
 
@@ -162,6 +186,31 @@ export function useStreamingQuery({
   };
 }
 
+/**
+ * Creates React Query options for streaming Arrow queries.
+ *
+ * This is a lower-level API for advanced use cases where you need direct
+ * control over the query configuration. Most users should prefer
+ * {@link useStreamingQuery} instead.
+ *
+ * @param options - Configuration for the streaming query
+ * @param options.store - The Arrow table store for accumulating results
+ * @param options.api - The Arrow API client
+ * @param options.payload - The query request (SQL and connector ID)
+ * @returns React Query options object for use with `useQuery`
+ *
+ * @example
+ * ```typescript
+ * // Advanced: Use with React Query directly
+ * const store = createArrowTableStore();
+ * const options = streamQueryOptions({
+ *   store,
+ *   api: arrowApi,
+ *   payload: { sql: 'SELECT * FROM table', connector_id: 'db1' },
+ * });
+ * const query = useQuery(options);
+ * ```
+ */
 export const streamQueryOptions = ({
   store,
   api,

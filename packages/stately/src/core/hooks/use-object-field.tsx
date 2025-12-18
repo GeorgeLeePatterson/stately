@@ -3,25 +3,94 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
+/**
+ * State for a merged field from `allOf` composition.
+ */
 export interface MergedField<S extends Schemas = Schemas> {
+  /** The schema node for this merged section */
   schema: S['plugin']['AnyNode'];
+  /** Current values for fields in this merged section */
   value: AnyRecord;
 }
 
+/**
+ * Complete state and handlers for an object field editor.
+ */
 export interface ObjectFieldState<S extends Schemas = Schemas> {
+  /** Current form data (may differ from original value if dirty) */
   formData: Record<string, any>;
+  /** Handle a single field value change */
   handleFieldChange: (fieldName: string, isNullable: boolean, newValue: any) => void;
+  /** Handle changes to merged fields (from allOf composition) */
   handleMergedFieldChange: (newMergedData: AnyRecord) => void;
+  /** Handle changes to additional properties (dynamic keys) */
   handleAdditionalFieldChange: (newAdditionalData: AnyRecord) => void;
+  /** Save the current form data */
   handleSave: () => void;
+  /** Reset form data to original value */
   handleCancel: () => void;
+  /** Sorted array of [fieldName, fieldSchema] tuples */
   fields: Array<[string, S['plugin']['AnyNode']]>;
+  /** Merged schemas with their current values (from allOf) */
   mergedFields: Array<MergedField<S>>;
+  /** Values for additional properties not in schema */
   extraFieldsValue: AnyRecord;
+  /** Whether form data differs from original value */
   isDirty: boolean;
+  /** Whether current form data passes validation */
   isValid: boolean;
 }
 
+/**
+ * Manage state for editing an object-type schema field.
+ *
+ * Provides comprehensive state management for complex object editing including:
+ * - Regular property fields
+ * - Merged fields from `allOf` composition
+ * - Additional properties (dynamic keys)
+ * - Dirty tracking and validation
+ *
+ * @typeParam S - Your application's schema type
+ *
+ * @param options - Hook options
+ * @param options.label - Optional label for validation error paths
+ * @param options.node - The object schema node
+ * @param options.value - Current value of the object
+ * @param options.onSave - Callback when save is triggered
+ *
+ * @returns Complete state and handlers for the object editor
+ *
+ * @example
+ * ```tsx
+ * function ObjectEditor({ schema, value, onSave }) {
+ *   const state = useObjectField({
+ *     node: schema,
+ *     value,
+ *     onSave,
+ *   });
+ *
+ *   return (
+ *     <div>
+ *       {state.fields.map(([name, fieldSchema]) => (
+ *         <Field
+ *           key={name}
+ *           name={name}
+ *           schema={fieldSchema}
+ *           value={state.formData[name]}
+ *           onChange={(v) => state.handleFieldChange(name, false, v)}
+ *         />
+ *       ))}
+ *       <Button onClick={state.handleSave} disabled={!state.isDirty || !state.isValid}>
+ *         Save
+ *       </Button>
+ *       <Button onClick={state.handleCancel} disabled={!state.isDirty}>
+ *         Cancel
+ *       </Button>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
 export function useObjectField<S extends Schemas = Schemas>({
   label,
   node,

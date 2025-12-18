@@ -1,8 +1,36 @@
 /**
  * @statelyjs/files
  *
- * File system integration plugin for Stately UI
- * Provides relative path handling, file browsing, and file operations
+ * @packageDocumentation
+ *
+ * File system integration plugin for Stately UI.
+ *
+ * This package provides comprehensive file management capabilities including:
+ * - File browsing with directory navigation
+ * - File uploads with automatic versioning
+ * - File downloads from multiple storage targets
+ * - Relative path field components for forms
+ * - File version history management
+ *
+ * ## Quick Start
+ *
+ * ```typescript
+ * import { createStately } from '@statelyjs/schema';
+ * import { statelyUi } from '@statelyjs/stately';
+ * import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
+ *
+ * // Schema configuration
+ * const stately = createStately()
+ *   .plugin(filesPlugin())
+ *   .build();
+ *
+ * // UI configuration
+ * const ui = statelyUi({
+ *   plugins: [filesUiPlugin()],
+ * });
+ * ```
+ *
+ * @module
  */
 
 // Plugin

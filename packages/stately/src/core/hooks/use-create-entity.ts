@@ -4,6 +4,42 @@ import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
 
+/**
+ * Create a new entity.
+ *
+ * Returns a React Query mutation that creates an entity and automatically
+ * invalidates the entity list cache on success.
+ *
+ * @typeParam Schema - Your application's schema type
+ *
+ * @param options - Hook options
+ * @param options.entity - The entity type name (e.g., 'Pipeline', 'SourceConfig')
+ * @param options.queryClient - Optional QueryClient for cache invalidation
+ *
+ * @returns A React Query mutation with `mutate` and `mutateAsync` functions
+ *
+ * @example
+ * ```tsx
+ * function CreatePipelineForm() {
+ *   const queryClient = useQueryClient();
+ *   const { mutate, isPending } = useCreateEntity<MySchemas>({
+ *     entity: 'Pipeline',
+ *     queryClient,
+ *   });
+ *
+ *   const handleSubmit = (formData: PipelineData) => {
+ *     mutate(formData, {
+ *       onSuccess: (result) => {
+ *         toast.success('Pipeline created');
+ *         navigate(`/pipelines/${result.id}`);
+ *       },
+ *     });
+ *   };
+ *
+ *   return <PipelineForm onSubmit={handleSubmit} disabled={isPending} />;
+ * }
+ * ```
+ */
 export function useCreateEntity<Schema extends Schemas = Schemas>({
   entity,
   queryClient,

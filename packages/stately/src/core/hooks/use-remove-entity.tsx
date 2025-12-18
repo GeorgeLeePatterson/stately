@@ -6,6 +6,52 @@ import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
 
+/**
+ * Remove an entity with confirmation dialog support.
+ *
+ * Returns a mutation for deleting entities along with state and helpers
+ * for rendering a confirmation dialog. Call `setRemoveEntityId(id)` to
+ * trigger the confirmation flow, then render `confirmRemove()` in your component.
+ *
+ * @typeParam Schema - Your application's schema type
+ *
+ * @param options - Hook options
+ * @param options.entity - The entity type name (e.g., 'Pipeline', 'SourceConfig')
+ * @param options.queryClient - Optional QueryClient for cache invalidation
+ * @param options.onConfirmed - Callback fired after successful deletion
+ *
+ * @returns An object with:
+ *   - `mutation` - The React Query mutation
+ *   - `removeEntityId` - The ID currently pending removal (if any)
+ *   - `setRemoveEntityId` - Set an ID to trigger the confirmation dialog
+ *   - `confirmRemove` - Render function for the confirmation dialog
+ *
+ * @example
+ * ```tsx
+ * function PipelineList() {
+ *   const queryClient = useQueryClient();
+ *   const { setRemoveEntityId, confirmRemove } = useRemoveEntity<MySchemas>({
+ *     entity: 'Pipeline',
+ *     queryClient,
+ *     onConfirmed: () => toast.success('Pipeline deleted'),
+ *   });
+ *
+ *   return (
+ *     <>
+ *       <ul>
+ *         {pipelines.map(p => (
+ *           <li key={p.id}>
+ *             {p.name}
+ *             <Button onClick={() => setRemoveEntityId(p.id)}>Delete</Button>
+ *           </li>
+ *         ))}
+ *       </ul>
+ *       {confirmRemove(id => pipelines.find(p => p.id === id)?.name)}
+ *     </>
+ *   );
+ * }
+ * ```
+ */
 export function useRemoveEntity<Schema extends Schemas = Schemas>({
   entity,
   queryClient,

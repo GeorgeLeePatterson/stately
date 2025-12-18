@@ -3,6 +3,51 @@ import { useCallback, useEffect, useState } from 'react';
 import { useFilesStatelyUi } from '../context';
 import type { FileInfo } from '../types/api';
 
+/**
+ * Hook for browsing and navigating the file system.
+ *
+ * Provides directory navigation, file listing, and selection functionality
+ * for building file browser UIs.
+ *
+ * @param options - Configuration options
+ * @param options.initialPath - Starting directory path
+ * @param options.onSelectFile - Callback when a file is selected
+ * @param options.isDisabled - Whether to disable the query
+ * @returns Object with navigation state and controls
+ *
+ * @example
+ * ```typescript
+ * function FileBrowser() {
+ *   const {
+ *     currentPath,
+ *     queryResults,
+ *     handleEntryClick,
+ *     navigateUp,
+ *   } = useFileExplore({
+ *     onSelectFile: (file, path) => {
+ *       console.log(`Selected: ${path}/${file.name}`);
+ *     },
+ *   });
+ *
+ *   if (queryResults.isLoading) return <Spinner />;
+ *
+ *   return (
+ *     <div>
+ *       <Button onClick={navigateUp} disabled={!currentPath}>
+ *         Up
+ *       </Button>
+ *       <ul>
+ *         {queryResults.data?.map(entry => (
+ *           <li key={entry.name} onClick={() => handleEntryClick(entry)}>
+ *             {entry.type === 'directory' ? '📁' : '📄'} {entry.name}
+ *           </li>
+ *         ))}
+ *       </ul>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
 export function useFileExplore({
   initialPath,
   onSelectFile,

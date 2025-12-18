@@ -2,11 +2,24 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useFilesStatelyUi } from '@/context';
 
+/**
+ * Target directory for file downloads.
+ *
+ * - `cache`: Temporary cached files
+ * - `data`: Persistent data files
+ * - `upload`: User-uploaded files (supports versioning)
+ */
 export type DownloadTarget = 'cache' | 'data' | 'upload';
 
+/**
+ * Parameters for the download mutation.
+ */
 export interface DownloadParams {
+  /** The target directory to download from */
   target: DownloadTarget;
+  /** Path to the file within the target directory */
   path: string;
+  /** Optional version UUID for versioned files (upload target only) */
   version?: string;
 }
 
@@ -15,6 +28,28 @@ export interface DownloadParams {
  *
  * Triggers a browser download for files in cache, data, or upload directories.
  * For versioned files in the upload directory, an optional version UUID can be provided.
+ *
+ * @param options - Configuration options
+ * @param options.onSuccess - Callback invoked after successful download
+ * @returns React Query mutation for triggering downloads
+ *
+ * @example
+ * ```typescript
+ * function DownloadButton({ path }: { path: string }) {
+ *   const download = useDownload({
+ *     onSuccess: () => console.log('Download complete'),
+ *   });
+ *
+ *   return (
+ *     <Button
+ *       onClick={() => download.mutate({ target: 'upload', path })}
+ *       disabled={download.isPending}
+ *     >
+ *       {download.isPending ? 'Downloading...' : 'Download'}
+ *     </Button>
+ *   );
+ * }
+ * ```
  */
 export const useDownload = ({ onSuccess }: { onSuccess?: () => void } = {}) => {
   const runtime = useFilesStatelyUi();

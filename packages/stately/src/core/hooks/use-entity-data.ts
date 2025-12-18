@@ -4,6 +4,36 @@ import type { CoreEntity, CoreStateEntry } from '@/core';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
+/**
+ * Fetch a single entity by its ID.
+ *
+ * Uses React Query to fetch and cache entity data. The query is automatically
+ * disabled when `identifier` is not provided or when `disabled` is true.
+ *
+ * @typeParam Schema - Your application's schema type
+ *
+ * @param options - Hook options
+ * @param options.entity - The entity type name (e.g., 'Pipeline', 'SourceConfig')
+ * @param options.identifier - The entity's unique ID
+ * @param options.disabled - Set to true to prevent fetching
+ *
+ * @returns A React Query result with the entity data
+ *
+ * @example
+ * ```tsx
+ * function PipelineDetail({ id }: { id: string }) {
+ *   const { data, isLoading, error } = useEntityData<MySchemas>({
+ *     entity: 'Pipeline',
+ *     identifier: id,
+ *   });
+ *
+ *   if (isLoading) return <Spinner />;
+ *   if (error) return <Error message={error.message} />;
+ *
+ *   return <div>{data?.entity.name}</div>;
+ * }
+ * ```
+ */
 export function useEntityData<Schema extends Schemas = Schemas>({
   entity,
   identifier,

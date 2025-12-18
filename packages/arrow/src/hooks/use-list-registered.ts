@@ -3,15 +3,54 @@ import { useMemo } from 'react';
 import type { ConnectionMetadata } from '@/types/api';
 import { useArrowApi } from './use-arrow-api';
 
+/** Query key for registered connections queries, used for cache invalidation. */
 export const LIST_REGISTERED_QUERY_KEY = ['catalogs'] as const;
 
+/**
+ * Categorized catalog registrations by connection type.
+ */
 export interface CatalogRegistration {
+  /** Catalogs that exist but are not yet registered */
   catalogs: Set<string>;
+  /** Registered database connections */
   database: Set<string>;
+  /** Registered object store connections (S3, GCS, etc.) */
   object_store: Set<string>;
+  /** Other registered connection types */
   other: Set<string>;
 }
 
+/**
+ * Hook to list registered connections with categorization.
+ *
+ * Fetches all registered connections and categorizes them by type (database,
+ * object store, etc.). Also merges in recently registered connections that
+ * may not yet be reflected in the API response.
+ *
+ * @param options - Configuration options
+ * @param options.key - Optional additional key segment for query differentiation
+ * @param options.recentlyRegistered - Recently registered connections to merge
+ * @param options.catalogs - Known catalog names for comparison
+ * @param options.disabled - Whether to disable the query
+ * @returns Object with all registered connections, query result, and categorized catalogs
+ *
+ * @example
+ * ```typescript
+ * function RegistrationStatus() {
+ *   const { registeredCatalogs, allRegistered } = useListRegistered({
+ *     catalogs: ['sales', 'analytics'],
+ *   });
+ *
+ *   return (
+ *     <div>
+ *       <h3>Databases: {registeredCatalogs.database.size}</h3>
+ *       <h3>Object Stores: {registeredCatalogs.object_store.size}</h3>
+ *       <h3>Unregistered: {registeredCatalogs.catalogs.size}</h3>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
 export function useListRegistered({
   key,
   recentlyRegistered = [],

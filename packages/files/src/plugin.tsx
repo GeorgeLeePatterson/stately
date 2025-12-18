@@ -1,8 +1,56 @@
 /**
  * @statelyjs/files - Plugin Implementation
  *
- * This file contains both the schema plugin and UI plugin for the files package.
- * Following the canonical pattern from @statelyjs/stately/core/plugin.ts
+ * @packageDocumentation
+ *
+ * This module provides the Files plugin for Stately, enabling file system
+ * integration including file browsing, uploads, downloads, and versioning.
+ * The package includes both a schema plugin for runtime configuration and
+ * a UI plugin for component registration.
+ *
+ * ## Overview
+ *
+ * The Files plugin enables:
+ * - File browsing with directory navigation
+ * - File uploads with automatic versioning
+ * - File downloads from cache, data, or upload directories
+ * - Relative path field components for forms
+ * - File version management
+ *
+ * ## Usage
+ *
+ * ### Schema Plugin
+ *
+ * Add the schema plugin to your Stately configuration:
+ *
+ * ```typescript
+ * import { createStately } from '@statelyjs/schema';
+ * import { filesPlugin } from '@statelyjs/files';
+ *
+ * const stately = createStately()
+ *   .plugin(filesPlugin())
+ *   .build();
+ * ```
+ *
+ * ### UI Plugin
+ *
+ * Add the UI plugin to register file-related components and operations:
+ *
+ * ```typescript
+ * import { statelyUi } from '@statelyjs/stately';
+ * import { filesUiPlugin } from '@statelyjs/files';
+ *
+ * const ui = statelyUi({
+ *   plugins: [
+ *     filesUiPlugin({
+ *       api: { pathPrefix: '/api/files' },
+ *       navigation: { routes: { label: 'File Manager' } },
+ *     }),
+ *   ],
+ * });
+ * ```
+ *
+ * @module
  */
 
 import { CoreNodeType } from '@statelyjs/stately/core';
@@ -31,15 +79,34 @@ import { type FilesUiUtils, type FilesUtils, filesUiUtils, log } from './utils';
 // SCHEMA PLUGIN
 // =============================================================================
 
+/** Plugin identifier for the Files plugin. */
 export const FILES_PLUGIN_NAME = 'files' as const;
 
+/**
+ * Configuration options for the Files plugin.
+ *
+ * @example
+ * ```typescript
+ * const options: FilesOptions = {
+ *   api: { pathPrefix: '/api/v1/files' },
+ *   navigation: { routes: { label: 'Documents', icon: FileIcon } },
+ * };
+ * ```
+ */
 export type FilesOptions = DefineOptions<{
+  /** API configuration for Files endpoints */
   api?: { pathPrefix?: string };
+  /** Navigation configuration for Files routes */
   navigation?: { routes?: UiNavigationOptions['routes'] };
 }>;
 
 /**
- * Files schema plugin augment type
+ * Files schema plugin type definition.
+ *
+ * This type augments the Stately schema runtime with file-related
+ * node types, data structures, and utilities.
+ *
+ * @see {@link filesPlugin} - Factory function to create this plugin
  */
 export type FilesPlugin = DefinePlugin<
   typeof FILES_PLUGIN_NAME,
@@ -49,12 +116,27 @@ export type FilesPlugin = DefinePlugin<
   FilesUtils
 >;
 
+/** Default navigation route configuration for the Files plugin. */
 export const filesRoutes: RouteOption = { icon: Files, label: 'Files', to: '/files' };
 
 /**
- * Create files schema plugin
+ * Creates the Files schema plugin factory.
  *
- * Registers file-related utilities for use in components.
+ * This plugin registers file-related types and utilities into the Stately
+ * schema runtime. It should be used with `createStately().plugin()`.
+ *
+ * @typeParam S - The schemas type, defaults to base Schemas
+ * @returns A plugin factory function that augments the runtime
+ *
+ * @example
+ * ```typescript
+ * import { createStately } from '@statelyjs/schema';
+ * import { filesPlugin } from '@statelyjs/files';
+ *
+ * const stately = createStately()
+ *   .plugin(filesPlugin())
+ *   .build();
+ * ```
  */
 export function filesPlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
   return runtime => {
@@ -71,7 +153,12 @@ export function filesPlugin<S extends Schemas<any, any> = Schemas>(): PluginFact
 // =============================================================================
 
 /**
- * Files UI plugin augment type
+ * Files UI plugin type definition.
+ *
+ * This type defines the shape of the Files UI plugin, including its
+ * API operations, configuration options, and utilities.
+ *
+ * @see {@link filesUiPlugin} - Factory function to create this plugin
  */
 export type FilesUiPlugin = DefineUiPlugin<
   typeof FILES_PLUGIN_NAME,
@@ -83,9 +170,36 @@ export type FilesUiPlugin = DefineUiPlugin<
 >;
 
 /**
- * Create files UI plugin
+ * Creates the Files UI plugin factory.
  *
- * Registers file-related components and operations.
+ * This plugin registers file-related components, API operations, and
+ * navigation routes into the Stately UI runtime. It provides:
+ * - RelativePath field components for edit and view modes
+ * - String primitive transformers
+ * - Typed API operations for file management
+ *
+ * @typeParam Schema - The schemas type, defaults to base Schemas
+ * @typeParam Augments - Additional UI plugins already registered
+ * @param options - Optional configuration for API paths and navigation
+ * @returns A UI plugin factory function that augments the runtime
+ *
+ * @example
+ * ```typescript
+ * import { statelyUi } from '@statelyjs/stately';
+ * import { filesUiPlugin } from '@statelyjs/files';
+ *
+ * const ui = statelyUi({
+ *   plugins: [
+ *     filesUiPlugin({
+ *       api: { pathPrefix: '/api/files' },
+ *     }),
+ *   ],
+ * });
+ *
+ * // Access Files API in components
+ * const { plugins } = useStatelyUi();
+ * const result = await plugins.files.api.list_files();
+ * ```
  */
 export function filesUiPlugin<
   Schema extends Schemas<any, any> = Schemas,

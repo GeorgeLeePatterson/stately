@@ -3,6 +3,46 @@ import { toast } from 'sonner';
 import { useFilesStatelyUi } from '@/context';
 import type { FileUploadResponse } from '@/types/api';
 
+/**
+ * Hook to save text content as a file.
+ *
+ * Creates a new file or updates an existing file with the provided
+ * text content. Useful for saving editor content, generated data, etc.
+ *
+ * @param options - Configuration options
+ * @param options.onSuccess - Callback invoked with the upload response
+ * @returns React Query mutation for saving files
+ *
+ * @example
+ * ```typescript
+ * function TextEditor() {
+ *   const [content, setContent] = useState('');
+ *   const saveMutation = useSaveFile({
+ *     onSuccess: (data) => {
+ *       console.log('Saved to:', data.path);
+ *     },
+ *   });
+ *
+ *   return (
+ *     <div>
+ *       <textarea
+ *         value={content}
+ *         onChange={e => setContent(e.target.value)}
+ *       />
+ *       <Button
+ *         onClick={() => saveMutation.mutate({
+ *           content,
+ *           filename: 'document.txt',
+ *         })}
+ *         disabled={saveMutation.isPending}
+ *       >
+ *         Save
+ *       </Button>
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
 export const useSaveFile = ({ onSuccess }: { onSuccess: (data: FileUploadResponse) => void }) => {
   const runtime = useFilesStatelyUi();
   const filesApi = runtime.plugins.files?.api;

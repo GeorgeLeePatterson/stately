@@ -4,6 +4,40 @@ import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
 import { useStatelyUi } from '@/index';
 
+/**
+ * Get the schema node for an entity type.
+ *
+ * Retrieves the parsed object schema for a given entity type, which can be used
+ * for form generation, validation, or custom rendering. Returns either the schema
+ * node or an error message if the schema is not found or invalid.
+ *
+ * @typeParam Schema - Your application's schema type
+ *
+ * @param entityType - The entity type name (e.g., 'Pipeline', 'SourceConfig')
+ * @param entitySchema - Optional pre-fetched schema to use instead of looking up
+ *
+ * @returns Either `{ node }` with the schema, or `{ error }` with an error message
+ *
+ * @example
+ * ```tsx
+ * function EntityForm({ entityType }: { entityType: string }) {
+ *   const result = useEntitySchema<MySchemas>(entityType);
+ *
+ *   if (result.error) {
+ *     return <Error message={result.error} />;
+ *   }
+ *
+ *   const { node } = result;
+ *   return (
+ *     <form>
+ *       {Object.entries(node.properties).map(([name, fieldSchema]) => (
+ *         <FieldEdit key={name} name={name} node={fieldSchema} />
+ *       ))}
+ *     </form>
+ *   );
+ * }
+ * ```
+ */
 export function useEntitySchema<Schema extends Schemas>(
   entityType: CoreStateEntry<Schema>,
   entitySchema?: Schema['plugin']['Nodes']['object'],
