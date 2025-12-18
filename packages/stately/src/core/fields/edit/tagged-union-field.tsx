@@ -93,11 +93,11 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
   return (
     <div className="space-y-3 min-w-0">
       <div className="flex flex-col gap-2">
-        <Select onValueChange={handleDiscriminatorChange} value={currentTag || ''}>
+        <Select onValueChange={v => v && handleDiscriminatorChange(v)} value={currentTag || ''}>
           <SelectTrigger id={formId}>
-            <SelectValue
-              placeholder={`Select ${discriminatorLabel?.toLowerCase() || 'Variant'}...`}
-            />
+            <SelectValue>
+              {v => v || `Select ${discriminatorLabel?.toLowerCase() || 'Variant'}...`}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {node.variants.map((variant: (typeof node.variants)[number]) => (

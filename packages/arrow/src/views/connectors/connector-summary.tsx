@@ -211,14 +211,16 @@ export function ConnectorSummary({
       <div className="connector-summary flex flex-col h-full space-y-2">
         {/* Simple list search */}
         <ButtonGroup className={cn('flex-auto w-full min-w-0')}>
-          <ButtonGroupText asChild>
-            <Label
-              className="text-sm whitespace-nowrap"
-              htmlFor={`connector-summary-filter-${formId}`}
-            >
-              {toTitleCase(summary.type)}
-            </Label>
-          </ButtonGroupText>
+          <ButtonGroupText
+            render={
+              <Label
+                className="text-sm whitespace-nowrap"
+                htmlFor={`connector-summary-filter-${formId}`}
+              >
+                {toTitleCase(summary.type)}
+              </Label>
+            }
+          />
 
           {/* List search input */}
           <InputGroup className="relative bg-background">

@@ -39,6 +39,8 @@ export interface ObjectFieldState<S extends Schemas = Schemas> {
   isDirty: boolean;
   /** Whether current form data passes validation */
   isValid: boolean;
+  /** Counter that increments on cancel - use as key to force child remount */
+  resetKey: number;
 }
 
 /**
@@ -105,6 +107,7 @@ export function useObjectField<S extends Schemas = Schemas>({
   const { schema } = useStatelyUi<S, []>();
   const [formData, setFormData] = useState<Record<string, any>>(value ?? {});
   const [isDirty, setIsDirty] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const changes = useRef<Map<string, any>>(new Map());
 
@@ -233,11 +236,18 @@ export function useObjectField<S extends Schemas = Schemas>({
 
     setFormData(value ?? {});
     setIsDirty(false);
+    setResetKey(k => k + 1);
   }, [value]);
 
   const changed = useMemo(() => {
-    if (!value && !formData) return false;
-    if ((!value && formData) || (value && !formData)) return true;
+    // Treat empty objects the same as undefined/null
+    const isValueEmpty = !value || (typeof value === 'object' && Object.keys(value).length === 0);
+    const isFormDataEmpty =
+      !formData || (typeof formData === 'object' && Object.keys(formData).length === 0);
+
+    if (isValueEmpty && isFormDataEmpty) return false;
+    if ((isValueEmpty && !isFormDataEmpty) || (!isValueEmpty && isFormDataEmpty)) return true;
+
     const safeValue = value ?? {};
     const safeFormData = formData ?? {};
 
@@ -289,5 +299,6 @@ export function useObjectField<S extends Schemas = Schemas>({
     isDirty: changed,
     isValid,
     mergedFields,
+    resetKey,
   } as ObjectFieldState;
 }

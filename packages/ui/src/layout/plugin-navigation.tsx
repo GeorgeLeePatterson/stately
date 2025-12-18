@@ -58,43 +58,49 @@ export function PluginNavigation({
   if (!items?.length) {
     return (
       <SidebarMenuItem key={`app-link-${groupTo}`}>
-        <SidebarMenuButton asChild isActive={currentPath === `${groupBasePath}${to}`}>
-          <a href={groupTo} onClick={() => handleNavClick(`${groupBasePath}${to}`, groupLabel)}>
-            {GroupIcon && <GroupIcon />}
-            <span>{groupLabel}</span>
-            {groupBadge}
-          </a>
-        </SidebarMenuButton>
+        <SidebarMenuButton
+          isActive={currentPath === `${groupBasePath}${to}`}
+          render={
+            <a href={groupTo} onClick={() => handleNavClick(`${groupBasePath}${to}`, groupLabel)}>
+              {GroupIcon && <GroupIcon />}
+              <span>{groupLabel}</span>
+              {groupBadge}
+            </a>
+          }
+        />
       </SidebarMenuItem>
     );
   }
 
   return (
-    <Collapsible asChild className="group/collapsible" onOpenChange={setIsOpen} open={isOpen}>
+    <Collapsible className="group/collapsible" onOpenChange={setIsOpen} open={isOpen}>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild tooltip={groupLabel}>
-          <a href={groupTo} onClick={() => handleNavClick(groupTo, groupLabel)}>
-            {GroupIcon && <GroupIcon />}
-            <span>{groupLabel}</span>
-            {groupBadge}
-            <CollapsibleTrigger
-              className="ml-auto"
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                setIsOpen(!isOpen);
-              }}
-            >
-              <ChevronRight
-                className={cn([
-                  'transition-transform duration-200',
-                  'group-data-[state=open]/collapsible:rotate-90',
-                  'text-xs w-4 x-4 cursor-pointer',
-                ])}
-              />
-            </CollapsibleTrigger>
-          </a>
-        </SidebarMenuButton>
+        <SidebarMenuButton
+          render={
+            <a href={groupTo} onClick={() => handleNavClick(groupTo, groupLabel)}>
+              {GroupIcon && <GroupIcon />}
+              <span>{groupLabel}</span>
+              {groupBadge}
+              <CollapsibleTrigger
+                className="ml-auto"
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsOpen(!isOpen);
+                }}
+              >
+                <ChevronRight
+                  className={cn([
+                    'transition-transform duration-200',
+                    'group-data-open/collapsible:rotate-90',
+                    'text-xs w-4 h-4 cursor-pointer',
+                  ])}
+                />
+              </CollapsibleTrigger>
+            </a>
+          }
+          // tooltip={groupLabel}
+        />
         <CollapsibleContent>
           <SidebarMenuSub>
             {items
@@ -104,19 +110,19 @@ export function PluginNavigation({
               .map(({ badge: PluginBadge, ...item }) => (
                 <SidebarMenuSubItem key={`plugin-link-${item.to}`}>
                   <SidebarMenuSubButton
-                    asChild
                     isActive={currentPath === `${groupBasePath}${item.to}`}
-                  >
-                    <a
-                      href={`${groupBasePath}${item.to}`}
-                      onClick={() => handleNavClick(`${groupBasePath}${item.to}`, item.label)}
-                      title={`${item.label} -> ${item.to}`}
-                    >
-                      {item.icon && <item.icon />}
-                      <span>{item.label}</span>
-                      {PluginBadge && <PluginBadge {...item} />}
-                    </a>
-                  </SidebarMenuSubButton>
+                    render={
+                      <a
+                        href={`${groupBasePath}${item.to}`}
+                        onClick={() => handleNavClick(`${groupBasePath}${item.to}`, item.label)}
+                        title={`${item.label} -> ${item.to}`}
+                      >
+                        {item.icon && <item.icon />}
+                        <span>{item.label}</span>
+                        {PluginBadge && <PluginBadge {...item} />}
+                      </a>
+                    }
+                  />
                 </SidebarMenuSubItem>
               ))}
           </SidebarMenuSub>

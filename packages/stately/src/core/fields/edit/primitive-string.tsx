@@ -120,7 +120,7 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>(
     <ButtonGroup className="flex-1 min-w-0 w-full">
       {/* Mode selector dropdown */}
       <ButtonGroup>
-        <Select onValueChange={v => setMode(v)} value={currentMode}>
+        <Select onValueChange={v => v && setMode(v)} value={currentMode}>
           <SelectTrigger className="w-auto min-w-12 gap-1.5 bg-background" id={`select-${formId}`}>
             <Icon />
           </SelectTrigger>

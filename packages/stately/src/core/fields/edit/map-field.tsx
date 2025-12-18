@@ -78,7 +78,20 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   const formId_ = useId();
   const formId = parentFormId ? `${parentFormId}-${formId_}` : formId_;
 
-  const [existing, viewMore, setViewMore] = useViewMore(formData, MAX_ITEMS_VIEW_DEFAULT);
+  const [existingOpen, setExistingOpen] = useState<Set<string>>(new Set());
+  const [viewing, allExisting, viewMore, setViewMore] = useViewMore(
+    formData,
+    MAX_ITEMS_VIEW_DEFAULT,
+  );
+
+  const toggleExistingOpen = useCallback((dir: 'open' | 'close', key: string) => {
+    setExistingOpen(prev => {
+      const newSet = new Set(prev);
+      if (dir === 'open') newSet.add(key);
+      else newSet.delete(key);
+      return newSet;
+    });
+  }, []);
 
   // Validate map and create save label
   const isValid = !isRequired || Object.keys(formData).length > 0;
@@ -154,7 +167,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
           // View and Edit Existing Items
           <div className="space-y-2">
             <ItemGroup className="space-y-3 min-w-0 flex-1">
-              {existing.map(([key, itemValue]) => (
+              {viewing.map(([key, itemValue]) => (
                 <KeyValue
                   active={newKeys.includes(key)}
                   after={
@@ -163,7 +176,10 @@ export function MapEdit<Schema extends Schemas = Schemas>({
                       {editKey === key ? (
                         <Button
                           className="h-8 cursor-pointer"
-                          onClick={() => setEditKey(undefined)}
+                          onClick={() => {
+                            setEditKey(undefined);
+                            toggleExistingOpen('close', key);
+                          }}
                           size="sm"
                           type="button"
                           variant="ghost"
@@ -177,6 +193,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
                           onClick={() => {
                             setEditKey(key);
                             setEditValue(itemValue);
+                            toggleExistingOpen('open', key);
                           }}
                           size="sm"
                           type="button"
@@ -199,8 +216,12 @@ export function MapEdit<Schema extends Schemas = Schemas>({
                     </span>
                   }
                   itemKey={key}
-                  key={`${key}-${key === editKey ? String(editValue) : ''}`}
-                  open={key === editKey}
+                  key={`${key}-${existingOpen.has(key)}-${key === editKey ? String(editValue) : ''}`}
+                  onOpen={o => {
+                    toggleExistingOpen(o ? 'open' : 'close', key);
+                    if (!o && key === editKey) setEditKey(undefined);
+                  }}
+                  open={existingOpen.has(key)}
                 >
                   {key === editKey ? (
                     <ValueEdit
@@ -220,7 +241,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
               ))}
 
               {/* View More/Less */}
-              {existing.length > MAX_ITEMS_VIEW_DEFAULT && (
+              {allExisting.length > MAX_ITEMS_VIEW_DEFAULT && (
                 <Item className="p-1" size="sm" variant="muted">
                   <ItemContent
                     className={cn(

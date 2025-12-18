@@ -34,7 +34,7 @@ export function ConnectorSelectCard({
   ...rest
 }: ConnectorSelectCardProps & Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'>) {
   const handleSelect = useCallback(
-    (id: string) => onSelect(connectors.find(connector => connector.id === id)),
+    (id: string | null) => onSelect(connectors.find(connector => connector.id === id)),
     [connectors, onSelect],
   );
 
@@ -63,7 +63,7 @@ export function ConnectorSelectCard({
               disabled={isLoading}
               id="connector-selector"
             >
-              <SelectValue placeholder="Select connector" />
+              <SelectValue>{value => value ?? 'Select connector'}</SelectValue>
             </SelectTrigger>
             <SelectContent>
               {connectors.map(connector => (

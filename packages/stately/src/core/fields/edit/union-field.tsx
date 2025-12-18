@@ -134,9 +134,12 @@ export function UnionEdit<Schema extends Schemas = Schemas>({
   return (
     <div className="space-y-3 border rounded-md p-2 min-w-0">
       <div className="flex flex-col gap-2 max-w-full min-w-0">
-        <Select onValueChange={handleVariantChange} value={selectedIndex?.toString() ?? ''}>
+        <Select
+          onValueChange={v => v && handleVariantChange(v)}
+          value={selectedIndex?.toString() ?? ''}
+        >
           <SelectTrigger className="max-w-full" id={formId}>
-            <SelectValue placeholder={`Select ${label || 'variant'}...`} />
+            <SelectValue>{v => v || `Select ${label || 'variant'}...`}</SelectValue>
           </SelectTrigger>
           <SelectContent className="max-w-[80dvw] overflow-hidden">
             {node.variants.map((variant, index) => (

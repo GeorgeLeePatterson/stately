@@ -117,6 +117,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
     isDirty,
     isValid,
     mergedFields,
+    resetKey,
   } = useObjectField<Schema>({ label, node, onSave: onChange, value });
 
   return (
@@ -127,7 +128,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
           {mergedFields.length > 0 && (
             <>
               {mergedFields.map(({ schema, value }, index) => (
-                <Fragment key={`merged-${schema.nodeType}-${index}`}>
+                <Fragment key={`merged-${schema.nodeType}-${index}-${resetKey}`}>
                   <BaseForm.FieldEdit<Schema>
                     formId={generateFieldFormId(schema.nodeType, `merged-${index}`, formId)}
                     isRequired
@@ -167,7 +168,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
             );
 
             return (
-              <Fragment key={propName}>
+              <Fragment key={`${propName}-${resetKey}`}>
                 {/* Nullable takes care of its own label */}
                 {(propLabel || propDescription) && !isWrappedNullable && (
                   <FieldContent>
@@ -210,6 +211,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
               <BaseForm.FieldEdit<Schema>
                 formId={generateFieldFormId(CoreNodeType.Map, 'additional-properties', formId)}
                 isWizard={isWizard}
+                key={`additional-properties-${resetKey}`}
                 node={{ nodeType: CoreNodeType.Map, valueSchema: node.additionalProperties }}
                 onChange={v => handleAdditionalFieldChange(v as AnyRecord)}
                 value={extraFieldsValue}

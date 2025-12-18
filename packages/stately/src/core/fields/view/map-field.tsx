@@ -18,7 +18,6 @@ import type { FieldViewProps } from '@statelyjs/ui/form';
 import { BaseForm } from '@statelyjs/ui/form';
 import { useViewMore } from '@statelyjs/ui/hooks';
 import { ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown, Variable } from 'lucide-react';
-import { useState } from 'react';
 import type { Schemas } from '@/core/schema';
 
 export const MAX_ITEMS_VIEW_DEFAULT = 3;
@@ -29,30 +28,32 @@ export function KeyValue({
   open,
   after,
   children,
+  onOpen,
 }: React.PropsWithChildren<{
   active?: boolean;
   open?: boolean;
   itemKey: string;
   after?: React.ReactNode;
+  onOpen?: (open: boolean) => void;
 }>) {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <Collapsible onOpenChange={setIsOpen} open={open || isOpen}>
+    <Collapsible onOpenChange={onOpen} open={open}>
       <Item className="px-3 py-2" size="sm" variant="outline">
         <ItemContent
           className={cn('flex flex-nowrap flex-1 items-start', 'w-full', 'text-xs font-mono')}
         >
           <ItemTitle>
-            <CollapsibleTrigger asChild>
-              <Button className="rounded-md cursor-pointer" size="sm" variant="ghost">
-                {open || isOpen ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : (
-                  <ChevronRight className="h-4 w-4" />
-                )}
-              </Button>
-            </CollapsibleTrigger>
+            <CollapsibleTrigger
+              render={
+                <Button className="rounded-md cursor-pointer" size="sm" variant="ghost">
+                  {open ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </Button>
+              }
+            />
             <span className={cn('flex gap-2 items-center', active && 'text-primary animate-pulse')}>
               <Variable className="h-4 w-4 text-muted-foreground" />
               {itemKey}

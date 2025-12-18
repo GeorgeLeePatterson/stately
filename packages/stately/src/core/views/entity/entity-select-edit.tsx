@@ -122,9 +122,13 @@ export function EntitySelectEdit<Schema extends Schemas = Schemas>({
       ) : available.length > 0 ? (
         <Field>
           <ButtonGroup className="flex flex-1 min-w-0">
-            <Select disabled={isReadOnly} onValueChange={onChange} value={value ?? undefined}>
+            <Select
+              disabled={isReadOnly}
+              onValueChange={v => onChange(v)}
+              value={value ?? undefined}
+            >
               <SelectTrigger className="bg-background flex-1" id={fieldId}>
-                <SelectValue placeholder={`Select a ${label}...`} />
+                <SelectValue>{v => v || `Select a ${label}...`}</SelectValue>
               </SelectTrigger>
 
               {/* Entity options */}
@@ -153,21 +157,21 @@ export function EntitySelectEdit<Schema extends Schemas = Schemas>({
             {/* Link to details */}
             {selected && (
               <Button
-                asChild
                 onClick={(e: any) => e.stopPropagation()}
+                render={
+                  <a
+                    href={resolveEntityUrl({
+                      id: selected.id,
+                      type: schema.data.stateEntryToUrl?.[targetType] ?? targetType,
+                    })}
+                    target="_blank"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                }
                 type="button"
                 variant="secondary"
-              >
-                <a
-                  href={resolveEntityUrl({
-                    id: selected.id,
-                    type: schema.data.stateEntryToUrl?.[targetType] ?? targetType,
-                  })}
-                  target="_blank"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-              </Button>
+              />
             )}
           </ButtonGroup>
         </Field>

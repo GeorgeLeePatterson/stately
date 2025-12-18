@@ -68,9 +68,9 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
   return (
     <div className="space-y-3 border rounded-md p-2 min-w-0">
       <div className="flex flex-col gap-2">
-        <Select onValueChange={handleVariantChange} value={currentTag || ''}>
+        <Select onValueChange={v => v && handleVariantChange(v)} value={currentTag || ''}>
           <SelectTrigger id={formId}>
-            <SelectValue placeholder={`Select ${label || 'variant'}...`} />
+            <SelectValue>{v => v || `Select ${label || 'variant'}...`}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             {node.variants.map((variant: (typeof node.variants)[number]) => (

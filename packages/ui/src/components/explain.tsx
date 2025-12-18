@@ -3,10 +3,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './base/tooltip';
 export function Explain({
   children,
   content,
-}: React.PropsWithChildren<{ content: React.ReactNode }>) {
+}: {
+  children: React.ReactElement;
+  content: React.ReactNode;
+}) {
   return (
     <Tooltip>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipTrigger render={children} />
       <TooltipContent>{content}</TooltipContent>
     </Tooltip>
   );

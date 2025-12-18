@@ -61,12 +61,16 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
       actions={
         rest?.actions ?? (
           <div className="flex gap-2">
-            <Button asChild size="sm" variant="outline">
-              <a href={resolveEntityUrl({ id, mode: 'edit', type: entityPath })}>
-                <Edit className="w-4 h-4 mr-2" />
-                Edit
-              </a>
-            </Button>
+            <Button
+              render={
+                <a href={resolveEntityUrl({ id, mode: 'edit', type: entityPath })}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
+                </a>
+              }
+              size="sm"
+              variant="outline"
+            />
             <Button
               disabled={isLoading || !!queryError || !!entitySchema.error}
               onClick={() => setRemoveEntityId(id)}
@@ -98,16 +102,16 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
               <>
                 &nbsp;
                 <Button
-                  asChild
                   className="cursor-pointer"
+                  render={
+                    <a href={resolveEntityUrl({ mode: 'new', type: entityPath }, { template: id })}>
+                      <CopyPlus className="w-4 h-4" />
+                    </a>
+                  }
                   size="icon-sm"
                   type="button"
                   variant="link"
-                >
-                  <a href={resolveEntityUrl({ mode: 'new', type: entityPath }, { template: id })}>
-                    <CopyPlus className="w-4 h-4" />
-                  </a>
-                </Button>
+                />
               </>
             )}
           </>

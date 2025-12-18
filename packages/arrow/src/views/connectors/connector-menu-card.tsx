@@ -159,7 +159,7 @@ export function ConnectorMenuCard({
 
         {/* Connector dropdown */}
         <div className="flex flex-col">
-          <Accordion className="w-full" onValueChange={setOpened} type="multiple" value={opened}>
+          <Accordion className="w-full" multiple onValueChange={setOpened} value={opened}>
             {sortedConnectors.map(connector => (
               <ConnectorRow
                 connector={connector}
@@ -219,36 +219,39 @@ function ConnectorRow({
 
   return (
     <AccordionItem value={connector.id}>
-      <AccordionTrigger asChild className="hover:no-underline" headerProps={{ asChild: true }}>
-        <Item
-          className={cn([
-            'px-4 py-3 hover:bg-muted cursor-pointer',
-            'rounded-none border-0 border-l-2 ',
-            kindClasses,
-          ])}
-          onClick={() => onSelect(connector.id)}
-          size="sm"
-          variant={isSelected ? 'muted' : 'default'}
-        >
-          <ItemMedia className="self-center">
-            {isLoading ? <Spinner className="w-4 h-4" /> : kindIcon}
-          </ItemMedia>
-          <ItemContent>
-            <ItemTitle>
-              <span className="text-ellipsis">{connector.name}</span>
-              {isSelected && (
-                <>
-                  &nbsp;
-                  <Badge className="p-1 rounded-full" variant="default" />
-                </>
-              )}
-            </ItemTitle>
-          </ItemContent>
-          <ItemActions>
-            {isSelected ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
-          </ItemActions>
-        </Item>
-      </AccordionTrigger>
+      <AccordionTrigger
+        className="hover:no-underline"
+        render={
+          <Item
+            className={cn([
+              'px-4 py-3 hover:bg-muted cursor-pointer',
+              'rounded-none border-0 border-l-2 ',
+              kindClasses,
+            ])}
+            onClick={() => onSelect(connector.id)}
+            size="sm"
+            variant={isSelected ? 'muted' : 'default'}
+          >
+            <ItemMedia className="self-center">
+              {isLoading ? <Spinner className="w-4 h-4" /> : kindIcon}
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>
+                <span className="text-ellipsis">{connector.name}</span>
+                {isSelected && (
+                  <>
+                    &nbsp;
+                    <Badge className="p-1 rounded-full" variant="default" />
+                  </>
+                )}
+              </ItemTitle>
+            </ItemContent>
+            <ItemActions>
+              {isSelected ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+            </ItemActions>
+          </Item>
+        }
+      />
       <AccordionContent className="p-0">{children}</AccordionContent>
     </AccordionItem>
   );

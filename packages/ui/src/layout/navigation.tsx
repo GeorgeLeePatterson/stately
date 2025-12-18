@@ -1,4 +1,4 @@
-import type { AvatarImageProps } from '@radix-ui/react-avatar';
+import type { AvatarImageProps } from '@base-ui/react/avatar';
 import type { StatelySchemas } from '@statelyjs/schema';
 import type { Defined } from '@statelyjs/schema/helpers';
 import { type ComponentType, useCallback, useMemo } from 'react';
@@ -80,16 +80,19 @@ export function Navigation<
     () =>
       sidebarNavItems.map(item => (
         <SidebarMenuItem key={`app-link-${item.to}`}>
-          <SidebarMenuButton asChild isActive={currentPath === `${basePath}${item.to}`}>
-            <a
-              href={`${basePath}${item.to}`}
-              onClick={() => handleNavClick(`${basePath}${item.to}`, item.label)}
-            >
-              {item.icon && <item.icon />}
-              <span>{item.label}</span>
-              {item.badge && <item.badge {...item} />}
-            </a>
-          </SidebarMenuButton>
+          <SidebarMenuButton
+            isActive={currentPath === `${basePath}${item.to}`}
+            render={
+              <a
+                href={`${basePath}${item.to}`}
+                onClick={() => handleNavClick(`${basePath}${item.to}`, item.label)}
+              >
+                {item.icon && <item.icon />}
+                <span>{item.label}</span>
+                {item.badge && <item.badge {...item} />}
+              </a>
+            }
+          />
         </SidebarMenuItem>
       )),
     [sidebarNavItems, currentPath, basePath, handleNavClick],

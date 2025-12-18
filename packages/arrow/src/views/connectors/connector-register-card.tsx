@@ -66,18 +66,20 @@ export function ConnectorsRegisterCard({
     currentCatalog === c ? true : currentKind === 'object_store' && currentCatalog?.includes(c);
 
   const registerButton = (
-    <DropdownMenuTrigger asChild>
-      <Button
-        className={cn('text-xs')}
-        disabled={registerMutation.isPending}
-        onClick={() => setOpen(!open)}
-        size="sm"
-        variant="ghost"
-      >
-        {isAnyLoading ? <Spinner /> : <PlugZap />}
-        <span className="hidden md:inline">{isAnyLoading ? 'Registering' : 'Register'}</span>
-      </Button>
-    </DropdownMenuTrigger>
+    <DropdownMenuTrigger
+      render={
+        <Button
+          className={cn('text-xs')}
+          disabled={registerMutation.isPending}
+          onClick={() => setOpen(!open)}
+          size="sm"
+          variant="ghost"
+        >
+          {isAnyLoading ? <Spinner /> : <PlugZap />}
+          <span className="hidden md:inline">{isAnyLoading ? 'Registering' : 'Register'}</span>
+        </Button>
+      }
+    />
   );
 
   return (

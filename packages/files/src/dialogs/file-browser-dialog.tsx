@@ -13,16 +13,18 @@ import { FileManager } from '@/pages';
 export function FileBrowserDialog({ initialPath }: { initialPath?: string }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          className="rounded-full h-6 px-2 cursor-pointer"
-          size="icon-sm"
-          type="button"
-          variant="secondary"
-        >
-          <FileSearch className="h-3 w-3" />
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button
+            className="rounded-full h-6 px-2 cursor-pointer"
+            size="icon-sm"
+            type="button"
+            variant="secondary"
+          >
+            <FileSearch className="h-3 w-3" />
+          </Button>
+        }
+      />
       <DialogContent className="min-h-[50vh] max-w-6xl w-[90vw] max-h-[90vh] min-w-[60vw] flex flex-col overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">File Manager</DialogTitle>

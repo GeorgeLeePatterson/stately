@@ -31,12 +31,16 @@ export function PageHeader({
     <div className="stately-page-header space-y-6">
       {backTo && (
         <div className="mb-2">
-          <Button asChild size="sm" variant="ghost">
-            <a href={backTo}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              {backLabel}
-            </a>
-          </Button>
+          <Button
+            render={
+              <a href={backTo}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {backLabel}
+              </a>
+            }
+            size="sm"
+            variant="ghost"
+          />
         </div>
       )}
 

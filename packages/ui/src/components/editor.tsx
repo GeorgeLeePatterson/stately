@@ -5,7 +5,6 @@ import { gruvboxDark } from '@uiw/codemirror-theme-gruvbox-dark';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { Check, Code, Maximize, Text } from 'lucide-react';
 import { lazy, Suspense, useMemo, useState } from 'react';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/base/button';
 import {
   Dialog,
@@ -17,6 +16,7 @@ import {
 } from '@/components/base/dialog';
 import { InputGroup, InputGroupAddon, InputGroupTextarea } from '@/components/base/input-group';
 import { Spinner } from '@/components/base/spinner';
+import { cn } from '@/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './base/select';
 import { ToggleGroup, ToggleGroupItem } from './base/toggle-group';
 
@@ -80,18 +80,20 @@ export function Editor({
       formId={formId}
       isLoading={isLoading}
       modalTrigger={
-        <DialogTrigger asChild>
-          <Button
-            className="cursor-pointer"
-            disabled={isLoading}
-            onClick={() => setEditorOpen(!editorOpen)}
-            size="sm"
-            type="button"
-            variant="outline"
-          >
-            {editorOpen ? <Check /> : <Maximize />}
-            <span className="hidden @md/editor:inline">{editorOpen ? 'Done' : 'Open Editor'}</span>
-          </Button>
+        <DialogTrigger
+          render={
+            <Button
+              className="cursor-pointer"
+              disabled={isLoading}
+              onClick={() => setEditorOpen(!editorOpen)}
+              size="sm"
+              type="button"
+              variant="outline"
+            />
+          }
+        >
+          {editorOpen ? <Check /> : <Maximize />}
+          <span className="hidden @md/editor:inline">{editorOpen ? 'Done' : 'Open Editor'}</span>
         </DialogTrigger>
       }
       placeholder={placeholder}
@@ -103,12 +105,18 @@ export function Editor({
   );
 
   return (
-    <Dialog onOpenChange={setEditorOpen} open={editorOpen}>
+    <Dialog
+      onOpenChange={(open, eventDetails) => {
+        // Prevent closing on Escape key (reason from @base-ui/react internal REASONS.escapeKey)
+        if (!open && eventDetails.reason === 'escape-key') {
+          return;
+        }
+        setEditorOpen(open);
+      }}
+      open={editorOpen}
+    >
       {editorOpen ? (
-        <DialogContent
-          className="min-w-[70vw] min-h-[70vh] h-dvh md:max-h-[80vh]"
-          onEscapeKeyDown={e => e.preventDefault()}
-        >
+        <DialogContent className="min-w-[70vw] min-h-[70vh] h-dvh md:max-h-[80vh]">
           <div className="flex flex-col h-full overflow-hidden">
             <DialogHeader>
               <DialogTitle>Upload Content</DialogTitle>
@@ -220,7 +228,7 @@ function EditorContent({
                 id={`select-language-${formId}`}
                 size="sm"
               >
-                <SelectValue placeholder="Language" />
+                <SelectValue>{value => value || 'Language'}</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {languages.map(lang => (
@@ -240,7 +248,9 @@ function EditorContent({
               id={`select-theme-${formId}`}
               size="sm"
             >
-              <SelectValue placeholder="Theme" />
+              <SelectValue>
+                {value => themes.find(t => t.key === value)?.label || 'Theme'}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {themes.map(config => (
@@ -259,10 +269,12 @@ function EditorContent({
         {/* Toggle mode */}
         <ToggleGroup
           disabled={isLoading}
-          onValueChange={(m: any) => setMode(m as 'text' | 'code')}
+          multiple={false}
+          onValueChange={value => {
+            if (value.length > 0) setMode(value[0] as 'text' | 'code');
+          }}
           size="sm"
-          type="single"
-          value={mode}
+          value={[mode]}
           variant="outline"
         >
           {/* Text */}

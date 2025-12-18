@@ -218,7 +218,7 @@ export function useStatelyUi<
  * Create a typed React context provider for your Stately runtime.
  *
  * Call this once in your app setup to create a provider component.
- * The provider also includes theming support via `next-themes`.
+ * The provider also includes theming support.
  *
  * @typeParam Schema - Your application's schema type
  * @typeParam Augments - Plugin types (usually inferred from your runtime)

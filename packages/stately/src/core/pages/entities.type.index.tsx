@@ -83,12 +83,14 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
       {...rest}
       actions={
         rest?.actions ?? (
-          <Button asChild>
-            <a href={resolveEntityUrl({ mode: 'new', type: entityPath })}>
-              <Plus className="w-4 h-4 mr-2" />
-              Create New {typeName}
-            </a>
-          </Button>
+          <Button
+            render={
+              <a href={resolveEntityUrl({ mode: 'new', type: entityPath })}>
+                <Plus className="w-4 h-4 mr-2" />
+                Create New {typeName}
+              </a>
+            }
+          />
         )
       }
       breadcrumbs={
@@ -119,71 +121,71 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(entity => (
               <Item
-                asChild
                 className="@container transition-all hover:shadow-md"
                 key={entity.id}
+                render={
+                  <a
+                    className="group"
+                    href={resolveEntityUrl({
+                      id: isSingletonId(entity.id) ? 'singleton' : entity.id,
+                      type: entityPath,
+                    })}
+                  >
+                    <ItemHeader className="items-center">
+                      <ItemContent>
+                        <ItemTitle className="text-base group-hover:text-primary transition-colors">
+                          {/* View only link button */}
+                          <Button
+                            className="cursor-pointer hidden @md:flex"
+                            size="icon-sm"
+                            type="button"
+                            variant="ghost"
+                          >
+                            <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                          </Button>
+                          {isSingletonId(entity.id) ? 'view configuration' : entity.name}
+                        </ItemTitle>
+                        <ItemDescription>
+                          <span className="text-xs hidden @md:flex text-muted-foreground font-mono">
+                            {isSingletonId(entity.id) ? '' : entity.id}
+                          </span>
+                        </ItemDescription>
+                      </ItemContent>
+
+                      <ItemActions className="flex flex-nowrap gap-2 items-center">
+                        {/* Actions */}
+                        {entity.id !== 'default' && (
+                          <div className={cn('flex flex-row flex-1 justify-end gap-3')}>
+                            <Button
+                              className="cursor-pointer rounded-full"
+                              onClick={e => handleCopyEntity(entity.id, e)}
+                              size="icon-sm"
+                              type="button"
+                              variant="ghost"
+                            >
+                              <CopyPlus className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              className={cn(
+                                'text-destructive cursor-pointer',
+                                'hover:text-white hover:bg-destructive no-underline!',
+                              )}
+                              onClick={e => handleRemoveEntity(entity.id, e)}
+                              size="icon-sm"
+                              type="button"
+                              variant="ghost"
+                            >
+                              <Trash className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </ItemActions>
+                    </ItemHeader>
+                  </a>
+                }
                 size="sm"
                 variant="muted"
-              >
-                <a
-                  className="group"
-                  href={resolveEntityUrl({
-                    id: isSingletonId(entity.id) ? 'singleton' : entity.id,
-                    type: entityPath,
-                  })}
-                >
-                  <ItemHeader className="items-center">
-                    <ItemContent>
-                      <ItemTitle className="text-base group-hover:text-primary transition-colors">
-                        {/* View only link button */}
-                        <Button
-                          className="cursor-pointer hidden @md:flex"
-                          size="icon-sm"
-                          type="button"
-                          variant="ghost"
-                        >
-                          <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                        </Button>
-                        {isSingletonId(entity.id) ? 'view configuration' : entity.name}
-                      </ItemTitle>
-                      <ItemDescription>
-                        <span className="text-xs hidden @md:flex text-muted-foreground font-mono">
-                          {isSingletonId(entity.id) ? '' : entity.id}
-                        </span>
-                      </ItemDescription>
-                    </ItemContent>
-
-                    <ItemActions className="flex flex-nowrap gap-2 items-center">
-                      {/* Actions */}
-                      {entity.id !== 'default' && (
-                        <div className={cn('flex flex-row flex-1 justify-end gap-3')}>
-                          <Button
-                            className="cursor-pointer rounded-full"
-                            onClick={e => handleCopyEntity(entity.id, e)}
-                            size="icon-sm"
-                            type="button"
-                            variant="ghost"
-                          >
-                            <CopyPlus className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            className={cn(
-                              'text-destructive cursor-pointer',
-                              'hover:text-white hover:bg-destructive no-underline!',
-                            )}
-                            onClick={e => handleRemoveEntity(entity.id, e)}
-                            size="icon-sm"
-                            type="button"
-                            variant="ghost"
-                          >
-                            <Trash className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      )}
-                    </ItemActions>
-                  </ItemHeader>
-                </a>
-              </Item>
+              />
             ))}
         </div>
       ) : (
@@ -198,12 +200,14 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
-            <Button asChild>
-              <a href={resolveEntityUrl({ mode: 'new', type: entityPath })}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add {typeName}
-              </a>
-            </Button>
+            <Button
+              render={
+                <a href={resolveEntityUrl({ mode: 'new', type: entityPath })}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add {typeName}
+                </a>
+              }
+            />
           </EmptyContent>
         </Empty>
       )}

@@ -31,11 +31,11 @@ export function EnumEdit<Schema extends Schemas = Schemas>({
 
   return (
     <Field>
-      <Select onValueChange={onChange} value={value || ''}>
+      <Select onValueChange={v => v && onChange(v)} value={value || ''}>
         <SelectTrigger className="bg-background" id={formId}>
-          <SelectValue
-            placeholder={placeholder ? `Select ${placeholder.toLowerCase()}...` : 'Select value'}
-          />
+          <SelectValue>
+            {v => v || (placeholder ? `Select ${placeholder.toLowerCase()}...` : 'Select value')}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {node.values.map((option: string) => (

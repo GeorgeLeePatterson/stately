@@ -60,19 +60,19 @@ export function LinkRefView<Schema extends Schemas = Schemas>({
 
           {value?.ref && (
             <Button
-              asChild
               className="rounded-full cursor-pointer"
+              render={
+                <a
+                  href={resolveEntityUrl({ id: value.ref, type: entityUrlPath })}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              }
               size="icon-sm"
               variant="default"
-            >
-              <a
-                href={resolveEntityUrl({ id: value.ref, type: entityUrlPath })}
-                rel="noreferrer"
-                target="_blank"
-              >
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </Button>
+            />
           )}
         </ItemActions>
       </Item>

@@ -115,9 +115,11 @@ export function QueryEditor({
 
         {/* Click to see results */}
         {isActive && resultsHrefId && (
-          <Button asChild type="button" variant="link">
-            <a href={`#${resultsHrefId}`}>Go to Query Results</a>
-          </Button>
+          <Button
+            render={<a href={`#${resultsHrefId}`}>Go to Query Results</a>}
+            type="button"
+            variant="link"
+          />
         )}
       </div>
     </div>

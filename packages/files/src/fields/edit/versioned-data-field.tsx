@@ -84,15 +84,17 @@ export function VersionedDataField({ value, onChange }: VersionedDataFieldProps)
           <InputGroupAddon align="inline-end">
             <Menubar className="border-0 bg-transparent p-0 h-auto">
               <MenubarMenu>
-                <MenubarTrigger asChild>
-                  <InputGroupButton
-                    className="rounded-full h-8 w-8 p-0 cursor-pointer"
-                    size="icon-sm"
-                    variant="ghost"
-                  >
-                    <MoreVertical className="h-4 w-4" />
-                  </InputGroupButton>
-                </MenubarTrigger>
+                <MenubarTrigger
+                  render={
+                    <InputGroupButton
+                      className="rounded-full h-8 w-8 p-0 cursor-pointer"
+                      size="icon-sm"
+                      variant="ghost"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </InputGroupButton>
+                  }
+                />
                 <MenubarContent align="end">
                   <MenubarItem onClick={() => setShowBrowseSelector(true)}>
                     <FileSearch className="h-4 w-4 mr-2" />
