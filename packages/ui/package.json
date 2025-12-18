@@ -152,7 +152,7 @@
     "./runtime": "./dist/runtime.mjs",
     "./theme": "./dist/theme.mjs",
     "./utils": "./dist/utils.mjs",
-    "./package.json": "./package.json"
+    "./*": "./*"
   },
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",

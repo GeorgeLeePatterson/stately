@@ -70,10 +70,10 @@ stately-arrow:
     - any-glob-to-any-file:
       - '**/packages/ui/**'
 
-'@statelyjs/codegen':
+'@statelyjs/stately':
   - changed-files:
     - any-glob-to-any-file:
-      - '**/packages/codegen/**'
+      - '**/packages/stately/**'
 
 '@statelyjs/schema':
   - changed-files:

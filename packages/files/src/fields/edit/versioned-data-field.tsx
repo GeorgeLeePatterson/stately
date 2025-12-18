@@ -1,14 +1,18 @@
+import { ButtonGroup } from '@statelyjs/ui/components/base/button-group';
 import {
-  ButtonGroup,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+} from '@statelyjs/ui/components/base/dialog';
+import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
+} from '@statelyjs/ui/components/base/input-group';
+import {
   Menubar,
   MenubarContent,
   MenubarItem,
@@ -16,6 +20,7 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from '@statelyjs/ui/components/base/menubar';
+import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import { FileSearch, MoreVertical, Upload, X } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';

@@ -2,8 +2,8 @@ import {
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-  Spinner,
-} from 'components/base/input-group';
+} from '@statelyjs/ui/components/base/input-group';
+import { Spinner } from '@statelyjs/ui/components/base/spinner';
 import { Upload as UploadIcon } from 'lucide-react';
 import { useRef } from 'react';
 import { useUpload } from '@/hooks/use-upload';

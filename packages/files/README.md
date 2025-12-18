@@ -226,15 +226,21 @@ import { FileManager } from '@statelyjs/files/pages';
 
 ## Codegen Integration
 
-The package includes a codegen plugin that detects `RelativePath` schemas from your OpenAPI spec:
+The package includes a codegen plugin that detects `RelativePath` schemas from your OpenAPI spec. Add it to your `stately.config.js`:
 
-```typescript
-import { createCodegen } from '@statelyjs/codegen';
+```javascript
+// stately.config.js
 import { filesCodegenPlugin } from '@statelyjs/files/codegen';
 
-const codegen = createCodegen({
-  plugins: [filesCodegenPlugin],
-});
+export default {
+  plugins: [filesCodegenPlugin()],
+};
+```
+
+Then run:
+
+```bash
+pnpm exec stately ./openapi.json ./src/generated ./stately.config.js
 ```
 
 This transforms OpenAPI `oneOf` schemas matching the RelativePath pattern into `FilesNodeType.RelativePath` nodes, enabling the custom path selector field in forms.

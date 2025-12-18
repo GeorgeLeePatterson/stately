@@ -2,7 +2,7 @@
  * @statelyjs/files - Plugin Implementation
  *
  * This file contains both the schema plugin and UI plugin for the files package.
- * Following the canonical pattern from @statelyjs/schema/core/plugin.ts and @statelyjs/ui/core/plugin.ts
+ * Following the canonical pattern from @statelyjs/stately/core/plugin.ts
  */
 
 import { CoreNodeType } from '@statelyjs/stately/core';

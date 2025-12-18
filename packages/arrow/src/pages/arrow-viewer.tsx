@@ -237,7 +237,7 @@ function Root(props: ArrowViewerProps) {
 /**
  * Visualize stately arrow data.
  *
- * Note: `ArrowViewer` assumes using `@statelyjs/ui/core`'s `Layout.Root` component,
+ * Note: `ArrowViewer` assumes using `@statelyjs/ui`'s `Layout.Root` component,
  * or more specifically, that a `SidebarProvider` is available. If one is not, use
  * `ArrowViewer.Root` directly.
  *

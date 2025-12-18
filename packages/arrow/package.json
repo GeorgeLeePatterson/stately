@@ -11,7 +11,7 @@
     "dev": "tsdown --watch",
     "codegen": "pnpm run generate:openapi && pnpm run generate:types",
     "generate:openapi": "cargo run -p stately-arrow --all-features --bin generate-openapi -- .",
-    "generate:types": "pnpm exec codegen ./openapi.json ./src/generated"
+    "generate:types": "pnpm exec stately ./openapi.json ./src/generated"
   },
   "peerDependencies": {
     "@statelyjs/stately": "workspace:*",

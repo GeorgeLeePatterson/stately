@@ -36,12 +36,9 @@ Stately is a full-stack framework for building data-driven applications. The Rus
 │  │                        FRONTEND (React)                              ││
 │  ├─────────────────────────────────────────────────────────────────────┤│
 │  │                                                                      ││
-│  │  @statelyjs/ui                                                         ││
-│  │  ├── base/     → Layout, theme, plugin runtime, registry            ││
-│  │  └── core/     → Entity CRUD views, hooks, schema integration       ││
-│  │                                                                      ││
-│  │  @statelyjs/schema  → Type definitions, schema parsing, validation    ││
-│  │  @statelyjs/codegen → Generate types from OpenAPI spec                ││
+│  │  @statelyjs/ui      → Layout, theme, plugin runtime, registry        ││
+│  │  @statelyjs/schema  → Type definitions, schema parsing, validation  ││
+│  │  @statelyjs/stately → Core plugin (entity CRUD) + codegen CLI       ││
 │  │                                                                      ││
 │  │  PLUGINS:                                                            ││
 │  │  @statelyjs/files   → File browser UI (pairs with stately-files)      ││
@@ -117,20 +114,17 @@ See [`crates/stately`](crates/stately) for complete backend documentation.
 
 ```bash
 # Install packages
-pnpm add @statelyjs/ui @statelyjs/schema @tanstack/react-query @tanstack/react-router
-
-# Install codegen (dev dependency)
-pnpm add -D @statelyjs/codegen
+pnpm add @statelyjs/stately @tanstack/react-query @tanstack/react-router
 
 # Generate types from your backend's OpenAPI spec
-pnpm exec @statelyjs/codegen ./openapi.json ./src/generated
+pnpm exec stately ./openapi.json ./src/generated
 ```
 
 ```typescript
 // src/lib/stately-integration.ts
-import { stately } from '@statelyjs/ui/schema';
-import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/ui';
-import type { DefineConfig, Schemas } from '@statelyjs/ui/schema';
+import { stately } from '@statelyjs/schema';
+import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/stately';
+import type { DefineConfig, Schemas } from '@statelyjs/schema';
 import { PARSED_SCHEMAS } from './generated/schemas';
 import type { components, operations, paths } from './generated/types';
 import openapiDoc from '../openapi.json';
@@ -177,8 +171,8 @@ See [`packages/ui`](packages/ui) for complete frontend documentation.
 | Package | Description |
 |---------|-------------|
 | [`@statelyjs/schema`](packages/schema) | Schema type definitions, parsing, validation |
-| [`@statelyjs/codegen`](packages/codegen) | CLI tool for generating types from OpenAPI |
-| [`@statelyjs/ui`](packages/ui) | React components - base runtime + core entity UI |
+| [`@statelyjs/stately`](packages/stately) | Core plugin (entity CRUD) + codegen CLI |
+| [`@statelyjs/ui`](packages/ui) | Base React components, layout, theme, plugin runtime |
 | [`@statelyjs/files`](packages/files) | File browser UI plugin |
 | [`@statelyjs/arrow`](packages/arrow) | SQL query UI plugin with Arrow IPC streaming |
 
