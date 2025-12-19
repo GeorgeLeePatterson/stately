@@ -5,15 +5,15 @@ import { Separator } from '@statelyjs/ui/components/base/separator';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import { BaseForm } from '@statelyjs/ui/form';
 import { useId, useMemo } from 'react';
-import type { CoreEntity } from '@/core';
+import type { CoreEntityData } from '@/core';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import { EntityPropertyEdit } from './entity-property-edit';
 
 export interface EntityFormEditProps<Schema extends Schemas = Schemas> {
   node: Schema['plugin']['Nodes']['object'];
-  value?: CoreEntity<Schema>['data'];
-  onChange: (value: CoreEntity<Schema>['data']) => void;
+  value?: CoreEntityData<Schema>;
+  onChange: (value: CoreEntityData<Schema>) => void;
   isRootEntity?: boolean;
   isLoading?: boolean;
 }
@@ -63,7 +63,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
                   label="Name"
                   node={node.properties.name}
                   onChange={newValue =>
-                    onChange({ ...entityData, name: newValue } as CoreEntity<Schema>['data'])
+                    onChange({ ...entityData, name: newValue } as CoreEntityData<Schema>)
                   }
                   value={entityData.name ?? ''}
                 />
@@ -94,7 +94,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
               label={label}
               node={propNode}
               onChange={newValue =>
-                onChange({ ...(value ?? {}), [fieldName]: newValue } as CoreEntity<Schema>['data'])
+                onChange({ ...(value ?? {}), [fieldName]: newValue } as CoreEntityData<Schema>)
               }
               value={fieldValue}
             />

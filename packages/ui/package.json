@@ -124,6 +124,7 @@
     "./layout/page-header": "./dist/layout/page-header.mjs",
     "./layout/plugin-navigation": "./dist/layout/plugin-navigation.mjs",
     "./layout/root": "./dist/layout/root.mjs",
+    "./lib/assertions": "./dist/lib/assertions.mjs",
     "./lib/logging": "./dist/lib/logging.mjs",
     "./lib/utils": "./dist/lib/utils.mjs",
     "./plugin": "./dist/plugin.mjs",

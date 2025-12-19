@@ -48,6 +48,7 @@ export function GlowingSave({
         disabled={isDisabled || isLoading}
         onClick={onSave}
         size={size}
+        type="button"
       >
         <Save className="w-4 h-4 mr-2" />
         {createLabel(label, isLoading)}
@@ -71,6 +72,7 @@ export function GlowingSave({
           disabled={isLoading}
           onClick={onCancel}
           size={size}
+          type="button"
           variant="outline"
         >
           <X className="w-4 h-4 mr-2" />

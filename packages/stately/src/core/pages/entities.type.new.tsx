@@ -31,7 +31,7 @@ export function EntityNewPage<Schema extends Schemas = Schemas>({
   const queryClient = useQueryClient();
   const resolveEntityUrl = useEntityUrl();
   const entitySchema = useEntitySchema(stateEntry);
-  const createMutation = useCreateEntity({ entity, queryClient });
+  const createMutation = useCreateEntity<Schema>({ entity, queryClient });
 
   const {
     data: templateData,
@@ -53,17 +53,20 @@ export function EntityNewPage<Schema extends Schemas = Schemas>({
 
   const handleSave = useCallback(() => {
     if (!formData) return;
-    createMutation.mutate(formData, {
-      onSuccess: data => {
-        const parts = { type: entityPath };
-        if (data?.id) {
-          window.location.href = resolveEntityUrl({ ...parts, id: data.id });
-        } else {
-          window.location.href = resolveEntityUrl(parts);
-        }
+    createMutation.mutate(
+      { data: formData, type: stateEntry },
+      {
+        onSuccess: data => {
+          const parts = { type: entityPath };
+          if (data?.id) {
+            window.location.href = resolveEntityUrl({ ...parts, id: data.id });
+          } else {
+            window.location.href = resolveEntityUrl(parts);
+          }
+        },
       },
-    });
-  }, [createMutation, entityPath, formData, resolveEntityUrl]);
+    );
+  }, [createMutation, stateEntry, entityPath, formData, resolveEntityUrl]);
 
   const onChange = useCallback((newConfig: CoreEntityData<Schema>) => {
     setFormData(newConfig);

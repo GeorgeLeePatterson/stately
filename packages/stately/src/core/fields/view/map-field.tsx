@@ -74,7 +74,7 @@ export type MapViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
 >;
 
 export function MapView<Schema extends Schemas = Schemas>({ node, value }: MapViewProps<Schema>) {
-  const [entries, viewMore, setViewMore] = useViewMore(value, MAX_ITEMS_VIEW_DEFAULT);
+  const [entries, allEntries, viewMore, setViewMore] = useViewMore(value, MAX_ITEMS_VIEW_DEFAULT);
 
   if (typeof value !== 'object') {
     return null;
@@ -97,7 +97,7 @@ export function MapView<Schema extends Schemas = Schemas>({ node, value }: MapVi
       ))}
 
       {/* View More */}
-      {entries.length > MAX_ITEMS_VIEW_DEFAULT && (
+      {allEntries.length > MAX_ITEMS_VIEW_DEFAULT && (
         <Item className="p-1" size="sm" variant="muted">
           <ItemContent
             className={cn('flex flex-nowrap flex-1 justify-center w-full', 'text-xs font-mono')}

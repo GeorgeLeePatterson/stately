@@ -56,7 +56,7 @@ export function useEntityDataInline<Schema extends Schemas = Schemas>({
       mode="error"
     />
   ) : inlineEntity ? (
-    <Note message={`Viewing data for ${inlineEntity}`} mode="info" />
+    <Note message={`Viewing copy of ${inlineEntity}`} mode="info" />
   ) : null;
 
   return { inlineEntity, inlineNote, setInlineEntity, ...query };

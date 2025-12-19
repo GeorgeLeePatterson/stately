@@ -1,6 +1,6 @@
 import { devLog } from '@statelyjs/ui';
 import { useQuery } from '@tanstack/react-query';
-import type { CoreEntity, CoreStateEntry } from '@/core';
+import type { CoreEntityWrapped, CoreStateEntry } from '@/core';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 
@@ -30,7 +30,7 @@ import { useStatelyUi } from '@/index';
  *   if (isLoading) return <Spinner />;
  *   if (error) return <Error message={error.message} />;
  *
- *   return <div>{data?.entity.name}</div>;
+ *   return <div>{data?.entity.data.name}</div>;
  * }
  * ```
  */
@@ -70,7 +70,7 @@ export function useEntityData<Schema extends Schemas = Schemas>({
       }
 
       devLog.debug('Core', 'Successfully fetched entity', { data });
-      return data as { entity: CoreEntity<Schema>['data']; id: string } | undefined;
+      return data as { entity: CoreEntityWrapped<Schema>; id: string } | undefined;
     },
     queryKey: ['entity', entity, identifier],
   });

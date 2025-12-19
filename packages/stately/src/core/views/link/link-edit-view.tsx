@@ -3,7 +3,7 @@ import { ButtonGroup } from '@statelyjs/ui/components/base/button-group';
 import { FieldGroup, FieldSet } from '@statelyjs/ui/components/base/field';
 import type { FieldEditProps } from '@statelyjs/ui/form';
 import { useCallback, useMemo, useState } from 'react';
-import type { CoreEntity, CoreStateEntry } from '@/core';
+import type { CoreEntityData, CoreStateEntry } from '@/core';
 import { useListEntities } from '@/core/hooks';
 import { useEntityDataInline } from '@/core/hooks/use-entity-data-inline';
 import type { Schemas } from '@/core/schema';
@@ -15,7 +15,7 @@ import { LinkRefEdit } from './link-ref-edit';
 // Type helpers for Link editing
 export type LinkFor<Schema extends Schemas = Schemas> =
   | { entity_type: CoreStateEntry<Schema>; ref: string }
-  | { entity_type: CoreStateEntry<Schema>; inline: CoreEntity<Schema>['data'] };
+  | { entity_type: CoreStateEntry<Schema>; inline: CoreEntityData<Schema> };
 
 export type LinkEditViewProps<Schema extends Schemas = Schemas> = FieldEditProps<
   Schema,

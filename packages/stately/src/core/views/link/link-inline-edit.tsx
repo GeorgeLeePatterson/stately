@@ -1,6 +1,6 @@
 import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { FieldLegend } from '@statelyjs/ui/components/base/field';
-import type { CoreEntity, CoreStateEntry } from '@/core';
+import type { CoreEntityData, CoreStateEntry } from '@/core';
 import type { Schemas } from '@/core/schema';
 import type { ObjectNode } from '@/core/schema/nodes';
 import { useStatelyUi } from '@/index';
@@ -40,8 +40,8 @@ export function LinkInlineEdit<Schema extends Schemas = Schemas>({
   isWizard,
 }: LinkInlineEditProps<Schema>) {
   const { schema } = useStatelyUi<Schema>();
-  const entityValue: CoreEntity<Schema>['data'] =
-    value && 'inline' in value ? value.inline : ({} as CoreEntity<Schema>['data']);
+  const entityValue: CoreEntityData<Schema> =
+    value && 'inline' in value ? value.inline : ({} as CoreEntityData<Schema>);
 
   // Handle changes: wrap the entity back up
   const handleChange = (entity: AnyRecord) => {

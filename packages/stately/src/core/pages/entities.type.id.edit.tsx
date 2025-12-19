@@ -19,7 +19,7 @@ export function EntityEditPage<Schema extends Schemas = Schemas>({
   ...rest
 }: { id: string; entity: CoreStateEntry<Schema> } & Partial<PageProps>) {
   const { schema, plugins } = useStatelyUi<Schema>();
-  const stateEntry = plugins.core.utils?.resolveEntityType(entityType) ?? entityType;
+  const stateEntry = plugins.core.utils?.resolveEntityType<Schema>(entityType) ?? entityType;
   const entityPath = schema.data.stateEntryToUrl[stateEntry] ?? entityType;
   const displayName = schema.data.entityDisplayNames[stateEntry];
 
@@ -38,7 +38,7 @@ export function EntityEditPage<Schema extends Schemas = Schemas>({
   const entityData = data?.entity?.data;
   const entityName = !entityData || !('name' in entityData) ? 'configuration' : entityData.name;
 
-  const updateMutation = useUpdateEntity({ entity: stateEntry, id, queryClient });
+  const updateMutation = useUpdateEntity<Schema>({ entity: stateEntry, id, queryClient });
 
   // Initialize formData when entity loads
   useEffect(() => {
@@ -53,6 +53,7 @@ export function EntityEditPage<Schema extends Schemas = Schemas>({
       { data: formData, type: stateEntry },
       {
         onSuccess: data => {
+          devLog.debug('Core', 'Entity updated successfully', { data });
           window.location.href = resolveEntityUrl({ id: data?.id ?? id, type: entityPath });
         },
       },

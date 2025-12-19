@@ -40,7 +40,7 @@ export interface CoreUiUtils {
     entity: CoreStateEntry<S>;
   }[];
   getEntityIcon<S extends Schemas = Schemas>(entity: CoreStateEntry<S>): ComponentType<any>;
-  resolveEntityType(entity: string): string;
+  resolveEntityType<S extends Schemas = Schemas>(entity: string): CoreStateEntry<S>;
   resolveEntityUrl(
     entityParts?: EntityUrlParts,
     params?: Record<string, string>,
@@ -62,8 +62,8 @@ export function createCoreUtils<S extends Schemas = Schemas, A extends readonly 
       return entityIcons?.[entity] ?? Dot;
     },
     getNodeTypeIcon,
-    resolveEntityType(entity: string) {
-      return resolveEntityType(entity, runtime.schema.data);
+    resolveEntityType<Schema extends S>(entity: string): CoreStateEntry<Schema> {
+      return resolveEntityType<Schema>(entity, runtime.schema.data as Stately<Schema>['data']);
     },
     resolveEntityUrl(entityParts, params): string {
       return resolveEntityUrl(runtime, entityParts, params);
@@ -177,19 +177,22 @@ export function generateEntityTypeDisplay<S extends Schemas = Schemas>(
 /**
  * Attempts to resolve a string signifying an entity type into a proper `StateEntry`.
  *
- * @param entity
- * @param data
- * @returns
+ * @param entity - A URL path segment or display name to resolve
+ * @param data - The schema data containing entity mappings
+ * @returns The resolved StateEntry, or the original string cast as StateEntry if not found
  */
 export function resolveEntityType<S extends Schemas = Schemas>(
   entity: string,
   data: Stately<S>['data'],
-): string {
-  return entity in data.urlToStateEntry
-    ? data.urlToStateEntry[entity]
-    : (Object.entries(data.entityDisplayNames).find(
-        ([_, displayName]) => displayName === entity,
-      )?.[0] ?? entity);
+): CoreStateEntry<S> {
+  if (entity in data.urlToStateEntry) {
+    return data.urlToStateEntry[entity] as CoreStateEntry<S>;
+  }
+  const found = Object.entries(data.entityDisplayNames).find(
+    ([_, displayName]) => displayName === entity,
+  );
+  // Return the found key or fall back to the original entity (cast as StateEntry)
+  return (found?.[0] ?? entity) as CoreStateEntry<S>;
 }
 
 /**

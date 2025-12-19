@@ -1,14 +1,17 @@
-import { devLog } from '@statelyjs/ui';
+import { devAssert, devLog } from '@statelyjs/ui';
 import { type QueryClient, useMutation } from '@tanstack/react-query';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
-import type { CoreStateEntry } from '..';
+import type { CoreEntityWrapped, CoreStateEntry } from '..';
 
 /**
  * Create a new entity.
  *
  * Returns a React Query mutation that creates an entity and automatically
  * invalidates the entity list cache on success.
+ *
+ * The mutation expects the full wrapped entity shape `{ type: "entity_type", data: {...} }`.
+ * The hook validates that the entity type matches what was configured.
  *
  * @typeParam Schema - Your application's schema type
  *
@@ -28,7 +31,7 @@ import type { CoreStateEntry } from '..';
  *   });
  *
  *   const handleSubmit = (formData: PipelineData) => {
- *     mutate(formData, {
+ *     mutate({ type: 'pipeline', data: formData }, {
  *       onSuccess: (result) => {
  *         toast.success('Pipeline created');
  *         navigate(`/pipelines/${result.id}`);
@@ -51,11 +54,31 @@ export function useCreateEntity<Schema extends Schemas = Schemas>({
   const coreApi = runtime.plugins.core?.api;
 
   return useMutation({
-    mutationFn: async (formData: any) => {
+    mutationFn: async (input: CoreEntityWrapped<Schema>) => {
       if (!coreApi) throw new Error('Core entity API is unavailable.');
-      // Set the name in the entity data before creating
-      const body = { data: formData, type: entity };
-      const { data, error } = await coreApi.create_entity({ body });
+
+      // Dev-only: Validate input has the expected { type, data } shape
+      devAssert(
+        typeof input === 'object' &&
+          input !== null &&
+          'type' in input &&
+          'data' in input &&
+          typeof input.type === 'string' &&
+          typeof input.data === 'object',
+        'Invalid entity shape. Expected { type: string, data: object }, ' +
+          `received: ${JSON.stringify(input).slice(0, 100)}`,
+        { input },
+      );
+
+      // Runtime validation: entity type must match hook configuration
+      if (input.type !== entity) {
+        throw new Error(
+          `Entity type mismatch: hook configured for "${String(entity)}" ` +
+            `but received "${String(input.type)}"`,
+        );
+      }
+
+      const { data, error } = await coreApi.create_entity({ body: input });
       if (error) throw new Error('Failed to create entity');
       devLog.debug('Core', 'Successfully created entity', { data, entity });
       return data;

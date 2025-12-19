@@ -4,7 +4,7 @@ import { SimpleLabel } from '@statelyjs/ui/components';
 import { Separator } from '@statelyjs/ui/components/base/separator';
 import { BaseForm } from '@statelyjs/ui/form';
 import { Fragment, useMemo, useState } from 'react';
-import type { CoreEntity, CoreStateEntry } from '@/core';
+import type { CoreEntityData, CoreStateEntry } from '@/core';
 import type { Schemas } from '@/core/schema';
 import { SINGLETON_ID } from '@/core/schema';
 import { EntityPropertyView } from '@/core/views/entity/entity-property-view';
@@ -13,7 +13,7 @@ import { useStatelyUi } from '@/index';
 export interface EntityDetailViewProps<Schema extends Schemas = Schemas> {
   entityType: CoreStateEntry<Schema>;
   node: Schema['plugin']['Nodes']['object'];
-  entity: CoreEntity<Schema>['data'];
+  entity: CoreEntityData<Schema>;
   entityId?: string;
   disableJsonView?: boolean;
 }

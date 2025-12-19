@@ -25,11 +25,15 @@ export type CoreStateEntry<S extends Schemas<any, any> = Schemas<any, any>> = St
   S['config']
 >;
 
-// EntityData is already the extracted data payload from Entity discriminated union
-export type CoreEntity<S extends Schemas = Schemas> = S['types']['EntityData'];
+// Entity types:
+// - CoreEntityWrapped: The full discriminated union { type: string, data: {...} }
+// - CoreEntityData: Just the data payload extracted from the Entity union
+export type CoreEntityWrapped<S extends Schemas<any, any> = Schemas<any, any>> =
+  S['config']['components']['schemas']['Entity'];
 export type CoreEntityData<S extends Schemas<any, any> = Schemas<any, any>> = CoreTypes<
   S['config']
 >['EntityData'];
+
 export type CoreNodeUnion<S extends Schemas<any, any> = Schemas<any, any>> = S['plugin']['AnyNode'];
 
 // ------------

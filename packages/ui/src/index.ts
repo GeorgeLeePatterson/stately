@@ -111,3 +111,7 @@ export {
 // Logging
 import { devLog, devLogger } from './lib/logging.js';
 export { devLogger, devLog };
+
+// Assertions
+import { devAssert } from './lib/assertions.js';
+export { devAssert };

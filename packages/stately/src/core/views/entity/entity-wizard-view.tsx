@@ -1,12 +1,12 @@
 import { useId } from 'react';
-import type { CoreEntity } from '@/core';
+import type { CoreEntityData } from '@/core';
 import { ObjectWizardEdit } from '@/core/fields/edit/object-wizard';
 import type { Schemas } from '@/core/schema';
 
 export interface EntityWizardEditProps<Schema extends Schemas = Schemas> {
   node: Schema['plugin']['Nodes']['object'];
-  value?: CoreEntity<Schema>['data'];
-  onChange: (value: CoreEntity<Schema>['data']) => void;
+  value?: CoreEntityData<Schema>;
+  onChange: (value: CoreEntityData<Schema>) => void;
   onComplete?: () => void;
   isLoading?: boolean;
   isRootEntity?: boolean;
@@ -31,7 +31,7 @@ export function EntityWizardEdit<Schema extends Schemas = Schemas>({
       ? { ...node, required: [...node.required, 'name'] }
       : node;
   return (
-    <ObjectWizardEdit<Schema, Schema['plugin']['Nodes']['object'], CoreEntity<Schema>['data']>
+    <ObjectWizardEdit<Schema, Schema['plugin']['Nodes']['object'], CoreEntityData<Schema>>
       formId={formId}
       isLoading={isLoading}
       node={newNode}
