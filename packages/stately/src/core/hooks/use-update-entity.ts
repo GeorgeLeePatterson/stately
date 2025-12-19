@@ -71,10 +71,13 @@ export function useUpdateEntity<Schema extends Schemas = Schemas>({
         { input },
       );
 
+      // Resolve entity type, since there are various formats, ie '-' vs '_'
+      const stateEntry = runtime.plugins.core.utils?.resolveEntityType(entity) ?? entity;
+
       // Runtime validation: entity type must match hook configuration
-      if (input.type !== entity) {
+      if (input.type !== stateEntry) {
         throw new Error(
-          `Entity type mismatch: hook configured for "${String(entity)}" ` +
+          `Entity type mismatch: hook configured for "${String(stateEntry)}" ` +
             `but received "${String(input.type)}"`,
         );
       }
@@ -83,7 +86,11 @@ export function useUpdateEntity<Schema extends Schemas = Schemas>({
         body: input,
         params: { path: { id } },
       });
-      if (error) throw new Error('Failed to update entity');
+
+      if (error) {
+        devLog.error('Core', 'Failed to update entity', { error, id, input });
+        throw new Error('Failed to update entity');
+      }
       devLog.debug('Core', 'Successfully updated entity', { data, entity, id });
       return data;
     },

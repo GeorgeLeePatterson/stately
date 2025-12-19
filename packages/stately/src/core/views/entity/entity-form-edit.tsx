@@ -53,7 +53,12 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
       {'name' in node.properties && (
         <>
           <Separator />
-          <EntityPropertyEdit compact fieldName={'Name'} node={node.properties.name}>
+          <EntityPropertyEdit
+            compact
+            fieldName={'Name'}
+            isRequired={isRootEntity}
+            node={node.properties.name}
+          >
             <Field>
               {isLoading ? (
                 <Skeleton className="h-20 w-full" />

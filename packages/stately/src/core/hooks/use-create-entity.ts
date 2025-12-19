@@ -70,16 +70,22 @@ export function useCreateEntity<Schema extends Schemas = Schemas>({
         { input },
       );
 
+      // Resolve entity type, since there are various formats, ie '-' vs '_'
+      const stateEntry = runtime.plugins.core.utils?.resolveEntityType(entity) ?? entity;
+
       // Runtime validation: entity type must match hook configuration
-      if (input.type !== entity) {
+      if (input.type !== stateEntry) {
         throw new Error(
-          `Entity type mismatch: hook configured for "${String(entity)}" ` +
+          `Entity type mismatch: hook configured for "${String(stateEntry)}" ` +
             `but received "${String(input.type)}"`,
         );
       }
 
       const { data, error } = await coreApi.create_entity({ body: input });
-      if (error) throw new Error('Failed to create entity');
+      if (error) {
+        devLog.error('Core', 'Failed to create entity', { error, input });
+        throw new Error('Failed to create entity');
+      }
       devLog.debug('Core', 'Successfully created entity', { data, entity });
       return data;
     },

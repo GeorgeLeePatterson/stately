@@ -19,11 +19,15 @@ export function EntityNewPage<Schema extends Schemas = Schemas>({
     templateId || new URLSearchParams(window.location.search).get('template') || undefined;
 
   const { schema, plugins } = useStatelyUi<Schema>();
+
   const stateEntry = plugins.core.utils?.resolveEntityType(entity) ?? entity;
   const entityPath = schema.data.stateEntryToUrl[stateEntry] ?? entity;
   const typeName = schema.data.entityDisplayNames[stateEntry];
 
   const templateDataLoaded = useRef<boolean>(false);
+
+  // TODO: Remove
+  console.debug('=======> Entity New Page: ', { entity, stateEntry });
 
   const [formData, setFormData] = useState<CoreEntityData<Schema> | null>(null);
   const [isDirty, setIsDirty] = useState(false);
