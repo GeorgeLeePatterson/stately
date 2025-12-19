@@ -1,5 +1,5 @@
 // Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
+// DO NOT EDIT MANUALLY - run 'stately generate' to regenerate
 
 export interface paths {
     "/file/cache/{path}": {

@@ -5,6 +5,8 @@ export default defineConfig({
     // Main entry points
     index: "src/index.ts",
     schema: "src/schema.ts",
+    // CLI
+    "cli/index": "src/cli/index.ts",
     // Codegen (types for plugin authors + generator)
     "codegen/index": "src/codegen/index.ts",
     "codegen/generate": "src/codegen/generate.ts",

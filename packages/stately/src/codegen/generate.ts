@@ -31,16 +31,6 @@ import {
   setCodegenPlugins,
 } from './plugin-manager.js';
 
-// Accept paths as arguments (will be called by CLI)
-const openapiPath = process.argv[2];
-const outputDir = process.argv[3];
-const pluginConfigPath = process.argv[4];
-
-if (!openapiPath || !outputDir) {
-  console.error('Usage: node generate.js <openapi.json> <output_dir> [pluginConfig.js]');
-  process.exit(1);
-}
-
 type SerializedNode = any;
 
 interface SchemaCache {
@@ -48,14 +38,23 @@ interface SchemaCache {
   state: 'uninitialized' | 'parsing' | 'complete';
 }
 
-async function main() {
-  if (!openapiPath || !outputDir) {
-    console.error('Usage: node generate.js <openapi.json> <output_dir> [pluginConfig.js]');
-    process.exit(1);
-  }
+export interface GenerateOptions {
+  /** Path to the OpenAPI JSON file */
+  input: string;
+  /** Output directory for generated files */
+  output: string;
+  /** Optional path to a plugin config file */
+  config?: string;
+}
 
-  const resolvedOpenapiPath = openapiPath;
-  const resolvedOutputDir = path.resolve(outputDir);
+/**
+ * Generate TypeScript schemas and types from an OpenAPI spec.
+ */
+export async function generate(options: GenerateOptions): Promise<void> {
+  const { input, output, config: pluginConfigPath } = options;
+
+  const resolvedOpenapiPath = path.resolve(input);
+  const resolvedOutputDir = path.resolve(output);
 
   // Ensure output directory exists
   if (!fs.existsSync(resolvedOutputDir)) {
@@ -318,7 +317,7 @@ async function main() {
 
   // Write main schemas file
   const mainOutput = `// Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
+// DO NOT EDIT MANUALLY - run 'stately generate' to regenerate
 
 export const PARSED_SCHEMAS = ${JSON.stringify(mainBundleSchemas, null, 2)} as const;
 
@@ -331,7 +330,7 @@ export type ParsedSchemaName = keyof typeof PARSED_SCHEMAS;
   // Write runtime schemas file if we have any
   if (Object.keys(runtimeBundleSchemas).length > 0) {
     const runtimeOutput = `// Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
+// DO NOT EDIT MANUALLY - run 'stately generate' to regenerate
 //
 // This file contains schemas that are loaded lazily at runtime.
 // Import via dynamic import: () => import('./schemas.runtime')
@@ -354,7 +353,7 @@ export type RuntimeSchemaName = keyof typeof RUNTIME_SCHEMAS;
     const typesString = astToString(ast);
 
     const typesFileContent = `// Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
+// DO NOT EDIT MANUALLY - run 'stately generate' to regenerate
 
 ${typesString}
 `;
@@ -369,8 +368,3 @@ ${typesString}
 
   console.log('✨ Schema generation complete!');
 }
-
-main().catch(error => {
-  console.error('[@statelyjs/codegen] generation failed:', error);
-  process.exit(1);
-});

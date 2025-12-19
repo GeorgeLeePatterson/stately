@@ -1,5 +1,5 @@
 // Auto-generated at build time from openapi.json
-// DO NOT EDIT MANUALLY - run 'pnpx @statelyjs/codegen' to regenerate
+// DO NOT EDIT MANUALLY - run 'stately generate' to regenerate
 
 export const PARSED_SCHEMAS = {
   "ApiError": {

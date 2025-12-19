@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
- * CLI for @statelyjs/stately codegen
+ * Stately CLI entry point
  *
- * Usage: pnpx @statelyjs/stately <openapi.json> <output_dir> [pluginConfig.js]
+ * Usage:
+ *   stately generate <openapi.json> -o <output_dir> [-c <config>]
  *
- * Generates:
- *   <output_dir>/schemas.ts  - Parsed schema nodes for form generation
- *   <output_dir>/types.ts    - Full OpenAPI types (paths, operations, components)
+ * Examples:
+ *   stately generate ./openapi.json -o ./src/generated
+ *   stately generate ./openapi.json --output ./src/lib/generated --config ./stately.config.ts
  */
 
-import('../dist/codegen/generate.mjs');
+import('../dist/cli/index.mjs');

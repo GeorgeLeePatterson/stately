@@ -6,6 +6,7 @@
   "license": "MIT",
   "exports": {
     ".": "./dist/index.mjs",
+    "./cli": "./dist/cli/index.mjs",
     "./codegen": "./dist/codegen/index.mjs",
     "./codegen/generate": "./dist/codegen/generate.mjs",
     "./core": "./dist/core/index.mjs",
@@ -38,6 +39,7 @@
   "dependencies": {
     "@statelyjs/schema": "workspace:*",
     "@statelyjs/ui": "workspace:*",
+    "commander": "^13.1.0",
     "openapi-typescript": "^7.10.1"
   },
   "peerDependencies": {
