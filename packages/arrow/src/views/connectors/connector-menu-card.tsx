@@ -47,7 +47,11 @@ export interface ConnectorMenuCardProps {
   connectors: ConnectionMetadata[];
   currentConnector?: ConnectionMetadata;
   onSelect: (connector?: ConnectionMetadata) => void;
-  onSelectItem: (identifier: string, type: ListSummary['type']) => void;
+  onSelectItem: (
+    connector: ConnectionMetadata,
+    identifier: string,
+    type: ListSummary['type'],
+  ) => void;
   error?: string;
   isLoading?: boolean;
 }
@@ -93,20 +97,19 @@ export function ConnectorMenuCard({
   );
 
   // Clicking on an item in the summary
-  const connectorFilter = currentConnector?.id ? filters?.[currentConnector.id] : undefined;
   const handleSelectItem = useCallback(
-    (type: ListSummary['type'], name: string) => {
-      if (type === 'databases') {
-        onSelectItem(name, type);
-        return;
+    (connector: ConnectionMetadata, type: ListSummary['type'], name: string) => {
+      let identifier = name;
+      if (type !== 'databases') {
+        const connectorFilter = filters?.[connector.id];
+        const catalog = connector.catalog ?? undefined;
+        const database = connectorFilter?.search ?? '';
+        const sep = connector?.metadata.kind === 'object_store' ? '/' : '.';
+        identifier = createConnectionItemIdentifier({ catalog, database, name, sep });
       }
-      const catalog = currentConnector?.catalog ?? undefined;
-      const database = connectorFilter?.search ?? '';
-      const sep = currentConnector?.metadata.kind === 'object_store' ? '/' : '.';
-      const identifier = createConnectionItemIdentifier({ catalog, database, name, sep });
-      onSelectItem(identifier, type);
+      onSelectItem(connector, identifier, type);
     },
-    [connectorFilter, currentConnector, onSelectItem],
+    [onSelectItem, filters],
   );
 
   // Sort connectors
@@ -168,12 +171,16 @@ export function ConnectorMenuCard({
                 }
                 isSelected={currentConnector?.id === connector.id}
                 key={connector.id}
-                onSelect={handleSelect}
+                onSelect={id => {
+                  // Don't select if closing
+                  if (opened.includes(connector.id)) return;
+                  handleSelect(id);
+                }}
               >
                 <div
                   className={cn(
                     'flex-auto flex flex-col space-y-2',
-                    'p-2 min-h-[94px]',
+                    'px-2 py-3 min-h-[94px]',
                     'border-border border-x bg-muted/40',
                     'inset-shadow-sm/10',
                   )}
@@ -187,7 +194,7 @@ export function ConnectorMenuCard({
                     connectorKind={connector.metadata.kind}
                     isLoading={connectionDetails.isFetching}
                     onSearch={f => handleConnectorSearch(connector.id, f)}
-                    onSelectItem={handleSelectItem}
+                    onSelectItem={(type, name) => handleSelectItem(connector, type, name)}
                     summary={connectionDetails.data?.[connector.id]}
                   />
                 </div>
@@ -220,7 +227,8 @@ function ConnectorRow({
   return (
     <AccordionItem value={connector.id}>
       <AccordionTrigger
-        className="hover:no-underline"
+        className="hover:no-underline rounded-none"
+        nativeButton={false}
         render={
           <Item
             className={cn([
@@ -230,7 +238,7 @@ function ConnectorRow({
             ])}
             onClick={() => onSelect(connector.id)}
             size="sm"
-            variant={isSelected ? 'muted' : 'default'}
+            variant="default"
           >
             <ItemMedia className="self-center">
               {isLoading ? <Spinner className="w-4 h-4" /> : kindIcon}
@@ -241,7 +249,7 @@ function ConnectorRow({
                 {isSelected && (
                   <>
                     &nbsp;
-                    <Badge className="p-1 rounded-full" variant="default" />
+                    <Badge className="p-0 w-4 h-4 rounded-full" variant="default" />
                   </>
                 )}
               </ItemTitle>

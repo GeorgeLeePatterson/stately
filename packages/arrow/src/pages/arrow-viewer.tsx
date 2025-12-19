@@ -96,17 +96,24 @@ function Root(props: ArrowViewerProps) {
 
   // Connector + Query
   // TODO (Ext): Allow plugin extension - Plugin can provide transformer
-  const handleSelectConnectorItem = useCallback((identifier: string, type: ListSummary['type']) => {
-    if (type === 'databases') {
-      setSql(
-        'SELECT * FROM information_schema.tables ' +
-          `WHERE information_schema.tables.table_schema = '${identifier}'`,
-      );
-    } else {
-      setSql(`SELECT * FROM ${identifier} LIMIT 500`);
-      setSidebarOpened(false);
-    }
-  }, []);
+  const handleSelectConnectorItem = useCallback(
+    (connector: ConnectionMetadata, identifier: string, type: ListSummary['type']) => {
+      if (connector.id !== currentConnector?.id) {
+        handleSelectConnector(connector);
+      }
+
+      if (type === 'databases') {
+        setSql(
+          'SELECT * FROM information_schema.tables ' +
+            `WHERE information_schema.tables.table_schema = '${identifier}'`,
+        );
+      } else {
+        setSql(`SELECT * FROM ${identifier} LIMIT 500`);
+        setSidebarOpened(false);
+      }
+    },
+    [handleSelectConnector, currentConnector?.id],
+  );
 
   const resultsHrefId = (props.formId ? `${props.formId}-` : '') + DEFAULT_RESULTS_HREF_ID;
 

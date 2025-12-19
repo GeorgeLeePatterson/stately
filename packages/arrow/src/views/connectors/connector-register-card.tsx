@@ -12,7 +12,6 @@ import { Spinner } from '@statelyjs/ui/components/base/spinner';
 import { cn, messageFromError } from '@statelyjs/ui/lib/utils';
 import { PlugZap, SquareStack } from 'lucide-react';
 import type React from 'react';
-import { useState } from 'react';
 import { useListRegistered } from '@/hooks';
 import { useListCatalogs } from '@/hooks/use-list-catalog';
 import { useRegisterConnection } from '@/hooks/use-register-connection';
@@ -35,8 +34,6 @@ export function ConnectorsRegisterCard({
   isLoading,
   ...rest
 }: ConnectorsRegisterCardProps & React.HTMLAttributes<HTMLDivElement>) {
-  const [open, setOpen] = useState(false);
-
   // Registering
   const registerMutation = useRegisterConnection();
   const registerError = registerMutation.error
@@ -71,7 +68,6 @@ export function ConnectorsRegisterCard({
         <Button
           className={cn('text-xs')}
           disabled={registerMutation.isPending}
-          onClick={() => setOpen(!open)}
           size="sm"
           variant="ghost"
         >
@@ -83,7 +79,7 @@ export function ConnectorsRegisterCard({
   );
 
   return (
-    <DropdownMenu onOpenChange={setOpen} open={open}>
+    <DropdownMenu>
       <Card
         {...rest}
         className={cn(
