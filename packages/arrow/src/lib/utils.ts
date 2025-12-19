@@ -1,5 +1,5 @@
+import type { Table } from '@statelyjs/apache-arrow';
 import { devLogger, stripLeading, stripTrailing } from '@statelyjs/ui';
-import type { Table } from 'apache-arrow';
 import type { ArrowTableDataView } from '@/components/arrow-table';
 import type { ConnectionKind, ConnectionMetadata, ListSummary } from '@/types/api';
 

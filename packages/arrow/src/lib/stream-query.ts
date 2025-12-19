@@ -1,4 +1,4 @@
-import { type RecordBatch, RecordBatchReader } from 'apache-arrow';
+import { type RecordBatch, RecordBatchReader } from '@statelyjs/apache-arrow';
 import type { ArrowApi } from '@/api';
 import type { QueryRequest } from '@/types/api';
 import { log } from './utils';

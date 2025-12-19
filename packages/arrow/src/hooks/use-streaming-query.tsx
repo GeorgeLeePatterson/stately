@@ -8,6 +8,7 @@
  * @module
  */
 
+import { RecordBatch, type Table } from '@statelyjs/apache-arrow';
 import {
   queryOptions,
   experimental_streamedQuery as streamedQuery,
@@ -15,7 +16,6 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { RecordBatch, type Table } from 'apache-arrow';
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { ArrowApi } from '@/api';
 import {

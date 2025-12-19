@@ -29,9 +29,9 @@ importers:
 
   packages/arrow:
     dependencies:
-      apache-arrow:
-        specifier: file:../../vendor/arrow-js/targets/esnext/esm
-        version: '@apache-arrow/esnext-esm@file:vendor/arrow-js/targets/esnext/esm'
+      '@statelyjs/apache-arrow':
+        specifier: ^22.0.0-pre.1
+        version: 22.0.0-pre.1
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -121,6 +121,9 @@ importers:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
         version: 5.2.8
+      '@statelyjs/apache-arrow':
+        specifier: 22.0.0-pre.1
+        version: 22.0.0-pre.1
       '@tailwindcss/vite':
         specifier: ^4.1.17
         version: 4.1.18(vite@7.3.0(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.2))
@@ -325,10 +328,6 @@ packages:
 
   '@antfu/ni@25.0.0':
     resolution: {integrity: sha512-9q/yCljni37pkMr4sPrI3G4jqdIk074+iukc5aFJl7kmDCCsiJrbZ6zKxnES1Gwg+i9RcDZwvktl23puGslmvA==}
-    hasBin: true
-
-  '@apache-arrow/esnext-esm@file:vendor/arrow-js/targets/esnext/esm':
-    resolution: {directory: vendor/arrow-js/targets/esnext/esm, type: directory}
     hasBin: true
 
   '@babel/code-frame@7.27.1':
@@ -1558,6 +1557,10 @@ packages:
   '@sindresorhus/merge-streams@4.0.0':
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
+
+  '@statelyjs/apache-arrow@22.0.0-pre.1':
+    resolution: {integrity: sha512-9PqiDLOV+zQvEOMm4lA3IX9xccEMwigrcKg2IR4Fzl0IDphIa9Rds7rL5qLigX/gGTkIVCQJIawvBDuHcgSSFA==}
+    hasBin: true
 
   '@swc/helpers@0.5.17':
     resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
@@ -3849,20 +3852,6 @@ snapshots:
       package-manager-detector: 1.6.0
       tinyexec: 1.0.2
 
-  '@apache-arrow/esnext-esm@file:vendor/arrow-js/targets/esnext/esm':
-    dependencies:
-      '@swc/helpers': 0.5.17
-      '@types/command-line-args': 5.2.3
-      '@types/command-line-usage': 5.0.4
-      '@types/node': 24.10.1
-      command-line-args: 6.0.1
-      command-line-usage: 7.0.3
-      flatbuffers: 25.9.23
-      json-bignum: 0.0.3
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - '@75lb/nature'
-
   '@babel/code-frame@7.27.1':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
@@ -5156,6 +5145,20 @@ snapshots:
   '@sec-ant/readable-stream@0.4.1': {}
 
   '@sindresorhus/merge-streams@4.0.0': {}
+
+  '@statelyjs/apache-arrow@22.0.0-pre.1':
+    dependencies:
+      '@swc/helpers': 0.5.17
+      '@types/command-line-args': 5.2.3
+      '@types/command-line-usage': 5.0.4
+      '@types/node': 24.10.1
+      command-line-args: 6.0.1
+      command-line-usage: 7.0.3
+      flatbuffers: 25.9.23
+      json-bignum: 0.0.3
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - '@75lb/nature'
 
   '@swc/helpers@0.5.17':
     dependencies:

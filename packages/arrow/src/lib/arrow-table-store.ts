@@ -1,4 +1,4 @@
-import { type RecordBatch, Table } from 'apache-arrow';
+import { type RecordBatch, Table } from '@statelyjs/apache-arrow';
 
 /**
  * Metrics about the streaming query progress.
@@ -51,11 +51,7 @@ function createInternalStore(initialTable?: Table | null) {
   };
 
   const rebuildSnapshot = () => {
-    currentSnapshot = {
-      metrics: { ...metrics },
-      rowCount: table.numRows,
-      table,
-    };
+    currentSnapshot = { metrics: { ...metrics }, rowCount: table.numRows, table };
   };
 
   const notify = () => {
