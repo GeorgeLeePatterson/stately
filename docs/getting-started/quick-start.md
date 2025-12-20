@@ -299,7 +299,7 @@ pnpm create vite . --template react-ts --no-interactive
 # Install stately
 pnpm add @statelyjs/stately @statelyjs/ui @statelyjs/schema
 # Install ui essentials
-pnpm add @tanstack/react-query lucide-react sonner @uiw/react-codemirror openapi-fetch
+pnpm add @tanstack/react-query lucide-react sonner openapi-fetch react-router-dom
 # Install tailwind helpers
 pnpm add -D @tailwindcss/vite tailwindcss
 ```
@@ -328,9 +328,6 @@ import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/sch
 // Create the API client
 const client = createClient<paths>({ baseUrl: 'http://localhost:3000' });
 
-// Add a dashboard route to the auto-generated sidebar navigation
-const sidebarNav = [{ icon: LayoutDashboard, label: 'Dashboard', to: '/' }];
-
 // Create derived stately schema
 type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSchema>>;
 
@@ -340,12 +337,9 @@ const runtimeOpts = {
   // Pass in derived stately schema
   schema: stately<AppSchemas>(openapiSpec, PARSED_SCHEMAS),
   // Configure application-wide options
-  options: { 
-    api: { pathPrefix: '/api/v1' },
-    navigation: { routes: { items: sidebarNav, label: 'Application', to: '/' }}
-  },
+  options: { api: { pathPrefix: '/api/v1' } },
   // Configure included core plugin options
-  core: { api: { pathPrefix: '/entity' }, entities: { icons: {/** Entity icon map */}}},
+  core: { api: { pathPrefix: '/entity' } },
 };
 
 // Create stately runtime
@@ -361,8 +355,11 @@ export const useStately = useStatelyUi<AppSchemas>;
 Update `src/main.tsx`:
 
 ```typescript
+import './index.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StatelyProvider, runtime } from './lib/stately';
 import App from './App';
@@ -371,11 +368,13 @@ const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <StatelyProvider value={runtime}>
-        <App />
-      </StatelyProvider>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <StatelyProvider value={runtime}>
+          <App />
+        </StatelyProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 ```
@@ -406,59 +405,97 @@ export default defineConfig({
 })
 ```
 
-### 7. Create the App component and Dashboard and Task List components
+### 7. Create the App Component with Routes
 
 Update `src/App.tsx`:
 
 ```typescript
-import { runtime, StatelyProvider } from './lib/stately';
-import { Button, Card, CardHeader, CardTitle, CardContent } from '@statelyjs/ui/components/base';
-import { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Layout } from '@statelyjs/ui/layout';
+import {
+  EntitiesIndexPage,
+  EntityTypeListPage,
+  EntityDetailsPage,
+  EntityEditPage,
+  EntityNewPage,
+} from '@statelyjs/stately/core/pages';
+
+// Simple dashboard component
+function Dashboard() {
+  return (
+    <Layout.Page title="Dashboard" description="Welcome to your task manager">
+      <div className="grid gap-4">
+        <p>Navigate to <a href="/entities/task" className="text-primary underline">Tasks</a> to get started.</p>
+      </div>
+    </Layout.Page>
+  );
+}
 
 function App() {
   return (
-    <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Task Manager</h1>
-      
-      <div className="flex gap-2 mb-6">
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="New task name"
-          className="flex-1 px-3 py-2 border rounded"
-        />
-        <Button onClick={handleCreate}>Add Task</Button>
-      </div>
-
-      <div className="space-y-4">
-        {tasks?.map((task) => (
-          <Card key={task.id}>
-            <CardHeader>
-              <CardTitle>{task.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Status: {task.status}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </div>
+    <Layout.Root>
+      <Routes>
+        {/* Dashboard */}
+        <Route path="/" element={<Dashboard />} />
+        
+        {/* Entity routes */}
+        <Route path="/entities" element={<EntitiesIndexPage />} />
+        <Route path="/entities/:type" element={<EntityTypeList />} />
+        <Route path="/entities/:type/new" element={<EntityNew />} />
+        <Route path="/entities/:type/:id" element={<EntityDetails />} />
+        <Route path="/entities/:type/:id/edit" element={<EntityEdit />} />
+        
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Layout.Root>
   );
+}
+
+// Route wrapper components to extract params
+function EntityTypeList() {
+  const { type } = useParams();
+  return <EntityTypeListPage entity={type!} />;
+}
+
+function EntityNew() {
+  const { type } = useParams();
+  return <EntityNewPage entity={type!} />;
+}
+
+function EntityDetails() {
+  const { type, id } = useParams();
+  return <EntityDetailsPage entity={type!} id={id!} />;
+}
+
+function EntityEdit() {
+  const { type, id } = useParams();
+  return <EntityEditPage entity={type!} id={id!} />;
 }
 
 export default App;
 ```
 
+Don't forget to add the `useParams` import at the top:
+
+```typescript
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
+```
+
 ### 8. Run the Frontend
 
 ```bash
-pnpm build && pnpm dev
+pnpm dev
 ```
 
-Open `http://localhost:5173` to see your application.
+Open `http://localhost:5173` to see your application. You now have:
+
+- **Dashboard** at `/` - A simple landing page
+- **All Entities** at `/entities` - Browse all entity types  
+- **Task List** at `/entities/task` - List, create, and delete tasks
+- **Create Task** at `/entities/task/new` - Form to create a new task
+- **View Task** at `/entities/task/:id` - View task details
+- **Edit Task** at `/entities/task/:id/edit` - Edit an existing task
 
 ## What Just Happened?
 
@@ -468,10 +505,12 @@ Open `http://localhost:5173` to see your application.
 
 3. **Codegen**: The Stately CLI parsed the OpenAPI spec and generated TypeScript types and schema definitions.
 
-4. **Frontend**: The runtime consumed those types to provide:
-   - Type-safe API client
-   - React hooks for data fetching
-   - Form generation from schemas
+4. **Frontend**: The Stately runtime and pre-built pages provided:
+   - Type-safe API client via `openapi-fetch`
+   - Complete CRUD UI with list, detail, create, and edit views
+   - Auto-generated forms based on your entity schemas
+   - Navigation sidebar with entity types
+   - Responsive layout with header and breadcrumbs
 
 ## Next Steps
 
