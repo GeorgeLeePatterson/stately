@@ -1,0 +1,687 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "tasks",
+    "description": "",
+    "license": {
+      "name": ""
+    },
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/": {
+      "put": {
+        "tags": [
+          "entity"
+        ],
+        "summary": "Create a new entity",
+        "operationId": "create_entity",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Entity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Entity created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/list/{type}": {
+      "get": {
+        "tags": [
+          "entity"
+        ],
+        "summary": "List entity summaries",
+        "operationId": "list_entities",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "description": "Entity type to list",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/StateEntry"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List entities by type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{entry}/{id}": {
+      "delete": {
+        "tags": [
+          "entity"
+        ],
+        "summary": "Remove an entity",
+        "operationId": "remove_entity",
+        "parameters": [
+          {
+            "name": "entry",
+            "in": "path",
+            "description": "Entity type",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/StateEntry"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Entity ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity removed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{id}": {
+      "get": {
+        "tags": [
+          "entity"
+        ],
+        "summary": "Get entity by ID and type",
+        "operationId": "get_entity_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Entity ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/StateEntry"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEntityResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "entity"
+        ],
+        "summary": "Update an existing entity (full replacement)",
+        "operationId": "update_entity",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Entity ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Entity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Entity updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "entity"
+        ],
+        "summary": "Patch an existing entity (same as update)",
+        "operationId": "patch_entity_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Entity ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Entity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Entity patched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "description": "Standard error shape returned by handlers",
+        "required": [
+          "error",
+          "status"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
+      "EntitiesMap": {
+        "type": "object",
+        "description": "Map of all entity collections grouped by type",
+        "required": [
+          "entities"
+        ],
+        "properties": {
+          "entities": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/components/schemas/Entity"
+              },
+              "propertyNames": {
+                "type": "string",
+                "description": "Entity identifier type - wraps String for flexibility with UUID v7 generation. Use the singleton ID '00000000-0000-0000-0000-000000000000' for singleton entities.",
+                "example": "00000000-0000-0000-0000-000000000000"
+              }
+            },
+            "propertyNames": {
+              "type": "string",
+              "enum": [
+                "task"
+              ]
+            }
+          }
+        }
+      },
+      "EntitiesResponse": {
+        "type": "object",
+        "description": "Response for full entity queries",
+        "required": [
+          "entities"
+        ],
+        "properties": {
+          "entities": {
+            "$ref": "#/components/schemas/EntitiesMap"
+          }
+        }
+      },
+      "Entity": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "data",
+              "type"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/Task"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "task"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "EntityId": {
+        "type": "string",
+        "description": "Entity identifier type - wraps String for flexibility with UUID v7 generation. Use the singleton ID '00000000-0000-0000-0000-000000000000' for singleton entities.",
+        "example": "00000000-0000-0000-0000-000000000000"
+      },
+      "GetEntityResponse": {
+        "type": "object",
+        "description": "Response containing a single entity",
+        "required": [
+          "id",
+          "entity"
+        ],
+        "properties": {
+          "entity": {
+            "$ref": "#/components/schemas/Entity"
+          },
+          "id": {
+            "$ref": "#/components/schemas/EntityId"
+          }
+        }
+      },
+      "ListResponse": {
+        "type": "object",
+        "description": "Response for entity summary list queries",
+        "required": [
+          "entities"
+        ],
+        "properties": {
+          "entities": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Summary"
+              }
+            },
+            "propertyNames": {
+              "type": "string",
+              "enum": [
+                "task"
+              ]
+            },
+            "example": {
+              "pipeline": [
+                {
+                  "description": "Example pipeline",
+                  "id": "my-pipeline",
+                  "name": "My Pipeline"
+                }
+              ],
+              "source": [
+                {
+                  "description": "Example source",
+                  "id": "my-source",
+                  "name": "My Source"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "OperationResponse": {
+        "type": "object",
+        "description": "Standard operation response with ID and optional message",
+        "required": [
+          "id",
+          "message"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "StateEntry": {
+        "type": "string",
+        "enum": [
+          "task"
+        ]
+      },
+      "Summary": {
+        "type": "object",
+        "description": "Summary of an entity for listings",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional description"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique identifier of the entity"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name"
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "description": "A task in our application",
+        "required": [
+          "name",
+          "status"
+        ],
+        "properties": {
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TaskStatus"
+          }
+        }
+      },
+      "TaskMetrics": {
+        "type": "object",
+        "required": [
+          "tasks_created",
+          "tasks_removed"
+        ],
+        "properties": {
+          "tasks_created": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "tasks_removed": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          }
+        }
+      },
+      "TaskStatus": {
+        "type": "string",
+        "enum": [
+          "Pending",
+          "InProgress",
+          "Complete"
+        ]
+      }
+    },
+    "responses": {
+      "ApiError": {
+        "description": "Standard error shape returned by handlers",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Standard error shape returned by handlers",
+              "required": [
+                "error",
+                "status"
+              ],
+              "properties": {
+                "error": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer",
+                  "format": "int32",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "EntitiesResponse": {
+        "description": "Response for full entity queries",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Response for full entity queries",
+              "required": [
+                "entities"
+              ],
+              "properties": {
+                "entities": {
+                  "$ref": "#/components/schemas/EntitiesMap"
+                }
+              }
+            }
+          }
+        }
+      },
+      "GetEntityResponse": {
+        "description": "Response containing a single entity",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Response containing a single entity",
+              "required": [
+                "id",
+                "entity"
+              ],
+              "properties": {
+                "entity": {
+                  "$ref": "#/components/schemas/Entity"
+                },
+                "id": {
+                  "$ref": "#/components/schemas/EntityId"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ListResponse": {
+        "description": "Response for entity summary list queries",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Response for entity summary list queries",
+              "required": [
+                "entities"
+              ],
+              "properties": {
+                "entities": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Summary"
+                    }
+                  },
+                  "propertyNames": {
+                    "type": "string",
+                    "enum": [
+                      "task"
+                    ]
+                  },
+                  "example": {
+                    "pipeline": [
+                      {
+                        "description": "Example pipeline",
+                        "id": "my-pipeline",
+                        "name": "My Pipeline"
+                      }
+                    ],
+                    "source": [
+                      {
+                        "description": "Example source",
+                        "id": "my-source",
+                        "name": "My Source"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "OperationResponse": {
+        "description": "Standard operation response with ID and optional message",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Standard operation response with ID and optional message",
+              "required": [
+                "id",
+                "message"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "entity",
+      "description": "Entity management endpoints"
+    }
+  ]
+}

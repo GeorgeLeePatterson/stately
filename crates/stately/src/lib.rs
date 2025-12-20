@@ -268,7 +268,6 @@ pub mod link;
 pub mod traits;
 
 // Re-export dependencies that are used in generated code
-// Re-export derive macros
 // Re-export key types
 pub use collection::{Collection, Singleton};
 pub use entity::{EntityId, Summary};
@@ -277,6 +276,9 @@ pub use error::ApiError;
 pub use error::{Error, Result};
 pub use hashbrown;
 pub use link::Link;
+#[cfg(feature = "axum")]
+pub use serde_json;
+// Re-export derive macros
 #[cfg(feature = "axum")]
 pub use stately_derive::axum_api;
 pub use stately_derive::{entity, state};

@@ -63,6 +63,7 @@ axum = "0.8"
 serde = { version = "1", features = ["derive"] }
 stately = { version = "0.3", features = ["axum"] }
 tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.6", features = ["cors"] }
 utoipa = { version = "5", features = ["axum_extras", "uuid", "macros"] }
 
 [[bin]]
@@ -76,8 +77,6 @@ Create `src/state.rs`:
 
 ```rust
 use serde::{Deserialize, Serialize};
-use stately::prelude::*;
-use utoipa::ToSchema;
 
 /// A task in our application
 #[stately::entity]
@@ -88,7 +87,7 @@ pub struct Task {
     pub status: TaskStatus,
 }
 
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 pub enum TaskStatus {
     #[default]
     Pending,
@@ -118,23 +117,23 @@ Create `src/api.rs`:
 ```rust
 use std::sync::Arc;
 
+use axum::extract::{FromRef, State};
 use axum::{Json, Router};
-use axum::extract::State;
-use stately::prelude::*;
 use tokio::sync::RwLock;
+use tower_http::cors::{Any, CorsLayer};
 
-use crate::state::{State, Task, TaskStatus, TaskMetrics};
+use crate::state::{Entity, State as AppState, StateEntry, Task, TaskMetrics, TaskStatus};
 
 /// Create API state used across all endpoints
 #[derive(Clone)]
 pub struct ApiState {
-    pub state: Arc<RwLock<State>>,
+    pub state: Arc<RwLock<AppState>>,
     // Define any other properties needed in endpoints
     pub metrics: Arc<RwLock<TaskMetrics>>,
 }
 
 /// API state wrapper
-#[stately::axum_api(State, openapi(components = [Task, TaskStatus, TaskMetrics]))]
+#[stately::axum_api(AppState, openapi(components = [Task, TaskStatus, TaskMetrics]))]
 #[derive(Clone)]
 pub struct EntityState {}
 
@@ -148,14 +147,15 @@ impl FromRef<ApiState> for EntityState {
 /// Build the application router
 pub fn router(state: &ApiState, tx: &tokio::sync::mpsc::Sender<ResponseEvent>) -> Router {
     Router::new()
-        .route("/api/v1/metrics", axum::routing::get(metrics).with_state(state.clone()))
+        .route("/api/v1/metrics", axum::routing::get(metrics))
         .nest(
-            "/api/v1/entity", 
+            "/api/v1/entity",
             EntityState::router(state.clone()).layer(axum::middleware::from_fn(
                 EntityState::event_middleware::<ResponseEvent>(tx.clone()),
-            )))
+            )),
         )
         .layer(CorsLayer::new().allow_headers(Any).allow_methods(Any).allow_origin(Any))
+        .with_state(state.clone())
 }
 
 /// Simple function to retrieve task metrics
@@ -166,7 +166,7 @@ pub fn router(state: &ApiState, tx: &tokio::sync::mpsc::Sender<ResponseEvent>) -
     responses((status = 200, description = "Current task metrics", body = TaskMetrics))
 )]
 pub async fn metrics(State(state): State<ApiState>) -> Json<TaskMetrics> {
-  Json(state.metrics.read().await)
+    Json(*state.metrics.read().await)
 }
 ```
 
@@ -175,12 +175,10 @@ pub async fn metrics(State(state): State<ApiState>) -> Json<TaskMetrics> {
 Update `src/main.rs`:
 
 ```rust
-mod api;
-mod state;
-
 use std::sync::Arc;
 use std::net::SocketAddr;
 
+use tasks::{api, state};
 use tokio::sync::RwLock;
 
 #[tokio::main]
@@ -209,7 +207,7 @@ async fn main() {
             match event {
                 ResponseEvent::Created { .. } => metrics.write().await.tasks_created += 1,
                 ResponseEvent::Deleted { .. } => metrics.write().await.tasks_removed += 1,
-                _ => { /** Ignore */ }
+                _ => { /* Ignore */ }
             }
         }
     });
@@ -218,7 +216,7 @@ async fn main() {
     eprintln!("Server running at http://{addr}");
     
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    axum::serve(listener, api::router()).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
     eprintln!("Server exited");
 }
 ```
@@ -228,6 +226,7 @@ async fn main() {
 Add a binary target to generate the OpenAPI spec. Create `src/bin/openapi.rs`:
 
 ```rust
+#![expect(unused_crate_dependencies)] // Suppresses lints if pedantic lints are set
 use my_stately_app::api::EntityState;
 
 fn main() {
@@ -256,7 +255,7 @@ pub mod state;
 Generate the spec:
 
 ```bash
-cargo run --bin generate-openapi > openapi.json
+cargo run --bin generate-openapi . > openapi.json
 ```
 
 ### 7. Run the Backend

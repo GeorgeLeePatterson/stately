@@ -170,11 +170,11 @@ impl ToTokens for Types {
                     for (state_entry, entities) in &self.entities {
                         let mut entity_map: ::stately::hashbrown::HashMap<
                             ::stately::EntityId,
-                            ::serde_json::Value
+                            ::stately::serde_json::Value
                         > = ::stately::hashbrown::HashMap::default();
 
                         for (id, entity) in entities {
-                            let inner_value = ::serde_json::to_value(entity)
+                            let inner_value = ::stately::serde_json::to_value(entity)
                                 .map_err(::serde::ser::Error::custom)?;
                             drop(entity_map.insert(id.clone(), inner_value));
                         }
