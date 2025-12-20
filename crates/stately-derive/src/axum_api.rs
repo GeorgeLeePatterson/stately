@@ -33,6 +33,8 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
     let state_type_name = &args.state_type;
     let enable_openapi = args.enable_openapi();
     let additional_components = args.components();
+    let server_url = args.server();
+    let additional_paths = args.paths();
 
     let struct_name = &input.ident;
     let vis = &input.vis;
@@ -45,17 +47,30 @@ pub fn generate(attr: TokenStream, item: TokenStream) -> TokenStream {
         Endpoints { enable_openapi, struct_name: struct_name.clone(), vis: vis.clone() };
 
     let api_doc = if enable_openapi {
+        // Generate servers attribute if server URL is provided
+        let servers_attr = server_url
+            .map(|url| {
+                quote! {
+                    servers(
+                        (url = #url)
+                    ),
+                }
+            })
+            .unwrap_or_default();
+
         quote! {
             /// OpenAPI documentation
             #[derive(::utoipa::OpenApi)]
             #[openapi(
+                #servers_attr
                 paths(
                     create_entity,
                     list_entities,
                     get_entity_by_id,
                     update_entity,
                     patch_entity_by_id,
-                    remove_entity
+                    remove_entity,
+                    #(#additional_paths),*
                 ),
                 components(
                     responses(

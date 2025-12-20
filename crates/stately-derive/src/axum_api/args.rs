@@ -26,6 +26,14 @@ impl AxumApiArgs {
     pub fn components(&self) -> &[syn::Type] {
         self.openapi.as_ref().map(|o| o.components.as_slice()).unwrap_or(&[])
     }
+
+    /// Returns the server URL prefix, if specified.
+    pub fn server(&self) -> Option<&str> { self.openapi.as_ref().and_then(|o| o.server.as_deref()) }
+
+    /// Returns the additional path handlers, or an empty slice if none.
+    pub fn paths(&self) -> &[syn::Path] {
+        self.openapi.as_ref().map(|o| o.paths.as_slice()).unwrap_or(&[])
+    }
 }
 
 impl Parse for AxumApiArgs {

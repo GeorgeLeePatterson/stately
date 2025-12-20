@@ -57,6 +57,7 @@ Update your `Cargo.toml`:
 name = "my-stately-app"
 version = "0.1.0"
 edition = "2024"
+default-run = "my-stately-app"
 
 [dependencies]
 axum = "0.8"
@@ -268,15 +269,15 @@ Your API is now running at `http://localhost:3000`. Test it:
 
 ```bash
 # List tasks (empty initially)
-curl http://localhost:3000/api/entity/list/task
+curl http://localhost:3000/api/v1/entity/list/task
 
 # Create a task
-curl -X PUT http://localhost:3000/api/entity \
+curl -X PUT http://localhost:3000/api/v1/entity \
   -H "Content-Type: application/json" \
   -d '{"type": "task", "data": {"name": "My First Task", "status": "Pending"}}'
 
 # List tasks again
-curl http://localhost:3000/api/entity/list/task
+curl http://localhost:3000/api/v1/entity/list/task
 ```
 
 ## Frontend Setup

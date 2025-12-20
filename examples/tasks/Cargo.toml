@@ -2,6 +2,7 @@
 name = "tasks"
 version = "0.1.0"
 edition = "2024"
+default-run = "tasks"
 
 [dependencies]
 axum = "0.8"
