@@ -321,7 +321,7 @@ export async function generate(options: GenerateOptions): Promise<void> {
 
 export const PARSED_SCHEMAS = ${JSON.stringify(mainBundleSchemas, null, 2)} as const;
 
-export type ParsedSchemaName = keyof typeof PARSED_SCHEMAS;
+export type ParsedSchema = typeof PARSED_SCHEMAS;
 `;
 
   fs.writeFileSync(schemasOutputPath, mainOutput);
@@ -337,7 +337,7 @@ export type ParsedSchemaName = keyof typeof PARSED_SCHEMAS;
 
 export const RUNTIME_SCHEMAS = ${JSON.stringify(runtimeBundleSchemas, null, 2)} as const;
 
-export type RuntimeSchemaName = keyof typeof RUNTIME_SCHEMAS;
+export type RuntimeSchema = typeof RUNTIME_SCHEMAS;
 `;
 
     fs.writeFileSync(runtimeSchemasOutputPath, runtimeOutput);

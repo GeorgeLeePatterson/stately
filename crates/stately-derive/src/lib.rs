@@ -64,12 +64,13 @@ pub fn entity(attr: TokenStream, item: TokenStream) -> TokenStream { entity::ent
 /// }
 /// ```
 ///
-/// # API Generation
+/// # OpenAPI
 ///
-/// Optionally generate web API code by specifying the `api` attribute:
+/// Optionally annotate the state and structures generated for automatic OpenAPI document
+/// generation.
 ///
 /// ```rust,ignore
-/// #[stately::state(api = ["axum"])]
+/// #[stately::state(openapi)]
 /// pub struct AppState {
 ///     pipelines: Pipeline,
 /// }
@@ -79,7 +80,7 @@ pub fn entity(attr: TokenStream, item: TokenStream) -> TokenStream { entity::ent
 /// - Concrete response types with OpenAPI schemas
 /// - Handler functions with OpenAPI path annotations
 /// - A router function
-/// - An OpenAPI documentation struct
+/// - OpenAPI documentation attributes
 ///
 /// # Generated Code
 ///
@@ -87,21 +88,15 @@ pub fn entity(attr: TokenStream, item: TokenStream) -> TokenStream { entity::ent
 /// - `StateEntry` enum with variants for each entity type
 /// - `Entity` enum wrapping each entity for type erasure
 /// - The state struct with collection fields
-/// - CRUD operation methods
-/// - (Optional) API-specific modules for web frameworks
+/// - (Optional) OpenAPI annotation
 #[proc_macro_attribute]
 pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream { state::state(attr, item) }
 
 /// Generates Axum API integration for a state wrapper struct.
 ///
 /// This macro allows you to create custom API state structs that wrap your stately state
-/// along with additional dependencies (database pools, config, etc.).
-///
-/// # Requirements
-///
-/// - The struct must have exactly one field marked with `#[state]`
-/// - That field must be of type `Arc<RwLock<YourStateType>>`
-/// - Pass the state type name as the attribute argument
+/// along with additional dependencies (database pools, config, etc.), providing the CRUD endpoints
+/// and events over `axum` APIs.
 ///
 /// # Example
 ///
@@ -110,23 +105,26 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream { state::state
 /// use tokio::sync::RwLock;
 /// use stately_derive::{state, axum_api};
 ///
-/// #[state]
+/// #[stately::entity]
+/// pub struct Pipeline {
+///     pub name: String,
+///     pub source: Link<SourceConfig>,
+/// }
+///
+/// #[state(openapi)]
 /// pub struct AppState {
 ///     pipelines: Pipeline,
 /// }
 ///
-/// #[axum_api(AppState)]
+/// #[axum_api(AppState, openapi(components = [Pipeline]))]
 /// pub struct ApiState {
-///     #[state]
-///     pub app: Arc<RwLock<AppState>>,
-///
 ///     // Your additional dependencies
 ///     pub db_pool: PgPool,
 ///     pub config: Config,
 /// }
 ///
 /// // Use the generated API
-/// use api::{router, ApiDoc};
+/// use api::ApiState;
 ///
 /// let api_state = ApiState {
 ///     app: Arc::new(RwLock::new(AppState::new())),
@@ -134,21 +132,21 @@ pub fn state(attr: TokenStream, item: TokenStream) -> TokenStream { state::state
 ///     config: cfg,
 /// };
 ///
-/// let app = router().with_state(api_state);
+/// let app = ApiState::router().with_state(api_state);
 /// ```
 ///
 /// # Generated Code
 ///
-/// This generates:
-/// - A `Clone` implementation for the struct
-/// - An `api` module containing:
-///   - Response types (`ListResponse`, `EntityResponse`, `OperationResponse`, etc.)
-///   - Handler functions for all CRUD operations
-///   - `router()` function returning `Router<YourStructName>`
-///   - `ApiDoc` struct for OpenAPI documentation
+/// This generates, in scope of the annotated api state:
+/// - Response types (`ListResponse`, `EntityResponse`, `OperationResponse`, etc.)
+/// - Handler functions for all CRUD operations
+/// - Associated methods on the struct:
+///   - `ApiState::router()` function returning `Router<S>`
+///   - `ApiState::event_middleware(...)` function to listen for CRUD events
+/// - OpenAPI annotations providing an OpenAPI doc
 ///
 /// You can create multiple API structs for different purposes (public API, admin API, etc.),
-/// each with their own `api` module.
+/// each with their own application state.
 #[proc_macro_attribute]
 pub fn axum_api(attr: TokenStream, item: TokenStream) -> TokenStream {
     axum_api::generate(attr, item)

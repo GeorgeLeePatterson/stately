@@ -8,6 +8,10 @@ use serde::{Deserialize, Serialize};
 /// Default query session context which provides support for any in-crate database backends.
 #[cfg(feature = "clickhouse")]
 pub type DefaultQuerySessionContext = clickhouse::QuerySessionContext;
+// In the case where `clickhouse` feature is not enabled, there is a simple implementation.
+/// Default query session context which provides support for any in-crate database backends.
+#[cfg(not(feature = "clickhouse"))]
+pub type DefaultQuerySessionContext = datafusion::execution::context::SessionContext;
 
 // TODO: Mark non_exhaustive and provide builder
 /// Configuration for database-backed connectors.

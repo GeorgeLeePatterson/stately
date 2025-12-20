@@ -148,7 +148,7 @@
 //!     pipelines: Pipeline,
 //! }
 //!
-//! #[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+//! #[stately::axum_api(State, openapi(components = [link_aliases::PipelineLink]))]
 //! pub struct AppState {}
 //!
 //! #[tokio::main]
@@ -259,9 +259,9 @@
 //! - `axum_api.rs` - Web API generation with Axum
 //! - `doc_expand.rs` - Example used to generate [`mod@demo`] for reference
 
-pub mod collection;
 #[cfg(feature = "openapi")]
 pub mod codegen;
+pub mod collection;
 pub mod entity;
 pub mod error;
 pub mod link;

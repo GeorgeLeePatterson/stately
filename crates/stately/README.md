@@ -340,7 +340,7 @@ pub struct State {
     pipelines: Pipeline,
 }
 
-#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+#[stately::axum_api(State, openapi(components = [link_aliases::PipelineLink]))]
 pub struct ApiState {}
 
 // Now in scope:
@@ -426,10 +426,10 @@ The `axum_api` macro generates:
 ### Macro Parameters
 
 - **`#[stately::state(openapi)]`** - Enables OpenAPI schema generation for entities
-- **`#[stately::axum_api(State, openapi, components = [...])]`**
+- **`#[stately::axum_api(State, openapi(components = [...]))]`**
   - First parameter: The state type name
   - `openapi`: Enable OpenAPI documentation generation
-  - `components = [...]`: Additional types to include in OpenAPI schemas (e.g., Link types)
+  - `openapi(components = [...])`: Additional types to include in OpenAPI schemas (e.g., Link types)
 
 ### Generated API Routes
 
@@ -456,7 +456,7 @@ pub struct State {
     pipelines: Pipeline,
 }
 
-#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+#[stately::axum_api(State, openapi(components = [link_aliases::PipelineLink]))]
 pub struct ApiState {}
 
 let openapi = ApiState::openapi();

@@ -228,7 +228,6 @@ See [`@statelyjs/files`](../files) and [`@statelyjs/arrow`](../arrow) for comple
 - `lucide-react` ^0.554.0
 - `sonner` ^2.0.7
 - `openapi-fetch` ^0.15
-- `openapi-typescript-helpers` ^0.0.15
 
 ### Optional
 

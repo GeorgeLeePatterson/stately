@@ -125,13 +125,13 @@ impl ForeignEntity for serde_json::Value {
 
 // Axum API (when feature is enabled)
 
-#[stately::axum_api(State, openapi, components = [
+#[stately::axum_api(State, openapi(components = [
     link_aliases::PipelineLink,
     link_aliases::SourceLink,
     link_aliases::ArchivedPipelineLink,
     link_aliases::SinkLink,
     link_aliases::JsonConfigLink,
-])]
+]))]
 pub struct ApiState {}
 
 fn main() {

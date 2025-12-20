@@ -9,10 +9,11 @@ test-unit:
 # Runs unit tests first then integration
 test:
     cargo test -- --nocapture --show-output
-    cargo test -F axum -- --nocapture --show-output
+    cargo test --all-features -- --nocapture --show-output
 
 test-one test_name:
-    cargo test -F axum "{{ test_name }}" -- --nocapture --show-output
+    cargo test "{{ test_name }}" -- --nocapture --show-output
+    cargo test --all-features "{{ test_name }}" -- --nocapture --show-output
 
 # --- COVERAGE ---
 
@@ -64,7 +65,7 @@ generate-demo:
 
 docs:
     scripts/generate-demo.sh
-    cargo doc --all-features --open
+    cargo doc -p stately --all-features --open
 
 # --- MONOREPO ---
 

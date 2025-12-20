@@ -559,4 +559,4 @@ export const PARSED_SCHEMAS = {
   }
 } as const;
 
-export type ParsedSchemaName = keyof typeof PARSED_SCHEMAS;
+export type ParsedSchema = typeof PARSED_SCHEMAS;

@@ -5,9 +5,11 @@ description: Documentation for the Stately state management framework
 
 # Stately Documentation
 
-Stately is a composable, configuration-driven state management framework for building full-stack applications with Rust and TypeScript/React.
+Stately is a composable state management framework for building full-stack applications with Rust and TypeScript/React. 
 
 ## What is Stately?
+
+Stately shines with applications heavily configuration-driven, but the use cases are not intentionally limited to any particular use case. By establishing a foundation around elementary concepts, in Stately's case 'entities' and 'collections', much of the "how" of application development is simplified, allowing the developer to focus on the "what" and the "why".  
 
 Stately provides a unified approach to state management across your backend and frontend:
 
@@ -33,7 +35,7 @@ Stately provides a unified approach to state management across your backend and 
 
 ## Plugins
 
-Stately is designed to be extended with plugins that provide both backend and frontend capabilities:
+Stately is designed to be extended with plugins that provide both backend and frontend capabilities. Currently, Stately provides two out-of-the-box plugins:
 
 | Plugin | Backend | Frontend | Description |
 |--------|---------|----------|-------------|

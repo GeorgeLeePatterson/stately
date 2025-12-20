@@ -49,6 +49,7 @@ uuid = { workspace = true, optional = true }
 [[bin]]
 name = "generate-openapi"
 path = "src/bin/generate_openapi.rs"
+doc = false
 
 [lints]
 workspace = true
