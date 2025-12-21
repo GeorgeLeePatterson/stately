@@ -84,6 +84,7 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
       actions={
         rest?.actions ?? (
           <Button
+            nativeButton={false}
             render={
               <a href={resolveEntityUrl({ mode: 'new', type: entityPath })}>
                 <Plus className="w-4 h-4 mr-2" />

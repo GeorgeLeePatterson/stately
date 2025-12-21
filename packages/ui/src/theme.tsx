@@ -1,5 +1,7 @@
+import type { ButtonProps } from '@base-ui/react/button';
 import { Moon, Sun } from 'lucide-react';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { Button } from './components/base/button';
 import { cn } from './lib/utils';
 
 type ThemeProviderState = { theme: Theme; setTheme: (theme: Theme) => void };
@@ -68,7 +70,7 @@ export const useTheme = () => {
   return context;
 };
 
-export function ThemeToggle() {
+export function ThemeToggle(props: ButtonProps) {
   const { theme, setTheme } = useTheme();
 
   // Determine the effective theme (handles 'system' mode)
@@ -82,17 +84,19 @@ export function ThemeToggle() {
   };
 
   return (
-    <button
+    <Button
       aria-label="Toggle theme"
-      className={cn(
-        'flex items-center justify-center w-9 h-9 rounded-md',
-        'hover:bg-accent hover:text-accent-foreground transition-colors',
-        'text-muted-foreground cursor-pointer',
-      )}
+      className={cn('rounded-md cursor-pointer transition-colors', props?.className)}
       onClick={toggleTheme}
-      type="button"
+      size="icon"
+      variant="ghost"
+      {...props}
     >
-      {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-    </button>
+      {props.children ? (
+        props.children
+      ) : (
+        <>{isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}</>
+      )}
+    </Button>
   );
 }

@@ -13,7 +13,7 @@ This crate provides a flexible abstraction layer over DataFusion for building da
 - **Connector Registry** - Manage and register data source connectors
 - **DataFusion Integration** - Leverage DataFusion's query engine with URL tables
 
-## Installation
+## Install
 
 Add to your `Cargo.toml`:
 

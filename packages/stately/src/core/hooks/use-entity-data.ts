@@ -1,8 +1,10 @@
 import { devLog } from '@statelyjs/ui';
 import { useQuery } from '@tanstack/react-query';
 import type { CoreEntityWrapped, CoreStateEntry } from '@/core';
-import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
+import type { Schemas } from '@/schema';
+
+const NON_RETRYABLE_CODES = [400, 401, 403, 404];
 
 /**
  * Fetch a single entity by its ID.
@@ -43,7 +45,7 @@ export function useEntityData<Schema extends Schemas = Schemas>({
   identifier?: string;
   disabled?: boolean;
 }) {
-  const runtime = useStatelyUi<Schema>();
+  const runtime = useStatelyUi<Schema, []>();
   const coreApi = runtime.plugins.core?.api;
   const fetchEnabled = !!entity && !disabled && !!identifier;
   return useQuery({
@@ -66,6 +68,10 @@ export function useEntityData<Schema extends Schemas = Schemas>({
 
       if (error) {
         console.error('API Error fetching entity:', error);
+        if (typeof error === 'object' && 'error' in error) {
+          throw new Error(`${error.error} [Code: ${error.status}]`);
+        }
+        if (typeof error === 'string') throw new Error(error);
         throw new Error('Failed to fetch entity');
       }
 
@@ -73,5 +79,13 @@ export function useEntityData<Schema extends Schemas = Schemas>({
       return data as { entity: CoreEntityWrapped<Schema>; id: string } | undefined;
     },
     queryKey: ['entity', entity, identifier],
+    retry: (failureCount, error) => {
+      if ((error?.message || '').startsWith('Failed to fetch')) return false;
+      if (NON_RETRYABLE_CODES.some(c => error?.message?.includes(`[Code: ${c}]`))) {
+        devLog.warn('Core', 'Non-retryable error encountered', { error });
+        return false;
+      }
+      return failureCount <= 3;
+    },
   });
 }

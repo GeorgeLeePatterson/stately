@@ -166,7 +166,7 @@ docs/
 
 ### Getting Started
 1. **Introduction**: What problems does Stately solve? Who is it for?
-2. **Installation**: `cargo add stately stately-derive`, `pnpm add @statelyjs/stately`
+2. **Install**: `cargo add stately stately-derive`, `pnpm add @statelyjs/stately`
 3. **Quick Start**: Define an entity, spin up API, render a form
 4. **Project Setup**: Workspace structure, codegen scripts, development workflow
 

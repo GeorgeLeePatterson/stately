@@ -228,14 +228,14 @@ Your Application
 
 ```
 
-Plugins are vertical slices of functionality, spaning frontend to backend:
+Plugins are vertical slices of functionality, spanning frontend to backend:
 
 ```
 ╭─────────╮   ╭──────────────────╮ ╭──────────────────╮     ╭─────────────────╮
 │ stately │   │ @statelyjs/files │ │ @statelyjs/arrow │     │ plugin-frontend │
-│    ⬆    │   │        ⬆         │ │        ⬆         │     │        ⬆        │
+│    ↑    │   │        ↑         │ │        ↑         │     │        ↑        │
 │         │ + │                  │ │                  │ ... │                 │
-│    ⬇    │   │        ⬇         │ │        ⬇         │     │        ⬇        │
+│    ↓    │   │        ↓         │ │        ↓         │     │        ↓        │
 │ stately │   │  stately-files   │ │  stately-arrow   │     │  plugin-backend │
 ╰─────────╯   ╰──────────────────╯ ╰──────────────────╯     ╰─────────────────╯
 ```

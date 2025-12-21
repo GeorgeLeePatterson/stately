@@ -70,9 +70,7 @@ export function LinkDetailView<Schema extends Schemas = Schemas>({
 
   // Render inline configuration
   if ('inline' in value) {
-    return (
-      <LinkInlineView node={inlineSchema} targetType={value.entity_type} value={value.inline} />
-    );
+    return <LinkInlineView node={inlineSchema} value={value.inline} />;
   }
 
   console.warn('LinkView: value must have either ref or inline field');

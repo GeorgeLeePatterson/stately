@@ -44,7 +44,10 @@ impl Endpoints {
                     get,
                     path = "/list",
                     tag = "entity",
-                    responses((status = 200, description = "List all entities", body = ListResponse))
+                    responses(
+                        (status = 200, description = "List all entities", body = ListResponse),
+                        (status = 500, description = "Internal server error", body = ::stately::ApiError)
+                    )
                 )]
             }
         } else {
@@ -61,7 +64,10 @@ impl Endpoints {
                     path = "/list/{type}",
                     tag = "entity",
                     params(("type" = StateEntry, Path, description = "Entity type to list")),
-                    responses((status = 200, description = "List entities by type", body = ListResponse)),
+                    responses(
+                        (status = 200, description = "List entities by type", body = ListResponse),
+                        (status = 500, description = "Internal server error", body = ::stately::ApiError)
+                    ),
                 )]
             }
         } else {
@@ -83,7 +89,8 @@ impl Endpoints {
                     ),
                     responses(
                         (status = 200, description = "Successfully retrieved entity", body = GetEntityResponse),
-                        (status = 404, description = "Entity not found", body = ::stately::ApiError)
+                        (status = 404, description = "Entity not found", body = ::stately::ApiError),
+                        (status = 500, description = "Internal server error", body = ::stately::ApiError)
                     )
                 )]
             }
@@ -104,6 +111,7 @@ impl Endpoints {
                     request_body = Entity,
                     responses(
                         (status = 200, description = "Entity updated successfully", body = OperationResponse),
+                        (status = 404, description = "Entity not found", body = ::stately::ApiError),
                         (status = 500, description = "Internal server error", body = ::stately::ApiError)
                     )
                 )]
@@ -125,6 +133,7 @@ impl Endpoints {
                     request_body = Entity,
                     responses(
                         (status = 200, description = "Entity patched successfully", body = OperationResponse),
+                        (status = 404, description = "Entity not found", body = ::stately::ApiError),
                         (status = 500, description = "Internal server error", body = ::stately::ApiError)
                     )
                 )]
@@ -170,7 +179,10 @@ impl Endpoints {
                         ("name" = Option<String>, Query, description = "Identifier of entity, ie id or name"),
                         ("type" = Option<StateEntry>, Query, description = "Type of entity")
                     ),
-                    responses((status = 200, description = "Get entities with filters", body = EntitiesResponse)),
+                    responses(
+                        (status = 200, description = "Get entities with filters", body = EntitiesResponse),
+                        (status = 500, description = "Internal server error", body = ::stately::ApiError)
+                    ),
                 )]
             }
         } else {

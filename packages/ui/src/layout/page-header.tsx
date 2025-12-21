@@ -1,22 +1,18 @@
 import { ArrowLeft } from 'lucide-react';
 import type { ReactNode } from 'react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/base/breadcrumb';
 import { Button } from '@/components/base/button';
+import { Separator } from '@/components/base/separator';
+import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/theme';
+import { Crumbs } from './crumbs';
 
 export interface PageHeaderProps {
   title?: React.ReactNode;
   description?: string;
   breadcrumbs?: Array<{ label: string; href?: string }>;
   actions?: ReactNode;
-  backTo?: string;
-  backLabel?: string;
+  backLink?: { href: string; label?: string };
+  disableThemeToggle?: boolean;
 }
 
 export function PageHeader({
@@ -24,47 +20,50 @@ export function PageHeader({
   description,
   breadcrumbs,
   actions,
-  backTo,
-  backLabel,
+  backLink,
+  disableThemeToggle,
 }: PageHeaderProps) {
-  return (
-    <div className="stately-page-header space-y-6">
-      {backTo && (
-        <div className="mb-2">
-          <Button
-            render={
-              <a href={backTo}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                {backLabel}
-              </a>
-            }
-            size="sm"
-            variant="ghost"
-          />
-        </div>
-      )}
+  const resolvedBackLink = backLink?.href
+    ? backLink
+    : breadcrumbs?.some(b => !!b.href)
+      ? [...breadcrumbs].reverse().find(b => !!b.href)
+      : undefined;
 
-      {breadcrumbs && breadcrumbs.length > 0 && (
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            {breadcrumbs.map((crumb, index) => (
-              <div className="flex items-center gap-2" key={`${crumb.label}-${index}`}>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  {crumb.href ? (
-                    <BreadcrumbLink href={crumb.href}>{crumb.label}</BreadcrumbLink>
-                  ) : (
-                    <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
-                  )}
-                </BreadcrumbItem>
-              </div>
-            ))}
-          </BreadcrumbList>
-        </Breadcrumb>
-      )}
+  return (
+    <div className="stately-page-header @container/stately-page-header space-y-6">
+      <div
+        className={cn(
+          'flex flex-nowrap justify-end items-center gap-2',
+          'w-full min-w-0 pb-2',
+          'border-b border-muted',
+        )}
+      >
+        {resolvedBackLink?.href && (
+          <>
+            <Button
+              nativeButton={false}
+              render={
+                <a
+                  className="flex flex-nowrap gap-2 items-center justify-center"
+                  href={resolvedBackLink.href}
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span className="hidden @3xl/stately-page-header:inline">
+                    {resolvedBackLink.label}
+                  </span>
+                </a>
+              }
+              size="sm"
+              variant="ghost"
+            />
+            <Separator className="self-center mr-2" orientation="vertical" />
+          </>
+        )}
+        <Crumbs className="flex-1" items={breadcrumbs ?? []} />
+
+        {/* Theme Toggle */}
+        {!disableThemeToggle && <ThemeToggle className="justify-self-end" />}
+      </div>
 
       {(title || description || actions) && (
         <div className="flex items-start justify-between gap-4 min-w-0">

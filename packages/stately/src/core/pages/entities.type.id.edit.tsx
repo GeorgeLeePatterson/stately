@@ -1,24 +1,24 @@
 import { devLog, Layout } from '@statelyjs/ui';
 import { Alert, AlertDescription } from '@statelyjs/ui/components/base/alert';
 import { FieldGroup } from '@statelyjs/ui/components/base/field';
-import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import { BaseForm } from '@statelyjs/ui/form';
 import type { PageProps } from '@statelyjs/ui/layout';
 import { useQueryClient } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { useEntityData, useEntitySchema, useEntityUrl, useUpdateEntity } from '@/core/hooks';
+import { useEntityData, useEntityUrl, useUpdateEntity } from '@/core/hooks';
 import type { Schemas } from '@/core/schema';
 import { EntityEditView } from '@/core/views/entity';
 import { useStatelyUi } from '@/index';
 import type { CoreEntityData, CoreStateEntry } from '..';
+import { useEntityPage } from '../hooks/use-entity-page';
 
 export function EntityEditPage<Schema extends Schemas = Schemas>({
   id,
   entity: entityType,
   ...rest
 }: { id: string; entity: CoreStateEntry<Schema> } & Partial<PageProps>) {
-  const { schema, plugins } = useStatelyUi<Schema>();
+  const { schema, plugins, options } = useStatelyUi<Schema>();
   const stateEntry = plugins.core.utils?.resolveEntityType<Schema>(entityType) ?? entityType;
   const entityPath = schema.data.stateEntryToUrl[stateEntry] ?? entityType;
   const displayName = schema.data.entityDisplayNames[stateEntry];
@@ -27,16 +27,15 @@ export function EntityEditPage<Schema extends Schemas = Schemas>({
   const [isDirty, setIsDirty] = useState(false);
 
   const queryClient = useQueryClient();
-  const entitySchema = useEntitySchema(stateEntry);
   const resolveEntityUrl = useEntityUrl();
   const {
     data,
     isLoading,
+    isFetched,
     error: queryError,
   } = useEntityData({ entity: stateEntry, identifier: id });
 
   const entityData = data?.entity?.data;
-  const entityName = !entityData || !('name' in entityData) ? 'configuration' : entityData.name;
 
   const updateMutation = useUpdateEntity<Schema>({ entity: stateEntry, id, queryClient });
 
@@ -69,15 +68,26 @@ export function EntityEditPage<Schema extends Schemas = Schemas>({
     window.location.href = resolveEntityUrl({ id, type: entityPath });
   };
 
+  const {
+    noDataDisplay,
+    entityName,
+    pageLoaderDisplay,
+    dataReady,
+    pageReady,
+    entitySchema,
+    errorDisplay,
+  } = useEntityPage<Schema>({ entity: data?.entity, isFetched, isLoading, queryError, stateEntry });
+
   const isValid = schema.plugins.core.isEntityValid(formData, entitySchema.node);
 
-  devLog.debug('Core', 'Entity edit', { data, entitySchema, formData, isValid });
+  devLog.debug('Core', 'Entity edit', { data, entitySchema, formData, isValid, queryError });
 
   return (
     <Layout.Page
       {...rest}
       actions={
-        rest?.actions || (
+        rest?.actions ||
+        (pageReady ? (
           <BaseForm.FormActions
             isDirty={isDirty}
             isDisabled={!isValid}
@@ -86,52 +96,47 @@ export function EntityEditPage<Schema extends Schemas = Schemas>({
             onCancel={handleCancel}
             onSave={handleSave}
           />
-        )
+        ) : null)
       }
       breadcrumbs={
-        rest?.breadcrumbs ?? [
-          { href: resolveEntityUrl({}), label: 'Configurations' },
-          { href: resolveEntityUrl({ type: entityPath }), label: displayName },
-          {
-            href: resolveEntityUrl({ id, type: entityPath }),
-            label: (entityData && 'name' in entityData ? entityData.name : 'default') || 'default',
-          },
-          { label: 'Edit' },
-        ]
+        rest?.breadcrumbs ??
+        (pageReady
+          ? [
+              { href: resolveEntityUrl({}), label: 'Configurations' },
+              { href: resolveEntityUrl({ type: entityPath }), label: displayName },
+              {
+                href: resolveEntityUrl({ id, type: entityPath }),
+                label:
+                  (entityData && 'name' in entityData ? entityData.name : 'default') || 'default',
+              },
+              { label: 'Edit' },
+            ]
+          : [])
       }
       description={rest?.description ?? `Modify ${displayName.toLowerCase()} configuration`}
+      disableThemeToggle={options?.theme?.disabled}
       title={
         rest?.title ?? (
           <>
             <span className="hidden lg:inline text-muted-foreground whitespace-nowrap">
               Editing&nbsp;
             </span>
-            <span className="truncate">{entityName}</span>
+            {entityName && <span className="truncate">{entityName}</span>}
           </>
         )
       }
     >
-      {isLoading || !formData ? (
-        // Loading
-        <div className="space-y-4">
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-48 w-full" />
-        </div>
-      ) : queryError ? (
-        // Entity fetch error
-        <div className="text-center py-8">
-          <p className="text-destructive mb-2">Error loading entity</p>
-          <p className="text-sm text-muted-foreground">{queryError.message}</p>
-        </div>
-      ) : !data?.entity ? (
-        // No entity
-        <p className="text-muted-foreground text-center py-8">Entity not found</p>
-      ) : !entitySchema.node ? (
-        // Entity schema error
-        <div className="text-center py-8 text-destructive">
-          {entitySchema.error || 'No entity found'}
-        </div>
-      ) : (
+      {/* Loading */}
+      {pageLoaderDisplay}
+
+      {/* Error fetching or parsing entity schema */}
+      {errorDisplay}
+
+      {/* Data fetched, nothing returned */}
+      {noDataDisplay}
+
+      {/* Entity form */}
+      {dataReady && entitySchema.node && (
         // Entity edit view
         <form className="flex flex-col gap-3">
           {/* Error Display - at the top */}

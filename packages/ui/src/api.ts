@@ -1,6 +1,7 @@
 import type { Client, FetchResponse, MaybeOptionalInit } from 'openapi-fetch';
 import type { HttpMethod, MediaType, RequiredKeysOf } from 'openapi-typescript-helpers';
 import { devLog } from './lib/logging';
+import { stripTrailing } from './utils';
 
 /**
  * Helper type to determine if init parameter should be optional.
@@ -43,19 +44,32 @@ export function createOperations<
   bindings: Bindings,
   prefix = '',
 ): TypedOperations<Paths, Bindings, Media> {
-  const strippedPrefix = prefix?.endsWith('/') ? prefix.slice(0, -1) : prefix;
+  const strippedPrefix = stripTrailing(prefix);
 
   devLog.debug('Base', 'creating operations: ', { bindings, prefix: strippedPrefix });
   const result = {} as TypedOperations<Paths, Bindings, Media>;
 
   for (const key of Object.keys(bindings) as (keyof Bindings)[]) {
     const { method, path } = bindings[key];
-    const prefixedPath = strippedPrefix ? `${strippedPrefix}${path}` : path; // Apply prefix;
+    const prefixedPath = stripTrailing(strippedPrefix ? `${strippedPrefix}${path}` : path); // Apply prefix;
     const upperMethod = method.toUpperCase() as Uppercase<HttpMethod>;
 
     // Bind the client method with the path pre-filled
     result[key] = ((init?: any) => {
-      return (client as any)[upperMethod](prefixedPath, init);
+      try {
+        return (client as any)[upperMethod](prefixedPath, init);
+      } catch (error) {
+        console.error(
+          'Api',
+          `Api error (\
+          key=${String(key)}, \
+          method=${method}, \
+          prefixedPath=${prefixedPath}, \
+          path=${path})`,
+          { error },
+        );
+        throw error;
+      }
     }) as any;
   }
 

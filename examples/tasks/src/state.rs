@@ -1,14 +1,18 @@
 use serde::{Deserialize, Serialize};
 
-/// A task in our application
+/// A dispatched task
 #[stately::entity]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct Task {
+    /// The name of the task
     pub name:        String,
+    /// The description of the task
     pub description: Option<String>,
+    /// The status of the task
     pub status:      TaskStatus,
 }
 
+/// The status of a task
 #[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 pub enum TaskStatus {
     #[default]
@@ -20,7 +24,9 @@ pub enum TaskStatus {
 // Simple tracker for the ui
 #[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct TaskMetrics {
+    /// The number of tasks created
     pub tasks_created: u64,
+    /// The number of tasks removed
     pub tasks_removed: u64,
 }
 

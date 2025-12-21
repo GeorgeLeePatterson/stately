@@ -1,11 +1,14 @@
 import type { AvatarImageProps } from '@base-ui/react/avatar';
 import type { StatelySchemas } from '@statelyjs/schema';
 import type { Defined } from '@statelyjs/schema/helpers';
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { type ComponentType, useCallback, useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/base/avatar';
+import { Button } from '@/components/base/button';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -13,6 +16,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/base/sidebar';
 import { useClickTracking } from '@/hooks';
 import type { AnyUiPlugin } from '@/plugin';
@@ -121,7 +125,7 @@ export function Navigation<
     >
       {/* Header */}
       <SidebarHeader>
-        <div className="flex items-center gap-2 py-2">
+        <div className="flex items-center gap-2 p-2">
           {/* Logo */}
           {!!logo &&
             (typeof logo === 'string' ? (
@@ -165,6 +169,43 @@ export function Navigation<
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarToggle variant="outline" />
+      </SidebarFooter>
     </Sidebar>
   );
 }
+
+export const SidebarToggle = ({
+  className,
+  onClick,
+  children,
+  ...props
+}: React.ComponentProps<typeof Button>) => {
+  const { toggleSidebar, state } = useSidebar();
+  const isOpen = state === 'expanded';
+
+  return (
+    <Button
+      className={cn(className)}
+      data-sidebar="trigger"
+      data-slot="sidebar-trigger"
+      onClick={event => {
+        onClick?.(event);
+        toggleSidebar();
+      }}
+      variant="ghost"
+      {...props}
+    >
+      {children ? (
+        children
+      ) : (
+        <>
+          {isOpen ? <ChevronsLeft /> : <ChevronsRight />}
+          {isOpen && 'Collapse Sidebar'}
+        </>
+      )}
+    </Button>
+  );
+};

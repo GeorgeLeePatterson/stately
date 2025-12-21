@@ -6,7 +6,7 @@ import { BaseForm, type FieldEditProps } from '@statelyjs/ui/form';
 import { useId, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
-import { EntityPropertyEdit } from '@/core/views/entity/entity-property-edit';
+import { EntityProperty } from '@/core/views/entity/entity-properties';
 
 function isValueNulled(value?: any) {
   return (
@@ -65,9 +65,9 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
   );
 
   const formField = isPrimitive ? (
-    <EntityPropertyEdit fieldName={label} isRequired={isRequired} node={innerSchema}>
+    <EntityProperty fieldName={label} isRequired={isRequired} node={innerSchema}>
       <Field>{field}</Field>
-    </EntityPropertyEdit>
+    </EntityProperty>
   ) : (
     field
   );

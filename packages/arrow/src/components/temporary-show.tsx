@@ -43,8 +43,5 @@ export function TemporaryShow({
     return timerEffect();
   }, [showKey, timerEffect]);
 
-  // TODO: Remove
-  console.debug('IsShowing: ', { isShowing, isShowingRef });
-
   return isShowing ? <>{children}</> : null;
 }

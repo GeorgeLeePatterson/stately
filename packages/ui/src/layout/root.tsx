@@ -1,16 +1,17 @@
 import type { StatelySchemas } from '@statelyjs/schema';
-import { SidebarProvider, SidebarTrigger } from '@/components/base/sidebar';
+import { SidebarProvider } from '@/components/base/sidebar';
 import { Toaster } from '@/components/base/sonner';
 import { useBaseStatelyUi } from '@/context';
 import type { AnyUiPlugin } from '@/plugin';
-import { toTitleCase } from '@/utils';
 import { cn } from '../lib/utils';
 import { Header } from './header';
 import { Navigation } from './navigation';
 
 export type RootProps = {
-  headerProps?: React.ComponentProps<typeof Header>;
+  headerProps?: React.ComponentProps<typeof Header> & { enable?: boolean };
   sidebarProps?: React.ComponentProps<typeof Navigation>;
+  mainProps?: React.ComponentProps<'main'>;
+  contentProps?: React.ComponentProps<'div'>;
 };
 
 /**
@@ -27,38 +28,41 @@ export function Root<
 >({
   headerProps = {},
   sidebarProps = {},
+  mainProps = {},
+  contentProps = {},
   children,
   ...rest
 }: React.PropsWithChildren<RootProps & React.ComponentProps<typeof SidebarProvider>>) {
   const { plugins, options } = useBaseStatelyUi<S, A>();
-
-  const backupTitle = toTitleCase((window.location.pathname || '').split('/').pop() || 'Home');
-
   return (
     <SidebarProvider {...rest}>
       <Navigation {...sidebarProps} options={options} plugins={plugins} />
       <main
+        {...mainProps}
         className={cn([
           'stately-main @container/stately',
           'bg-background relative overflow-hidden',
           'flex-1 h-full min-h-dvh w-full min-w-0',
           'grid grid-rows-[auto_1fr]',
+          mainProps.className,
         ])}
       >
         {/* Top Bar */}
-        <Header
-          {...headerProps}
-          before={headerProps?.before || <SidebarTrigger className="-ml-1" />}
-          disableThemeToggle={headerProps?.disableThemeToggle ?? options?.theme?.disabled}
-          pageTitle={headerProps?.pageTitle || backupTitle}
-        />
+        {headerProps?.enable && (
+          <Header
+            {...headerProps}
+            disableThemeToggle={headerProps?.disableThemeToggle ?? options?.theme?.disabled}
+          />
+        )}
 
         {/* Main Content */}
         <div
+          {...contentProps}
           className={cn([
             'stately-content',
             'flex flex-1 flex-col min-w-0 ',
             'overflow-y-auto overflow-x-hidden wrap-anywhere',
+            contentProps.className,
           ])}
         >
           {children}

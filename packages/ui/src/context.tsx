@@ -13,7 +13,7 @@ const StatelyUiContext = createContext<StatelyUiRuntime<any, any> | null>(null);
 export type StatelyProviderProps<
   Schema extends StatelySchemas<any, any>,
   Augments extends readonly AnyUiPlugin[],
-> = PropsWithChildren<{ value: StatelyUiRuntime<Schema, Augments> }>;
+> = PropsWithChildren<{ runtime: StatelyUiRuntime<Schema, Augments> }>;
 
 /**
  * Create a typed StatelyUi provider. Optionally pass in a component to wrap the children to inject
@@ -52,7 +52,7 @@ export function createStatelyUiProvider<
   const defaultStorageKey = themeOptions?.storageKey;
 
   // TODO: Allow providing inner provider props
-  return ({ value, children }: StatelyProviderProps<Schema, Augments>) => {
+  return ({ runtime: value, children }: StatelyProviderProps<Schema, Augments>) => {
     let composedChildren = Providers ? <Providers>{children}</Providers> : children;
     composedChildren = themeDisabled ? (
       composedChildren

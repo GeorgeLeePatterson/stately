@@ -122,12 +122,7 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
               {entitySchema.error || 'No entity found'}
             </div>
           ) : (
-            <EntityDetailView
-              entity={entityData}
-              entityId={entityId}
-              entityType={entityType}
-              node={entitySchema.node}
-            />
+            <EntityDetailView entity={entityData} entityId={entityId} node={entitySchema.node} />
           )}
         </ScrollArea>
       </DialogContent>

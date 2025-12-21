@@ -1,18 +1,14 @@
-import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { devLog, generateFieldFormId } from '@statelyjs/ui';
-import { Field, FieldGroup, FieldSet } from '@statelyjs/ui/components/base/field';
-import { Separator } from '@statelyjs/ui/components/base/separator';
+import { Field, FieldSet } from '@statelyjs/ui/components/base/field';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import { BaseForm } from '@statelyjs/ui/form';
-import { useId, useMemo } from 'react';
+import { useId } from 'react';
 import type { CoreEntityData } from '@/core';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
-import { EntityPropertyEdit } from './entity-property-edit';
+import { type EntityFormProps, EntityProperty, useEntityProperties } from './entity-properties';
 
 export interface EntityFormEditProps<Schema extends Schemas = Schemas> {
-  node: Schema['plugin']['Nodes']['object'];
-  value?: CoreEntityData<Schema>;
   onChange: (value: CoreEntityData<Schema>) => void;
   isRootEntity?: boolean;
   isLoading?: boolean;
@@ -20,70 +16,52 @@ export interface EntityFormEditProps<Schema extends Schemas = Schemas> {
 
 export function EntityFormEdit<Schema extends Schemas = Schemas>({
   node,
-  value,
+  entity,
   onChange,
   isRootEntity,
   isLoading,
-}: EntityFormEditProps<Schema>) {
+}: EntityFormEditProps<Schema> & EntityFormProps<Schema>) {
   const { schema, utils } = useStatelyUi<Schema>();
   const formId = useId();
 
-  const formDisabled = 'name' in node.properties && isRootEntity && !value?.name;
-  const entityData = (value ?? {}) as AnyRecord;
-
-  const required = useMemo(() => new Set<string>(node.required || []), [node.required]);
-  const propertiesWithoutName = useMemo(
-    () =>
-      schema.plugins.core.sortEntityProperties(
-        Object.entries(node.properties)
-          .filter(([name]) => name !== 'name')
-          .map(([name, schemaNode]) => [name, schemaNode as Schema['plugin']['AnyNode']]),
-        entityData,
-        required,
-      ) as Array<[string, Schema['plugin']['AnyNode']]>,
-    [node.properties, entityData, required, schema.plugins.core.sortEntityProperties],
-  );
+  const { name, required, sortedProperties } = useEntityProperties({ entity, node });
 
   const fieldTypePrefix = isRootEntity ? 'Entity' : 'LinkedEntity';
+  const formDisabled = 'name' in node.properties && isRootEntity && !entity?.name;
 
-  devLog.debug('Core', 'EntityFormEdit', { formDisabled, isLoading, isRootEntity, node, value });
+  devLog.debug('Core', 'EntityFormEdit', {
+    formDisabled,
+    isLoading,
+    isRootEntity,
+    node,
+    value: entity,
+  });
 
   return (
-    <FieldGroup>
-      {'name' in node.properties && (
-        <>
-          <Separator />
-          <EntityPropertyEdit
-            compact
-            fieldName={'Name'}
-            isRequired={isRootEntity}
-            node={node.properties.name}
-          >
-            <Field>
-              {isLoading ? (
-                <Skeleton className="h-20 w-full" />
-              ) : (
-                <BaseForm.FieldEdit<Schema>
-                  formId={generateFieldFormId(fieldTypePrefix, 'name', formId)}
-                  label="Name"
-                  node={node.properties.name}
-                  onChange={newValue =>
-                    onChange({ ...entityData, name: newValue } as CoreEntityData<Schema>)
-                  }
-                  value={entityData.name ?? ''}
-                />
-              )}
-            </Field>
-          </EntityPropertyEdit>
-          <Separator />
-        </>
+    <div>
+      {name && (
+        <EntityProperty fieldName="name" isRequired={isRootEntity} node={name.node}>
+          <Field>
+            {isLoading ? (
+              <Skeleton className="h-20 w-full" />
+            ) : (
+              <BaseForm.FieldEdit<Schema, Schema['plugin']['Nodes']['primitive'], string>
+                formId={generateFieldFormId(fieldTypePrefix, 'name', formId)}
+                label="name"
+                node={name.node}
+                onChange={newValue => onChange({ ...(entity ?? {}), name: newValue })}
+                value={entity?.name ?? ''}
+              />
+            )}
+          </Field>
+        </EntityProperty>
       )}
 
-      <FieldSet className="group disabled:opacity-40 min-w-0" disabled={formDisabled}>
-        {propertiesWithoutName.map(([fieldName, propNode], idx, arr) => {
+      <FieldSet className="group disabled:opacity-40 min-w-0 gap-0" disabled={formDisabled}>
+        {sortedProperties.map(([fieldName, propNode]) => {
           const isRequired = required.has(fieldName);
           const label = utils?.generateFieldLabel(fieldName);
-          const fieldValue = entityData[fieldName];
+          const fieldValue = entity?.[fieldName];
           const fieldFormId = generateFieldFormId(
             `${fieldTypePrefix}-${propNode.nodeType}`,
             fieldName,
@@ -98,23 +76,23 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
               isRequired={isRequired}
               label={label}
               node={propNode}
-              onChange={newValue =>
-                onChange({ ...(value ?? {}), [fieldName]: newValue } as CoreEntityData<Schema>)
-              }
+              onChange={newValue => onChange({ ...(entity ?? {}), [fieldName]: newValue })}
               value={fieldValue}
             />
           );
 
           return (
-            <div className="space-y-3" key={fieldName}>
-              <EntityPropertyEdit fieldName={fieldName} isRequired={isRequired} node={propNode}>
-                {schema.plugins.core.isPrimitiveNode(propNode) ? <Field>{field}</Field> : field}
-              </EntityPropertyEdit>
-              {idx < arr.length - 1 && <Separator />}
-            </div>
+            <EntityProperty
+              fieldName={fieldName}
+              isRequired={isRequired}
+              key={fieldName}
+              node={propNode}
+            >
+              {schema.plugins.core.isPrimitiveNode(propNode) ? <Field>{field}</Field> : field}
+            </EntityProperty>
           );
         })}
       </FieldSet>
-    </FieldGroup>
+    </div>
   );
 }

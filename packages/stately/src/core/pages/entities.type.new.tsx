@@ -26,9 +26,6 @@ export function EntityNewPage<Schema extends Schemas = Schemas>({
 
   const templateDataLoaded = useRef<boolean>(false);
 
-  // TODO: Remove
-  console.debug('=======> Entity New Page: ', { entity, stateEntry });
-
   const [formData, setFormData] = useState<CoreEntityData<Schema> | null>(null);
   const [isDirty, setIsDirty] = useState(false);
 

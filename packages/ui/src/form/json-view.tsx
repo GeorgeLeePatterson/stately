@@ -13,6 +13,7 @@ export function JsonView({ data, isOpen, setIsOpen }: JsonViewProps) {
   return (
     <Collapsible onOpenChange={setIsOpen} open={isOpen}>
       <CollapsibleTrigger
+        nativeButton={false}
         render={
           <Item onClick={() => setIsOpen(!isOpen)} size="sm" variant="outline">
             <ItemContent>Full JSON Configuration</ItemContent>

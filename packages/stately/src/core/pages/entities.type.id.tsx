@@ -1,42 +1,37 @@
 import { devLog, Layout } from '@statelyjs/ui';
 import { Button } from '@statelyjs/ui/components/base/button';
-import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import type { PageProps } from '@statelyjs/ui/layout';
 import { useQueryClient } from '@tanstack/react-query';
 import { CopyPlus, Edit, Trash2 } from 'lucide-react';
-import { useEntityData, useEntitySchema, useEntityUrl, useRemoveEntity } from '@/core/hooks';
+import { useEntityData, useEntityUrl, useRemoveEntity } from '@/core/hooks';
 import type { Schemas } from '@/core/schema';
 import { EntityDetailView } from '@/core/views/entity';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
+import { useEntityPage } from '../hooks/use-entity-page';
 
 export function EntityDetailsPage<Schema extends Schemas = Schemas>({
   id,
   entity: entityType,
   ...rest
 }: { id: string; entity: CoreStateEntry<Schema> } & Partial<PageProps>) {
-  const { schema, plugins } = useStatelyUi<Schema>();
-  const stateEntry = plugins.core.utils?.resolveEntityType(entityType) ?? entityType;
+  const { schema, plugins, options } = useStatelyUi<Schema>();
+  const stateEntry = plugins.core.utils?.resolveEntityType<Schema>(entityType) ?? entityType;
   const entityPath = schema.data.stateEntryToUrl[stateEntry] ?? entityType;
   const typeName = schema.data.entityDisplayNames[stateEntry];
 
   // Convert URL type to StateEntry enum
   const queryClient = useQueryClient();
-  const entitySchema = useEntitySchema(stateEntry);
   const resolveEntityUrl = useEntityUrl();
   const {
     data,
     isLoading,
+    isFetched,
     error: queryError,
   } = useEntityData({ entity: stateEntry, identifier: id });
 
   // Extract entity and name from the new response structure
-  const entity = data?.entity;
   const entityId = data?.id || id;
-
-  // Use type narrowing to check if name field exists (singletons don't have name, default to "default")
-  const entityName =
-    (entity?.data && 'name' in entity.data ? entity.data.name : 'default') || 'default';
 
   const { confirmRemove, setRemoveEntityId } = useRemoveEntity({
     entity: stateEntry,
@@ -46,22 +41,27 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
     queryClient,
   });
 
-  devLog.debug('Core', 'EntityDetail', {
-    data,
-    entity,
-    entityId,
+  const {
+    noDataDisplay,
     entityName,
-    isLoading,
-    queryError,
-  });
+    pageLoaderDisplay,
+    dataReady,
+    pageReady,
+    entitySchema,
+    errorDisplay,
+  } = useEntityPage<Schema>({ entity: data?.entity, isFetched, isLoading, queryError, stateEntry });
+
+  devLog.debug('Core', 'EntityDetail', { data, entityId, entityName, isLoading, queryError });
 
   return (
     <Layout.Page
       {...rest}
       actions={
-        rest?.actions ?? (
+        rest?.actions ||
+        (pageReady ? (
           <div className="flex gap-2">
             <Button
+              nativeButton={false}
               render={
                 <a href={resolveEntityUrl({ id, mode: 'edit', type: entityPath })}>
                   <Edit className="w-4 h-4 mr-2" />
@@ -81,35 +81,40 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
               Delete
             </Button>
           </div>
-        )
+        ) : null)
       }
+      backLink={{ href: resolveEntityUrl({ type: entityPath }) }}
       breadcrumbs={
-        rest?.breadcrumbs ?? [
-          { href: resolveEntityUrl({}), label: 'Configurations' }, // TODO: Make label configurable
-          { href: resolveEntityUrl({ type: entityPath }), label: typeName },
-          { label: entityName },
-        ]
+        rest?.breadcrumbs ??
+        (pageReady && entityName
+          ? [
+              { href: resolveEntityUrl({}), label: 'Configurations' }, // TODO: Make label configurable
+              { href: resolveEntityUrl({ type: entityPath }), label: typeName },
+              { label: entityName },
+            ]
+          : [])
       }
       description={rest?.description ?? `${typeName} configuration details`}
+      disableThemeToggle={options?.theme?.disabled}
       title={
         rest?.title ?? (
           <>
             <span className="hidden lg:inline text-muted-foreground whitespace-nowrap">
               Viewing&nbsp;
             </span>
-            <span className="truncate">{entityName}</span>
-            {entityName !== 'default' && (
+            {entityName && <span className="truncate">{entityName}</span>}
+            {entityName && entityName !== 'default' && (
               <>
                 &nbsp;
                 <Button
                   className="cursor-pointer"
+                  nativeButton={false}
                   render={
                     <a href={resolveEntityUrl({ mode: 'new', type: entityPath }, { template: id })}>
                       <CopyPlus className="w-4 h-4" />
                     </a>
                   }
                   size="icon-sm"
-                  type="button"
                   variant="link"
                 />
               </>
@@ -118,35 +123,20 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
         )
       }
     >
-      {isLoading ? (
-        // Loading
-        <div className="space-y-4">
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-48 w-full" />
-        </div>
-      ) : queryError ? (
-        // Entity fetch error
-        <div className="text-center py-8">
-          <p className="text-destructive mb-2">Error loading entity</p>
-          <p className="text-sm text-muted-foreground">{queryError.message}</p>
-        </div>
-      ) : !entity ? (
-        // No entity type
-        <p className="text-muted-foreground text-center py-8">Entity not found</p>
-      ) : !entitySchema.node ? (
-        // Entity schema error
-        <div className="text-center py-8 text-destructive">
-          {entitySchema.error || 'No entity found'}
-        </div>
-      ) : (
-        // Entity detail view
-        <EntityDetailView
-          entity={entity.data}
-          entityId={entityId}
-          entityType={stateEntry}
-          node={entitySchema.node}
-        />
+      {/* Loading */}
+      {pageLoaderDisplay}
+
+      {/* Error fetching or parsing entity schema */}
+      {errorDisplay}
+
+      {/* Data fetched, nothing returned */}
+      {noDataDisplay}
+
+      {/* Entity form */}
+      {dataReady && entitySchema.node && data?.entity?.data && (
+        <EntityDetailView entity={data?.entity.data} entityId={entityId} node={entitySchema.node} />
       )}
+
       {confirmRemove(_ => entityName)}
     </Layout.Page>
   );

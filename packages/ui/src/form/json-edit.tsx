@@ -1,10 +1,10 @@
 import { Save, X } from 'lucide-react';
 import { useCallback, useId, useMemo, useState } from 'react';
+import { Button } from '@/components/base/button';
+import { Label } from '@/components/base/label';
 import { Editor } from '@/components/editor';
 import { Note } from '@/components/note';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/base/button';
-import { Label } from '@/components/base/label';
 
 type JsonStatus = { valid: boolean; error?: string; msg?: string };
 
@@ -17,7 +17,12 @@ interface JsonEditProps {
 /**
  * Component for editing entity configuration as raw JSON
  */
-export function JsonEdit({ value, onSave, label = 'Configuration (JSON)' }: JsonEditProps) {
+export function JsonEdit({
+  value,
+  onSave,
+  label = 'Configuration (JSON)',
+  ...rest
+}: JsonEditProps & React.HTMLAttributes<HTMLDivElement>) {
   const formId = useId();
   const [isDirty, setIsDirty] = useState<boolean>(false);
   const [json, setJson] = useState<string>(JSON.stringify(value || {}, null, 2));
@@ -52,7 +57,7 @@ export function JsonEdit({ value, onSave, label = 'Configuration (JSON)' }: Json
   }, [json]);
 
   return (
-    <div className="space-y-4 p-3">
+    <div {...rest} className={cn('p-3', rest.className)}>
       <Note message={status.error || status.msg || ''} mode={status.valid ? 'success' : 'error'} />
 
       <div className="space-y-2">

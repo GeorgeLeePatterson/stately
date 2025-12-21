@@ -16,12 +16,6 @@ import type { CoreOperations, CorePaths } from './api';
  */
 export type CoreComponents = DefineComponents<{
   schemas: DefineComponentSchemas<components['schemas']>;
-  // TODO: Remove
-  // {
-  //   StateEntry: string; // Generated as string union type from enum
-  //   Entity: { type: string; data: { name?: string; [key: string]: any } }; // Generated as discriminated union
-  // } & components['schemas']
-  // >;
 }>;
 
 type CoreComponentInput = StatelyConfig['components'] & CoreComponents;

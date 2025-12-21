@@ -81,7 +81,7 @@ export function useRemoveEntity<Schema extends Schemas = Schemas>({
       const { data, error } = await coreApi.remove_entity({
         params: { path: { entry: entity, id } },
       });
-      if (error) throw new Error('Failed to create entity');
+      if (error) throw new Error('Failed to remove entity');
       devLog.debug('Core', 'Successfully removed entity', { data, entity, id });
       return data;
     },
@@ -112,6 +112,7 @@ export function useRemoveEntity<Schema extends Schemas = Schemas>({
               onSuccess: () => handleOnConfirmed(removeEntityId),
             });
           }}
+          // TODO: Remove - this has a bug, it doesn't close when removed
           open={!!removeEntityId}
           setOpen={o => setRemoveEntityId(id => (o ? id : undefined))}
         />

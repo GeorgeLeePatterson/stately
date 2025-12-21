@@ -1,18 +1,19 @@
-import type { BlockquoteHTMLAttributes } from 'react';
+import type { HTMLAttributes } from 'react';
+import { cn } from '@/lib/utils';
 
 export function DescriptionLabel({
   children,
   ...rest
-}: React.PropsWithChildren<BlockquoteHTMLAttributes<HTMLElement>>) {
+}: React.PropsWithChildren<HTMLAttributes<HTMLSpanElement>>) {
   return (
     <span
       {...rest}
-      className={[
+      className={cn(
         'min-w-0 leading-none',
         'overflow-y-visible',
         'text-xs italic font-medium text-muted-foreground',
-        rest.className || '',
-      ].join(' ')}
+        rest.className,
+      )}
     >
       {children}
     </span>

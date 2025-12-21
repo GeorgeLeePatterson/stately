@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+// TODO: Remove - consolidate the two functions below, the first is basically useless
 /**
  * Helpful with react-query errors
  */

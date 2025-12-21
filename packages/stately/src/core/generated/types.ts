@@ -15,7 +15,7 @@
  * Users will mount these at their chosen prefix (e.g., /*)
  */
 export interface paths {
-  '': {
+  '/': {
     parameters: { query?: never; header?: never; path?: never; cookie?: never };
     get?: never;
     /** Create a new entity */
@@ -219,7 +219,10 @@ export interface operations {
         content: { 'application/json': components['schemas']['OperationResponse'] };
       };
       /** @description Internal server error */
-      500: { headers: { [name: string]: unknown }; content: { 'text/plain': string } };
+      500: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
+      };
     };
   };
   list_entities: {
@@ -238,6 +241,11 @@ export interface operations {
       200: {
         headers: { [name: string]: unknown };
         content: { 'application/json': components['schemas']['ListResponse'] };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
       };
     };
   };
@@ -261,9 +269,15 @@ export interface operations {
         content: { 'application/json': components['schemas']['OperationResponse'] };
       };
       /** @description Entity not found */
-      404: { headers: { [name: string]: unknown }; content?: never };
+      404: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
+      };
       /** @description Internal server error */
-      500: { headers: { [name: string]: unknown }; content: { 'text/plain': string } };
+      500: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
+      };
     };
   };
   get_entity_by_id: {
@@ -284,7 +298,15 @@ export interface operations {
         content: { 'application/json': components['schemas']['GetEntityResponse'] };
       };
       /** @description Entity not found */
-      404: { headers: { [name: string]: unknown }; content?: never };
+      404: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
+      };
+      /** @description Internal server error */
+      500: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
+      };
     };
   };
   update_entity: {
@@ -304,8 +326,16 @@ export interface operations {
         headers: { [name: string]: unknown };
         content: { 'application/json': components['schemas']['OperationResponse'] };
       };
+      /** @description Entity not found */
+      404: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
+      };
       /** @description Internal server error */
-      500: { headers: { [name: string]: unknown }; content: { 'text/plain': string } };
+      500: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
+      };
     };
   };
   patch_entity_by_id: {
@@ -325,8 +355,16 @@ export interface operations {
         headers: { [name: string]: unknown };
         content: { 'application/json': components['schemas']['OperationResponse'] };
       };
+      /** @description Entity not found */
+      404: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
+      };
       /** @description Internal server error */
-      500: { headers: { [name: string]: unknown }; content: { 'text/plain': string } };
+      500: {
+        headers: { [name: string]: unknown };
+        content: { 'application/json': components['schemas']['ApiError'] };
+      };
     };
   };
 }

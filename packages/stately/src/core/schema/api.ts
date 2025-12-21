@@ -17,7 +17,7 @@ export type CorePaths = DefinePaths<paths>;
 export type CoreOperations = DefineOperations<operations>;
 
 export const CORE_OPERATIONS = createOperationBindingsFactory<paths, operations>()({
-  create_entity: { method: 'put', path: '' },
+  create_entity: { method: 'put', path: '/' },
   get_entity_by_id: { method: 'get', path: '/{id}' },
   list_entities: { method: 'get', path: '/list/{type}' },
   patch_entity_by_id: { method: 'patch', path: '/{id}' },

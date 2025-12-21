@@ -1,0 +1,43 @@
+{
+  "name": "ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "generate:openapi": "cd ../ && cargo run --bin generate-openapi -- . && cd ./ui",
+    "codegen": "pnpm run generate:openapi && pnpm exec stately generate ../openapi.json -o ./src/generated",
+    "create:task": "curl -X PUT http://localhost:3000/api/v1/entity -H \"Content-Type: application/json\" -d '{\"type\": \"task\", \"data\": {\"name\": \"My First Task\", \"status\": \"Pending\"}}'"
+  },
+  "dependencies": {
+    "@statelyjs/schema": "link:../../../packages/schema",
+    "@statelyjs/stately": "link:../../../packages/stately",
+    "@statelyjs/ui": "link:../../../packages/ui",
+    "@tanstack/react-query": "^5.90.12",
+    "lucide-react": "^0.554.0",
+    "openapi-fetch": "^0.15.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.11.0",
+    "sonner": "^2.0.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "tailwindcss": "^4.1.17",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4"
+  }
+}

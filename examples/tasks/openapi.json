@@ -83,6 +83,16 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       }
@@ -194,6 +204,16 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
           }
         }
       },
@@ -231,6 +251,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -281,6 +311,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -494,7 +534,7 @@
       },
       "Task": {
         "type": "object",
-        "description": "A task in our application",
+        "description": "A dispatched task",
         "required": [
           "name",
           "status"
@@ -504,13 +544,16 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "The description of the task"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the task"
           },
           "status": {
-            "$ref": "#/components/schemas/TaskStatus"
+            "$ref": "#/components/schemas/TaskStatus",
+            "description": "The status of the task"
           }
         }
       },
@@ -524,17 +567,20 @@
           "tasks_created": {
             "type": "integer",
             "format": "int64",
+            "description": "The number of tasks created",
             "minimum": 0
           },
           "tasks_removed": {
             "type": "integer",
             "format": "int64",
+            "description": "The number of tasks removed",
             "minimum": 0
           }
         }
       },
       "TaskStatus": {
         "type": "string",
+        "description": "The status of a task",
         "enum": [
           "Pending",
           "InProgress",

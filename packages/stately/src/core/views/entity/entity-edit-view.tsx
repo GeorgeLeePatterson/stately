@@ -1,11 +1,11 @@
 import type { AnyRecord } from '@statelyjs/schema/helpers';
-import { FieldGroup } from '@statelyjs/ui/components/base/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@statelyjs/ui/components/base/tabs';
 import { BaseForm } from '@statelyjs/ui/form';
 import { FileJson, FormInput, WandSparkles } from 'lucide-react';
 import { useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { EntityFormEdit } from './entity-form-edit';
+import { EntityJsonView } from './entity-properties';
 import { EntityWizardEdit } from './entity-wizard-view';
 
 export enum EditMode {
@@ -37,7 +37,7 @@ export function EntityEditView<Schema extends Schemas = Schemas>({
   isRootEntity,
   isLoading,
 }: EntityEditViewProps<Schema>) {
-  const [debugOpen, setDebugOpen] = useState(false);
+  const [isJsonOpen, setIsJsonOpen] = useState(false);
   return (
     <Tabs defaultValue={defaultMode || EditMode.FORM}>
       {/* Mode Toggle */}
@@ -55,37 +55,38 @@ export function EntityEditView<Schema extends Schemas = Schemas>({
           JSON
         </TabsTrigger>
       </TabsList>
+
       {/* Form or JSON Editor */}
-      <TabsContent value={EditMode.FORM}>
-        <div className="space-y-5 min-w-0 p-2">
+      <div className="border-muted border-t">
+        <TabsContent value={EditMode.FORM}>
+          {/* Entity form */}
           <EntityFormEdit
+            entity={value}
             isLoading={isLoading}
             isRootEntity={isRootEntity}
             node={node}
             onChange={onChange}
+          />
+
+          {/*View json configuration*/}
+          {!!value && <EntityJsonView data={value} isOpen={isJsonOpen} setIsOpen={setIsJsonOpen} />}
+        </TabsContent>
+        <TabsContent value={EditMode.JSON}>
+          {/* Json editor */}
+          <BaseForm.JsonEdit className="min-w-0 py-3" onSave={onChange} value={value} />
+        </TabsContent>
+        <TabsContent value={EditMode.WIZARD}>
+          {/* Entity wizard */}
+          <EntityWizardEdit
+            isLoading={isLoading}
+            isRootEntity={isRootEntity}
+            node={node}
+            onChange={onChange}
+            onComplete={onSave}
             value={value}
           />
-          {/*View json configuration*/}
-          {!!value && Object.keys(value).length > 0 && (
-            <BaseForm.JsonView data={value} isOpen={debugOpen} setIsOpen={setDebugOpen} />
-          )}
-        </div>
-      </TabsContent>
-      <TabsContent value={EditMode.JSON}>
-        <FieldGroup className="min-w-0 py-3">
-          <BaseForm.JsonEdit onSave={onChange} value={value} />
-        </FieldGroup>
-      </TabsContent>
-      <TabsContent value={EditMode.WIZARD}>
-        <EntityWizardEdit
-          isLoading={isLoading}
-          isRootEntity={isRootEntity}
-          node={node}
-          onChange={onChange}
-          onComplete={onSave}
-          value={value}
-        />
-      </TabsContent>
+        </TabsContent>
+      </div>
     </Tabs>
   );
 }

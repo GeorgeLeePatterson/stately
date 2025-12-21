@@ -3,7 +3,7 @@ title: Installation
 description: How to install Stately packages for your project
 ---
 
-# Installation
+# Installation Details
 
 Stately consists of Rust crates for the backend and TypeScript packages for the frontend. Install the packages you need based on your project requirements.
 

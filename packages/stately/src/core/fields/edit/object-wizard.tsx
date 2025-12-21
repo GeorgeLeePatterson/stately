@@ -6,11 +6,11 @@ import { Progress } from '@statelyjs/ui/components/base/progress';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import { BaseForm } from '@statelyjs/ui/form';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
-import { Fragment, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
-import { EntityPropertyView } from '@/core/views/entity/entity-property-view';
+import { EntityProperty } from '@/core/views/entity/entity-properties';
 import { useStatelyUi } from '@/index';
 import type { ObjectEditNode, ObjectEditProps } from './object-field';
 
@@ -204,34 +204,32 @@ export const ObjectWizardEdit = <
             />
           </FieldSet>
         ) : propNode ? (
-          <Fragment>
-            <EntityPropertyView fieldName={fieldName} isRequired={isRequired} node={propNode}>
-              {/* Primitive field view */}
-              {schema.plugins?.core.isPrimitiveNode(propNode) ? (
-                <Field>
-                  <BaseForm.FieldEdit<Schema>
-                    formId={formId}
-                    isRequired={isRequired}
-                    label={fieldLabel}
-                    node={propNode}
-                    onChange={handleFieldChange.bind(null, fieldName, isNullable)}
-                    value={fieldValue}
-                  />
-                </Field>
-              ) : (
-                // Complex field view
+          <EntityProperty fieldName={fieldName} isRequired={isRequired} node={propNode}>
+            {/* Primitive field view */}
+            {schema.plugins?.core.isPrimitiveNode(propNode) ? (
+              <Field>
                 <BaseForm.FieldEdit<Schema>
                   formId={formId}
                   isRequired={isRequired}
-                  isWizard
                   label={fieldLabel}
                   node={propNode}
                   onChange={handleFieldChange.bind(null, fieldName, isNullable)}
                   value={fieldValue}
                 />
-              )}
-            </EntityPropertyView>
-          </Fragment>
+              </Field>
+            ) : (
+              // Complex field view
+              <BaseForm.FieldEdit<Schema>
+                formId={formId}
+                isRequired={isRequired}
+                isWizard
+                label={fieldLabel}
+                node={propNode}
+                onChange={handleFieldChange.bind(null, fieldName, isNullable)}
+                value={fieldValue}
+              />
+            )}
+          </EntityProperty>
         ) : null}
       </FieldGroup>
 

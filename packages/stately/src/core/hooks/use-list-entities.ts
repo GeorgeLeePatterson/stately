@@ -42,7 +42,7 @@ export function useListEntities<Schema extends Schemas = Schemas>({
 }: {
   entity: CoreStateEntry<Schema>;
 }) {
-  const runtime = useStatelyUi<Schema>();
+  const runtime = useStatelyUi<Schema, []>();
   const coreApi = runtime.plugins.core?.api;
   return useQuery({
     queryFn: async () => {

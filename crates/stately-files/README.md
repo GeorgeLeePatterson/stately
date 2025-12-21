@@ -13,7 +13,7 @@ This crate provides HTTP endpoints and path types for managing files with automa
 - **Path Types** - Configuration property types for referencing files in entities
 - **Version Resolution** - Automatic latest-version resolution using UUID v7
 
-## Installation
+## Install
 
 Add to your `Cargo.toml`:
 
