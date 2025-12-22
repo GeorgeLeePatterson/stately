@@ -97,6 +97,27 @@
         }
       }
     },
+    "/metrics": {
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Simple function to retrieve task metrics",
+        "operationId": "metrics",
+        "responses": {
+          "200": {
+            "description": "Current task metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskMetrics"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/{entry}/{id}": {
       "delete": {
         "tags": [

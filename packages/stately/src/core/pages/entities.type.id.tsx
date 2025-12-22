@@ -6,9 +6,11 @@ import { CopyPlus, Edit, Trash2 } from 'lucide-react';
 import { useEntityData, useEntityUrl, useRemoveEntity } from '@/core/hooks';
 import type { Schemas } from '@/core/schema';
 import { EntityDetailView } from '@/core/views/entity';
+import { EntityRemove } from '@/core/views/entity/entity-remove';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
 import { useEntityPage } from '../hooks/use-entity-page';
+import { isSingletonId } from '../schema/utils';
 
 export function EntityDetailsPage<Schema extends Schemas = Schemas>({
   id,
@@ -33,13 +35,13 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
   // Extract entity and name from the new response structure
   const entityId = data?.id || id;
 
-  const { confirmRemove, setRemoveEntityId } = useRemoveEntity({
-    entity: stateEntry,
-    onConfirmed: () => {
-      window.location.href = resolveEntityUrl({ type: entityPath });
-    },
-    queryClient,
-  });
+  const isSingleton = isSingletonId(entityId) || entityId === 'singleton' || entityId === 'default';
+
+  const {
+    removeEntityId,
+    setRemoveEntityId,
+    mutation: removeMutation,
+  } = useRemoveEntity({ entity: stateEntry, queryClient });
 
   const {
     noDataDisplay,
@@ -71,15 +73,17 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
               size="sm"
               variant="outline"
             />
-            <Button
-              disabled={isLoading || !!queryError || !!entitySchema.error}
-              onClick={() => setRemoveEntityId(id)}
-              size="sm"
-              variant="destructive"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete
-            </Button>
+            {!isSingleton && (
+              <Button
+                disabled={isLoading || !!queryError || !!entitySchema.error}
+                onClick={() => setRemoveEntityId(id)}
+                size="sm"
+                variant="destructive"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
+              </Button>
+            )}
           </div>
         ) : null)
       }
@@ -103,7 +107,7 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
               Viewing&nbsp;
             </span>
             {entityName && <span className="truncate">{entityName}</span>}
-            {entityName && entityName !== 'default' && (
+            {!isSingleton && entityName !== 'default' && pageReady && (
               <>
                 &nbsp;
                 <Button
@@ -137,7 +141,21 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
         <EntityDetailView entity={data?.entity.data} entityId={entityId} node={entitySchema.node} />
       )}
 
-      {confirmRemove(_ => entityName)}
+      <EntityRemove
+        entityName={entityName}
+        isOpen={!!removeEntityId}
+        onConfirm={() => {
+          if (removeEntityId) {
+            removeMutation.mutate(removeEntityId, {
+              onSuccess: () => {
+                window.location.href = resolveEntityUrl({ type: entityPath });
+              },
+            });
+          }
+        }}
+        setIsOpen={() => setRemoveEntityId(undefined)}
+        typeName={typeName}
+      />
     </Layout.Page>
   );
 }

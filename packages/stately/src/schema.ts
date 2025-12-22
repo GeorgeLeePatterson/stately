@@ -19,9 +19,9 @@ import { CORE_PLUGIN_NAME, coreSchemaUtils, stately } from './core/index.js';
 export type DefineConfig<
   C extends DefineComponents = DefineComponents,
   P extends DefinePaths = DefinePaths,
-  O extends DefineOperations = DefineOperations,
+  O extends object = object,
   N extends DefineGeneratedNodes<NodeMap> = DefineGeneratedNodes<NodeMap>,
-> = DefineCoreConfig<C, P, O, N>;
+> = DefineCoreConfig<C, P, DefineOperations<O>, N>;
 
 export type {
   AnyPaths,

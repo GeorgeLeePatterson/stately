@@ -49,6 +49,6 @@ export type DefineCoreConfig<
 > = CoreStatelyConfig<
   C & CoreComponentInput,
   P & CorePathsInput,
-  O & CoreOperationsInput,
+  DefineOperations<O> & CoreOperationsInput,
   CoreNodesInput & N
 >;

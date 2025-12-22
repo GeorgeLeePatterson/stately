@@ -7,6 +7,7 @@ import {
   EntityPropertyLabel,
   useEntityProperties,
 } from './entity-properties';
+import { EntityRemove } from './entity-remove';
 import { EntitySelectEdit } from './entity-select-edit';
 import { EntityWizardEdit } from './entity-wizard-view';
 
@@ -18,6 +19,7 @@ export type { EntitySelectEditProps } from './entity-select-edit';
 export type { EntityWizardEditProps } from './entity-wizard-view';
 
 export { EditMode };
+export { EntityRemove };
 export { EntityProperty, EntityJsonView, EntityPropertyLabel, useEntityProperties };
 export { EntityFormEdit, EntityWizardEdit, EntitySelectEdit };
 export { EntityDetailView, EntityEditView };

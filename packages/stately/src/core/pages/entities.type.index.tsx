@@ -1,4 +1,3 @@
-import { cn } from '@statelyjs/ui';
 import { Note } from '@statelyjs/ui/components';
 import { Button } from '@statelyjs/ui/components/base/button';
 import {
@@ -9,23 +8,17 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '@statelyjs/ui/components/base/empty';
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemHeader,
-  ItemTitle,
-} from '@statelyjs/ui/components/base/item';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import { Layout, type PageProps } from '@statelyjs/ui/layout';
 import { useQueryClient } from '@tanstack/react-query';
-import { CopyPlus, ExternalLink, FileText, Plus, Trash } from 'lucide-react';
+import { FileText, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { useEntityUrl, useListEntities, useRemoveEntity } from '@/core/hooks';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
+import { EntityList } from '../views/entity/entity-list-view';
+import { EntityRemove } from '../views/entity/entity-remove';
 
 export function EntityTypeListPage<Schema extends Schemas = Schemas>({
   entity,
@@ -34,13 +27,18 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
   const queryClient = useQueryClient();
 
   const { schema, plugins } = useStatelyUi<Schema>();
-  const isSingletonId = schema.plugins.core.isSingletonId;
 
   const stateEntry = plugins.core.utils?.resolveEntityType(entity) ?? entity;
   const entityPath = schema.data.stateEntryToUrl[stateEntry] ?? entity;
 
   const resolveEntityUrl = useEntityUrl();
-  const { data: listData, isLoading, refetch } = useListEntities({ entity: stateEntry });
+  const {
+    data: listData,
+    isLoading,
+    isFetched,
+    refetch,
+    error: listError,
+  } = useListEntities({ entity: stateEntry });
 
   // Get the entities for this type from the response
   const entities = listData?.entities?.[stateEntry] || [];
@@ -49,18 +47,10 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
   const typeName = schema.data.entityDisplayNames[stateEntry];
 
   const {
-    confirmRemove,
-    mutation: deleteMutation,
+    mutation: removeMutation,
     removeEntityId,
     setRemoveEntityId,
-  } = useRemoveEntity({
-    entity: stateEntry,
-    onConfirmed: id => {
-      toast(`Successfully deleted ${id}`);
-      refetch();
-    },
-    queryClient,
-  });
+  } = useRemoveEntity({ entity: stateEntry, queryClient });
 
   const handleRemoveEntity = (entityId: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -77,6 +67,55 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
       { template: entityId },
     );
   };
+
+  const pageError = listError?.message;
+  const pageReady = isFetched && !pageError;
+  const dataReady = pageReady && !!listData;
+
+  const pageErrorDisplay =
+    isFetched && pageError ? (
+      <div className="text-center py-8">
+        <p className="text-destructive mb-2">Error loading entity</p>
+        <p className="text-sm text-muted-foreground">{pageError}</p>
+      </div>
+    ) : null;
+
+  const removeErrorDisplay = removeMutation.error?.message ? (
+    <Note message={`Failed to delete ${typeName}: ${removeMutation.error?.message}`} mode="error" />
+  ) : null;
+
+  const pageLoaderDisplay = isLoading ? (
+    <div className="space-y-3">
+      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-24 w-full" />
+    </div>
+  ) : null;
+
+  const noDataDisplay =
+    dataReady && entities.length === 0 ? (
+      <Empty className="border p-6 md:p-6">
+        <EmptyHeader>
+          <EmptyMedia className="hidden md:flex" variant="icon">
+            <FileText className="w-8 h-8 text-muted-foreground" />
+          </EmptyMedia>
+          <EmptyTitle>No {typeName.toLowerCase()}s yet</EmptyTitle>
+          <EmptyDescription>
+            Get started by creating a new {typeName.toLowerCase()} configuration.
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button
+            render={
+              <a href={resolveEntityUrl({ mode: 'new', type: entityPath })}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add {typeName}
+              </a>
+            }
+          />
+        </EmptyContent>
+      </Empty>
+    ) : null;
 
   return (
     <Layout.Page
@@ -103,116 +142,45 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
       description={rest?.description ?? `Manage ${typeName.toLowerCase()} configurations`}
       title={rest?.title ?? typeName}
     >
-      {deleteMutation.error && (
-        <Note
-          message={`Failed to delete ${typeName}: ${deleteMutation.error.message}`}
-          mode="error"
+      {/** Remove mutation error */}
+      {removeErrorDisplay}
+
+      {/*Page error */}
+      {pageErrorDisplay}
+
+      {/* Loading */}
+      {pageLoaderDisplay}
+
+      {/* No data */}
+      {noDataDisplay}
+
+      {/* List data */}
+      {dataReady && entities.length > 0 && (
+        <EntityList
+          entities={entities}
+          onCopyEntity={handleCopyEntity}
+          onRemoveEntity={handleRemoveEntity}
+          stateEntry={stateEntry}
         />
       )}
 
-      {isLoading ? (
-        <div className="space-y-3">
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-        </div>
-      ) : entities.length > 0 ? (
-        <div className="flex flex-col flex-1 w-full min-w-0 gap-4">
-          {entities
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map(entity => (
-              <Item
-                className="@container transition-all hover:shadow-md"
-                key={entity.id}
-                render={
-                  <a
-                    className="group"
-                    href={resolveEntityUrl({
-                      id: isSingletonId(entity.id) ? 'singleton' : entity.id,
-                      type: entityPath,
-                    })}
-                  >
-                    <ItemHeader className="items-center">
-                      <ItemContent>
-                        <ItemTitle className="text-base group-hover:text-primary transition-colors">
-                          {/* View only link button */}
-                          <Button
-                            className="cursor-pointer hidden @md:flex"
-                            size="icon-sm"
-                            type="button"
-                            variant="ghost"
-                          >
-                            <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                          </Button>
-                          {isSingletonId(entity.id) ? 'view configuration' : entity.name}
-                        </ItemTitle>
-                        <ItemDescription>
-                          <span className="text-xs hidden @md:flex text-muted-foreground font-mono">
-                            {isSingletonId(entity.id) ? '' : entity.id}
-                          </span>
-                        </ItemDescription>
-                      </ItemContent>
-
-                      <ItemActions className="flex flex-nowrap gap-2 items-center">
-                        {/* Actions */}
-                        {entity.id !== 'default' && (
-                          <div className={cn('flex flex-row flex-1 justify-end gap-3')}>
-                            <Button
-                              className="cursor-pointer rounded-full"
-                              onClick={e => handleCopyEntity(entity.id, e)}
-                              size="icon-sm"
-                              type="button"
-                              variant="ghost"
-                            >
-                              <CopyPlus className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              className={cn(
-                                'text-destructive cursor-pointer',
-                                'hover:text-white hover:bg-destructive no-underline!',
-                              )}
-                              onClick={e => handleRemoveEntity(entity.id, e)}
-                              size="icon-sm"
-                              type="button"
-                              variant="ghost"
-                            >
-                              <Trash className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        )}
-                      </ItemActions>
-                    </ItemHeader>
-                  </a>
-                }
-                size="sm"
-                variant="muted"
-              />
-            ))}
-        </div>
-      ) : (
-        <Empty className="border p-6 md:p-6">
-          <EmptyHeader>
-            <EmptyMedia className="hidden md:flex" variant="icon">
-              <FileText className="w-8 h-8 text-muted-foreground" />
-            </EmptyMedia>
-            <EmptyTitle>No {typeName.toLowerCase()}s yet</EmptyTitle>
-            <EmptyDescription>
-              Get started by creating a new {typeName.toLowerCase()} configuration.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button
-              render={
-                <a href={resolveEntityUrl({ mode: 'new', type: entityPath })}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add {typeName}
-                </a>
-              }
-            />
-          </EmptyContent>
-        </Empty>
-      )}
-      {confirmRemove(id => entities.find(e => e.id === removeEntityId)?.name || id)}
+      <EntityRemove
+        entityName={entities.find(e => e.id === removeEntityId)?.name || removeEntityId}
+        isOpen={!!removeEntityId}
+        onConfirm={() => {
+          if (removeEntityId) {
+            setRemoveEntityId(undefined);
+            removeMutation.mutate(removeEntityId, {
+              onSuccess: () => {
+                toast(`Successfully deleted ${removeEntityId}`, { position: 'top-center' });
+                refetch();
+              },
+            });
+          }
+        }}
+        setIsOpen={() => setRemoveEntityId(undefined)}
+        typeName={typeName}
+      />
     </Layout.Page>
   );
 }

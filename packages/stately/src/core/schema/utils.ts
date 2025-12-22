@@ -22,7 +22,7 @@ type CoreNodeName = (typeof CoreNodeType)[keyof typeof CoreNodeType];
 
 export const SINGLETON_ID = '00000000-0000-0000-0000-000000000000';
 
-function isSingletonId(id: string): boolean {
+export function isSingletonId(id: string): boolean {
   return id === SINGLETON_ID;
 }
 

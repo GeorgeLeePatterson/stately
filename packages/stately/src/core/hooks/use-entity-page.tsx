@@ -42,7 +42,7 @@ export function useEntityPage<Schema extends Schemas = Schemas>({
     ) : null;
 
   const noDataDisplay =
-    isFetched && !entity?.data && !pageError ? (
+    pageReady && !entity?.data ? (
       <p className="text-muted-foreground text-center py-8">Entity not found</p>
     ) : null;
 

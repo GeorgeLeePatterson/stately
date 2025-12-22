@@ -1,28 +1,43 @@
-import openapiSpec from '../../../openapi.json';
-import type { components, operations, paths } from '../generated/types';
-import { PARSED_SCHEMAS, type ParsedSchema } from '../generated/schemas';
+import {
+  type StatelyConfiguration,
+  statelyUi,
+  statelyUiProvider,
+  useStatelyUi,
+} from '@statelyjs/stately';
+import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
+import { Check, LayoutDashboard } from 'lucide-react';
 
 import createClient from 'openapi-fetch';
-import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/stately';
-import { type DefineConfig, type DefineOperations, type Schemas, stately } from '@statelyjs/stately/schema';
-import { Check } from 'lucide-react';
+import openapiSpec from '../../../openapi.json';
+import { PARSED_SCHEMAS, type ParsedSchema } from '../generated/schemas';
+import type { components, operations, paths } from '../generated/types';
 
 // Create the API client
-const client = createClient<paths>({ baseUrl: 'http://localhost:3000' });
+export const client = createClient<paths>({ baseUrl: 'http://localhost:3000/api/v1' });
 
-// TODO: Remove - (dev) Move the solution to the reason why 'DefineOperations' is used into 'DefineConfig'
 // Create derived stately schema
-type AppSchemas = Schemas<DefineConfig<components, paths, DefineOperations<operations>, ParsedSchema>>;
+type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSchema>>;
 
 // Configure stately application options
-const runtimeOpts = {
+const runtimeOpts: StatelyConfiguration<AppSchemas> = {
   client,
-  // Pass in derived stately schema
-  schema: stately<AppSchemas>(openapiSpec, PARSED_SCHEMAS),
-  // Configure application-wide options
-  options: { api: { pathPrefix: '/api/v1/entity' } },
   // Configure included core plugin options
   core: { api: { pathPrefix: '/' }, entities: { icons: { task: Check } } },
+  // Configure application-wide options
+  options: {
+    api: { pathPrefix: '/entity' },
+    navigation: {
+      routes: {
+        // Any additional routes that should appear in the sidebar
+        items: [{ icon: LayoutDashboard, label: 'Dashboard', to: '/' }],
+        // Section label for all routes
+        label: 'Application',
+        to: '/',
+      },
+    },
+  },
+  // Pass in derived stately schema
+  schema: stately<AppSchemas>(openapiSpec, PARSED_SCHEMAS),
 };
 
 // Create stately runtime

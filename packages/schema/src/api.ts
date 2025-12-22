@@ -17,7 +17,7 @@ export type OperationEntry = {
 
 export type OperationMap<T = any> = T extends Record<string, OperationEntry> ? T : any;
 
-export type DefineOperations<T extends {} = OperationMap> = {
+export type DefineOperations<T extends object = OperationMap> = {
   [K in keyof T]: OperationEntry;
 };
 

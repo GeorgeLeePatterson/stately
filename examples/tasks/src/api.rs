@@ -18,7 +18,8 @@ pub struct ApiState {
 /// API state wrapper
 #[stately::axum_api(AppState, openapi(
     server = "/api/v1/entity",
-    components = [Task, TaskStatus, TaskMetrics]
+    components = [Task, TaskStatus, TaskMetrics],
+    paths = [metrics]
 ))]
 #[derive(Clone)]
 pub struct EntityState {}
@@ -45,7 +46,7 @@ pub fn router(state: &ApiState, tx: &tokio::sync::mpsc::Sender<ResponseEvent>) -
 /// Simple function to retrieve task metrics
 #[utoipa::path(
     get,
-    path = "/api/v1/metrics",
+    path = "/metrics",
     tag = "metrics",
     responses((status = 200, description = "Current task metrics", body = TaskMetrics))
 )]
