@@ -54,6 +54,8 @@ export function createOperations<
     const prefixedPath = stripTrailing(strippedPrefix ? `${strippedPrefix}${path}` : path); // Apply prefix;
     const upperMethod = method.toUpperCase() as Uppercase<HttpMethod>;
 
+    devLog.debug('Api', 'creating operation', { key, method, path, prefixedPath });
+
     // Bind the client method with the path pre-filled
     result[key] = ((init?: any) => {
       try {

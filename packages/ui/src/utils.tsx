@@ -37,7 +37,7 @@ export const mergePathPrefixOptions = (base?: string, incoming?: string): string
     pathPrefix = `/${stripLeading(stripTrailing(base))}`;
   }
   if (incoming) {
-    pathPrefix = `${pathPrefix}/${stripLeading(stripTrailing(incoming))}`;
+    pathPrefix = `${stripTrailing(pathPrefix)}/${stripLeading(stripTrailing(incoming))}`;
   }
   return pathPrefix;
 };

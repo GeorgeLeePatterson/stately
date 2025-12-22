@@ -22,10 +22,10 @@ type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSche
 const runtimeOpts: StatelyConfiguration<AppSchemas> = {
   client,
   // Configure included core plugin options
-  core: { api: { pathPrefix: '/' }, entities: { icons: { task: Check } } },
+  core: { api: { pathPrefix: '/entity' }, entities: { icons: { task: Check } } },
   // Configure application-wide options
   options: {
-    api: { pathPrefix: '/entity' },
+    api: { pathPrefix: '/' },
     navigation: {
       routes: {
         // Any additional routes that should appear in the sidebar
