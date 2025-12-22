@@ -282,6 +282,8 @@ curl http://localhost:3000/api/v1/entity/list/task
 
 ## Frontend Setup
 
+> **Note:** This example uses [React Router](https://reactrouter.com/) for routing, but Stately works with any routing library (e.g., TanStack Router, Next.js App Router). Routing helpers are planned for a future release.
+
 ### 1. Create a React Project
 
 ```bash
@@ -317,29 +319,46 @@ pnpm exec stately generate ../openapi.json -o ./src/generated
 Create `src/lib/stately.ts`:
 
 ```typescript
-import openapiSpec from '../../../openapi.json';
-import type { components, operations, paths } from '../generated/types';
-import { PARSED_SCHEMAS, type ParsedSchema } from '../generated/schemas';
+import {
+  type StatelyConfiguration,
+  statelyUi,
+  statelyUiProvider,
+  useStatelyUi,
+} from '@statelyjs/stately';
+import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
+import { Check, LayoutDashboard } from 'lucide-react';
 
 import createClient from 'openapi-fetch';
-import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/stately';
-import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
+import openapiSpec from '../../../openapi.json';
+import { PARSED_SCHEMAS, type ParsedSchema } from '../generated/schemas';
+import type { components, operations, paths } from '../generated/types';
 
 // Create the API client
-const client = createClient<paths>({ baseUrl: 'http://localhost:3000' });
+export const client = createClient<paths>({ baseUrl: 'http://localhost:3000/api/v1' });
 
 // Create derived stately schema
 type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSchema>>;
 
 // Configure stately application options
-const runtimeOpts = {
+const runtimeOpts: StatelyConfiguration<AppSchemas> = {
   client,
+  // Configure included core plugin options
+  core: { api: { pathPrefix: '/entity' }, entities: { icons: { task: Check } } },
+  // Configure application-wide options
+  options: {
+    api: { pathPrefix: '/' },
+    navigation: {
+      routes: {
+        // Any additional routes that should appear in the sidebar
+        items: [{ icon: LayoutDashboard, label: 'Dashboard', to: '/' }],
+        // Section label for all routes
+        label: 'Application',
+        to: '/',
+      },
+    },
+  },
   // Pass in derived stately schema
   schema: stately<AppSchemas>(openapiSpec, PARSED_SCHEMAS),
-  // Configure application-wide options
-  options: { api: { pathPrefix: '/api/v1' } },
-  // Configure included core plugin options
-  core: { api: { pathPrefix: '/entity' } },
 };
 
 // Create stately runtime
@@ -357,12 +376,12 @@ Update `src/main.tsx`:
 ```typescript
 import './index.css';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { StatelyProvider, runtime } from './lib/stately';
 import App from './App';
+import { runtime, StatelyProvider } from './lib/stately';
 
 const queryClient = new QueryClient();
 
@@ -370,12 +389,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <StatelyProvider value={runtime}>
+        <StatelyProvider runtime={runtime}>
           <App />
         </StatelyProvider>
       </QueryClientProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 ```
 
@@ -405,84 +424,154 @@ export default defineConfig({
 })
 ```
 
-### 7. Create the App Component with Routes
+### 7. Create the Dashboard Component
 
-Update `src/App.tsx`:
+Create `src/Dashboard.tsx`:
 
 ```typescript
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Note } from '@statelyjs/ui/components';
+import { Card, CardContent, CardHeader, CardTitle } from '@statelyjs/ui/components/base/card';
+import { Spinner } from '@statelyjs/ui/components/base/spinner';
 import { Layout } from '@statelyjs/ui/layout';
-import {
-  EntitiesIndexPage,
-  EntityTypeListPage,
-  EntityDetailsPage,
-  EntityEditPage,
-  EntityNewPage,
-} from '@statelyjs/stately/core/pages';
+import { useQuery } from '@tanstack/react-query';
+import { client } from './lib/stately';
 
 // Simple dashboard component
-function Dashboard() {
+export function Dashboard() {
+  // Pull metrics from the api. The backend can be used like any api.
+  const { data, error, isLoading } = useQuery({
+    queryFn: async () => {
+      const { data, error } = await client.GET('/metrics');
+      if (error) throw new Error('Failed to fetch metrics');
+      return data;
+    },
+    queryKey: ['metrics'],
+    refetchInterval: 5000,
+  });
+
   return (
-    <Layout.Page title="Dashboard" description="Welcome to your task manager">
-      <div className="grid gap-4">
-        <p>Navigate to <a href="/entities/task" className="text-primary underline">Tasks</a> to get started.</p>
+    <Layout.Page description="Welcome to your task manager" title="Dashboard">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Task Quick Link</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              Navigate to{' '}
+              <a className="text-primary underline" href="/entities/task">
+                Tasks
+              </a>{' '}
+              to get started.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              Task Metrics
+              {isLoading ? (
+                <span className="ml-2">
+                  <Spinner className="w-4 h-4" />{' '}
+                </span>
+              ) : null}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {error && <Note message={`Request failed: ${error.message}`} />}
+            {data ? (
+              <div>
+                <p>Total Actions: {data.tasks_created + data.tasks_removed}</p>
+                <p>Created Tasks: {data.tasks_created}</p>
+                <p>Deleted Tasks: {data.tasks_removed}</p>
+              </div>
+            ) : (
+              <span>No metrics available</span>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </Layout.Page>
   );
 }
+```
+
+### 8. Create the App Component with Routes
+
+Update `src/App.tsx`:
+
+```typescript
+import {
+  EntitiesIndexPage,
+  EntityDetailsPage,
+  EntityEditPage,
+  EntityNewPage,
+  EntityTypeListPage,
+} from '@statelyjs/stately/core/pages';
+import { Layout } from '@statelyjs/ui/layout';
+import { Gem } from 'lucide-react';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
+import { Dashboard } from './Dashboard';
+
+const useRequiredParams = <T extends Record<string, unknown>>() => useParams() as T;
 
 function App() {
   return (
-    <Layout.Root>
+    <Layout.Root
+      sidebarProps={{ collapsible: 'icon', logo: <Gem />, logoName: 'Tasks', variant: 'floating' }}
+    >
       <Routes>
         {/* Dashboard */}
-        <Route path="/" element={<Dashboard />} />
-        
+        <Route element={<Dashboard />} index path="/" />
+
         {/* Entity routes */}
-        <Route path="/entities" element={<EntitiesIndexPage />} />
-        <Route path="/entities/:type" element={<EntityTypeList />} />
-        <Route path="/entities/:type/new" element={<EntityNew />} />
-        <Route path="/entities/:type/:id" element={<EntityDetails />} />
-        <Route path="/entities/:type/:id/edit" element={<EntityEdit />} />
-        
+        <Route element={<Entities />} path="/entities/*" />
+
         {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route element={<Navigate replace to="/" />} path="*" />
       </Routes>
     </Layout.Root>
   );
 }
 
-// Route wrapper components to extract params
-function EntityTypeList() {
-  const { type } = useParams();
-  return <EntityTypeListPage entity={type!} />;
+// Entrypoint into entity configurations
+function Entities() {
+  return (
+    <Routes>
+      <Route element={<EntitiesIndexPage />} index path="/" />
+      <Route element={<EntityType />} path="/:type/*" />
+    </Routes>
+  );
 }
 
-function EntityNew() {
-  const { type } = useParams();
-  return <EntityNewPage entity={type!} />;
+// Entrypoint into an entity type
+function EntityType() {
+  const { type } = useRequiredParams<{ type: string }>();
+  return (
+    <Routes>
+      <Route element={<EntityTypeListPage entity={type} />} index path="/" />
+      <Route element={<EntityNewPage entity={type} />} path="/new" />
+      <Route element={<Entity entity={type} />} path="/:id/*" />
+    </Routes>
+  );
 }
 
-function EntityDetails() {
-  const { type, id } = useParams();
-  return <EntityDetailsPage entity={type!} id={id!} />;
-}
-
-function EntityEdit() {
-  const { type, id } = useParams();
-  return <EntityEditPage entity={type!} id={id!} />;
+// Entrypoint into an instance of an entity
+function Entity({ entity }: React.ComponentProps<typeof EntityNewPage>) {
+  const { id } = useRequiredParams<{ id: string }>();
+  return (
+    <Routes>
+      <Route element={<EntityDetailsPage entity={entity} id={id} />} index path="/" />
+      <Route element={<EntityEditPage entity={entity} id={id} />} path="/edit" />
+    </Routes>
+  );
 }
 
 export default App;
 ```
 
-Don't forget to add the `useParams` import at the top:
-
-```typescript
-import { Routes, Route, Navigate, useParams } from 'react-router-dom';
-```
-
-### 8. Run the Frontend
+### 9. Run the Frontend
 
 ```bash
 pnpm dev
