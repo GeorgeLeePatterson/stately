@@ -250,16 +250,6 @@ docs/
 
 ---
 
-## Open Questions
-
-1. **Hosting**: Where will docs be hosted? (GitHub Pages, Docusaurus, mdBook, etc.)
-2. **Versioning**: How to handle documentation for different versions?
-3. ~~**API Docs**: Generate from code (rustdoc, typedoc) or write manually?~~ **RESOLVED**: Link to docs.rs for Rust, package READMEs for TypeScript
-4. **Examples Repo**: Separate examples repository or inline in docs?
-5. **Interactive**: Consider interactive examples (Storybook, playground)?
-
----
-
 ## Next Steps
 
 1. Review and refine this structure based on feedback

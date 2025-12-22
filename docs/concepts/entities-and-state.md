@@ -5,7 +5,7 @@ description: Defining entities and managing application state with Stately
 
 # Entities and State
 
-Entities are the core data structures in Stately. They represent the things your application manages - configurations, resources, settings, and more. State is the container that holds collections of entities and provides operations for working with them.
+Entities are the core data structures in Stately. They represent the things your application manages - configurations, resources, settings...anything really. State is the container that holds collections of entities and provides operations for working with them.
 
 ## Defining Entities
 
@@ -30,7 +30,7 @@ Entities must derive:
 - `Clone` - For state management operations
 - `Serialize` and `Deserialize` - For API serialization
 
-The `#[stately::entity]` macro implements the `HasName` trait, which provides name-based lookups.
+The `#[stately::entity]` macro implements the `HasName` trait, which provides name-based lookups. This macro is not strictly necessary, but that trait's implementation is.
 
 ### The `name` Field
 

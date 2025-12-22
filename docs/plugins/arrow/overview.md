@@ -72,8 +72,7 @@ pub fn app(state: ApiState) -> Router {
 import { arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
 
 // Add to schema runtime
-const schema = createStately(spec, schemas)
-  .withPlugin(corePlugin())
+const schema = stately(spec, schemas)
   .withPlugin(arrowPlugin());
 
 // Add to UI runtime

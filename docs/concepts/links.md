@@ -147,16 +147,7 @@ let source: Option<&Source> = pipeline.source.find(&state.sources);
 
 ## Serialization
 
-Links serialize with an `entity_type` field for type safety:
-
-```rust
-#[derive(Serialize, Deserialize)]
-pub struct Link<T> {
-    entity_type: String,  // e.g., "Source"
-    #[serde(flatten)]
-    variant: LinkVariant<T>,
-}
-```
+Links serialize with an `entity_type` field for type safety.
 
 This enables:
 - Type checking during deserialization
@@ -195,7 +186,8 @@ pub struct AppState {
     pipelines: Pipeline,
 }
 
-// Generated in link_aliases module:
+// Generated in link_aliases module.
+// Automatically brought into scope:
 pub mod link_aliases {
     pub type SourceLink = stately::Link<Source>;
     pub type PipelineLink = stately::Link<Pipeline>;
@@ -219,21 +211,23 @@ Links generate OpenAPI schemas that support both variants:
 ```yaml
 components:
   schemas:
-    SourceLink:
+    LinkSource:
       oneOf:
         - type: object
           properties:
             entity_type:
               type: string
-              enum: [Source]
+              description: The entity type this Link references
+              enum: [source]
             ref:
               type: string
               format: uuid
+              description: Reference to an entity by ID
         - type: object
           properties:
             entity_type:
               type: string
-              enum: [Source]
+              enum: [source]
             inline:
               $ref: '#/components/schemas/Source'
 ```
@@ -254,19 +248,31 @@ On the frontend, links are rendered with specialized components:
 The core plugin provides:
 - `LinkDetailView` - Display a link (resolves references)
 - `LinkEditView` - Edit a link (choose ref vs inline)
-- `RefView` / `RefEdit` - Reference-only views
-- `InlineView` / `InlineEdit` - Inline-only views
+- `LinkRefView` / `LinkRefEdit` - Reference-only views
+- `LinkInlineView` / `LinkInlineEdit` - Inline-only views
 
 ### Accessing Linked Entities
 
+Review `@statelyjs/stately/src/core/views/link/link-edit-view.tsx`, `LinkEditView`, to see how a `Link<T>` is resolved. Underlying every link, `T` is just another entity.
+
+For `Link::Ref` variants, you can fetch the referenced entity. The core plugin provides `useEntityData` (or `useEntityInlineData`) for this:
+
 ```typescript
-import { useLinkResolver } from '@statelyjs/stately/core/hooks';
+import { useEntityData } from '@statelyjs/stately/core/hooks';
 
 function PipelineView({ pipeline }) {
-  const resolveLink = useLinkResolver();
+  // If the link is a reference, extract the ID
+  const sourceId = pipeline.source.ref;
   
-  // Resolve the source link to get the full entity
-  const source = resolveLink(pipeline.source, 'Source');
+  // Fetch the referenced entity
+  const { data: sourceData } = useEntityData({
+    entity: 'source',
+    identifier: sourceId,
+    disabled: !sourceId, // Don't fetch if inline
+  });
+  
+  // For inline links, the entity is embedded directly
+  const source = pipeline.source.inline ?? sourceData?.entity.data;
   
   return (
     <div>
@@ -276,6 +282,8 @@ function PipelineView({ pipeline }) {
   );
 }
 ```
+
+The built-in link view components (`LinkDetailView`, `LinkEditView`) handle this resolution automatically.
 
 ## Common Patterns
 

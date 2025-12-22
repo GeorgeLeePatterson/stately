@@ -20,29 +20,42 @@ This section covers building Stately frontends with TypeScript and React, includ
 ### Runtime Setup
 
 ```typescript
-import { createClient } from 'openapi-fetch';
-import { createStately } from '@statelyjs/schema';
-import { statelyUi, statelyUiProvider, createUseStatelyUi } from '@statelyjs/stately';
-import { corePlugin } from '@statelyjs/stately/core/schema';
+import {
+  type StatelyConfiguration,
+  statelyUi,
+  statelyUiProvider,
+  useStatelyUi,
+} from '@statelyjs/stately';
+import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
+import createClient from 'openapi-fetch';
 
-import type { paths, components } from './generated/types';
-import { PARSED_SCHEMAS } from './generated/schemas';
+import openapiSpec from '../../openapi.json';
+import { PARSED_SCHEMAS, type ParsedSchema } from './generated/schemas';
+import type { components, operations, paths } from './generated/types';
 
-const client = createClient<paths>({ baseUrl: '/api' });
+// Create the API client
+export const client = createClient<paths>({ baseUrl: 'http://localhost:3000/api/v1' });
 
-const schema = createStately<paths, components>({}, PARSED_SCHEMAS)
-  .withPlugin(corePlugin());
+// Create derived stately schema
+type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSchema>>;
 
-export const runtime = statelyUi({
+// Configure stately application options
+const runtimeOpts: StatelyConfiguration<AppSchemas> = {
   client,
-  schema,
-  core: {
-    api: { pathPrefix: '/api/entity' },
-  },
-});
+  // Configure included core plugin options
+  core: { api: { pathPrefix: '/entity' } },
+  // Configure application-wide options
+  options: { api: { pathPrefix: '/' } },
+  // Pass in derived stately schema
+  schema: stately<AppSchemas>(openapiSpec, PARSED_SCHEMAS),
+};
 
-export const StatelyProvider = statelyUiProvider();
-export const useStately = createUseStatelyUi();
+// Create stately runtime (core plugin is included automatically)
+export const runtime = statelyUi<AppSchemas>(runtimeOpts);
+
+// Create application's context provider and hook
+export const StatelyProvider = statelyUiProvider<AppSchemas>();
+export const useStately = useStatelyUi<AppSchemas>;
 ```
 
 ### Using Hooks
@@ -50,15 +63,15 @@ export const useStately = createUseStatelyUi();
 ```typescript
 import { useListEntities, useEntityData, useCreateEntity } from '@statelyjs/stately/core/hooks';
 
-function MyComponent() {
+function MyComponent({ taskId }: { taskId: string }) {
   // List all entities of a type
-  const { data: tasks } = useListEntities('Task');
+  const { data: tasks } = useListEntities({ entity: 'task' });
   
   // Get a single entity
-  const { data: task } = useEntityData('Task', taskId);
+  const { data: task } = useEntityData({ entity: 'task', identifier: taskId });
   
   // Create mutation
-  const createTask = useCreateEntity('Task');
+  const createTask = useCreateEntity({ entity: 'task' });
   
   const handleCreate = () => {
     createTask.mutate({ name: 'New Task', status: 'Pending' });
@@ -74,7 +87,7 @@ import { Layout } from '@statelyjs/ui/layout';
 
 function MyPage() {
   return (
-    <Layout.Root>
+    <Layout.Page>
       <Card>
         <Card.Header>
           <Card.Title>My Form</Card.Title>
@@ -84,7 +97,7 @@ function MyPage() {
           <Button>Submit</Button>
         </Card.Content>
       </Card>
-    </Layout.Root>
+    </Layout.Page>
   );
 }
 ```
@@ -100,18 +113,20 @@ function MyPage() {
 
 ### @statelyjs/ui
 
-- Base UI components (Button, Card, Dialog, etc.)
-- Layout system (Root, Header, Page)
+- `Base UI` components (Button, Card, Dialog, etc.)
+- Layout system (Root, Page, Navigation, etc.)
 - Component and transformer registries
 - Theme provider
 - Plugin infrastructure
 
 ### @statelyjs/stately
 
-- Core plugin with entity management
-- React hooks for CRUD operations
-- Pre-built views and pages
+- "Core" plugin with entity management
+  - React hooks for CRUD operations against entities
+  - Pre-built views and pages
+  - Utilities and helpers
 - Codegen CLI
+- Stately Schema and UI Runtimes (with "Core" baked in)
 
 ## Code Generation
 

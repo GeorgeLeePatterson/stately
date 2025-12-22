@@ -51,35 +51,33 @@ Each layer is useful independently.
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                 Your Application                 │
+│                 Your Application                │
 ├─────────────────────────────────────────────────┤
-│                                                  │
+│                                                 │
 │  ┌─────────────────────────────────────────┐    │
-│  │           #[stately::axum_api]           │    │
-│  │  Generates HTTP handlers, router,        │    │
-│  │  OpenAPI docs, request/response types    │    │
+│  │  #[stately::axum_api]                   │    │
+│  │  Generates HTTP handlers, router,       │    │
+│  │  OpenAPI docs, request/response types   │    │
 │  └─────────────────────────────────────────┘    │
-│                       │                          │
-│                       ▼                          │
+│                       ↓                         │
 │  ┌─────────────────────────────────────────┐    │
-│  │            #[stately::state]             │    │
-│  │  Generates StateEntry enum, Entity       │    │
-│  │  wrapper, collection types, state impl   │    │
+│  │  #[stately::state]                      │    │
+│  │  Generates StateEntry enum, Entity      │    │
+│  │  wrapper, collection types, state impl  │    │
 │  └─────────────────────────────────────────┘    │
-│                       │                          │
-│                       ▼                          │
+│                       ↓                         │
 │  ┌─────────────────────────────────────────┐    │
-│  │           #[stately::entity]             │    │
-│  │  Implements HasName trait                │    │
+│  │  #[stately::entity]                     │    │
+│  │  Implements HasName trait               │    │
 │  └─────────────────────────────────────────┘    │
-│                       │                          │
-│                       ▼                          │
+│                       ↓                         │
 │  ┌─────────────────────────────────────────┐    │
-│  │              stately crate               │    │
-│  │  Core types: EntityId, Link, Collection, │    │
-│  │  Singleton, traits, error types          │    │
+│  │  stately crate                          │    │
+│  │  Core types:                            │    │ 
+│  │  EntityId, Link, Collection, Singleton, │    │
+│  │  traits, error types, etc.              │    │
 │  └─────────────────────────────────────────┘    │
-│                                                  │
+│                                                 │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -90,48 +88,48 @@ Each layer is useful independently.
 - **Collection<T>**: HashMap-backed entity collection with CRUD operations
 - **Singleton<T>**: Single-instance container for settings-like entities
 - **StateEntity trait**: Connects entities to their collection type
+- **Entity enum**: Type-erased entity container
 
 ### Frontend Layer
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                 Your Application                 │
+│                 Your Application                │
 ├─────────────────────────────────────────────────┤
-│                                                  │
+│                                                 │
 │  ┌─────────────────────────────────────────┐    │
-│  │              Your Components             │    │
-│  │  Use hooks, views, and pages             │    │
+│  │  Your Components:                       │    │
+│  │  Use hooks, views, and pages            │    │
 │  └─────────────────────────────────────────┘    │
-│                       │                          │
-│                       ▼                          │
+│                       ↓                         │
 │  ┌─────────────────────────────────────────┐    │
-│  │           @statelyjs/stately             │    │
-│  │  Runtime, hooks, views, pages, codegen   │    │
-│  │  Core plugin with entity management      │    │
+│  │  @statelyjs/stately                     │    │
+│  │  Runtime, hooks, views, pages, codegen  │    │
+│  │  Core plugin with entity management     │    │
 │  └─────────────────────────────────────────┘    │
-│                       │                          │
-│                       ▼                          │
+│                       ↓                         │
 │  ┌─────────────────────────────────────────┐    │
-│  │             @statelyjs/ui                │    │
-│  │  Base components, layout, plugin system, │    │
-│  │  component registry, theming             │    │
+│  │  @statelyjs/ui                          │    │
+│  │  Base components, layout, plugin system,│    │
+│  │  component registry, theming            │    │
 │  └─────────────────────────────────────────┘    │
-│                       │                          │
-│                       ▼                          │
+│                       ↓                         │
 │  ┌─────────────────────────────────────────┐    │
-│  │            @statelyjs/schema             │    │
-│  │  Schema type system, node parsing,       │    │
-│  │  validation, runtime creation            │    │
+│  │  @statelyjs/schema                      │    │
+│  │  Schema type system, node parsing,      │    │
+│  │  validation, runtime creation           │    │
 │  └─────────────────────────────────────────┘    │
-│                                                  │
+│                                                 │
 └─────────────────────────────────────────────────┘
 ```
 
 **Key components:**
 
-- **Schema Runtime**: Parses OpenAPI schemas into typed node trees
+- **Schema Runtime**: All of the types and interfaces powering the Stately UIs 
+- **Codegen**: Parses OpenAPI schemas into typed node trees
 - **UI Runtime**: Combines schema with API client and plugins
 - **Component Registry**: Maps node types to React components
+- **Transformer Registry**: Provides plugin authors the ability to define hook points to add additional functionality...anywhere.
 - **Hooks**: React Query-based data fetching and mutations
 - **Views/Pages**: Pre-built UI for common entity operations
 
@@ -140,22 +138,20 @@ Each layer is useful independently.
 The OpenAPI specification serves as the contract between backend and frontend:
 
 ```
-Backend                    OpenAPI                    Frontend
-────────                   ───────                    ────────
+Backend                  OpenAPI                 Frontend
+────────                 ───────                 ────────
 
-#[state(openapi)]    ──►   openapi.json    ──►   stately generate
-                               │
-                               ▼
-                     ┌─────────────────┐
-                     │   types.ts      │  TypeScript types
-                     │   schemas.ts    │  Parsed schema nodes
-                     └─────────────────┘
-                               │
-                               ▼
-                     ┌─────────────────┐
-                     │  createStately  │  Schema runtime
-                     │  statelyUi      │  UI runtime
-                     └─────────────────┘
+#[state(openapi)]     → openapi.json          → stately generate
+#[state(axum_api)]      ↓
+                       ┌─────────────────┐
+                       │   types.ts      │      TypeScript types
+                       │   schemas.ts    │      Parsed schema nodes
+                       └─────────────────┘
+                        ↓
+                       ┌─────────────────┐
+                       │     stately     │      Schema runtime
+                       │    statelyUi    │      UI runtime
+                       └─────────────────┘
 ```
 
 The codegen step ensures frontend types exactly match backend definitions.
@@ -224,49 +220,37 @@ function myUiPlugin(options?: Options): UiPluginFactory {
 ### Creating an Entity
 
 ```
-1. User fills form
-        │
-        ▼
+1. User fills in form
+        ↓
 2. useCreateEntity hook
-        │
-        ▼
+        ↓
 3. API client sends PUT /api/entity
-        │
-        ▼
+        ↓
 4. Axum handler deserializes request
-        │
-        ▼
-5. State.create() adds to collection
-        │
-        ▼
+        ↓
+5. State.create_entity() adds to collection
+        ↓
 6. Response with new EntityId
-        │
-        ▼
+        ↓
 7. React Query invalidates cache
-        │
-        ▼
+        ↓
 8. UI re-renders with new entity
 ```
 
 ### Form Rendering
 
 ```
-1. Schema runtime parses OpenAPI component
-        │
-        ▼
-2. Node tree created (object → fields → types)
-        │
-        ▼
-3. FieldEdit component receives node
-        │
-        ▼
+1. Schema codegen and runtime parses OpenAPI spec
+        ↓
+2. Node trees created (object → properties → other node types)
+        ↓
+3. FieldEdit component routes node
+        ↓
 4. Registry lookup by nodeType
-        │
-        ▼
+        ↓
 5. Specific component rendered (string → Input, enum → Select, etc.)
-        │
-        ▼
-6. onChange propagates up to form state
+        ↓
+6. onChange propagates up to form state, gated at complex layers
 ```
 
 ## Key Types
@@ -286,8 +270,8 @@ function myUiPlugin(options?: Options): UiPluginFactory {
 
 | Type | Purpose |
 |------|---------|
-| `StatelySchemas` | Type combining config, plugins, and derived types |
-| `BaseNode` | Union of all schema node types |
+| `Schemas` | Type combining config, plugins, and derived types |
+| `StatelyConfig` | Configuration containing union of all schema node types |
 | `UiRegistry` | Component and transformer registries |
 | `StatelyUiRuntime` | Combined schema + UI runtime |
 

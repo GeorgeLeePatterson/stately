@@ -98,8 +98,7 @@ pub fn app(state: ApiState) -> Router {
 ```typescript
 import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
 
-const schema = createStately(spec, schemas)
-  .withPlugin(corePlugin())
+const schema = Stately(spec, schemas)
   .withPlugin(filesPlugin());
 
 const runtime = statelyUi({ client, schema, core })

@@ -13,20 +13,19 @@ Traditional plugin systems often work at a single layer - backend middleware, fr
 
 ```
 ┌─────────────────────────────────────────┐
-│              Your Application            │
+│              Your Application           │
 ├─────────────────────────────────────────┤
-│                                          │
+│                                         │
 │   ┌─────────────┐   ┌─────────────┐     │
 │   │ @statelyjs/ │   │ @statelyjs/ │     │
 │   │    files    │   │    arrow    │     │
-│   └──────┬──────┘   └──────┬──────┘     │
-│          │                 │            │
-│          ▼                 ▼            │
+│   └─────────────┘   └─────────────┘     │
+│          ↓                 ↓            │
 │   ┌─────────────┐   ┌─────────────┐     │
 │   │  stately-   │   │  stately-   │     │
 │   │    files    │   │    arrow    │     │
 │   └─────────────┘   └─────────────┘     │
-│                                          │
+│                                         │
 └─────────────────────────────────────────┘
 ```
 
@@ -44,7 +43,7 @@ Stately includes two production-ready plugins:
 
 **Backend (`stately-files`):**
 - Multipart and JSON file upload endpoints
-- Automatic UUID v7 versioning
+- Automatic UUID v7 file versioning
 - Directory listing with metadata
 - Download endpoints with version support
 - Path types for entity fields
@@ -55,14 +54,15 @@ Stately includes two production-ready plugins:
 - RelativePath form field
 - Upload and download hooks
 - Version history views
+- File and versioned file downloading
 
 ### Arrow Plugin
 
 **Backend (`stately-arrow`):**
 - Connector registry for data sources
-- Support for S3, GCS, Azure, ClickHouse, and more
-- SQL query execution via DataFusion
-- Streaming Arrow IPC responses
+- Support for `S3`, `GCS`, `Azure`, `ClickHouse`, and more
+- SQL query execution via `DataFusion`
+- Streaming `Arrow` IPC responses
 - Catalog and schema discovery
 
 **Frontend (`@statelyjs/arrow`):**
@@ -103,28 +103,31 @@ pub fn app(state: ApiState) -> Router {
 
 ### Frontend Integration
 
-Install the package and compose plugins:
+Install the plugin packages and compose them with your runtime:
 
 ```typescript
-import { filesPlugin } from '@statelyjs/files';
-import { filesUiPlugin } from '@statelyjs/files';
+import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/stately';
+import { stately } from '@statelyjs/stately/schema';
+import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
+import { arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
 
-// Schema runtime with plugin
-const schema = createStately(openapiSpec, PARSED_SCHEMAS)
-  .withPlugin(corePlugin())
-  .withPlugin(filesPlugin());
+// Schema runtime with plugins
+const schema = stately<AppSchemas>(openapiSpec, PARSED_SCHEMAS)
+  .withPlugin(filesPlugin())
+  .withPlugin(arrowPlugin());
 
-// UI runtime with plugin
-const runtime = statelyUi({
+// UI runtime with plugins (core plugin is included automatically)
+const runtime = statelyUi<AppSchemas>({
   client,
   schema,
-  core: { api: { pathPrefix: '/api/entity' } },
-}).withPlugin(
-  filesUiPlugin({
-    api: { pathPrefix: '/api/files' },
-  })
-);
+  core: { api: { pathPrefix: '/entity' } },
+  options: { api: { pathPrefix: '/api/v1' } },
+})
+  .withPlugin(filesUiPlugin({ api: { pathPrefix: '/files' } }))
+  .withPlugin(arrowUiPlugin({ api: { pathPrefix: '/arrow' } }));
 ```
+
+> **Note:** The core plugin is automatically included when you use `statelyUi()` or `stately()` from `@statelyjs/stately`. You never need to add it manually.
 
 ### Using Plugin Features
 
@@ -201,7 +204,8 @@ impl FromRef<AppState> for MyPluginState { ... }
 ```rust
 // bin/generate-openapi.rs
 fn main() {
-    let doc = OpenApiDoc::openapi();
+    let output_dir = PathBuf::from(".");
+    let doc = stately::codegen::generate_openapi::<OpenApiDoc>(&output_dir);
     println!("{}", serde_json::to_string_pretty(&doc).unwrap());
 }
 ```
@@ -266,8 +270,8 @@ export function myUiPlugin(options?: Options): UiPluginFactory {
 2. **Context Hook**: Typed access to plugin
 
 ```typescript
-export function useMyPluginStatelyUi() {
-  const runtime = useBaseStatelyUi();
+export function useMyPlugin() {
+  const runtime = useStatelyUi();
   return runtime.plugins.myPlugin;
 }
 ```
@@ -277,10 +281,18 @@ export function useMyPluginStatelyUi() {
 ```typescript
 export const myCodegenPlugin: CodegenPlugin = {
   name: 'my-plugin',
+  // Define entrypoints to parse from the top
+  entrypoints: undefined, /** ["SomeExpectedType", ...], */
+  description: 'Detects OpenAPI definitions of relevant nodes',
+  match(schema) {
+    // Match on anything to identify that transformation should occur
+    return Boolean(schema?.oneOf);
+  },
+  // Finally, emit special node types
   transformNode(node, context) {
     // Transform matching nodes to custom types
     if (matchesMyPattern(node)) {
-      return { nodeType: 'myCustomType', ...node };
+      return { nodeType: 'myCustomNodeType', ...node };
     }
     return node;
   },
@@ -328,6 +340,25 @@ Key steps:
 3. Create frontend package with schema and UI plugins
 4. Register custom node types and components
 5. Document integration patterns
+
+## Codegen Configuration
+
+When using plugins that extend the schema (like Files), you need to configure codegen to include the plugin's transformations. Create a config file (e.g., `stately.codegen.config.ts`):
+
+```typescript
+// stately.codegen.config.ts (or any name you prefer)
+import { filesCodegenPlugin } from '@statelyjs/files/codegen';
+
+export default [filesCodegenPlugin];
+```
+
+Then run codegen with the config:
+
+```bash
+pnpm exec stately generate ./openapi.json -o ./src/generated -c ./stately.codegen.config.ts
+```
+
+Codegen plugins transform schema nodes during generation. For example, the files plugin detects `RelativePath` and `UserDefinedPath` patterns and generates appropriate node types.
 
 ## Next Steps
 

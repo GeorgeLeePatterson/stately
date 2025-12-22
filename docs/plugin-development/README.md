@@ -114,13 +114,13 @@ cargo run --bin generate-openapi > ../packages/my-plugin/openapi.json
 
 ```typescript
 // src/plugin.ts
-import type { StatelySchemas, PluginFactory, UiPluginFactory } from '@statelyjs/schema';
+import type { Schemas, PluginFactory, UiPluginFactory } from '@statelyjs/schema';
 import { createOperations } from '@statelyjs/stately/api';
 import type { MyPluginPaths } from './generated/types';
 import { MY_OPERATIONS } from './api';
 
 // Schema plugin - extends type system
-export function myPlugin<S extends StatelySchemas>(): PluginFactory<S> {
+export function myPlugin<S extends Schemas>(): PluginFactory<S> {
   return runtime => ({
     ...runtime,
     plugins: { ...runtime.plugins, myPlugin: {} },
@@ -170,7 +170,7 @@ let app = Router::new()
 
 **Frontend:**
 ```typescript
-const schema = createStately(spec, schemas)
+const schema = stately(spec, schemas)
   .withPlugin(corePlugin())
   .withPlugin(myPlugin());
 

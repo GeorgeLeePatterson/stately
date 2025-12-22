@@ -23,7 +23,7 @@ In the meantime, see the [Quick Start](../getting-started/quick-start.md) for a 
 
 ## Guide Format
 
-Each guide follows a consistent structure:
+Each guide should follow a consistent structure:
 
 1. **Goal** - What you'll build or accomplish
 2. **Prerequisites** - What you need before starting
