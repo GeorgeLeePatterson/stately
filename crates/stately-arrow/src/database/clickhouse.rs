@@ -1,4 +1,37 @@
-// TODO: Remove - Docs
+//! `ClickHouse` database backend implementation.
+//!
+//! This module provides integration with [ClickHouse](https://clickhouse.com/) databases,
+//! enabling SQL query execution and schema introspection through the unified backend interface.
+//!
+//! # Features
+//!
+//! - Connection pooling with configurable pool sizes and timeouts
+//! - Arrow-native data transfer for efficient query results
+//! - Automatic catalog registration with `DataFusion`
+//! - Compression support (LZ4, ZSTD)
+//! - TLS configuration
+//!
+//! # Example
+//!
+//! ```rust,ignore
+//! use stately_arrow::database::{ConnectionOptions, PoolOptions, clickhouse::ClickHouseBackend};
+//!
+//! let options = ConnectionOptions {
+//!     endpoint: "http://localhost:8123".to_string(),
+//!     username: "default".to_string(),
+//!     password: None,
+//!     tls: None,
+//! };
+//!
+//! let backend = ClickHouseBackend::try_new(
+//!     "my-clickhouse",
+//!     "My ClickHouse",
+//!     &options,
+//!     None,
+//!     PoolOptions::default(),
+//! ).await?;
+//! ```
+
 use std::collections::BTreeMap;
 use std::hash::{BuildHasher, Hash, RandomState};
 use std::sync::atomic::{AtomicBool, Ordering};
