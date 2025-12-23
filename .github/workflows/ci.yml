@@ -28,7 +28,7 @@ jobs:
       rust: ${{ steps.changes.outputs.rust }}
       typescript: ${{ steps.changes.outputs.typescript }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: dorny/paths-filter@master
       id: changes
       with:
@@ -52,7 +52,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.rust == 'true'
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Install Rust stable
       uses: dtolnay/rust-toolchain@stable
@@ -79,7 +79,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.rust == 'true'
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Install Rust
       uses: dtolnay/rust-toolchain@stable
@@ -107,7 +107,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.typescript == 'true'
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
     - name: Install pnpm
       uses: pnpm/action-setup@v4
