@@ -7,6 +7,7 @@ import { JsonView } from './json-view';
 export type { FieldEditProps } from './field-edit';
 export type { FieldViewProps } from './field-view';
 export type { FormActionsProps } from './form-actions';
+export type { JsonEditProps } from './json-edit';
 export type { JsonViewProps } from './json-view';
 
 export const BaseForm = { FieldEdit, FieldView, FormActions, JsonEdit, JsonView };

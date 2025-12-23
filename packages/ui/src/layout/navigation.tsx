@@ -2,7 +2,7 @@ import type { AvatarImageProps } from '@base-ui/react/avatar';
 import type { StatelySchemas } from '@statelyjs/schema';
 import type { Defined } from '@statelyjs/schema/helpers';
 import { ChevronsLeft, ChevronsRight } from 'lucide-react';
-import { type ComponentType, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/base/avatar';
 import { Button } from '@/components/base/button';
 import {
@@ -26,13 +26,6 @@ import { cn } from '../lib/utils';
 import { PluginNavigation } from './plugin-navigation';
 
 export type NavigationRoutes = UiNavigationOptions['routes'];
-
-export interface RouteOption {
-  icon?: ComponentType<any>;
-  label: string;
-  to: string;
-  badge?: ComponentType<Omit<RouteOption, 'badge'>> | null;
-}
 
 interface NavigationBaseProps<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,

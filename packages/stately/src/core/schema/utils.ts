@@ -22,6 +22,7 @@ type CoreNodeName = (typeof CoreNodeType)[keyof typeof CoreNodeType];
 
 export const SINGLETON_ID = '00000000-0000-0000-0000-000000000000';
 
+/** Is the ID a singleton ID, ie '00000000-0000-0000-0000-000000000000' */
 export function isSingletonId(id: string): boolean {
   return id === SINGLETON_ID;
 }
@@ -30,40 +31,87 @@ export function isSingletonId(id: string): boolean {
  * Schema type checking utilities
  */
 
+/**
+ * Determine if a node if of type `NullableNode`.
+ *
+ * @param schema - Runtime node schema (see {@link BaseNode})
+ * @returns boolean
+ *
+ */
 export function isNullable(
   schema: CoreNodes<any> | BaseNode,
 ): schema is NullableNode<CoreNodes<any>> {
   return isNodeOfType<NullableNode<CoreNodes<any>>>(schema, CoreNodeType.Nullable);
 }
 
+/**
+ * Determine if a node if of type `ArrayNode`.
+ *
+ * @param schema - Runtime node schema (see {@link BaseNode})
+ * @returns boolean
+ *
+ */
 export function isArray(schema: CoreNodes<any> | BaseNode): schema is ArrayNode<CoreNodes<any>> {
   return isNodeOfType<ArrayNode<CoreNodes<any>>>(schema, CoreNodeType.Array);
 }
 
+/**
+ * Determine if a node if of type `ObjectNode`.
+ *
+ * @param schema - Runtime node schema (see {@link BaseNode})
+ * @returns boolean
+ *
+ */
 export function isObject(schema: CoreNodes<any> | BaseNode): schema is ObjectNode<CoreNodes<any>> {
   return isNodeOfType<ObjectNode<CoreNodes<any>>>(schema, CoreNodeType.Object);
 }
 
+/**
+ * Determine if a node if of type `PrimitiveNode`.
+ *
+ * @param schema - Runtime node schema (see {@link BaseNode})
+ * @returns boolean
+ *
+ */
 export function isPrimitive(schema: BaseNode): schema is PrimitiveNode {
   return isNodeOfType<PrimitiveNode>(schema, CoreNodeType.Primitive);
 }
 
-export function isPrimitiveNode(schema: BaseNode): boolean {
+/**
+ * Determine if a node if of a 'primitive-like' type, ie `PrimitiveNode` or `EnumNode`, or either
+ * wrapped in `NullableNode`.
+ *
+ * ## Note
+ *
+ * **Peers through `NullableNode`, associates `EnumNode` as primitive**
+ *
+ * @param schema - Runtime node schema (see {@link BaseNode})
+ * @returns boolean
+ *
+ */
+export function isPrimitiveNodeLike(schema: BaseNode): boolean {
   if (isNullable(schema)) {
-    return isPrimitiveNode(schema.innerSchema);
+    return isPrimitiveNodeLike(schema.innerSchema);
   }
   return schema.nodeType === CoreNodeType.Primitive || schema.nodeType === CoreNodeType.Enum;
 }
 
-function extractNodeType(schema: BaseNode): CoreNodeName | string {
+/**
+ * Extract the inner node type from `NullableNode` or `ArrayNode`.
+ *
+ * @param schema - Runtime node schema (see {@link BaseNode})
+ * @returns string
+ *
+ */
+export function extractNodeInnerType(schema: BaseNode): CoreNodeName | string {
   if (isNullable(schema)) {
-    return extractNodeType(schema.innerSchema);
+    return extractNodeInnerType(schema.innerSchema);
   }
 
   if (isArray(schema)) {
     const items = schema.items;
     if (Array.isArray(items) && items.length > 0) {
-      return extractNodeType(items[0]);
+      return extractNodeInnerType(items[0]);
     }
   }
 
@@ -71,10 +119,12 @@ function extractNodeType(schema: BaseNode): CoreNodeName | string {
 }
 
 /**
- * Entity validation helper
+ * Entity validation helper. Simpler than object validation with some extra checks.
  */
-
-function isEntityValid(entity: any | null | undefined, schema: BaseNode | undefined): boolean {
+export function isEntityValid(
+  entity: any | null | undefined,
+  schema: BaseNode | undefined,
+): boolean {
   if (!entity || !schema) return false;
   if (!isObject(schema)) return false;
   if (typeof entity !== 'object') return false;
@@ -126,17 +176,17 @@ function sortEntityProperties<N extends BaseNode = BaseNode>(
 }
 
 const coreUtils: CoreUtils = {
-  extractNodeType,
+  extractNodeInnerType,
   isEntityValid,
-  isPrimitiveNode,
+  isPrimitiveNodeLike,
   isSingletonId,
   sortEntityProperties,
 } as const satisfies CoreUtils;
 
 type CoreUtils = DefineUtils<{
   isSingletonId: typeof isSingletonId;
-  isPrimitiveNode: typeof isPrimitiveNode;
-  extractNodeType: typeof extractNodeType;
+  isPrimitiveNodeLike: typeof isPrimitiveNodeLike;
+  extractNodeInnerType: typeof extractNodeInnerType;
   isEntityValid: typeof isEntityValid;
   sortEntityProperties: typeof sortEntityProperties;
 }>;

@@ -18,6 +18,8 @@
     "./core/hooks": "./dist/core/hooks/index.mjs",
     "./core/pages": "./dist/core/pages/index.mjs",
     "./core/schema": "./dist/core/schema/index.mjs",
+    "./core/schema/utils": "./dist/core/schema/utils.mjs",
+    "./core/utils": "./dist/core/utils.mjs",
     "./core/views/entity": "./dist/core/views/entity/index.mjs",
     "./core/views/link": "./dist/core/views/link/index.mjs",
     "./schema": "./dist/schema.mjs",

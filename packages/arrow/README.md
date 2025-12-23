@@ -1,6 +1,9 @@
 # @statelyjs/arrow
 
-Apache Arrow data visualization plugin for [Stately UI](../ui/README.md). Provides streaming SQL query execution, table visualization, and connector management for Arrow-based data sources.
+[![npm](https://img.shields.io/npm/v/@statelyjs/arrow)](https://www.npmjs.com/package/@statelyjs/arrow)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
+
+Apache Arrow data visualization plugin for [Stately UI](../stately/README.md). Provides streaming SQL query execution, table visualization, and connector management for Arrow-based data sources.
 
 ## Overview
 
@@ -19,41 +22,45 @@ pnpm add @statelyjs/arrow
 
 ## Quick Start
 
-Register the plugin when creating your Stately UI runtime:
+### 1. Add Schema Plugin
 
 ```typescript
-import { createStatelyUi } from '@statelyjs/ui';
-import { arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
+import { stately } from '@statelyjs/stately/schema';
+import { type ArrowPlugin, arrowPlugin } from '@statelyjs/arrow';
 
-const stately = createStatelyUi({
-  // Your base URL for API requests
-  baseUrl: import.meta.env.VITE_API_URL,
-
-  // Schema plugins extend the type system
-  schemaPlugins: [arrowPlugin],
-
-  // UI plugins register components, routes, and API bindings
-  uiPlugins: [
-    arrowUiPlugin({
-      // Base path for arrow API endpoints (default: '/arrow')
-      api: { pathPrefix: '/arrow' },
-    }),
-  ],
-});
+const schema = stately<MySchemas, readonly [ArrowPlugin]>(openapiDoc, PARSED_SCHEMAS)
+  .withPlugin(arrowPlugin());
 ```
 
-### Using with React
+### 2. Add UI Plugin
 
-Wrap your app with the Stately provider:
+```typescript
+import { statelyUi } from '@statelyjs/stately';
+import { type ArrowUiPlugin, arrowUiPlugin } from '@statelyjs/arrow';
+
+const runtime = statelyUi<MySchemas, readonly [ArrowUiPlugin]>({
+  schema,
+  client,
+  core: { api: { pathPrefix: '/entity' } },
+  options: { api: { pathPrefix: '/api' } },
+}).withPlugin(arrowUiPlugin({
+  api: { pathPrefix: '/arrow' },
+}));
+```
+
+### 3. Wrap Your App
 
 ```tsx
-import { StatelyProvider } from '@statelyjs/ui';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { AppStatelyProvider, runtime } from './lib/stately';
 
 function App() {
   return (
-    <StatelyProvider runtime={stately}>
-      <YourApp />
-    </StatelyProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppStatelyProvider runtime={runtime}>
+        <YourApp />
+      </AppStatelyProvider>
+    </QueryClientProvider>
   );
 }
 ```
@@ -321,7 +328,7 @@ Low-level utilities for custom implementations:
 
 ### `createArrowTableStore`
 
-Zustand store for managing Arrow table state:
+Store for managing Arrow table state:
 
 ```typescript
 import { createArrowTableStore } from '@statelyjs/arrow/lib';
@@ -373,40 +380,6 @@ This plugin expects a `stately-arrow` compatible backend with these endpoints:
 | `/query` | POST | Execute SQL query (streaming response) |
 
 The `/query` endpoint returns Apache Arrow IPC stream format for efficient data transfer.
-
-## Plugin Architecture
-
-For plugin authors, this package follows the Stately plugin pattern:
-
-### Schema Plugin
-
-Extends the node type system:
-
-```typescript
-import { arrowPlugin } from '@statelyjs/arrow';
-
-schemaPlugins: [arrowPlugin()]
-```
-
-### UI Plugin
-
-Registers API bindings and navigation:
-
-```typescript
-import { arrowUiPlugin } from '@statelyjs/arrow';
-
-uiPlugins: [
-  arrowUiPlugin({
-    api: { pathPrefix: '/arrow' },
-    navigation: { routes: { label: 'Data Explorer', to: '/data' } },
-  }),
-]
-```
-
-The UI plugin:
-1. Creates an API client bound to your base URL with the configured path prefix
-2. Registers navigation routes (default: "Data" at `/data`)
-3. Provides the arrow context to child components
 
 ## License
 

@@ -37,7 +37,7 @@ export function ObjectView<Schema extends Schemas = Schemas>({
         const valueDefined = propValue !== undefined && propValue !== null;
         const label = `${utils?.generateFieldLabel(propName)}:`;
         const description = typedSchema.description;
-        const singleLine = !valueDefined || schema.plugins.core.isPrimitiveNode(typedSchema);
+        const singleLine = !valueDefined || schema.plugins.core.isPrimitiveNodeLike(typedSchema);
         const valueDisplay = valueDefined ? (
           <BaseForm.FieldView<Schema> node={typedSchema} value={propValue} />
         ) : (

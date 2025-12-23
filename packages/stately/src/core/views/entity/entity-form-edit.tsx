@@ -88,7 +88,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
               key={fieldName}
               node={propNode}
             >
-              {schema.plugins.core.isPrimitiveNode(propNode) ? <Field>{field}</Field> : field}
+              {schema.plugins.core.isPrimitiveNodeLike(propNode) ? <Field>{field}</Field> : field}
             </EntityProperty>
           );
         })}

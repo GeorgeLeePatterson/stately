@@ -28,40 +28,40 @@ Stately is a full-stack framework for building data-driven applications. The Rus
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                           YOUR APPLICATION                               │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  ┌─────────────────────────────────────────────────────────────────────┐│
-│  │                        FRONTEND (React)                              ││
-│  ├─────────────────────────────────────────────────────────────────────┤│
-│  │                                                                      ││
-│  │  @statelyjs/ui      → Layout, theme, plugin runtime, registry        ││
-│  │  @statelyjs/schema  → Type definitions, schema parsing, validation  ││
-│  │  @statelyjs/stately → Core plugin (entity CRUD) + codegen CLI       ││
-│  │                                                                      ││
-│  │  PLUGINS:                                                            ││
-│  │  @statelyjs/files   → File browser UI (pairs with stately-files)      ││
-│  │  @statelyjs/arrow   → SQL query UI (pairs with stately-arrow)         ││
-│  │                                                                      ││
-│  └─────────────────────────────────────────────────────────────────────┘│
-│                                    │                                     │
-│                              OpenAPI Spec                                │
-│                                    │                                     │
-│  ┌─────────────────────────────────────────────────────────────────────┐│
-│  │                        BACKEND (Rust)                                ││
-│  ├─────────────────────────────────────────────────────────────────────┤│
-│  │                                                                      ││
-│  │  stately         → Core state management, entity macros             ││
-│  │  stately-derive  → Procedural macros (#[entity], #[state], etc.)    ││
-│  │                                                                      ││
-│  │  PLUGINS:                                                            ││
-│  │  stately-files   → File system browsing, uploads, downloads         ││
-│  │  stately-arrow   → SQL queries via DataFusion, Arrow IPC streaming  ││
-│  │                                                                      ││
-│  └─────────────────────────────────────────────────────────────────────┘│
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────┐
+│                           YOUR APPLICATION                                │
+├───────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐  │
+│  │                        FRONTEND (React)                             │  │
+│  ├─────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                     │  │
+│  │  @statelyjs/ui      → Layout, theme, plugin runtime, registry       │  │
+│  │  @statelyjs/schema  → Type definitions, schema parsing, validation  │  │
+│  │  @statelyjs/stately → Core plugin (entity CRUD) + codegen CLI       │  │
+│  │                                                                     │  │
+│  │  PLUGINS:                                                           │  │
+│  │  @statelyjs/files   → File browser UI (pairs with stately-files)    │  │
+│  │  @statelyjs/arrow   → SQL query UI (pairs with stately-arrow)       │  │
+│  │                                                                     │  │
+│  └─────────────────────────────────────────────────────────────────────┘  │
+│                                    │                                      │
+│                              OpenAPI Spec                                 │
+│                                    │                                      │
+│  ┌─────────────────────────────────────────────────────────────────────┐  │
+│  │                        BACKEND (Rust)                               │  │
+│  ├─────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                     │  │
+│  │  stately         → Core state management, entity macros             │  │
+│  │  stately-derive  → Procedural macros (#[entity], #[state], etc.)    │  │
+│  │                                                                     │  │
+│  │  PLUGINS:                                                           │  │
+│  │  stately-files   → File system browsing, uploads, downloads         │  │
+│  │  stately-arrow   → SQL queries via DataFusion, Arrow IPC streaming  │  │
+│  │                                                                     │  │
+│  └─────────────────────────────────────────────────────────────────────┘  │
+│                                                                           │
+└───────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Quick Start
@@ -71,11 +71,11 @@ Stately is a full-stack framework for building data-driven applications. The Rus
 ```toml
 # Cargo.toml
 [dependencies]
-stately = { version = "0.3", features = ["axum"] }
+stately = { version = "0.*", features = ["axum"] }
 
 # Optional plugins
-stately-files = "0.1"
-stately-arrow = { version = "0.1", features = ["clickhouse"] }
+stately-files = "0.*"
+stately-arrow = { version = "0.*", features = ["clickhouse"] }
 ```
 
 ```rust
@@ -114,29 +114,29 @@ See [`crates/stately`](crates/stately) for complete backend documentation.
 
 ```bash
 # Install packages
-pnpm add @statelyjs/stately @tanstack/react-query @tanstack/react-router
+pnpm add @statelyjs/stately @statelyjs/ui @tanstack/react-query
 
 # Generate types from your backend's OpenAPI spec
-pnpm exec stately ./openapi.json ./src/generated
+pnpm exec stately ./openapi.json -o ./src/generated
 ```
 
 ```typescript
-// src/lib/stately-integration.ts
-import { stately } from '@statelyjs/schema';
+// src/lib/stately.ts
 import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/stately';
-import type { DefineConfig, Schemas } from '@statelyjs/schema';
-import { PARSED_SCHEMAS } from './generated/schemas';
+import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
+import { PARSED_SCHEMAS, type ParsedSchema } from './generated/schemas';
 import type { components, operations, paths } from './generated/types';
 import openapiDoc from '../openapi.json';
 import { api } from './api/client';
 
 // Define your schema types
-export type AppSchemas = Schemas<
-  DefineConfig<components, DefinePaths<paths>, DefineOperations<operations>, typeof PARSED_SCHEMAS>
->;
+export type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSchema>>;
 
 // Create schema runtime
-export const appSchema = stately<AppSchemas>(openapiDoc, PARSED_SCHEMAS);
+export const appSchema = stately<AppSchemas>(openapiDoc, PARSED_SCHEMAS, {
+  // Enable lazy loading for code-split schemas
+  runtimeSchemas: () => import('./generated/schemas.runtime').then(m => m.RUNTIME_SCHEMAS),
+});
 
 // Create UI runtime
 export const appStatelyUi = statelyUi<AppSchemas>({
@@ -153,7 +153,9 @@ export const useAppStatelyUi = useStatelyUi<AppSchemas>;
 export const AppStatelyUiProvider = statelyUiProvider<AppSchemas>();
 ```
 
-See [`packages/ui`](packages/ui) for complete frontend documentation.
+> **Working Example**: See the [`demos/tasks`](demos/tasks) application for a complete working example that follows this setup.
+
+> See [`packages/stately`](packages/stately) for complete frontend documentation.
 
 ## Packages
 
@@ -170,9 +172,9 @@ See [`packages/ui`](packages/ui) for complete frontend documentation.
 
 | Package | Description |
 |---------|-------------|
-| [`@statelyjs/schema`](packages/schema) | Schema type definitions, parsing, validation |
-| [`@statelyjs/stately`](packages/stately) | Core plugin (entity CRUD) + codegen CLI |
+| [`@statelyjs/stately`](packages/stately) | Main package. Core plugin (entity CRUD) + codegen CLI |
 | [`@statelyjs/ui`](packages/ui) | Base React components, layout, theme, plugin runtime |
+| [`@statelyjs/schema`](packages/schema) | Lower level schema type definitions, parsing, validation |
 | [`@statelyjs/files`](packages/files) | File browser UI plugin |
 | [`@statelyjs/arrow`](packages/arrow) | SQL query UI plugin with Arrow IPC streaming |
 
@@ -186,8 +188,8 @@ Install backend and frontend plugins that pair together:
 
 ```rust
 // Backend: Cargo.toml
-stately-files = "0.1"
-stately-arrow = "0.1"
+stately-files = "0.*"
+stately-arrow = "0.*"
 ```
 
 ```typescript
@@ -235,8 +237,10 @@ pnpm test
 
 ## Examples
 
-- [Rust examples](crates/stately/examples) - Basic usage, Axum API
-- Real-world usage: See how plugins are integrated in a full application
+| Example | Description |
+|---------|-------------|
+| [`demos/tasks`](demos/tasks) | Complete full-stack task management app demonstrating frontend setup |
+| [`crates/stately/examples`](crates/stately/examples) | Rust examples for backend entity definitions and Axum integration |
 
 ## Contributing
 
@@ -250,6 +254,6 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for detai
 
 - [Rust Documentation](https://docs.rs/stately)
 - [Crates.io](https://crates.io/crates/stately)
-- [npm](https://www.npmjs.com/package/@statelyjs/ui)
+- [npm](https://www.npmjs.com/package/@statelyjs/stately)
 - [Repository](https://github.com/georgeleepatterson/stately)
 - [Issue Tracker](https://github.com/georgeleepatterson/stately/issues)

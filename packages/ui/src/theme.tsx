@@ -1,5 +1,5 @@
 import type { ButtonProps } from '@base-ui/react/button';
-import { Moon, Sun } from 'lucide-react';
+import { Monitor, Moon, Sun } from 'lucide-react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Button } from './components/base/button';
 import { cn } from './lib/utils';
@@ -73,14 +73,22 @@ export const useTheme = () => {
 export function ThemeToggle(props: ButtonProps) {
   const { theme, setTheme } = useTheme();
 
-  // Determine the effective theme (handles 'system' mode)
-  const isDark =
-    theme === 'dark' ||
-    (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-
+  // Cycle through: system → light → dark → system
   const toggleTheme = () => {
-    // Toggle between light and dark (always set explicit theme, not system)
-    setTheme(isDark ? 'light' : 'dark');
+    const nextTheme: Theme = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
+    setTheme(nextTheme);
+  };
+
+  // Determine which icon to show based on current theme setting
+  const getIcon = () => {
+    switch (theme) {
+      case 'light':
+        return <Sun aria-label="Light Mode" className="w-5 h-5" />;
+      case 'dark':
+        return <Moon className="w-5 h-5" />;
+      default: // 'system'
+        return <Monitor className="w-5 h-5" />;
+    }
   };
 
   return (
@@ -89,14 +97,11 @@ export function ThemeToggle(props: ButtonProps) {
       className={cn('rounded-md cursor-pointer transition-colors', props?.className)}
       onClick={toggleTheme}
       size="icon"
+      title={theme}
       variant="ghost"
       {...props}
     >
-      {props.children ? (
-        props.children
-      ) : (
-        <>{isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}</>
-      )}
+      {props.children ? <>(props.children)</> : getIcon()}
     </Button>
   );
 }

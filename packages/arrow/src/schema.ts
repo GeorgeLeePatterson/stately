@@ -1,45 +1,65 @@
 /**
- * @statelyjs/arrow - Schema Extensions
+ * Arrow plugin schema extensions.
  *
- * Defines the RelativePath node type for file path handling
+ * This module defines the `ArrowConnection` node type for representing
+ * data connections in Stately schemas. The node type is automatically
+ * registered when you add the arrow plugin to your schema.
+ *
+ * @module schema
  */
 
 import type { BaseNode, DefineData, DefineTypes } from '@statelyjs/stately/schema';
 import type { components } from './generated/types';
 
 /**
- * Arrow plugin types
+ * Type definitions provided by the arrow plugin.
  *
- * Currently no additional types needed beyond the node types.
+ * Includes all component schemas from the Arrow API specification.
  */
 export type ArrowTypes = DefineTypes<components['schemas']>;
 
 /**
- * Arrow plugin data
+ * Runtime data for the arrow plugin.
  *
- * Currently no runtime data needed (no caches or registries).
+ * Currently empty - no runtime caches or registries are needed.
  */
 export type ArrowData = DefineData;
 
 /**
- * Node type for relative paths
+ * Node type identifiers for the arrow plugin.
  */
-export const ArrowNodeType = { ArrowConnection: 'arrowConnection' } as const;
+export const ArrowNodeType = {
+  /** Represents an Arrow data connection reference */
+  ArrowConnection: 'arrowConnection',
+} as const;
 
+/** Union type of all arrow plugin node types */
 export type TArrowNodeType = (typeof ArrowNodeType)[keyof typeof ArrowNodeType];
 
 /**
- * ArrowDataset : location of relative to app directory
+ * Schema node for Arrow data connections.
  *
- * This can be:
- * - A string path: "path/to/file.txt"
- * - An object with dir/path: { dir: "upload", path: "file.txt" }
+ * Used in schemas to represent references to registered data connections.
+ * The connection can be identified by its connector ID.
+ *
+ * @example Schema definition (from OpenAPI)
+ * ```yaml
+ * DataSource:
+ *   type: string
+ *   x-stately-node: arrowConnection
+ * ```
+ *
+ * @example Usage in forms
+ * The ArrowConnection field component provides a dropdown of available
+ * connections that the user can select from.
  */
 export interface ArrowConnectionNode extends BaseNode {
   nodeType: typeof ArrowNodeType.ArrowConnection;
 }
 
 /**
- * Arrow node map for plugin augment
+ * Node map for arrow plugin augmentation.
+ *
+ * Maps node type identifiers to their node definitions for the plugin system.
  */
 export type ArrowNodeMap = { [ArrowNodeType.ArrowConnection]: ArrowConnectionNode };

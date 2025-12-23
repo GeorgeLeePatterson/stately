@@ -206,7 +206,7 @@ export const ObjectWizardEdit = <
         ) : propNode ? (
           <EntityProperty fieldName={fieldName} isRequired={isRequired} node={propNode}>
             {/* Primitive field view */}
-            {schema.plugins?.core.isPrimitiveNode(propNode) ? (
+            {schema.plugins?.core.isPrimitiveNodeLike(propNode) ? (
               <Field>
                 <BaseForm.FieldEdit<Schema>
                   formId={formId}

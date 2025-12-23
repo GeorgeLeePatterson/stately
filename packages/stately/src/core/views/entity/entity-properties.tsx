@@ -24,7 +24,7 @@ export function EntityPropertyLabel<Schema extends Schemas = Schemas>({
   isRequired,
 }: EntityPropertyProps<Schema>) {
   const { schema, utils } = useStatelyUi<Schema>();
-  const NodeTypeIcon = utils.getNodeTypeIcon(schema.plugins.core.extractNodeType(node)) ?? Cog;
+  const NodeTypeIcon = utils.getNodeTypeIcon(schema.plugins.core.extractNodeInnerType(node)) ?? Cog;
   return (
     <div className="flex items-center gap-2 min-w-0">
       <NodeTypeIcon className="w-4 h-4 text-primary shrink-0" />

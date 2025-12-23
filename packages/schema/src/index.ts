@@ -1,8 +1,35 @@
 /**
- * @statelyjs/schema
+ * @statelyjs/schema - Schema Type System
  *
- * Generic type definitions for Stately schema nodes that work with user-provided OpenAPI-generated
- * types and plugin augmentations.
+ * Low-level type definitions for Stately schema nodes. This package provides
+ * the foundational types that work with user-provided OpenAPI-generated types
+ * and plugin augmentations.
+ *
+ * ## For Most Users
+ *
+ * **Use `@statelyjs/stately` instead.** It re-exports these types with the
+ * core plugin included automatically:
+ *
+ * ```typescript
+ * import { stately, type DefineConfig, type Schemas } from '@statelyjs/stately/schema';
+ * ```
+ *
+ * ## For Plugin Authors
+ *
+ * Use this package directly when building schema plugins:
+ *
+ * ```typescript
+ * import { createStately, type DefinePlugin, type BaseNode } from '@statelyjs/schema';
+ * ```
+ *
+ * ## Key Exports
+ *
+ * - **`createStately`** - Factory for creating schema runtimes
+ * - **`DefinePlugin`** - Helper type for defining schema plugins
+ * - **`BaseNode`** - Base interface for all schema nodes
+ * - **`StatelySchemas`** - The complete schemas type
+ *
+ * @packageDocumentation
  */
 
 import type { DefineOperations } from './api.js';

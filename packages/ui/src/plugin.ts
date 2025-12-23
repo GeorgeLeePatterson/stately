@@ -1,5 +1,5 @@
 /**
- * @statelyjs/ui Plugin System
+ * StatelyUi Plugin System (low-level API).
  *
  * This module provides the type infrastructure for creating UI plugins that extend
  * the Stately runtime. Plugins can add:
@@ -8,23 +8,26 @@
  * - Navigation routes
  * - Custom configuration options
  *
- * ## For Plugin Users
+ * ## For Most Users
  *
- * Add plugins to your runtime using `withPlugin()`:
+ * Use `statelyUi` from `@statelyjs/stately` to create runtimes with the core
+ * plugin included, then add additional plugins via `withPlugin()`:
  *
  * ```typescript
  * import { statelyUi } from '@statelyjs/stately';
  * import { filesUiPlugin } from '@statelyjs/files';
  *
- * const runtime = statelyUi<MySchemas>({ ... })
+ * const runtime = statelyUi<MySchemas>({ schema, client, options })
  *   .withPlugin(filesUiPlugin({ api: { pathPrefix: '/files' } }));
  *
  * // Access plugin functionality
- * runtime.plugins.files.api.operations.listFiles({ ... });
- * runtime.plugins.files.utils.formatFileSize(1024);
+ * runtime.plugins.core.api.operations.listEntities(...); // Core plugin
+ * runtime.plugins.files.api.operations.listFiles(...);   // Files plugin
  * ```
  *
  * ## For Plugin Authors
+ *
+ * Use these types when building plugins that extend the StatelyUi runtime.
  *
  * 1. Define your plugin's type using `DefineUiPlugin`:
  *
@@ -61,7 +64,7 @@
  * }
  * ```
  *
- * @packageDocumentation
+ * @module plugin
  */
 
 import type { StatelySchemas } from '@statelyjs/schema';

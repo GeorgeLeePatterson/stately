@@ -1,4 +1,4 @@
-# @statelyjs/ui
+# 🏰 @statelyjs/ui
 
 [![npm](https://img.shields.io/npm/v/@statelyjs/ui)](https://www.npmjs.com/package/@statelyjs/ui)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
@@ -15,9 +15,10 @@ pnpm add @statelyjs/ui
 
 Most users should install `@statelyjs/stately` instead, which includes this package with the core plugin pre-configured. Use `@statelyjs/ui` directly when:
 
+- Accessing the base components, layouts, or views
 - Building a custom plugin
-- Need only the base components without Stately's entity system
 - Want fine-grained control over plugin composition
+- Stately's underlying types and logic without core's entity system (would require `schema` also)
 
 ## What's Included
 
@@ -48,7 +49,7 @@ function App() {
 
 ### Theme (`@statelyjs/ui`)
 
-Dark/light mode support with system preference detection:
+Dark/light/system mode support with system preference detection:
 
 ```tsx
 import { ThemeProvider, ThemeToggle, useTheme } from '@statelyjs/ui';
@@ -111,7 +112,7 @@ import {
   // Layout
   Layout,
   
-  // Form
+  // Form and node type routers
   BaseForm,
   
   // Registry
@@ -188,7 +189,24 @@ Import the CSS in your app's entry point:
 import '@statelyjs/ui/styles.css';
 ```
 
-This includes Tailwind CSS utilities and component styles. Your app should have Tailwind configured to process these styles.
+This includes Tailwind CSS utilities and component styles. Your app should have Tailwind configured to process these styles. In order for tailwind to pick up all styles, it's recommended to do the following:
+
+```css
+/**
+ * REQUIRED SETUP for Tailwind CSS v4:
+ *
+ * In your app's main CSS file, add the following in this exact order:
+ *
+ * @import "tailwindcss";
+ * @import "@statelyjs/ui/styles.css";
+ * @source "../node_modules/@statelyjs/** /dist";
+ *
+ * The wildcard @source pattern automatically includes all Stately packages
+ * (core UI + plugins). This is required because node_modules is automatically
+ * excluded from Tailwind's class detection. Without it, utility classes
+ * used in Stately components won't be generated.
+ */
+```
 
 ## Writing a Plugin
 

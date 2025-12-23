@@ -1,6 +1,9 @@
 # @statelyjs/files
 
-File system integration plugin for [Stately UI](../ui/README.md). Provides file browsing, versioned file management, uploads, downloads, and relative path handling.
+[![npm](https://img.shields.io/npm/v/@statelyjs/files)](https://www.npmjs.com/package/@statelyjs/files)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
+
+File system integration plugin for [Stately UI](../stately/README.md). Provides file browsing, versioned file management, uploads, downloads, and relative path handling.
 
 ## Overview
 
@@ -19,41 +22,45 @@ pnpm add @statelyjs/files
 
 ## Quick Start
 
-Register the plugin when creating your Stately UI runtime:
+### 1. Add Schema Plugin
 
 ```typescript
-import { createStatelyUi } from '@statelyjs/ui';
-import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
+import { stately } from '@statelyjs/stately/schema';
+import { type FilesPlugin, filesPlugin } from '@statelyjs/files';
 
-const stately = createStatelyUi({
-  // Your base URL for API requests
-  baseUrl: import.meta.env.VITE_API_URL,
-
-  // Schema plugins extend the type system
-  schemaPlugins: [filesPlugin],
-
-  // UI plugins register components, routes, and API bindings
-  uiPlugins: [
-    filesUiPlugin({
-      // Base path for files API endpoints (default: '/files')
-      basePath: '/files',
-    }),
-  ],
-});
+const schema = stately<MySchemas, readonly [FilesPlugin]>(openapiDoc, PARSED_SCHEMAS)
+  .withPlugin(filesPlugin());
 ```
 
-### Using with React
+### 2. Add UI Plugin
 
-Wrap your app with the Stately provider:
+```typescript
+import { statelyUi } from '@statelyjs/stately';
+import { type FilesUiPlugin, filesUiPlugin } from '@statelyjs/files';
+
+const runtime = statelyUi<MySchemas, readonly [FilesUiPlugin]>({
+  schema,
+  client,
+  core: { api: { pathPrefix: '/entity' } },
+  options: { api: { pathPrefix: '/api' } },
+}).withPlugin(filesUiPlugin({
+  api: { pathPrefix: '/files' },
+}));
+```
+
+### 3. Wrap Your App
 
 ```tsx
-import { StatelyProvider } from '@statelyjs/ui';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { AppStatelyProvider, runtime } from './lib/stately';
 
 function App() {
   return (
-    <StatelyProvider runtime={stately}>
-      <YourApp />
-    </StatelyProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppStatelyProvider runtime={runtime}>
+        <YourApp />
+      </AppStatelyProvider>
+    </QueryClientProvider>
   );
 }
 ```
@@ -240,7 +247,7 @@ export default {
 Then run:
 
 ```bash
-pnpm exec stately ./openapi.json ./src/generated ./stately.config.js
+pnpm exec stately ./openapi.json -o ./src/generated -c ./stately.config.js
 ```
 
 This transforms OpenAPI `oneOf` schemas matching the RelativePath pattern into `FilesNodeType.RelativePath` nodes, enabling the custom path selector field in forms.
@@ -266,33 +273,96 @@ For plugin authors, this package demonstrates the Stately plugin pattern:
 
 ### Schema Plugin
 
-Extends the node type system:
+Extends the node type system, expected types, additional data properties, and files utilities:
 
 ```typescript
-import { filesPlugin } from '@statelyjs/files';
+export const FILES_PLUGIN_NAME = 'files' as const;
 
-// Adds FilesNodeType.RelativePath to the schema
-schemaPlugins: [filesPlugin]
+export type FilesPlugin = DefinePlugin<
+  typeof FILES_PLUGIN_NAME,
+  FilesNodeMap,
+  FilesTypes,
+  FilesData,
+  FilesUtils
+>;
+
+export function filesPlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
+  return runtime => {
+    return {
+      ...runtime,
+      data: { ...runtime.data },
+      plugins: { ...runtime.plugins, [FILES_PLUGIN_NAME]: {} },
+    };
+  };
+}
 ```
 
 ### UI Plugin
 
-Registers components and API bindings:
+Registers components, navigation, and API bindings:
 
 ```typescript
-import { filesUiPlugin } from '@statelyjs/files';
+export type FilesOptions = DefineOptions<{
+  /** API configuration for Files endpoints */
+  api?: { pathPrefix?: string };
+  /** Navigation configuration for Files routes */
+  navigation?: { routes?: UiNavigationOptions['routes'] };
+}>;
 
-uiPlugins: [
-  filesUiPlugin({
-    basePath: '/files',  // API base path
-  }),
-]
+export type FilesUiPlugin = DefineUiPlugin<
+  typeof FILES_PLUGIN_NAME,
+  FilesPaths,
+  typeof FILES_OPERATIONS,
+  FilesUiUtils,
+  FilesOptions,
+  typeof filesRoutes
+>;
+
+export function filesUiPlugin<
+  Schema extends Schemas<any, any> = Schemas,
+  Augments extends readonly AnyUiPlugin[] = [],
+>(options?: FilesOptions): UiPluginFactory<Schema, Augments> {
+  return runtime => {
+    ...
+
+    // Register components
+    registry.components.set(
+      baseRegistry.makeRegistryKey(FilesNodeType.RelativePath, 'edit'),
+      props => <RelativePathEdit {...props} standalone />,
+    );
+    registry.components.set(
+      baseRegistry.makeRegistryKey(FilesNodeType.RelativePath, 'view'),
+      RelativePathView,
+    );
+
+    // Register transformers
+    registry.transformers.set(
+      baseRegistry.makeRegistryKey(CoreNodeType.Primitive, 'edit', 'transformer', 'string'),
+      primitiveStringTransformer,
+    );
+
+    ...
+
+    const pathPrefix = runtime.utils.mergePathPrefixOptions(basePathPrefix, corePathPrefix);
+    const api = createOperations<FilesPaths, typeof FILES_OPERATIONS>(
+      client,
+      FILES_OPERATIONS,
+      pathPrefix,
+    );
+
+     // Files only supports a top level route, only provides a single page.
+    const routes = { ...filesRoutes, ...(options?.navigation?.routes || {}) };
+    const plugin = { [FILES_PLUGIN_NAME]: { api, options, routes, utils: filesUiUtils } };
+    return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };
+  };
+}
 ```
 
 The UI plugin:
 1. Creates an API client bound to your base URL
 2. Registers the `RelativePathField` component for the `RelativePath` node type
-3. Provides the files context to child components
+3. Provides a prop transformer for core's PrimitiveNode::PrimitiveString fields
+4. Provides the files context to child components
 
 ### Context Access
 

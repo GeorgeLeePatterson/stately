@@ -49,6 +49,9 @@ ts-clean:
 ts-install:
     pnpm install
 
+ts-docs:
+    pnpm run docs:api
+
 # --- EXAMPLES ---
 
 examples:

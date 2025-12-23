@@ -123,7 +123,7 @@ export type StatelyUi<
  * a builder that can be extended with additional plugins via `withPlugin()`.
  *
  * The core plugin provides:
- * - Entity CRUD API operations (`listEntities`, `getEntity`, `createEntity`, etc.)
+ * - Entity CRUD API operations (`list_entities`, `get_entity_by_id`, `create_entity`, etc.)
  * - Field components for all schema node types (primitives, objects, arrays, etc.)
  * - Entity navigation routes for the sidebar
  * - Utility functions for entity display and URL generation
@@ -131,12 +131,7 @@ export type StatelyUi<
  * @typeParam Schema - Your application's schema type
  * @typeParam Augments - Additional plugin types (usually inferred)
  *
- * @param config - Runtime configuration
- * @param config.schema - Schema runtime from `stately()`
- * @param config.client - OpenAPI fetch client
- * @param config.options - Global options (API prefix, etc.)
- * @param config.core - Core plugin options
- *
+ * @param config - Runtime configuration (see {@link StatelyConfiguration})
  * @returns A runtime builder with core plugin installed. Chain `.withPlugin()` to add more.
  *
  * @example Basic usage

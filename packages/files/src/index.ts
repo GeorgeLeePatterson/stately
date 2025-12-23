@@ -1,36 +1,63 @@
 /**
- * @statelyjs/files
+ * @statelyjs/files - File System Plugin
  *
- * @packageDocumentation
+ * File system integration plugin for Stately applications. Provides
+ * comprehensive file management capabilities for both schema and UI.
  *
- * File system integration plugin for Stately UI.
+ * ## Features
  *
- * This package provides comprehensive file management capabilities including:
- * - File browsing with directory navigation
- * - File uploads with automatic versioning
- * - File downloads from multiple storage targets
- * - Relative path field components for forms
- * - File version history management
+ * - **File Browsing**: Directory navigation with breadcrumbs
+ * - **File Uploads**: Drag-and-drop with automatic versioning
+ * - **File Downloads**: Support for multiple storage targets (data, cache, upload)
+ * - **RelativePath Field**: Form components for file path selection
+ * - **Version History**: Track and manage file versions
  *
- * ## Quick Start
+ * ## Installation
  *
- * ```typescript
- * import { createStately } from '@statelyjs/schema';
- * import { statelyUi } from '@statelyjs/stately';
- * import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
- *
- * // Schema configuration
- * const stately = createStately()
- *   .plugin(filesPlugin())
- *   .build();
- *
- * // UI configuration
- * const ui = statelyUi({
- *   plugins: [filesUiPlugin()],
- * });
+ * ```bash
+ * pnpm add @statelyjs/files
  * ```
  *
- * @module
+ * ## Setup
+ *
+ * ### 1. Add Schema Plugin
+ *
+ * ```typescript
+ * // stately.ts
+ * import { stately } from '@statelyjs/stately/schema';
+ * import { filesPlugin } from '@statelyjs/files';
+ *
+ * const schema = stately<MySchemas>(openapiDoc, PARSED_SCHEMAS)
+ *   .withPlugin(filesPlugin());
+ * ```
+ *
+ * ### 2. Add UI Plugin
+ *
+ * ```typescript
+ * // stately.ts
+ * import { statelyUi } from '@statelyjs/stately';
+ * import { filesUiPlugin } from '@statelyjs/files';
+ *
+ * const runtime = statelyUi<MySchemas>({ schema, client, options })
+ *   .withPlugin(filesUiPlugin({ api: { pathPrefix: '/files' } }));
+ * ```
+ *
+ * ### 3. Access in Components
+ *
+ * ```typescript
+ * import { useFilesStatelyUi } from '@statelyjs/files';
+ *
+ * function FileManager() {
+ *   const { plugins } = useFilesStatelyUi();
+ *   const files = plugins.files;
+ *
+ *   // Use file operations
+ *   const upload = () => files.api.upload({ body: formData });
+ *   const list = () => files.api.list_files({ params: { query: { dir: '/' } } });
+ * }
+ * ```
+ *
+ * @packageDocumentation
  */
 
 // Plugin

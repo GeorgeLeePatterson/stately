@@ -5,7 +5,7 @@ import { PageHeader } from './page-header';
 import { Root } from './root';
 
 export type { HeaderProps } from './header';
-export type { NavigationProps, NavigationRoutes, RouteOption } from './navigation';
+export type { NavigationProps } from './navigation';
 export type { PageProps } from './page';
 export type { PageHeaderProps } from './page-header';
 export type { RootProps } from './root';

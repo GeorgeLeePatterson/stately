@@ -1,3 +1,35 @@
+/**
+ * Stately schema types and utilities.
+ *
+ * This module provides the main schema types for Stately applications.
+ * It re-exports types from `@statelyjs/schema` and adds the core plugin
+ * types automatically.
+ *
+ * ## Key Types
+ *
+ * - **`DefineConfig`** - Define your application's schema configuration
+ * - **`Schemas`** - The schema type used throughout your app
+ * - **`stately`** - Factory function to create a schema runtime
+ *
+ * @example
+ * ```typescript
+ * import { stately, type DefineConfig, type Schemas } from '@statelyjs/stately/schema';
+ * import type { components, paths, operations } from './generated/types';
+ * import { PARSED_SCHEMAS } from './generated/schemas';
+ *
+ * // Define your schema configuration
+ * type MyConfig = DefineConfig<components, paths, operations>;
+ *
+ * // Create the schemas type for your app
+ * type MySchemas = Schemas<MyConfig>;
+ *
+ * // Create the runtime
+ * const schema = stately<MySchemas>(openapiDoc, PARSED_SCHEMAS);
+ * ```
+ *
+ * @module schema
+ */
+
 import type {
   DefineComponents,
   DefineGeneratedNodes,
@@ -9,12 +41,30 @@ import type { NodeMap } from '@statelyjs/schema/nodes';
 import type { DefineCoreConfig, Schemas } from './core/index.js';
 import { CORE_PLUGIN_NAME, coreSchemaUtils, stately } from './core/index.js';
 
-// ------------------------
-// Stately Schema (Core): Root level stately schema definitions
-// ------------------------
-
 /**
- * Public helper for declaring a full Stately config
+ * Define your application's Stately configuration.
+ *
+ * This type helper combines your OpenAPI-generated types with Stately's
+ * core plugin to create a complete configuration type. Use this when
+ * defining your `Schemas` type.
+ *
+ * The core plugin is automatically included, providing:
+ * - Entity CRUD operations
+ * - Standard node types (primitives, objects, arrays, etc.)
+ * - Link resolution utilities
+ *
+ * @typeParam C - Components type from OpenAPI codegen (e.g., `components`)
+ * @typeParam P - Paths type from OpenAPI codegen (e.g., `paths`)
+ * @typeParam O - Operations type from OpenAPI codegen (e.g., `operations`)
+ * @typeParam N - Generated node map from Stately codegen (usually inferred)
+ *
+ * @example
+ * ```typescript
+ * import type { components, paths, operations } from './generated/types';
+ *
+ * type MyConfig = DefineConfig<components, paths, operations>;
+ * type MySchemas = Schemas<MyConfig>;
+ * ```
  */
 export type DefineConfig<
   C extends DefineComponents = DefineComponents,

@@ -20,6 +20,8 @@ export default defineConfig({
     "core/hooks/index": "src/core/hooks/index.ts",
     "core/pages/index": "src/core/pages/index.ts",
     "core/schema/index": "src/core/schema/index.ts",
+    "core/schema/utils": "src/core/schema/utils.ts",
+    "core/utils": "src/core/utils.tsx",
     "core/views/entity/index": "src/core/views/entity/index.ts",
     "core/views/link/index": "src/core/views/link/index.ts",
   },

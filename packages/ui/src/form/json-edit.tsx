@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 type JsonStatus = { valid: boolean; error?: string; msg?: string };
 
-interface JsonEditProps {
+export interface JsonEditProps {
   value: any;
   label?: string;
   onSave: (value: any) => void;

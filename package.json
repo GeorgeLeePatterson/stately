@@ -1,6 +1,6 @@
 {
   "name": "stately-monorepo",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.26.0",
@@ -14,13 +14,15 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "check": "turbo run check",
-    "clean": "turbo run clean && rm -rf node_modules .turbo"
+    "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "docs:api": "typedoc"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.5",
     "@types/node": "^22.10.1",
     "openapi-fetch": "^0.15",
     "turbo": "^2.3.3",
+    "typedoc": "^0.28.15",
     "typescript": "^5.7.2"
   },
   "pnpm": {

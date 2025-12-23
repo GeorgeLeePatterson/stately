@@ -6,8 +6,8 @@
  * In your app's main CSS file, add the following in this exact order:
  *
  * @import "tailwindcss";
- * @source "../node_modules/@statelyjs/** /dist";
  * @import "@statelyjs/ui/styles.css";
+ * @source "../node_modules/@statelyjs/** /dist";
  *
  * The wildcard @source pattern automatically includes all Stately packages
  * (core UI + plugins). This is required because node_modules is automatically
@@ -150,5 +150,13 @@
   50% {
     filter: brightness(1.25);
     box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+  }
+}
+
+/** Prefer cursor pointer for buttons */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 }

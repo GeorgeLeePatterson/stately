@@ -1,3 +1,20 @@
+/**
+ * Core UI plugin for Stately.
+ *
+ * The core plugin provides all the essential functionality for working with
+ * Stately entities in the UI:
+ *
+ * - **API Operations**: CRUD operations for entities (`listEntities`, `getEntity`, etc.)
+ * - **Field Components**: Edit and view components for all schema node types
+ * - **Navigation Routes**: Sidebar routes for entity management
+ * - **Utility Functions**: Entity icons, URL generation, display formatting
+ *
+ * This plugin is automatically installed when using `statelyUi()` from
+ * `@statelyjs/stately`. You don't need to install it manually.
+ *
+ * @module plugin
+ */
+
 import {
   type AnyUiPlugin,
   type ComponentRegistry,
@@ -23,15 +40,49 @@ import { type CoreUiUtils, createCoreUtils } from './utils';
 
 const { makeRegistryKey } = registry;
 
+/**
+ * Configuration for entity display in the UI.
+ */
 export interface CoreEntityOptions {
+  /** Map of entity type names to icon components for sidebar and headers */
   icons: Record<StateEntry, React.ComponentType<any>>;
 }
 
+/**
+ * Configuration options for the core plugin.
+ *
+ * @example
+ * ```typescript
+ * const runtime = statelyUi<MySchemas>({
+ *   // ... other options
+ *   core: {
+ *     api: { pathPrefix: '/entity' },
+ *     entities: {
+ *       icons: {
+ *         Pipeline: PipelineIcon,
+ *         SourceConfig: DatabaseIcon,
+ *       }
+ *     }
+ *   }
+ * });
+ * ```
+ */
 export type CoreUiOptions = DefineOptions<{
-  api?: { pathPrefix?: string };
+  /** API configuration for entity endpoints */
+  api?: {
+    /** Path prefix for entity CRUD endpoints (e.g., '/entity') */
+    pathPrefix?: string;
+  };
+  /** Entity display configuration */
   entities: CoreEntityOptions;
 }>;
 
+/**
+ * Type definition for the core UI plugin.
+ *
+ * This type is used internally to provide type-safe access to
+ * `runtime.plugins.core`.
+ */
 export type CoreUiPlugin = DefineUiPlugin<
   typeof CORE_PLUGIN_NAME,
   CorePaths,
@@ -40,14 +91,28 @@ export type CoreUiPlugin = DefineUiPlugin<
   CoreUiOptions
 >;
 
+/** Base path for entity routes in navigation */
 export const CoreRouteBasePath = '/entities';
 
 /**
- * Core plugin factory
+ * Create the core UI plugin.
  *
- * Create the core UI plugin factory.
- * Populates the runtime with core plugin data (components, api, utils, routes).
- * The runtime type exported from the root already declares CoreUiPlugin; this factory fulfills it.
+ * This factory is called internally by `statelyUi()`. You typically don't
+ * need to call this directly.
+ *
+ * The plugin:
+ * - Registers field components for all core node types
+ * - Creates typed API operations for entity CRUD
+ * - Generates navigation routes for each entity type
+ * - Provides utility functions for entity display
+ *
+ * @typeParam Schema - Your application's schema type
+ * @typeParam Augments - Additional plugins (used for type composition)
+ *
+ * @param options - Core plugin configuration
+ * @returns A plugin factory function
+ *
+ * @internal
  */
 export function coreUiPlugin<Schema extends Schemas, Augments extends readonly AnyUiPlugin[]>(
   options?: CoreUiOptions,

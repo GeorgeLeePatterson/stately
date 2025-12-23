@@ -1,3 +1,45 @@
+/**
+ * Low-level React context and providers for StatelyUi.
+ *
+ * This module provides the base context infrastructure for making the StatelyUi
+ * runtime available throughout your React application. These are intended for
+ * plugin authors and advanced use cases.
+ *
+ * ## For Most Users
+ *
+ * **Use `StatelyProvider` and `useStatelyUi` from `@statelyjs/stately` instead.**
+ * They include the core plugin types automatically:
+ *
+ * ```typescript
+ * import { StatelyProvider, useStatelyUi } from '@statelyjs/stately';
+ *
+ * // In your app
+ * <StatelyProvider runtime={runtime}>
+ *   <App />
+ * </StatelyProvider>
+ *
+ * // In components - core plugin is typed automatically
+ * function MyComponent() {
+ *   const { plugins } = useStatelyUi();
+ *   plugins.core.api.operations.listEntities(...);
+ * }
+ * ```
+ *
+ * ## For Plugin Authors
+ *
+ * Use `createStatelyUiProvider` and `createUseStatelyUi` when building
+ * plugins or working with custom plugin configurations:
+ *
+ * ```typescript
+ * import { createStatelyUiProvider, createUseStatelyUi } from '@statelyjs/ui';
+ *
+ * const MyProvider = createStatelyUiProvider<MySchemas, [MyPlugin]>();
+ * const useMyStatelyUi = createUseStatelyUi<MySchemas, [MyPlugin]>();
+ * ```
+ *
+ * @module context
+ */
+
 import type { StatelySchemas } from '@statelyjs/schema';
 import { type ComponentType, createContext, type PropsWithChildren, useContext } from 'react';
 import type { AnyUiPlugin } from '@/plugin';
@@ -5,39 +47,62 @@ import type { StatelyUiRuntime, UiOptions } from '@/runtime';
 import { ThemeProvider } from './theme';
 
 /**
- * Context for storing the StatelyUi runtime.
- * Type is intentionally wide to allow any runtime configuration.
+ * React context for the StatelyUi runtime.
+ *
+ * @internal Use hooks from `@statelyjs/stately` or `createUseStatelyUi` to access.
  */
 const StatelyUiContext = createContext<StatelyUiRuntime<any, any> | null>(null);
 
+/**
+ * Props for the StatelyUi provider component.
+ *
+ * @typeParam Schema - The application's StatelySchemas type
+ * @typeParam Augments - Tuple of installed plugin types
+ */
 export type StatelyProviderProps<
   Schema extends StatelySchemas<any, any>,
   Augments extends readonly AnyUiPlugin[],
-> = PropsWithChildren<{ runtime: StatelyUiRuntime<Schema, Augments> }>;
+> = PropsWithChildren<{
+  /** The StatelyUi runtime instance */
+  runtime: StatelyUiRuntime<Schema, Augments>;
+}>;
 
 /**
- * Create a typed StatelyUi provider. Optionally pass in a component to wrap the children to inject
- * your own providers.
+ * Create a typed StatelyUi provider component (low-level API).
+ *
+ * This is a **low-level API** for plugin authors. Most users should use
+ * `StatelyProvider` from `@statelyjs/stately` which includes core types.
+ *
+ * Optionally pass a wrapper component to inject additional providers
+ * (e.g., query clients, routing context).
+ *
+ * @typeParam Schema - The application's StatelySchemas type
+ * @typeParam Augments - Tuple of plugin types that are installed
+ *
+ * @param Providers - Optional wrapper component for additional context providers
+ * @param themeOptions - Optional theme configuration overrides
+ * @returns A React provider component
  *
  * @example
  * ```typescript
- * const MyProvider = createStatelyUiProvider<MySchemas, [CoreUiPlugin<MySchemas>]>();
+ * // Basic usage
+ * const MyProvider = createStatelyUiProvider<MySchemas, [MyPlugin]>();
  *
- * <MyProvider value={runtime}>
+ * <MyProvider runtime={runtime}>
  *   <App />
  * </MyProvider>
  * ```
  *
  * @example
  * ```typescript
- * const MyOtherProvider = OtherProvider;
- * const MyProvider = createStatelyUiProvider<MySchemas, [CoreUiPlugin<MySchemas>]>(
- *   MyOtherProvider,
+ * // With additional providers
+ * const MyProvider = createStatelyUiProvider<MySchemas, [MyPlugin]>(
+ *   ({ children }) => (
+ *     <QueryClientProvider client={queryClient}>
+ *       {children}
+ *     </QueryClientProvider>
+ *   )
  * );
- *
- * <MyProvider value={runtime}>
- *   <App />
- * </MyProvider>
  * ```
  */
 export function createStatelyUiProvider<
@@ -67,21 +132,31 @@ export function createStatelyUiProvider<
 }
 
 /**
- * Default untyped provider for convenience.
- * For better type safety, use createStatelyUiProvider with your specific types.
+ * Default untyped provider for quick prototyping.
+ *
+ * This is a **low-level API**. For production use with proper types,
+ * use `StatelyProvider` from `@statelyjs/stately`.
  */
 export const StatelyUiProvider = createStatelyUiProvider();
 
 /**
- * Create a typed hook for accessing StatelyUi runtime.
+ * Create a typed hook for accessing StatelyUi runtime (low-level API).
+ *
+ * This is a **low-level API** for plugin authors. Most users should use
+ * `useStatelyUi` from `@statelyjs/stately` which includes core types.
+ *
+ * @typeParam Schema - The application's StatelySchemas type
+ * @typeParam Augments - Tuple of plugin types that are installed
+ * @returns A hook function that returns the typed runtime
  *
  * @example
  * ```typescript
- * const useMyStatelyUi = createUseStatelyUi<MySchemas, [CoreUiPlugin]>();
+ * // For plugin authors
+ * const useMyStatelyUi = createUseStatelyUi<MySchemas, [MyPlugin]>();
  *
- * function MyComponent() {
+ * function MyPluginComponent() {
  *   const runtime = useMyStatelyUi();
- *   runtime.plugins.core // ✓ Fully typed!
+ *   runtime.plugins.myPlugin // Typed access
  * }
  * ```
  */
@@ -99,7 +174,16 @@ export function createUseStatelyUi<
 }
 
 /**
- * Helper for accessing stately with no plugin assumptions
+ * Access the StatelyUi runtime without plugin type assumptions.
+ *
+ * This is a **low-level API** primarily for internal use or plugin authors
+ * who need runtime access without specific plugin types.
+ *
+ * @typeParam Schema - The application's StatelySchemas type
+ * @typeParam Augments - Tuple of plugin types (defaults to empty)
+ * @returns The StatelyUi runtime
+ *
+ * @throws Error if called outside of a StatelyUiProvider
  */
 export function useBaseStatelyUi<
   Schema extends StatelySchemas<any, any>,

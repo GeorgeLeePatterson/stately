@@ -7,6 +7,8 @@
 
 This package provides the foundational type system for Stately's frontend. It parses OpenAPI schemas into a typed AST (Abstract Syntax Tree) that powers the UI's form generation, validation, and type safety.
 
+This 'schema' package is a low-level package used internally by Stately. See [stately](../stately/README.md) for the user facing package.
+
 ## Installation
 
 ```bash
@@ -48,12 +50,10 @@ The `Schemas` type is the **single source of truth** for your application's type
 3. **Derived Types**: EntityData, StateEntry, and other computed types
 
 ```typescript
-import type { Schemas, DefineConfig } from '@statelyjs/schema';
+import type { StatelySchemas, DefineConfig } from '@statelyjs/schema';
 import type { components, paths, operations } from './generated/types';
 
-type MySchemas = Schemas<
-  DefineConfig<components, DefinePaths<paths>, DefineOperations<operations>, typeof PARSED_SCHEMAS>
->;
+type MySchemas = StatelySchemas<DefineConfig<components, paths, operations, typeof PARSED_SCHEMAS>>;
 ```
 
 ### Plugin System
@@ -61,7 +61,7 @@ type MySchemas = Schemas<
 Plugins extend the schema with additional node types:
 
 ```typescript
-import type { DefinePlugin, NodeMap } from '@statelyjs/schema';
+import type { DefinePlugin, NodeMap, StatelySchemas } from '@statelyjs/schema';
 
 // Define custom nodes
 interface MyNodes extends NodeMap {
@@ -72,7 +72,7 @@ interface MyNodes extends NodeMap {
 export type MyPlugin = DefinePlugin<'my-plugin', MyNodes>;
 
 // Use with Schemas
-type AppSchemas = Schemas<MyConfig, readonly [MyPlugin]>;
+type AppSchemas = StatelySchemas<MyConfig, readonly [MyPlugin]>;
 ```
 
 ## Usage

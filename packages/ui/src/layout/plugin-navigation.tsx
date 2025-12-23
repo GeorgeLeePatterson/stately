@@ -10,8 +10,9 @@ import {
 } from '@/components/base/sidebar';
 import { devLog } from '@/lib/logging';
 import { cn } from '@/lib/utils';
+import type { RouteOption } from '@/runtime';
 import { stripTrailing, toTitleCase } from '@/utils';
-import type { NavigationRoutes, RouteOption } from './navigation';
+import type { NavigationRoutes } from './navigation';
 
 export interface PluginNavigationProps {
   currentPath: string;

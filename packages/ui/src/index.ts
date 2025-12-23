@@ -1,3 +1,42 @@
+/**
+ * @statelyjs/ui - UI Infrastructure
+ *
+ * Low-level UI infrastructure for Stately applications. This package provides
+ * the foundational components, theming, plugin system, and runtime builder
+ * that power Stately UIs.
+ *
+ * ## For Most Users
+ *
+ * **Use `@statelyjs/stately` instead.** It provides `statelyUi()` which
+ * includes the core plugin automatically:
+ *
+ * ```typescript
+ * import { statelyUi, StatelyProvider, useStatelyUi } from '@statelyjs/stately';
+ * ```
+ *
+ * ## For Plugin Authors
+ *
+ * Use this package directly when building UI plugins:
+ *
+ * ```typescript
+ * import {
+ *   createOperations,
+ *   type DefineUiPlugin,
+ *   type UiPluginFactory,
+ * } from '@statelyjs/ui';
+ * ```
+ *
+ * ## Key Exports
+ *
+ * - **`createStatelyUi`** - Low-level runtime builder (without core plugin)
+ * - **`createOperations`** - Create typed API operations from bindings
+ * - **`DefineUiPlugin`** - Helper type for defining UI plugins
+ * - **`registry`** - Component and transformer registry utilities
+ * - **`ThemeProvider`** - Theme context provider
+ *
+ * @packageDocumentation
+ */
+
 // Api
 import { createOperations } from './api';
 
@@ -69,6 +108,7 @@ export { registry };
 import { createStatelyUi, defaultUiOptions } from './runtime.js';
 
 export type {
+  RouteOption,
   StatelyUiBuilder,
   StatelyUiConfiguration,
   StatelyUiRuntime,
