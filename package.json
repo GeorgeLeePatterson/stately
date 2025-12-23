@@ -1,9 +1,9 @@
 {
   "name": "stately-monorepo",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.20.0",
+  "packageManager": "pnpm@10.26.0",
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=10.0.0"
@@ -13,15 +13,21 @@
     "dev": "turbo run dev",
     "test": "turbo run test",
     "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck",
+    "check": "turbo run check",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
-    "format": "prettier --write \"packages/**/*.{ts,tsx,md,json}\""
+    "docs:api": "typedoc"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.3.5",
     "@types/node": "^22.10.1",
-    "prettier": "^3.4.2",
+    "openapi-fetch": "^0.15",
     "turbo": "^2.3.3",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "typedoc": "^0.28.15",
+    "typescript": "^5.7.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "csstype": "^3.2.3"
+    }
   }
 }

@@ -1,0 +1,51 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["unicorn", "typescript", "oxc", "import", "react", "jsdoc"],
+  "env": {
+    "browser": true,
+    "es2023": true
+  },
+  "ignorePatterns": [
+    "**/*.d.ts",
+    "**/coverage/**",
+    "**/build/**",
+    "packages/ui/src/base/ui/*.tsx",
+    "**/node_modules/**"
+  ],
+  "categories": {
+    "style": "warn",
+    "correctness": "error",
+    "perf": "warn",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "prefer-template": "warn",
+    "no-else-return": "warn",
+    "no-param-reassign": "error",
+    "default-param-last": "error",
+    "one-var": ["error", "never"],
+    "prefer-optional-chain": "warn",
+    "dot-notation": "warn",
+    "no-unneeded-ternary": "warn",
+    "typescript/no-unnecessary-template-expression": "warn",
+    "typescript/no-non-null-assertion": "warn",
+    "typescript/no-inferrable-types": "error",
+    "typescript/prefer-as-const": "error",
+    "typescript/prefer-enum-initializers": "error",
+    "typescript/prefer-for-of": "warn",
+    "typescript/no-explicit-any": "off",
+    "react/no-danger": "warn",
+    "react/self-closing-comp": "off",
+    "react-hooks/exhaustive-deps": "error",
+    "unicorn/prefer-number-properties": "error",
+    "jsx-a11y/label-has-associated-control": "warn",
+    "jsx-a11y/no-noninteractive-tabindex": "off",
+    "jsx-a11y/tabindex-no-positive": "warn",
+    "jsx-a11y/anchor-is-valid": "warn",
+    "jsx-a11y/click-events-have-key-events": "warn",
+    "jsx-a11y/media-has-caption": "warn",
+    "import/no-cycle": "error",
+    "import/no-named-export": "off",
+    "import/group-exports": "off"
+  }
+}

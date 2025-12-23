@@ -1,0 +1,96 @@
+{
+  "name": "@statelyjs/arrow",
+  "version": "0.4.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "check": "tsc --noEmit",
+    "dev": "tsdown --watch",
+    "codegen": "pnpm run generate:openapi && pnpm run generate:types",
+    "generate:openapi": "cargo run -p stately-arrow --all-features --bin generate-openapi -- .",
+    "generate:types": "pnpm exec stately generate ./openapi.json -o ./src/generated"
+  },
+  "peerDependencies": {
+    "@statelyjs/stately": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90.10",
+    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-virtual": "^3.13.12",
+    "@types/react": "^18.0.0 || ^19.0.0",
+    "lucide-react": "^0.562.0",
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@statelyjs/apache-arrow": "^22.0.0-pre.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1"
+  },
+  "devDependencies": {
+    "@statelyjs/stately": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90.11",
+    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-virtual": "^3.13.12",
+    "@types/react": "^19.2.7",
+    "lucide-react": "^0.562.0",
+    "tsdown": "0.18.1",
+    "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./api": {
+      "types": "./dist/api.d.ts",
+      "import": "./dist/api.mjs"
+    },
+    "./context": {
+      "types": "./dist/context.d.ts",
+      "import": "./dist/context.mjs"
+    },
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.mjs"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "import": "./dist/schema.mjs"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.mjs"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.mjs"
+    },
+    "./lib": {
+      "types": "./dist/lib/index.d.ts",
+      "import": "./dist/lib/index.mjs"
+    },
+    "./pages": {
+      "types": "./dist/pages/index.d.ts",
+      "import": "./dist/pages/index.mjs"
+    },
+    "./types/api": {
+      "types": "./dist/types/api/index.d.ts",
+      "import": "./dist/types/api/index.mjs"
+    },
+    "./views": {
+      "types": "./dist/views/index.d.ts",
+      "import": "./dist/views/index.mjs"
+    },
+    "./views/connectors": {
+      "types": "./dist/views/connectors/index.d.ts",
+      "import": "./dist/views/connectors/index.mjs"
+    },
+    "./views/query": {
+      "types": "./dist/views/query/index.d.ts",
+      "import": "./dist/views/query/index.mjs"
+    }
+  }
+}

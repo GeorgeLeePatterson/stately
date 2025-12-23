@@ -1,0 +1,1179 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "stately-arrow",
+    "description": "Arrow backend utilities for viewing data over API",
+    "version": "0.3.2"
+  },
+  "paths": {
+    "/catalogs": {
+      "get": {
+        "summary": "List all catalogs in `Datafusion`",
+        "description": "# Errors\n- Internal server error",
+        "operationId": "list_catalogs",
+        "responses": {
+          "200": {
+            "description": "List of registered catalogs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connectors": {
+      "get": {
+        "summary": "List all available connectors",
+        "description": "# Errors\n- Internal server error",
+        "operationId": "list_connectors",
+        "responses": {
+          "200": {
+            "description": "List of available connections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConnectionMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "List databases or tables/files available in a set of connectors's underlying data stores",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "connector_list_many",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConnectionDetailsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "List of databases or tables/files keyed by connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionDetailsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/connectors/{connector_id}": {
+      "get": {
+        "summary": "List databases or tables/files available in a connector's underlying data store",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "connector_list",
+        "parameters": [
+          {
+            "name": "connector_id",
+            "in": "path",
+            "description": "Connector ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Optional search term to filter results.",
+            "required": false,
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of databases or tables/files",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSummary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/query": {
+      "post": {
+        "summary": "Execute a SQL query using URL tables",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "execute_query",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Query results as Arrow IPC stream",
+            "content": {
+              "application/vnd.apache.arrow.stream": {}
+            }
+          },
+          "400": {
+            "description": "Invalid query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register": {
+      "get": {
+        "summary": "List all registered connections",
+        "description": "# Errors\n- Internal server error",
+        "operationId": "list_registered",
+        "responses": {
+          "200": {
+            "description": "List of registered connections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConnectionMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register/{connector_id}": {
+      "get": {
+        "summary": "Register a connector. Useful when federating queries since registration is lazy",
+        "description": "# Errors\n- Connector not found\n- Internal server error",
+        "operationId": "register",
+        "parameters": [
+          {
+            "name": "connector_id",
+            "in": "path",
+            "description": "Connector ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registered Connections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConnectionMetadata"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connector not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "description": "Standard error shape returned by handlers",
+        "required": [
+          "error",
+          "status"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
+      "BackendMetadata": {
+        "type": "object",
+        "description": "Static metadata describing a backend implementation.\n\nBackends provide this metadata to indicate their type and capabilities.\nUse the builder methods to construct instances.",
+        "required": [
+          "kind",
+          "capabilities"
+        ],
+        "properties": {
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Capability"
+            },
+            "description": "Capabilities this backend supports."
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ConnectionKind",
+            "description": "The kind of data source this backend connects to."
+          }
+        }
+      },
+      "Capability": {
+        "type": "string",
+        "description": "Capabilities a connector can expose.",
+        "enum": [
+          "execute_sql",
+          "list"
+        ]
+      },
+      "ClickHouseCompression": {
+        "type": "string",
+        "description": "Compression options for `ClickHouse` tables.",
+        "enum": [
+          "none",
+          "lz4",
+          "zstd"
+        ]
+      },
+      "ClickHouseConfig": {
+        "type": "object",
+        "description": "Additional ClickHouse-specific configuration.",
+        "properties": {
+          "compression": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ClickHouseCompression"
+              }
+            ]
+          },
+          "settings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ConnectionDetailsRequest": {
+        "type": "object",
+        "description": "Request for fetching details from multiple connectors.",
+        "required": [
+          "connectors"
+        ],
+        "properties": {
+          "connectors": {
+            "type": "object",
+            "description": "Map of connector IDs to their search parameters.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ConnectionSearchQuery"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          },
+          "fail_on_error": {
+            "type": "boolean",
+            "description": "If true, a failure in any connector fails the entire request.\nIf false (default), failures are skipped and successful results returned."
+          }
+        }
+      },
+      "ConnectionDetailsResponse": {
+        "type": "object",
+        "description": "Response containing details from multiple connectors.",
+        "required": [
+          "connections"
+        ],
+        "properties": {
+          "connections": {
+            "type": "object",
+            "description": "Map of connector IDs to their listing results.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ListSummary"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ConnectionKind": {
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "Object storage (S3, GCS, Azure, local filesystem).",
+            "enum": [
+              "object_store"
+            ]
+          },
+          {
+            "type": "string",
+            "description": "Relational database (`ClickHouse`, `PostgreSQL`, etc.).",
+            "enum": [
+              "database"
+            ]
+          },
+          {
+            "type": "object",
+            "description": "Custom connector type.",
+            "required": [
+              "other"
+            ],
+            "properties": {
+              "other": {
+                "type": "string",
+                "description": "Custom connector type."
+              }
+            }
+          }
+        ],
+        "description": "The type of data source a connector connects to."
+      },
+      "ConnectionMetadata": {
+        "type": "object",
+        "description": "Runtime metadata describing a connector instance.\n\nThis combines the connector's identity with its backend metadata,\nincluding the `DataFusion` catalog it's registered under.",
+        "required": [
+          "id",
+          "name",
+          "metadata"
+        ],
+        "properties": {
+          "catalog": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The `DataFusion` catalog this connector is registered under."
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this connector."
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/BackendMetadata",
+            "description": "Backend metadata (kind and capabilities)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name."
+          }
+        }
+      },
+      "ConnectionOptions": {
+        "type": "object",
+        "description": "Common connection options shared by database connectors.",
+        "required": [
+          "endpoint",
+          "username"
+        ],
+        "properties": {
+          "check": {
+            "type": "boolean",
+            "description": "Whether the connector should validate connections before use",
+            "default": false
+          },
+          "endpoint": {
+            "type": "string",
+            "description": "Endpoint, url, or path to the database"
+          },
+          "password": {
+            "type": "string",
+            "description": "Optional password for the database"
+          },
+          "tls": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TlsOptions",
+                "description": "TLS configuration if the database requires it"
+              }
+            ]
+          },
+          "username": {
+            "type": "string",
+            "description": "Username used to connect to the database"
+          }
+        }
+      },
+      "ConnectionSearchQuery": {
+        "type": "object",
+        "description": "Query parameters for searching connection contents.",
+        "properties": {
+          "search": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional search term to filter results."
+          }
+        }
+      },
+      "Connector": {
+        "type": "object",
+        "description": "Connector Stately `entity` type.\n\nUse this with [`Connectors`] and [`Registry`] to create a turnkey connector registry.",
+        "required": [
+          "config"
+        ],
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/ConnectorType"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for this connection."
+          }
+        }
+      },
+      "ConnectorType": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "object_store"
+            ],
+            "properties": {
+              "object_store": {
+                "$ref": "#/components/schemas/ObjectStoreConfiguration"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "database"
+            ],
+            "properties": {
+              "database": {
+                "$ref": "#/components/schemas/DatabaseConfiguration"
+              }
+            }
+          }
+        ]
+      },
+      "Database": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "clickhouse"
+            ],
+            "properties": {
+              "clickhouse": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ClickHouseConfig"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "description": "Supported databases for the default backend lineup.\n\nDefault implementations will be provided and over time the list will grow. For that reason, this\nenum is marked as `non_exhaustive`."
+      },
+      "DatabaseConfiguration": {
+        "type": "object",
+        "description": "Configuration for database-backed connectors.",
+        "required": [
+          "options",
+          "driver"
+        ],
+        "properties": {
+          "driver": {
+            "$ref": "#/components/schemas/Database"
+          },
+          "options": {
+            "$ref": "#/components/schemas/ConnectionOptions"
+          },
+          "pool": {
+            "$ref": "#/components/schemas/PoolOptions"
+          }
+        }
+      },
+      "ListSummary": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "List of database names (for database connectors at root level).",
+            "required": [
+              "summary",
+              "type"
+            ],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of database names (for database connectors at root level)."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "databases"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "List of tables with metadata (for database connectors within a database).",
+            "required": [
+              "summary",
+              "type"
+            ],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TableSummary"
+                },
+                "description": "List of tables with metadata (for database connectors within a database)."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "tables"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "List of path prefixes (for object store connectors at root level).",
+            "required": [
+              "summary",
+              "type"
+            ],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of path prefixes (for object store connectors at root level)."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "paths"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "description": "List of files with metadata (for object store connectors within a path).",
+            "required": [
+              "summary",
+              "type"
+            ],
+            "properties": {
+              "summary": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TableSummary"
+                },
+                "description": "List of files with metadata (for object store connectors within a path)."
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "files"
+                ]
+              }
+            }
+          }
+        ],
+        "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context."
+      },
+      "ObjectStore": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "aws"
+            ],
+            "properties": {
+              "aws": {
+                "$ref": "#/components/schemas/ObjectStoreOptions"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "gcp"
+            ],
+            "properties": {
+              "gcp": {
+                "$ref": "#/components/schemas/ObjectStoreOptions"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "azure"
+            ],
+            "properties": {
+              "azure": {
+                "$ref": "#/components/schemas/ObjectStoreOptions"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "local"
+            ],
+            "properties": {
+              "local": {
+                "$ref": "#/components/schemas/ObjectStoreOptions"
+              }
+            }
+          }
+        ],
+        "description": "Supported object store providers."
+      },
+      "ObjectStoreConfiguration": {
+        "type": "object",
+        "description": "Configuration for an object store-backed connector.",
+        "properties": {
+          "format": {
+            "$ref": "#/components/schemas/ObjectStoreFormat",
+            "description": "The format to read/write within the store."
+          },
+          "store": {
+            "$ref": "#/components/schemas/ObjectStore",
+            "description": "Provider specific configuration for the store itself."
+          }
+        }
+      },
+      "ObjectStoreFormat": {
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Apache Parquet format with optional key/value overrides.",
+            "required": [
+              "parquet"
+            ],
+            "properties": {
+              "parquet": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "Apache Parquet format with optional key/value overrides.",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "propertyNames": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "description": "Supported file formats for object-store connectors."
+      },
+      "ObjectStoreOptions": {
+        "type": "object",
+        "description": "Provider-agnostic object store settings.",
+        "required": [
+          "bucket"
+        ],
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "description": "*Required* bucket name (or base directory for local stores)."
+          },
+          "from_env": {
+            "type": "boolean",
+            "description": "Whether credentials should be resolved from environment variables."
+          },
+          "options": {
+            "type": "object",
+            "description": "Additional provider-specific configuration parameters.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PoolOptions": {
+        "type": "object",
+        "description": "Common configuration options shared across connector types.",
+        "properties": {
+          "connect_timeout": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "minimum": 0
+          },
+          "pool_size": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Configure the maximum number of connections to the database. Note, not all connectors\nsupport pools.",
+            "minimum": 0
+          },
+          "transaction_timeout": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "minimum": 0
+          }
+        }
+      },
+      "QueryRequest": {
+        "type": "object",
+        "description": "Request to execute a SQL query.",
+        "required": [
+          "sql"
+        ],
+        "properties": {
+          "connector_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ID of the connector to use. If not provided, the query runs against\nthe session's default catalog (if supported)."
+          },
+          "sql": {
+            "type": "string",
+            "description": "SQL query to execute. Supports URL tables like `s3://bucket/path/*.parquet`."
+          }
+        }
+      },
+      "RegistryOptions": {
+        "type": "object",
+        "description": "Generic registry options.\n\nProvided as a convenience if using state entity types directly, ie [`Connector`]",
+        "properties": {
+          "max_lifetime": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Set the maximum lifetime that a connection should be kept around for.",
+            "minimum": 0
+          },
+          "max_pool_size": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Set the maximum size any connector will use for its pool. Set to 0 to disable pooling.",
+            "minimum": 0
+          }
+        }
+      },
+      "Secret": {
+        "type": "string",
+        "description": "Newtype to protect secrets from being logged\nA wrapper type for sensitive string data like passwords.\n\nThis type provides protection against accidental exposure of sensitive data\nin logs, debug output, or error messages. The inner value is not displayed\nin `Debug` implementations.\n\n# Example\n```\nuse stately_arrow::database::Secret;\n\nlet password = Secret::new(\"my_password\");\nprintln!(\"{password:?}\"); // Prints: Secret(*******)\n```"
+      },
+      "SessionCapability": {
+        "type": "string",
+        "description": "Session capabilities a `QuerySession` can expose to the `QueryContext`.",
+        "enum": [
+          "execute_without_connector"
+        ]
+      },
+      "String": {
+        "type": "string"
+      },
+      "TableSummary": {
+        "type": "object",
+        "description": "Summary information about a table or file.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Table or file name/path."
+          },
+          "rows": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Number of rows (if known).",
+            "minimum": 0
+          },
+          "size_bytes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Size in bytes (if known).",
+            "minimum": 0
+          }
+        }
+      },
+      "TlsOptions": {
+        "type": "object",
+        "description": "TLS options for databases that require secure connections.",
+        "properties": {
+          "cafile": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "domain": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "enable": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "responses": {
+      "ConnectionDetailsResponse": {
+        "description": "Response containing details from multiple connectors.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Response containing details from multiple connectors.",
+              "required": [
+                "connections"
+              ],
+              "properties": {
+                "connections": {
+                  "type": "object",
+                  "description": "Map of connector IDs to their listing results.",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/ListSummary"
+                  },
+                  "propertyNames": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ListSummary": {
+        "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "description": "List of database names (for database connectors at root level).",
+                  "required": [
+                    "summary",
+                    "type"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of database names (for database connectors at root level)."
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "databases"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "description": "List of tables with metadata (for database connectors within a database).",
+                  "required": [
+                    "summary",
+                    "type"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TableSummary"
+                      },
+                      "description": "List of tables with metadata (for database connectors within a database)."
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "tables"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "description": "List of path prefixes (for object store connectors at root level).",
+                  "required": [
+                    "summary",
+                    "type"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of path prefixes (for object store connectors at root level)."
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "paths"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "description": "List of files with metadata (for object store connectors within a path).",
+                  "required": [
+                    "summary",
+                    "type"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TableSummary"
+                      },
+                      "description": "List of files with metadata (for object store connectors within a path)."
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "files"
+                      ]
+                    }
+                  }
+                }
+              ],
+              "description": "Summary of items available in a connector.\n\nThe variant indicates what type of items were found based on the connector\ntype and search context."
+            }
+          }
+        }
+      },
+      "TableSummary": {
+        "description": "Summary information about a table or file.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "description": "Summary information about a table or file.",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Table or file name/path."
+                },
+                "rows": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "int64",
+                  "description": "Number of rows (if known).",
+                  "minimum": 0
+                },
+                "size_bytes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "format": "int64",
+                  "description": "Size in bytes (if known).",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "arrow",
+      "description": "Arrow data endpoints"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "name": "@statelyjs/files",
+  "version": "0.4.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "check": "tsc --noEmit",
+    "dev": "tsdown --watch",
+    "codegen": "pnpm run generate:openapi && pnpm run generate:types",
+    "generate:openapi": "cargo run -p stately-files --bin generate-openapi -- .",
+    "generate:types": "pnpm exec stately generate ./openapi.json -o ./src/generated"
+  },
+  "peerDependencies": {
+    "@statelyjs/stately": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90.10",
+    "@types/react": "^18.0.0 || ^19.0.0",
+    "@types/react-dom": "^18.0.0 || ^19.0.0",
+    "lucide-react": "^0.562.0",
+    "openapi-fetch": "^0.15",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "sonner": "^2.0.7"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1"
+  },
+  "devDependencies": {
+    "@statelyjs/stately": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "lucide-react": "^0.562.0",
+    "tsdown": "0.18.1",
+    "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
+    "./codegen": {
+      "types": "./dist/codegen.d.ts",
+      "import": "./dist/codegen.mjs"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.mjs"
+    },
+    "./dialogs": {
+      "types": "./dist/dialogs/index.d.ts",
+      "import": "./dist/dialogs/index.mjs"
+    },
+    "./fields/edit": {
+      "types": "./dist/fields/edit.d.ts",
+      "import": "./dist/fields/edit.mjs"
+    },
+    "./fields/view": {
+      "types": "./dist/fields/view.d.ts",
+      "import": "./dist/fields/view.mjs"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.mjs"
+    },
+    "./pages": {
+      "types": "./dist/pages/index.d.ts",
+      "import": "./dist/pages/index.mjs"
+    },
+    "./types/api": {
+      "types": "./dist/types/api.d.ts",
+      "import": "./dist/types/api.mjs"
+    },
+    "./views": {
+      "types": "./dist/views/index.d.ts",
+      "import": "./dist/views/index.mjs"
+    }
+  }
+}

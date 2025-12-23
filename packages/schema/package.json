@@ -1,24 +1,18 @@
 {
-  "name": "@stately/schema",
-  "version": "0.3.0",
+  "name": "@statelyjs/schema",
+  "version": "0.4.0",
   "description": "Type definitions and schema parser for Stately",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsc --build",
+    "check": "tsc --noEmit",
     "clean": "rm -rf dist .turbo",
-    "typecheck": "tsc --noEmit",
     "dev": "tsc --build --watch"
   },
   "keywords": [
@@ -35,6 +29,44 @@
     "directory": "packages/schema"
   },
   "devDependencies": {
-    "typescript": "^5.7.2"
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "openapi-types": "^12.1.3",
+    "openapi-typescript-helpers": "^0.0.15"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./api": {
+      "types": "./dist/api.d.ts",
+      "import": "./dist/api.js"
+    },
+    "./generated": {
+      "types": "./dist/generated.d.ts",
+      "import": "./dist/generated.js"
+    },
+    "./helpers": {
+      "types": "./dist/helpers.d.ts",
+      "import": "./dist/helpers.js"
+    },
+    "./nodes": {
+      "types": "./dist/nodes.d.ts",
+      "import": "./dist/nodes.js"
+    },
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.js"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "import": "./dist/schema.js"
+    },
+    "./stately": {
+      "types": "./dist/stately.d.ts",
+      "import": "./dist/stately.js"
+    }
   }
 }

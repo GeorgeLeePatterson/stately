@@ -1,0 +1,115 @@
+{
+  "$schema": "node_modules/@biomejs/biome/configuration_schema.json",
+  "assist": {
+    "actions": {
+      "source": { "organizeImports": "on", "useSortedAttributes": "on", "useSortedKeys": "on" }
+    }
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noUnusedTemplateLiteral": "warn",
+        "noUselessElse": "warn",
+        "useTemplate": "warn",
+        "noNonNullAssertion": "warn",
+        "useSelfClosingElements": "off",
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSingleVarDeclarator": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error"
+      },
+      "complexity": {
+        "noForEach": "warn",
+        "noUselessFragments": "off",
+        "useOptionalChain": "warn",
+        "useLiteralKeys": "warn",
+        "noThisInStatic": "warn",
+        "noUselessTernary": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
+      },
+      "a11y": {
+        "noLabelWithoutControl": "warn",
+        "noNoninteractiveTabindex": "off",
+        "noPositiveTabindex": "warn",
+        "useValidAnchor": "warn",
+        "useKeyWithClickEvents": "warn",
+        "useMediaCaption": "info"
+      },
+      "performance": {
+        "noAccumulatingSpread": "warn",
+        "noBarrelFile": "warn"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": {
+          "level": "error",
+          "options": {
+            "hooks": [{ "name": "useRef", "stableResult": true }]
+          }
+        }
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "expand": "never",
+    "indentStyle": "space",
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "asNeeded",
+      "lineWidth": 100,
+      "quoteStyle": "single"
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": false
+    }
+  },
+  "css": {
+    "formatter": {
+      "enabled": true,
+      "indentWidth": 2,
+      "indentStyle": "space",
+      "lineWidth": 100
+    },
+    "linter": {
+      "enabled": true
+    },
+    "parser": {
+      "cssModules": true,
+      "tailwindDirectives": true
+    }
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!**/*.d.ts",
+      "!**/coverage",
+      "!**/build/",
+      "!**/coverage/",
+      "!ui/src/components/ui/*.tsx",
+      "!ui/src/types/api.ts",
+      "!**/node_modules/",
+      "!**/*.json",
+      "!**/tsup.config.ts",
+      "!**/tsdown.config.ts"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "./src/index.ts",
+    "./src/api.ts",
+    "./src/context.tsx",
+    "./src/plugin.ts",
+    "./src/registry.ts",
+    "./src/runtime.ts",
+    "./src/theme.tsx",
+    "./src/utils.tsx",
+    "./src/form/index.ts"
+  ],
+  "tsconfig": "./tsconfig.json"
+}

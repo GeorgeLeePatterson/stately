@@ -2,93 +2,258 @@
 
 [![Crates.io](https://img.shields.io/crates/v/stately.svg)](https://crates.io/crates/stately)
 [![Documentation](https://docs.rs/stately/badge.svg)](https://docs.rs/stately)
-[![npm](https://img.shields.io/npm/v/@stately/ui)](https://www.npmjs.com/package/@stately/ui)
+[![npm](https://img.shields.io/npm/v/@statelyjs/ui)](https://www.npmjs.com/package/@statelyjs/ui)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-> Full-stack type-safe state management with auto-generated UI
+> Full-stack type-safe state management with auto-generated UI and a plugin architecture
 
-Stately is a full-stack framework for managing application configuration and state. The Rust backend provides type-safe entity relationships, CRUD operations, and automatic API generation. The TypeScript UI packages automatically generate React interfaces from your OpenAPI schemas.
+Stately is a full-stack framework for building data-driven applications. The Rust backend provides type-safe entity management, CRUD operations, and automatic API generation. The TypeScript frontend automatically generates React interfaces from OpenAPI schemas. Both sides support a plugin architecture for extensibility.
 
-## ✨ Features
+## Features
 
 ### Backend (Rust)
-- **🎯 Type-Safe**: Compile-time guarantees for entity relationships and state operations
-- **🔗 Entity Relationships**: Reference entities inline or by ID with `Link<T>`
-- **📝 CRUD Operations**: Built-in create, read, update, delete for all entity types
-- **🔄 Serialization**: Full serde support for JSON, YAML, etc.
-- **📚 OpenAPI Schema**: Automatic schema generation with `utoipa`
-- **🚀 Web Framework Integration**: Optional Axum API generation (more frameworks coming soon)
-- **🆔 Time-Sortable IDs**: UUID v7 for naturally ordered entity identifiers
+- **Type-Safe Entities**: Compile-time guarantees for entity relationships and state operations
+- **Entity Relationships**: Reference entities inline or by ID with `Link<T>`
+- **CRUD Operations**: Built-in create, read, update, delete for all entity types
+- **OpenAPI Generation**: Automatic schema generation with `utoipa`
+- **Web Framework Integration**: Axum API generation with event middleware
+- **Plugin Architecture**: Extend with custom backends (files, arrow/SQL, auth, etc.)
 
 ### Frontend (TypeScript/React)
-- **🎨 Auto-Generated UI**: React components generated from OpenAPI schemas
-- **🧩 Composable**: Use individual field components or complete CRUD views
-- **📱 Responsive**: Built on shadcn/ui with mobile-first design
-- **⚡ Fast**: Powered by Tanstack Query and Router
-- **🔧 Customizable**: Override any component or behavior
+- **Schema-Driven**: Types and components generated from OpenAPI specs
+- **Plugin System**: Composable UI plugins that mirror backend capabilities
+- **Full CRUD Views**: Entity listing, creation, editing out of the box
+- **Customizable**: Built on shadcn/ui, fully themeable
 
-## 🚀 Quick Start
+## Architecture Overview
 
-### Backend: Rust API
+```
+┌───────────────────────────────────────────────────────────────────────────┐
+│                           YOUR APPLICATION                                │
+├───────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  ┌─────────────────────────────────────────────────────────────────────┐  │
+│  │                        FRONTEND (React)                             │  │
+│  ├─────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                     │  │
+│  │  @statelyjs/ui      → Layout, theme, plugin runtime, registry       │  │
+│  │  @statelyjs/schema  → Type definitions, schema parsing, validation  │  │
+│  │  @statelyjs/stately → Core plugin (entity CRUD) + codegen CLI       │  │
+│  │                                                                     │  │
+│  │  PLUGINS:                                                           │  │
+│  │  @statelyjs/files   → File browser UI (pairs with stately-files)    │  │
+│  │  @statelyjs/arrow   → SQL query UI (pairs with stately-arrow)       │  │
+│  │                                                                     │  │
+│  └─────────────────────────────────────────────────────────────────────┘  │
+│                                    │                                      │
+│                              OpenAPI Spec                                 │
+│                                    │                                      │
+│  ┌─────────────────────────────────────────────────────────────────────┐  │
+│  │                        BACKEND (Rust)                               │  │
+│  ├─────────────────────────────────────────────────────────────────────┤  │
+│  │                                                                     │  │
+│  │  stately         → Core state management, entity macros             │  │
+│  │  stately-derive  → Procedural macros (#[entity], #[state], etc.)    │  │
+│  │                                                                     │  │
+│  │  PLUGINS:                                                           │  │
+│  │  stately-files   → File system browsing, uploads, downloads         │  │
+│  │  stately-arrow   → SQL queries via DataFusion, Arrow IPC streaming  │  │
+│  │                                                                     │  │
+│  └─────────────────────────────────────────────────────────────────────┘  │
+│                                                                           │
+└───────────────────────────────────────────────────────────────────────────┘
+```
 
-Add stately to your `Cargo.toml`:
+## Quick Start
+
+### Backend Setup
 
 ```toml
+# Cargo.toml
 [dependencies]
-stately = { version = "0.3.2", features = ["axum"] }
+stately = { version = "0.*", features = ["axum"] }
+
+# Optional plugins
+stately-files = "0.*"
+stately-arrow = { version = "0.*", features = ["clickhouse"] }
 ```
 
-See [`crates/stately`](crates/stately) for full documentation.
+```rust
+use stately::prelude::*;
 
-### Frontend: React UI
+// Define entities
+#[stately::entity]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
+pub struct Pipeline {
+    pub name: String,
+    pub source: Link<SourceConfig>,
+}
 
-Install the UI packages:
+#[stately::entity]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
+pub struct SourceConfig {
+    pub name: String,
+    pub url: String,
+}
+
+// Define state with collections
+#[stately::state(openapi)]
+pub struct State {
+    pipelines: Pipeline,
+    sources: SourceConfig,
+}
+
+// Generate API
+#[stately::axum_api(State, openapi)]
+pub struct ApiState {}
+```
+
+See [`crates/stately`](crates/stately) for complete backend documentation.
+
+### Frontend Setup
 
 ```bash
-# Code generation tool (dev dependency)
-pnpm add -D @stately/codegen
+# Install packages
+pnpm add @statelyjs/stately @statelyjs/ui @tanstack/react-query
 
-# React UI components
-pnpm add @stately/ui @tanstack/react-query @tanstack/react-router
+# Generate types from your backend's OpenAPI spec
+pnpm exec stately ./openapi.json -o ./src/generated
 ```
 
-Generate schemas from your OpenAPI spec:
+```typescript
+// src/lib/stately.ts
+import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/stately';
+import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
+import { PARSED_SCHEMAS, type ParsedSchema } from './generated/schemas';
+import type { components, operations, paths } from './generated/types';
+import openapiDoc from '../openapi.json';
+import { api } from './api/client';
 
-```bash
-npx stately-codegen ./openapi.json --output ./src/generated
+// Define your schema types
+export type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSchema>>;
+
+// Create schema runtime
+export const appSchema = stately<AppSchemas>(openapiDoc, PARSED_SCHEMAS, {
+  // Enable lazy loading for code-split schemas
+  runtimeSchemas: () => import('./generated/schemas.runtime').then(m => m.RUNTIME_SCHEMAS),
+});
+
+// Create UI runtime
+export const appStatelyUi = statelyUi<AppSchemas>({
+  client: api,
+  schema: appSchema,
+  core: { api: { pathPrefix: '/entity' } },
+  options: {
+    api: { pathPrefix: '/api/v1' },
+  },
+});
+
+// Export typed hooks and provider
+export const useAppStatelyUi = useStatelyUi<AppSchemas>;
+export const AppStatelyUiProvider = statelyUiProvider<AppSchemas>();
 ```
 
-See [`packages/ui`](packages/ui) for full documentation.
+> **Working Example**: See the [`demos/tasks`](demos/tasks) application for a complete working example that follows this setup.
 
-## 📦 Packages
+> See [`packages/stately`](packages/stately) for complete frontend documentation.
 
-This is a monorepo containing both Rust and TypeScript packages:
+## Packages
 
 ### Rust Crates
-- **[`stately`](crates/stately)** - Core library for state management
-- **[`stately-derive`](crates/stately-derive)** - Procedural macros
+
+| Crate | Description |
+|-------|-------------|
+| [`stately`](crates/stately) | Core library - entity macros, state management, Axum integration |
+| [`stately-derive`](crates/stately-derive) | Procedural macros (re-exported by `stately`) |
+| [`stately-files`](crates/stately-files) | File system plugin - browsing, upload, download |
+| [`stately-arrow`](crates/stately-arrow) | SQL query plugin - DataFusion, Arrow IPC streaming |
 
 ### TypeScript Packages
-- **[`@stately/schema`](packages/schema)** - Shared type definitions
-- **[`@stately/codegen`](packages/codegen)** - CLI tool for schema generation
-- **[`@stately/ui`](packages/ui)** - React UI components
 
-## 📖 Examples
+| Package | Description |
+|---------|-------------|
+| [`@statelyjs/stately`](packages/stately) | Main package. Core plugin (entity CRUD) + codegen CLI |
+| [`@statelyjs/ui`](packages/ui) | Base React components, layout, theme, plugin runtime |
+| [`@statelyjs/schema`](packages/schema) | Lower level schema type definitions, parsing, validation |
+| [`@statelyjs/files`](packages/files) | File browser UI plugin |
+| [`@statelyjs/arrow`](packages/arrow) | SQL query UI plugin with Arrow IPC streaming |
 
-- [Rust examples](crates/stately/examples)
-- TypeScript examples (coming soon)
+## Plugin Architecture
 
-## 🤝 Contributing
+Stately is designed around a plugin architecture. The "core" functionality (entity CRUD) is itself a plugin, demonstrating the pattern for extension.
+
+### For Users
+
+Install backend and frontend plugins that pair together:
+
+```rust
+// Backend: Cargo.toml
+stately-files = "0.*"
+stately-arrow = "0.*"
+```
+
+```typescript
+// Frontend: Add plugins to your runtime
+import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
+import { arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
+
+const schema = stately<AppSchemas>(openapiDoc, PARSED_SCHEMAS)
+  .withPlugin(filesPlugin())
+  .withPlugin(arrowPlugin());
+
+const ui = statelyUi<AppSchemas>({ ... })
+  .withPlugin(filesUiPlugin({ api: { pathPrefix: '/files' } }))
+  .withPlugin(arrowUiPlugin({ api: { pathPrefix: '/arrow' } }));
+```
+
+### For Plugin Authors
+
+See the existing plugins as examples:
+- **Files**: [`crates/stately-files`](crates/stately-files) + [`packages/files`](packages/files)
+- **Arrow**: [`crates/stately-arrow`](crates/stately-arrow) + [`packages/arrow`](packages/arrow)
+
+Key concepts:
+1. Backend plugins expose Axum routers and OpenAPI schemas
+2. Frontend plugins implement `SchemaPlugin` (for types) and `UiPlugin` (for components)
+3. Use `pnpm codegen` after backend changes to regenerate frontend types
+
+## Development
+
+```bash
+# Clone the repository
+git clone https://github.com/georgeleepatterson/stately
+cd stately
+
+# Backend development
+cargo build
+cargo test
+cargo run --example basic
+
+# Frontend development
+pnpm install
+pnpm build
+pnpm test
+```
+
+## Examples
+
+| Example | Description |
+|---------|-------------|
+| [`demos/tasks`](demos/tasks) | Complete full-stack task management app demonstrating frontend setup |
+| [`crates/stately/examples`](crates/stately/examples) | Rust examples for backend entity definitions and Axum integration |
+
+## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## 📄 License
+## License
 
 Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
 
-## 🔗 Links
+## Links
 
-- [Documentation](https://docs.rs/stately)
+- [Rust Documentation](https://docs.rs/stately)
 - [Crates.io](https://crates.io/crates/stately)
+- [npm](https://www.npmjs.com/package/@statelyjs/stately)
 - [Repository](https://github.com/georgeleepatterson/stately)
 - [Issue Tracker](https://github.com/georgeleepatterson/stately/issues)

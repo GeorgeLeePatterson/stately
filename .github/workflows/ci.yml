@@ -122,7 +122,7 @@ jobs:
       run: pnpm install --frozen-lockfile
 
     - name: Type check
-      run: pnpm run typecheck
+      run: pnpm run check
 
     - name: Build
       run: pnpm run build
@@ -143,7 +143,15 @@ jobs:
           rust_changed="${{ needs.changes.outputs.rust }}"
           ts_changed="${{ needs.changes.outputs.typescript }}"
 
-          # If nothing changed, success
+          # Get job results
+          check_result="${{ needs.check.result }}"
+          coverage_result="${{ needs.coverage.result }}"
+          typescript_result="${{ needs.typescript.result }}"
+
+          echo "Change detection: rust=$rust_changed, typescript=$ts_changed"
+          echo "Job results: check=$check_result, coverage=$coverage_result, typescript=$typescript_result"
+
+          # If nothing changed, all jobs should be skipped - that's success
           if [[ "$rust_changed" == "false" && "$ts_changed" == "false" ]]; then
             echo "No code changes detected ✅"
             exit 0
@@ -151,8 +159,12 @@ jobs:
 
           # Check Rust jobs if Rust changed
           if [[ "$rust_changed" == "true" ]]; then
-            if [[ "${{ needs.check.result }}" != "success" ]] || [[ "${{ needs.coverage.result }}" != "success" ]]; then
-              echo "Rust CI jobs failed ❌"
+            if [[ "$check_result" != "success" ]]; then
+              echo "Rust Check job failed (result: $check_result) ❌"
+              exit 1
+            fi
+            if [[ "$coverage_result" != "success" ]]; then
+              echo "Rust Coverage job failed (result: $coverage_result) ❌"
               exit 1
             fi
             echo "Rust CI jobs passed ✅"
@@ -160,8 +172,8 @@ jobs:
 
           # Check TypeScript jobs if TypeScript changed
           if [[ "$ts_changed" == "true" ]]; then
-            if [[ "${{ needs.typescript.result }}" != "success" ]]; then
-              echo "TypeScript CI jobs failed ❌"
+            if [[ "$typescript_result" != "success" ]]; then
+              echo "TypeScript job failed (result: $typescript_result) ❌"
               exit 1
             fi
             echo "TypeScript CI jobs passed ✅"

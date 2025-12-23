@@ -7,6 +7,146 @@ OUTPUT_FILE="${1:-crates/stately/src/demo.rs}"
 # Generate filtered macro expansion output for documentation
 # Removes derive macro expansions, utoipa impl blocks, and serde internals
 
+# =============================================================================
+# Endpoint path definitions - utoipa::path annotations for each handler
+# These match the definitions in crates/stately-derive/src/axum_api.rs
+# Uses case statement for bash 3.x compatibility (no associative arrays)
+# =============================================================================
+
+print_path_annotation() {
+    local indent="$1"
+    local fn_name="$2"
+
+    case "$fn_name" in
+        create_entity)
+            cat <<EOF
+${indent}#[utoipa::path(
+${indent}    put,
+${indent}    path = "/",
+${indent}    tag = "entity",
+${indent}    request_body = Entity,
+${indent}    responses(
+${indent}        (status = 200, description = "Entity created successfully", body = OperationResponse),
+${indent}        (status = 500, description = "Internal server error", body = crate::ApiError)
+${indent}    )
+${indent})]
+EOF
+            ;;
+        list_all_entities)
+            cat <<EOF
+${indent}#[utoipa::path(
+${indent}    get,
+${indent}    path = "/list",
+${indent}    tag = "entity",
+${indent}    responses(
+${indent}        (status = 200, description = "List all entities", body = ListResponse)
+${indent}    )
+${indent})]
+EOF
+            ;;
+        list_entities)
+            cat <<EOF
+${indent}#[utoipa::path(
+${indent}    get,
+${indent}    path = "/list/{type}",
+${indent}    tag = "entity",
+${indent}    params(
+${indent}        ("type" = StateEntry, Path, description = "Entity type to list")
+${indent}    ),
+${indent}    responses(
+${indent}        (status = 200, description = "List entities by type", body = ListResponse)
+${indent}    )
+${indent})]
+EOF
+            ;;
+        get_entities)
+            cat <<EOF
+${indent}#[utoipa::path(
+${indent}    get,
+${indent}    path = "/",
+${indent}    tag = "entity",
+${indent}    params(
+${indent}        ("name" = Option<String>, Query, description = "Identifier of entity, ie id or name"),
+${indent}        ("type" = Option<StateEntry>, Query, description = "Type of entity")
+${indent}    ),
+${indent}    responses(
+${indent}        (status = 200, description = "Get entities with filters", body = EntitiesResponse)
+${indent}    )
+${indent})]
+EOF
+            ;;
+        get_entity_by_id)
+            cat <<EOF
+${indent}#[utoipa::path(
+${indent}    get,
+${indent}    path = "/{id}",
+${indent}    tag = "entity",
+${indent}    params(
+${indent}        ("id" = String, Path, description = "Entity ID"),
+${indent}        GetEntityQuery
+${indent}    ),
+${indent}    responses(
+${indent}        (status = 200, description = "Successfully retrieved entity", body = GetEntityResponse),
+${indent}        (status = 404, description = "Entity not found", body = crate::ApiError)
+${indent}    )
+${indent})]
+EOF
+            ;;
+        update_entity)
+            cat <<EOF
+${indent}#[utoipa::path(
+${indent}    post,
+${indent}    path = "/{id}",
+${indent}    tag = "entity",
+${indent}    params(
+${indent}        ("id" = String, Path, description = "Entity ID")
+${indent}    ),
+${indent}    request_body = Entity,
+${indent}    responses(
+${indent}        (status = 200, description = "Entity updated successfully", body = OperationResponse),
+${indent}        (status = 500, description = "Internal server error", body = crate::ApiError)
+${indent}    )
+${indent})]
+EOF
+            ;;
+        patch_entity_by_id)
+            cat <<EOF
+${indent}#[utoipa::path(
+${indent}    patch,
+${indent}    path = "/{id}",
+${indent}    tag = "entity",
+${indent}    params(
+${indent}        ("id" = String, Path, description = "Entity ID")
+${indent}    ),
+${indent}    request_body = Entity,
+${indent}    responses(
+${indent}        (status = 200, description = "Entity patched successfully", body = OperationResponse),
+${indent}        (status = 500, description = "Internal server error", body = crate::ApiError)
+${indent}    )
+${indent})]
+EOF
+            ;;
+        remove_entity)
+            cat <<EOF
+${indent}#[utoipa::path(
+${indent}    delete,
+${indent}    path = "/{entry}/{id}",
+${indent}    tag = "entity",
+${indent}    params(
+${indent}        ("entry" = StateEntry, Path, description = "Entity type"),
+${indent}        ("id" = String, Path, description = "Entity ID")
+${indent}    ),
+${indent}    responses(
+${indent}        (status = 200, description = "Entity removed successfully", body = OperationResponse),
+${indent}        (status = 404, description = "Entity not found", body = crate::ApiError),
+${indent}        (status = 500, description = "Internal server error", body = crate::ApiError)
+${indent}    )
+${indent})]
+EOF
+            ;;
+    esac
+}
+
 # Filter function - must be defined before use
 process_expansion() {
 write_mode="ON"
@@ -92,18 +232,10 @@ while IFS= read -r line; do
         echo "${indent}/// Response type for API operations."
     elif [[ "$line" == *"pub struct EntitiesMap"* ]]; then
         echo "${indent}/// Map of all entity collections grouped by type."
-    elif [[ "$line" =~ pub[[:space:]]+async[[:space:]]+fn[[:space:]]+create_entity ]]; then
-        echo "${indent}/// Create a new entity via the REST API."
-    elif [[ "$line" =~ pub[[:space:]]+async[[:space:]]+fn[[:space:]]+list_entities ]]; then
-        echo "${indent}/// List all entities grouped by type."
-    elif [[ "$line" =~ pub[[:space:]]+async[[:space:]]+fn[[:space:]]+get_entity_by_id ]]; then
-        echo "${indent}/// Get a specific entity by ID and type."
-    elif [[ "$line" =~ pub[[:space:]]+async[[:space:]]+fn[[:space:]]+update_entity ]]; then
-        echo "${indent}/// Update an existing entity."
-    elif [[ "$line" =~ pub[[:space:]]+async[[:space:]]+fn[[:space:]]+patch_entity_by_id ]]; then
-        echo "${indent}/// Partially update an entity."
-    elif [[ "$line" =~ pub[[:space:]]+async[[:space:]]+fn[[:space:]]+remove_entity ]]; then
-        echo "${indent}/// Delete an entity."
+    elif [[ "$line" =~ pub[[:space:]]+async[[:space:]]+fn[[:space:]]+([a-z_]+) ]]; then
+        # Extract function name and print path annotation from lookup table
+        fn_name="${BASH_REMATCH[1]}"
+        print_path_annotation "$indent" "$fn_name"
     elif [[ "$line" =~ pub[[:space:]]+fn[[:space:]]+router ]]; then
         echo "${indent}/// Returns an Axum router with all API endpoints configured."
     elif [[ "$line" =~ pub[[:space:]]+fn[[:space:]]+event_middleware ]]; then
@@ -126,11 +258,9 @@ while IFS= read -r line; do
             elif [[ "$line" =~ ^[[:space:]]*pub[[:space:]]+struct[[:space:]]+([A-Z][a-zA-Z0-9]*)Response.* ]]; then
                 echo "${indent}#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, utoipa::ToSchema, utoipa::ToResponse)]"
 
-
             # EntitiesMap
             elif [[ "$line" == *"pub struct EntitiesMap"* ]]; then
                 echo "${indent}#[derive(Debug, Clone, serde::Deserialize, utoipa::ToSchema)]"
-
 
             # State
             elif [[ "$line" == *"pub struct State"* ]]; then
@@ -150,11 +280,6 @@ while IFS= read -r line; do
                 wrote_derive=1
             fi
         fi
-    fi
-
-    # Add path attributes
-    if [[ "$line" =~ ^pub[[:space:]]+async[[:space:]]+fn.*  ]]; then
-        echo "${indent}#[utoipa::path(method(get, post, put, patch, delete), path = \"\")]"
     fi
 
     # Add OpenAPI
@@ -240,6 +365,8 @@ cargo expand -p stately --example doc_expand --features axum 2>&1 | \
     grep -v "= help:" | \
     grep -v "= note:" | \
     grep -v "Checking" | \
+    grep -v "Blocking" | \
+    grep -v "Compiling" | \
     grep -v "Finished" | \
     process_expansion >> "$OUTPUT_FILE"
 

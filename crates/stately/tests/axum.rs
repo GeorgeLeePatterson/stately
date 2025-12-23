@@ -86,8 +86,11 @@ pub struct State {
 
 #[stately::axum_api(
     State,
-    openapi,
-    components = [link_aliases::PipelineLink, link_aliases::SourceLink, link_aliases::SinkLink]
+    openapi(components = [
+        link_aliases::PipelineLink,
+        link_aliases::SourceLink,
+        link_aliases::SinkLink
+    ])
 )]
 pub struct AppState {}
 

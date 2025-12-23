@@ -148,7 +148,7 @@
 //!     pipelines: Pipeline,
 //! }
 //!
-//! #[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+//! #[stately::axum_api(State, openapi(components = [link_aliases::PipelineLink]))]
 //! pub struct AppState {}
 //!
 //! #[tokio::main]
@@ -259,6 +259,8 @@
 //! - `axum_api.rs` - Web API generation with Axum
 //! - `doc_expand.rs` - Example used to generate [`mod@demo`] for reference
 
+#[cfg(feature = "openapi")]
+pub mod codegen;
 pub mod collection;
 pub mod entity;
 pub mod error;
@@ -266,13 +268,17 @@ pub mod link;
 pub mod traits;
 
 // Re-export dependencies that are used in generated code
-// Re-export derive macros
 // Re-export key types
 pub use collection::{Collection, Singleton};
 pub use entity::{EntityId, Summary};
+#[cfg(feature = "axum")]
+pub use error::ApiError;
 pub use error::{Error, Result};
 pub use hashbrown;
 pub use link::Link;
+#[cfg(feature = "axum")]
+pub use serde_json;
+// Re-export derive macros
 #[cfg(feature = "axum")]
 pub use stately_derive::axum_api;
 pub use stately_derive::{entity, state};
@@ -284,6 +290,8 @@ pub use traits::{HasName, StateCollection, StateEntity};
 pub mod prelude {
     pub use crate::collection::{Collection, Singleton};
     pub use crate::entity::{EntityId, Summary};
+    #[cfg(feature = "axum")]
+    pub use crate::error::ApiError;
     pub use crate::link::Link;
     pub use crate::traits::{StateCollection, StateEntity};
     pub use crate::{Error, Result, entity, state};

@@ -1,0 +1,51 @@
+[package]
+name = "stately-arrow"
+description = "Arrow backend utilities for viewing data over API"
+keywords = ["configuration", "arrow", "datafusion", "data", "api"]
+categories = ["database", "web-programming", "api-bindings"]
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+
+[features]
+default = []
+strum = ["dep:strum_macros"]
+object-store = ["dep:object_store"]
+
+database = []
+clickhouse = ["database", "dep:clickhouse-datafusion"]
+
+registry = ["object-store", "dep:tokio", "dep:uuid"]
+
+[dependencies]
+async-trait = "0.1"
+arrow = { version = "57", features = ["default", "prettyprint"] }
+axum = "0.8"
+bytes = "1"
+datafusion = "51"
+futures-util = "0.3"
+serde = { version = "1", features = ["derive", "std", "rc"] }
+thiserror = "2"
+tracing = "0.1"
+utoipa.workspace = true
+
+stately = { path = "../stately", version = "0.3.2", features = ["axum"] }
+
+# Optional
+clickhouse-datafusion = { version = "0.2", optional = true }
+object_store = { workspace = true, optional = true, features = ["aws", "azure", "gcp"] }
+strum_macros = { version = "0.27", optional = true }
+tokio = { version = "1", optional = true, features = ["sync"] }
+uuid = { workspace = true, optional = true }
+
+[[bin]]
+name = "generate-openapi"
+path = "src/bin/generate_openapi.rs"
+doc = false
+
+[lints]
+workspace = true

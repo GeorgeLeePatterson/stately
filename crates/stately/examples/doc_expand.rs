@@ -33,8 +33,7 @@
 //!
 //! ## Source Example
 //!
-//! The code below is generated from this example (refer to
-//! `crates/stately/examples/doc_expand.rs`):
+//! The code below is generated from the example at `crates/stately/examples/doc_expand.rs`:
 //!
 //! ```rust,ignore
 //! #[stately::entity]
@@ -126,13 +125,13 @@ impl ForeignEntity for serde_json::Value {
 
 // Axum API (when feature is enabled)
 
-#[stately::axum_api(State, openapi, components = [
+#[stately::axum_api(State, openapi(components = [
     link_aliases::PipelineLink,
     link_aliases::SourceLink,
     link_aliases::ArchivedPipelineLink,
     link_aliases::SinkLink,
     link_aliases::JsonConfigLink,
-])]
+]))]
 pub struct ApiState {}
 
 fn main() {

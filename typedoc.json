@@ -1,0 +1,20 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Stately",
+  "entryPointStrategy": "packages",
+  "entryPoints": ["packages/*"],
+  "exclude": ["**/generated/(schemas|types).ts"],
+  "out": "tsdocs",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "categorizeByGroup": true,
+  "sort": ["source-order"],
+  "kindSortOrder": ["Module", "Class", "Interface", "TypeAlias", "Function", "Variable"],
+  "groupOrder": ["Modules", "Classes", "Interfaces", "Type Aliases", "Functions", "Variables"],
+  "navigationLinks": {
+    "GitHub": "https://github.com/georgeleepatterson/stately",
+    "Documentation": "https://github.com/georgeleepatterson/stately/docs"
+  },
+  "highlightLanguages": ["typescript", "bash", "json", "yaml", "toml", "rust", "tsx", "javascript"]
+}

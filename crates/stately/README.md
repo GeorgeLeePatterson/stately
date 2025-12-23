@@ -20,9 +20,9 @@ Stately provides a framework for managing application configuration and state wi
 - 🔍 **Search & Query** - Built-in entity search across collections
 - 🌍 **Foreign Types** - Use types from external crates in your state
 
-Stately does not provide the configuration and structures that comprise the state. Instead it provides an ultra-thin container management strategy that provides seamless integration with [@stately/ui](../../packages/ui).
+Stately does not provide the configuration and structures that comprise the state. Instead it provides an ultra-thin container management strategy that provides seamless integration with [@statelyjs/ui](../../packages/ui).
 
-## Installation
+## Install
 
 Add to your `Cargo.toml`:
 
@@ -340,7 +340,7 @@ pub struct State {
     pipelines: Pipeline,
 }
 
-#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+#[stately::axum_api(State, openapi(components = [link_aliases::PipelineLink]))]
 pub struct ApiState {}
 
 // Now in scope:
@@ -426,10 +426,10 @@ The `axum_api` macro generates:
 ### Macro Parameters
 
 - **`#[stately::state(openapi)]`** - Enables OpenAPI schema generation for entities
-- **`#[stately::axum_api(State, openapi, components = [...])]`**
+- **`#[stately::axum_api(State, openapi(components = [...]))]`**
   - First parameter: The state type name
   - `openapi`: Enable OpenAPI documentation generation
-  - `components = [...]`: Additional types to include in OpenAPI schemas (e.g., Link types)
+  - `openapi(components = [...])`: Additional types to include in OpenAPI schemas (e.g., Link types)
 
 ### Generated API Routes
 
@@ -456,7 +456,7 @@ pub struct State {
     pipelines: Pipeline,
 }
 
-#[stately::axum_api(State, openapi, components = [link_aliases::PipelineLink])]
+#[stately::axum_api(State, openapi(components = [link_aliases::PipelineLink]))]
 pub struct ApiState {}
 
 let openapi = ApiState::openapi();
@@ -560,7 +560,7 @@ These enable type-safe event-driven architectures for persistence, logging, and 
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](../LICENSE) for details.
+Licensed under the Apache License, Version 2.0. See [LICENSE](../../LICENSE) for details.
 
 ## Links
 

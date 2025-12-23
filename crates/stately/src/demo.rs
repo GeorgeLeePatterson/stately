@@ -51,8 +51,7 @@
 //!
 //! ## Source Example
 //!
-//! The code below is generated from this example (refer to
-//! `crates/stately/examples/doc_expand.rs`):
+//! The code below is generated from the example at `crates/stately/examples/doc_expand.rs`:
 //!
 //! ```rust,ignore
 //! #[stately::entity]
@@ -527,7 +526,13 @@ impl ForeignEntity for serde_json::Value {
         remove_entity
     ),
     components(
-        responses(OperationResponse, EntitiesResponse, ListResponse, GetEntityResponse),
+        responses(
+            OperationResponse,
+            EntitiesResponse,
+            ListResponse,
+            GetEntityResponse,
+            crate::ApiError,
+        ),
         schemas(
             Entity,
             StateEntry,
@@ -645,7 +650,7 @@ pub struct OperationResponse {
     pub id:      crate::EntityId,
     pub message: String,
 }
-/// Query parameters for getting a single entity by ID and type
+/// Response containing a single entity
 /// Response type for API operations.
 #[derive(
     Debug, Clone, serde::Serialize, serde::Deserialize, utoipa::ToSchema, utoipa::ToResponse,
@@ -662,6 +667,7 @@ pub struct GetEntityResponse {
 pub struct EntitiesResponse {
     pub entities: EntitiesMap,
 }
+/// Map of all entity collections grouped by type
 /// Map of all entity collections grouped by type.
 #[derive(Debug, Clone, serde::Deserialize, utoipa::ToSchema)]
 pub struct EntitiesMap {
@@ -698,9 +704,37 @@ pub enum ResponseEvent {
     Updated { id: crate::EntityId, entity: Entity },
     Deleted { id: crate::EntityId, entry: StateEntry },
 }
+impl ::serde::Serialize for EntitiesMap {
+    fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
+    where
+        S: ::serde::Serializer,
+    {
+        use ::serde::ser::SerializeMap;
+        let mut map = serializer.serialize_map(Some(self.entities.len()))?;
+        for (state_entry, entities) in &self.entities {
+            let mut entity_map: crate::hashbrown::HashMap<crate::EntityId, ::serde_json::Value> =
+                crate::hashbrown::HashMap::default();
+            for (id, entity) in entities {
+                let inner_value =
+                    ::serde_json::to_value(entity).map_err(::serde::ser::Error::custom)?;
+                drop(entity_map.insert(id.clone(), inner_value));
+            }
+            map.serialize_entry(&state_entry.as_ref(), &entity_map)?;
+        }
+        map.end()
+    }
+}
 /// Create a new entity
-/// Create a new entity via the REST API.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(
+    put,
+    path = "/",
+    tag = "entity",
+    request_body = Entity,
+    responses(
+        (status = 200, description = "Entity created successfully", body = OperationResponse),
+        (status = 500, description = "Internal server error", body = crate::ApiError)
+    )
+)]
 pub async fn create_entity(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::Json(entity): ::axum::Json<Entity>,
@@ -715,8 +749,19 @@ pub async fn create_entity(
     response
 }
 /// Update an existing entity (full replacement)
-/// Update an existing entity.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(
+    post,
+    path = "/{id}",
+    tag = "entity",
+    params(
+        ("id" = String, Path, description = "Entity ID")
+    ),
+    request_body = Entity,
+    responses(
+        (status = 200, description = "Entity updated successfully", body = OperationResponse),
+        (status = 500, description = "Internal server error", body = crate::ApiError)
+    )
+)]
 pub async fn update_entity(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path(id): ::axum::extract::Path<String>,
@@ -739,8 +784,19 @@ pub async fn update_entity(
     }
 }
 /// Patch an existing entity (same as update)
-/// Partially update an entity.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(
+    patch,
+    path = "/{id}",
+    tag = "entity",
+    params(
+        ("id" = String, Path, description = "Entity ID")
+    ),
+    request_body = Entity,
+    responses(
+        (status = 200, description = "Entity patched successfully", body = OperationResponse),
+        (status = 500, description = "Internal server error", body = crate::ApiError)
+    )
+)]
 pub async fn patch_entity_by_id(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path(id): ::axum::extract::Path<String>,
@@ -763,8 +819,20 @@ pub async fn patch_entity_by_id(
     }
 }
 /// Remove an entity
-/// Delete an entity.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(
+    delete,
+    path = "/{entry}/{id}",
+    tag = "entity",
+    params(
+        ("entry" = StateEntry, Path, description = "Entity type"),
+        ("id" = String, Path, description = "Entity ID")
+    ),
+    responses(
+        (status = 200, description = "Entity removed successfully", body = OperationResponse),
+        (status = 404, description = "Entity not found", body = crate::ApiError),
+        (status = 500, description = "Internal server error", body = crate::ApiError)
+    )
+)]
 pub async fn remove_entity(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path((entry, id)): ::axum::extract::Path<(StateEntry, String)>,
@@ -784,7 +852,14 @@ pub async fn remove_entity(
     response
 }
 /// List all entity summaries
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(
+    get,
+    path = "/list",
+    tag = "entity",
+    responses(
+        (status = 200, description = "List all entities", body = ListResponse)
+    )
+)]
 pub async fn list_all_entities(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
 ) -> crate::Result<::axum::Json<ListResponse>> {
@@ -793,8 +868,17 @@ pub async fn list_all_entities(
     Ok(::axum::Json(ListResponse { entities }))
 }
 /// List entity summaries
-/// List all entities grouped by type.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(
+    get,
+    path = "/list/{type}",
+    tag = "entity",
+    params(
+        ("type" = StateEntry, Path, description = "Entity type to list")
+    ),
+    responses(
+        (status = 200, description = "List entities by type", body = ListResponse)
+    )
+)]
 pub async fn list_entities(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path(entity_type): ::axum::extract::Path<StateEntry>,
@@ -804,7 +888,18 @@ pub async fn list_entities(
     Ok(::axum::Json(ListResponse { entities }))
 }
 /// Get all entities for all types
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(
+    get,
+    path = "/",
+    tag = "entity",
+    params(
+        ("name" = Option<String>, Query, description = "Identifier of entity, ie id or name"),
+        ("type" = Option<StateEntry>, Query, description = "Type of entity")
+    ),
+    responses(
+        (status = 200, description = "Get entities with filters", body = EntitiesResponse)
+    )
+)]
 pub async fn get_entities(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
 ) -> crate::Result<::axum::Json<EntitiesResponse>> {
@@ -813,8 +908,19 @@ pub async fn get_entities(
     Ok(::axum::Json(EntitiesResponse { entities: EntitiesMap { entities } }))
 }
 /// Get entity by ID and type
-/// Get a specific entity by ID and type.
-#[utoipa::path(method(get, post, put, patch, delete), path = "")]
+#[utoipa::path(
+    get,
+    path = "/{id}",
+    tag = "entity",
+    params(
+        ("id" = String, Path, description = "Entity ID"),
+        GetEntityQuery
+    ),
+    responses(
+        (status = 200, description = "Successfully retrieved entity", body = GetEntityResponse),
+        (status = 404, description = "Entity not found", body = crate::ApiError)
+    )
+)]
 pub async fn get_entity_by_id(
     ::axum::extract::State(stately): ::axum::extract::State<ApiState>,
     ::axum::extract::Path(id): ::axum::extract::Path<String>,
@@ -825,24 +931,4 @@ pub async fn get_entity_by_id(
         return Err(crate::Error::NotFound(format!("Entity with ID {0} not found", id)));
     };
     Ok(::axum::Json(GetEntityResponse { id, entity }))
-}
-impl ::serde::Serialize for EntitiesMap {
-    fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
-    where
-        S: ::serde::Serializer,
-    {
-        use ::serde::ser::SerializeMap;
-        let mut map = serializer.serialize_map(Some(self.entities.len()))?;
-        for (state_entry, entities) in &self.entities {
-            let mut entity_map: crate::hashbrown::HashMap<crate::EntityId, ::serde_json::Value> =
-                crate::hashbrown::HashMap::default();
-            for (id, entity) in entities {
-                let inner_value =
-                    ::serde_json::to_value(entity).map_err(::serde::ser::Error::custom)?;
-                drop(entity_map.insert(id.clone(), inner_value));
-            }
-            map.serialize_entry(&state_entry.as_ref(), &entity_map)?;
-        }
-        map.end()
-    }
 }
