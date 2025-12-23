@@ -13,7 +13,6 @@
     "build": "tsc --build",
     "check": "tsc --noEmit",
     "clean": "rm -rf dist .turbo",
-    "test": "tsc --project tsconfig.test.json",
     "dev": "tsc --build --watch"
   },
   "keywords": [
