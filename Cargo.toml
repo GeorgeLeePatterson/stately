@@ -38,6 +38,7 @@ utoipa = { version = "5", features = [
     "axum_extras",
 ] }
 uuid = { version = "1", features = ["v7", "serde"] }
+# NOTE: This must match `DataFusion`'s version to play nice with `stately-arrow`.
 object_store = { version = "0.12.4", default-features = false }
 
 [workspace.lints.clippy]
