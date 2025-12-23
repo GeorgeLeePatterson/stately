@@ -2,7 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/stately.svg)](https://crates.io/crates/stately)
 [![Documentation](https://docs.rs/stately/badge.svg)](https://docs.rs/stately)
-[![npm](https://img.shields.io/npm/v/@statelyjs/ui)](https://www.npmjs.com/package/@statelyjs/ui)
+[![npm](https://img.shields.io/npm/v/@statelyjs/stately)](https://www.npmjs.com/package/@statelyjs/stately)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 > Full-stack type-safe state management with auto-generated UI and a plugin architecture

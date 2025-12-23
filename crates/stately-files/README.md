@@ -1,5 +1,10 @@
 # stately-files
 
+[![Crates.io](https://img.shields.io/crates/v/stately-files.svg)](https://crates.io/crates/stately-files)
+[![Documentation](https://docs.rs/stately-files/badge.svg)](https://docs.rs/stately-files)
+[![npm](https://img.shields.io/npm/v/@statelyjs/files)](https://www.npmjs.com/package/@statelyjs/files)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
+
 File upload, versioning, and download management for stately applications.
 
 ## Overview

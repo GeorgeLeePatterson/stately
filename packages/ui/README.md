@@ -1,9 +1,9 @@
 # 🏰 @statelyjs/ui
 
-[![npm](https://img.shields.io/npm/v/@statelyjs/ui)](https://www.npmjs.com/package/@statelyjs/ui)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
-
 > Base UI components, layout, and plugin infrastructure for Stately applications
+
+[![npm](https://img.shields.io/npm/v/@statelyjs/ui)](https://www.npmjs.com/package/@statelyjs/ui)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/georgeleepatterson/stately/blob/main/LICENSE)
 
 This package provides the foundational UI layer for Stately: React components, theming, layout primitives, and the plugin runtime system. It has no knowledge of Stately's entity system or backend - those concerns live in `@statelyjs/stately`.
 
@@ -237,7 +237,7 @@ export function myPlugin(options: MyPluginOptions): UiPluginFactory<MyPlugin> {
 }
 ```
 
-See [`@statelyjs/files`](../files) and [`@statelyjs/arrow`](../arrow) for complete plugin examples.
+See [`@statelyjs/files`](https://www.npmjs.com/package/@statelyjs/files) and [`@statelyjs/arrow`](https://www.npmjs.com/package/@statelyjs/arrow) for complete plugin examples.
 
 ## Peer Dependencies
 
@@ -253,10 +253,10 @@ See [`@statelyjs/files`](../files) and [`@statelyjs/arrow`](../arrow) for comple
 
 ## Related Packages
 
-- [`@statelyjs/stately`](../stately) - Full Stately runtime with core plugin and codegen
-- [`@statelyjs/schema`](../schema) - Schema types and plugin system
-- [`@statelyjs/files`](../files) - File management plugin
-- [`@statelyjs/arrow`](../arrow) - Arrow/connector plugin
+- [`@statelyjs/stately`](https://www.npmjs.com/package/@statelyjs/stately) - Full Stately runtime with core plugin and codegen
+- [`@statelyjs/schema`](https://www.npmjs.com/package/@statelyjs/schema) - Schema types and plugin system
+- [`@statelyjs/files`](https://www.npmjs.com/package/@statelyjs/files) - File management plugin
+- [`@statelyjs/arrow`](https://www.npmjs.com/package/@statelyjs/arrow) - Arrow/connector plugin
 
 ## License
 

@@ -9,7 +9,10 @@ authors.workspace = true
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
-documentation.workspace = true
+documentation = "https://docs.rs/stately-arrow"
+
+[package.metadata.docs.rs]
+all-features = true
 
 [features]
 default = []

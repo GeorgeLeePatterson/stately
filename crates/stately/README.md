@@ -20,7 +20,7 @@ Stately provides a framework for managing application configuration and state wi
 - 🔍 **Search & Query** - Built-in entity search across collections
 - 🌍 **Foreign Types** - Use types from external crates in your state
 
-Stately does not provide the configuration and structures that comprise the state. Instead it provides an ultra-thin container management strategy that provides seamless integration with [@statelyjs/ui](../../packages/ui).
+Stately does not provide the configuration and structures that comprise the state. Instead it provides an ultra-thin container management strategy that provides seamless integration with [@statelyjs/stately](https://www.npmjs.com/package/@statelyjs/stately).
 
 ## Install
 

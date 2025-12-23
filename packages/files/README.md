@@ -1,9 +1,11 @@
 # @statelyjs/files
 
-[![npm](https://img.shields.io/npm/v/@statelyjs/files)](https://www.npmjs.com/package/@statelyjs/files)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
+> File system integration plugin for [Stately](https://www.npmjs.com/package/@statelyjs/stately). 
 
-File system integration plugin for [Stately UI](../stately/README.md). Provides file browsing, versioned file management, uploads, downloads, and relative path handling.
+[![npm](https://img.shields.io/npm/v/@statelyjs/files)](https://www.npmjs.com/package/@statelyjs/files)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/georgeleepatterson/stately/blob/main/LICENSE)
+
+Provides file browsing, versioned file management, uploads, downloads, and relative path handling.
 
 ## Overview
 

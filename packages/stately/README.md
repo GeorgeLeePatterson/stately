@@ -1,9 +1,9 @@
 # 🏰 @statelyjs/stately
 
-[![npm](https://img.shields.io/npm/v/@statelyjs/stately)](https://www.npmjs.com/package/@statelyjs/stately)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
-
 > Full Stately runtime with core plugin and codegen CLI
+
+[![npm](https://img.shields.io/npm/v/@statelyjs/stately)](https://www.npmjs.com/package/@statelyjs/stately)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/georgeleepatterson/stately/blob/main/LICENSE)
 
 This is the main package most users should install. It provides:
 
@@ -270,10 +270,10 @@ Use `@statelyjs/ui` directly only if:
 
 ## Related Packages
 
-- [`@statelyjs/ui`](../ui) - Base UI components and plugin runtime
-- [`@statelyjs/schema`](../schema) - Schema types and parsing
-- [`@statelyjs/files`](../files) - File management plugin
-- [`@statelyjs/arrow`](../arrow) - Arrow/SQL query plugin
+- [`@statelyjs/ui`](https://www.npmjs.com/package/@statelyjs/ui) - Base UI components and plugin runtime
+- [`@statelyjs/schema`](https://www.npmjs.com/package/@statelyjs/schema) - Schema types and parsing
+- [`@statelyjs/files`](https://www.npmjs.com/package/@statelyjs/files) - File management plugin
+- [`@statelyjs/arrow`](https://www.npmjs.com/package/@statelyjs/arrow) - Arrow/SQL query plugin
 
 ## License
 

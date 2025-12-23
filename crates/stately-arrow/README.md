@@ -1,5 +1,10 @@
 # stately-arrow
 
+[![Crates.io](https://img.shields.io/crates/v/stately-arrow.svg)](https://crates.io/crates/stately-arrow)
+[![Documentation](https://docs.rs/stately-arrow/badge.svg)](https://docs.rs/stately-arrow)
+[![npm](https://img.shields.io/npm/v/@statelyjs/arrow)](https://www.npmjs.com/package/@statelyjs/arrow)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
+
 Arrow-based data connectivity and query execution over HTTP APIs.
 
 ## Overview

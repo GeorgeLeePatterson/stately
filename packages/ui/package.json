@@ -1,7 +1,15 @@
 {
   "name": "@statelyjs/ui",
   "version": "0.4.0",
+  "description": "UI component library for Stately applications",
   "type": "module",
+  "license": "Apache-2.0",
+  "author": "George Lee Patterson <patterson.george@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/georgeleepatterson/stately.git",
+    "directory": "packages/ui"
+  },
   "files": [
     "dist"
   ],

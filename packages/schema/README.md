@@ -1,13 +1,13 @@
 # 🏰 @statelyjs/schema
 
-[![npm](https://img.shields.io/npm/v/@statelyjs/schema)](https://www.npmjs.com/package/@statelyjs/schema)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
-
 > Type definitions and schema parsing for Stately applications
+
+[![npm](https://img.shields.io/npm/v/@statelyjs/schema)](https://www.npmjs.com/package/@statelyjs/schema)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/georgeleepatterson/stately/blob/main/LICENSE)
 
 This package provides the foundational type system for Stately's frontend. It parses OpenAPI schemas into a typed AST (Abstract Syntax Tree) that powers the UI's form generation, validation, and type safety.
 
-This 'schema' package is a low-level package used internally by Stately. See [stately](../stately/README.md) for the user facing package.
+This 'schema' package is a low-level package used internally by Stately. See [@statelyjs/stately](https://www.npmjs.com/package/@statelyjs/stately) for the user facing package.
 
 ## Installation
 

@@ -3,7 +3,13 @@
   "version": "0.4.0",
   "type": "module",
   "description": "Stately - Schema-driven UI runtime with codegen and plugin system",
-  "license": "MIT",
+  "license": "Apache-2.0",
+  "author": "George Lee Patterson <patterson.george@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/georgeleepatterson/stately.git",
+    "directory": "packages/stately"
+  },
   "exports": {
     ".": "./dist/index.mjs",
     "./cli": "./dist/cli/index.mjs",

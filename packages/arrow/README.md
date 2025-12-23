@@ -1,9 +1,11 @@
 # @statelyjs/arrow
 
-[![npm](https://img.shields.io/npm/v/@statelyjs/arrow)](https://www.npmjs.com/package/@statelyjs/arrow)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
+> Apache Arrow data visualization plugin for [Stately](https://www.npmjs.com/package/@statelyjs/stately). 
 
-Apache Arrow data visualization plugin for [Stately UI](../stately/README.md). Provides streaming SQL query execution, table visualization, and connector management for Arrow-based data sources.
+[![npm](https://img.shields.io/npm/v/@statelyjs/arrow)](https://www.npmjs.com/package/@statelyjs/arrow)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/georgeleepatterson/stately/blob/main/LICENSE)
+
+Provides streaming SQL query execution, table visualization, and connector management for Arrow-based data sources.
 
 ## Overview
 
