@@ -33,7 +33,7 @@ thiserror = "2"
 tracing = "0.1"
 utoipa.workspace = true
 
-stately = { path = "../stately", version = "0.3.2", features = ["axum"] }
+stately = { path = "../stately", version = "0.4.0", features = ["axum"] }
 
 # Optional
 clickhouse-datafusion = { version = "0.2", optional = true }
