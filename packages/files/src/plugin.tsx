@@ -55,6 +55,7 @@
 
 import { CoreNodeType } from '@statelyjs/stately/core';
 import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
+import type { RouteOption } from '@statelyjs/ui';
 import {
   type AnyUiPlugin,
   registry as baseRegistry,
@@ -64,7 +65,6 @@ import {
   type UiNavigationOptions,
   type UiPluginFactory,
 } from '@statelyjs/ui';
-import type { RouteOption } from '@statelyjs/ui/layout';
 import { Files } from 'lucide-react';
 
 import { FILES_OPERATIONS, type FilesPaths } from './api';

@@ -2,7 +2,7 @@
 name = "stately-arrow"
 description = "Arrow backend utilities for viewing data over API"
 keywords = ["configuration", "arrow", "datafusion", "data", "api"]
-categories = ["database", "web-programming::http-server", "api-bindings"]
+categories = ["database", "web-programming", "api-bindings"]
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -33,7 +33,7 @@ thiserror = "2"
 tracing = "0.1"
 utoipa.workspace = true
 
-stately = { path = "../stately", features = ["axum"] }
+stately = { path = "../stately", version = "0.3.2", features = ["axum"] }
 
 # Optional
 clickhouse-datafusion = { version = "0.2", optional = true }

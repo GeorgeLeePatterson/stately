@@ -52,6 +52,7 @@
  */
 
 import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
+import type { RouteOption } from '@statelyjs/ui';
 import {
   type AnyUiPlugin,
   createOperations,
@@ -61,7 +62,6 @@ import {
   type UiNavigationOptions,
   type UiPluginFactory,
 } from '@statelyjs/ui';
-import type { RouteOption } from '@statelyjs/ui/layout';
 import { Database } from 'lucide-react';
 import { ARROW_OPERATIONS, type ArrowPaths } from './api';
 import { log } from './lib/utils';

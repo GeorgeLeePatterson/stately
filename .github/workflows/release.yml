@@ -6,15 +6,46 @@ on:
       - 'v*'
   workflow_dispatch:
     inputs:
-      skip_publish:
-        description: 'Create release only'
+      version:
+        description: 'Version to release (e.g., 0.4.0). If empty, uses Cargo.toml version.'
+        required: false
+        type: string
+      skip_rust:
+        description: 'Skip Rust crate publishing (use if crates already published)'
         default: false
         required: false
         type: boolean
-      version:
-        description: 'Version to release (e.g., 0.1.5)'
+      skip_npm:
+        description: 'Skip npm package publishing (use if packages already published)'
+        default: false
         required: false
-        type: string
+        type: boolean
+      skip_github_release:
+        description: 'Skip GitHub release creation'
+        default: false
+        required: false
+        type: boolean
+      rust_start_from:
+        description: 'Start Rust publishing from this crate (stately-derive, stately, stately-files, stately-arrow)'
+        required: false
+        type: choice
+        options:
+          - stately-derive
+          - stately
+          - stately-files
+          - stately-arrow
+        default: stately-derive
+      npm_start_from:
+        description: 'Start npm publishing from this package (schema, ui, stately, arrow, files)'
+        required: false
+        type: choice
+        options:
+          - schema
+          - ui
+          - stately
+          - arrow
+          - files
+        default: schema
 
 permissions:
   contents: write
@@ -35,65 +66,250 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Verify version consistency
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Determine version
         run: |
-          # Determine version based on trigger type
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             if [ -n "${{ inputs.version }}" ]; then
-              # Use provided version input
               VERSION="${{ inputs.version }}"
               echo "Using provided version: $VERSION"
             else
-              # Extract version from Cargo.toml
               VERSION=$(grep -E '^version = ' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
               echo "Using version from Cargo.toml: $VERSION"
             fi
           else
-            # Extract version from tag (push trigger)
             VERSION=${GITHUB_REF#refs/tags/v}
             echo "Using version from tag: $VERSION"
           fi
-
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-          # Check that Cargo.toml has the correct version
+      - name: Verify version consistency
+        run: |
+          # Check Rust workspace version
           CARGO_VERSION=$(grep -E '^version = ' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
           if [ "$CARGO_VERSION" != "$VERSION" ]; then
             echo "Error: Cargo.toml version ($CARGO_VERSION) does not match expected version ($VERSION)"
-            echo "Please ensure versions are consistent"
             exit 1
           fi
 
-      - name: Verify publish
-        if: ${{ inputs.skip_publish == false }}
+          # Check npm package versions
+          for pkg in packages/*/package.json; do
+            PKG_VERSION=$(jq -r '.version' "$pkg")
+            PKG_NAME=$(jq -r '.name' "$pkg")
+            if [ "$PKG_VERSION" != "$VERSION" ]; then
+              echo "Error: $PKG_NAME version ($PKG_VERSION) does not match expected version ($VERSION)"
+              exit 1
+            fi
+          done
+
+          echo "✅ All versions verified as $VERSION"
+
+      # ===========================================
+      # RUST CRATES PUBLISHING
+      # ===========================================
+      - name: Publish Rust crates to crates.io
+        if: ${{ inputs.skip_rust != true }}
         run: |
-          # Only dry-run stately-derive since stately depends on it being published first
-          cargo publish --dry-run -p stately-derive --no-verify --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          START_FROM="${{ inputs.rust_start_from || 'stately-derive' }}"
+          
+          # Determine which crates to publish based on start point
+          PUBLISH_DERIVE=false
+          PUBLISH_STATELY=false
+          PUBLISH_FILES=false
+          PUBLISH_ARROW=false
+          
+          case "$START_FROM" in
+            stately-derive)
+              PUBLISH_DERIVE=true
+              PUBLISH_STATELY=true
+              PUBLISH_FILES=true
+              PUBLISH_ARROW=true
+              ;;
+            stately)
+              PUBLISH_STATELY=true
+              PUBLISH_FILES=true
+              PUBLISH_ARROW=true
+              ;;
+            stately-files)
+              PUBLISH_FILES=true
+              PUBLISH_ARROW=true
+              ;;
+            stately-arrow)
+              PUBLISH_ARROW=true
+              ;;
+          esac
+          
+          echo "Publishing from: $START_FROM"
+          echo "  stately-derive: $PUBLISH_DERIVE"
+          echo "  stately: $PUBLISH_STATELY"
+          echo "  stately-files: $PUBLISH_FILES"
+          echo "  stately-arrow: $PUBLISH_ARROW"
+          
+          if [ "$PUBLISH_DERIVE" = true ]; then
+            echo ""
+            echo "Publishing stately-derive..."
+            cargo publish -p stately-derive --no-verify --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+            echo "Waiting for crates.io to index..."
+            sleep 30
+          fi
+          
+          if [ "$PUBLISH_STATELY" = true ]; then
+            echo ""
+            echo "Publishing stately..."
+            cargo publish -p stately --no-verify --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+            echo "Waiting for crates.io to index..."
+            sleep 30
+          fi
+          
+          if [ "$PUBLISH_FILES" = true ]; then
+            echo ""
+            echo "Publishing stately-files..."
+            cargo publish -p stately-files --no-verify --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          fi
+          
+          if [ "$PUBLISH_ARROW" = true ]; then
+            echo ""
+            echo "Publishing stately-arrow..."
+            cargo publish -p stately-arrow --no-verify --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          fi
+          
+          echo ""
+          echo "✅ Rust crates published successfully"
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
-      - name: Publish to crates.io
-        if: ${{ inputs.skip_publish == false }}
-        run: |
-          cargo publish -p stately-derive --no-verify --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
-          sleep 30  # Wait for crates.io to index
-          cargo publish -p stately --no-verify --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      # ===========================================
+      # NPM PACKAGES PUBLISHING
+      # ===========================================
+      - name: Install npm dependencies
+        if: ${{ inputs.skip_npm != true }}
+        run: pnpm install --frozen-lockfile
 
+      - name: Build npm packages
+        if: ${{ inputs.skip_npm != true }}
+        run: pnpm run build
+
+      - name: Publish npm packages
+        if: ${{ inputs.skip_npm != true }}
+        run: |
+          START_FROM="${{ inputs.npm_start_from || 'schema' }}"
+          
+          # Determine which packages to publish based on start point
+          PUBLISH_SCHEMA=false
+          PUBLISH_UI=false
+          PUBLISH_STATELY=false
+          PUBLISH_ARROW=false
+          PUBLISH_FILES=false
+          
+          case "$START_FROM" in
+            schema)
+              PUBLISH_SCHEMA=true
+              PUBLISH_UI=true
+              PUBLISH_STATELY=true
+              PUBLISH_ARROW=true
+              PUBLISH_FILES=true
+              ;;
+            ui)
+              PUBLISH_UI=true
+              PUBLISH_STATELY=true
+              PUBLISH_ARROW=true
+              PUBLISH_FILES=true
+              ;;
+            stately)
+              PUBLISH_STATELY=true
+              PUBLISH_ARROW=true
+              PUBLISH_FILES=true
+              ;;
+            arrow)
+              PUBLISH_ARROW=true
+              PUBLISH_FILES=true
+              ;;
+            files)
+              PUBLISH_FILES=true
+              ;;
+          esac
+          
+          echo "Publishing from: $START_FROM"
+          echo "  @statelyjs/schema: $PUBLISH_SCHEMA"
+          echo "  @statelyjs/ui: $PUBLISH_UI"
+          echo "  @statelyjs/stately: $PUBLISH_STATELY"
+          echo "  @statelyjs/arrow: $PUBLISH_ARROW"
+          echo "  @statelyjs/files: $PUBLISH_FILES"
+          
+          if [ "$PUBLISH_SCHEMA" = true ]; then
+            echo ""
+            echo "Publishing @statelyjs/schema..."
+            cd packages/schema && pnpm publish --access public --no-git-checks && cd ../..
+          fi
+          
+          if [ "$PUBLISH_UI" = true ]; then
+            echo ""
+            echo "Publishing @statelyjs/ui..."
+            cd packages/ui && pnpm publish --access public --no-git-checks && cd ../..
+          fi
+          
+          if [ "$PUBLISH_STATELY" = true ]; then
+            echo ""
+            echo "Publishing @statelyjs/stately..."
+            cd packages/stately && pnpm publish --access public --no-git-checks && cd ../..
+          fi
+          
+          if [ "$PUBLISH_ARROW" = true ]; then
+            echo ""
+            echo "Publishing @statelyjs/arrow..."
+            cd packages/arrow && pnpm publish --access public --no-git-checks && cd ../..
+          fi
+          
+          if [ "$PUBLISH_FILES" = true ]; then
+            echo ""
+            echo "Publishing @statelyjs/files..."
+            cd packages/files && pnpm publish --access public --no-git-checks && cd ../..
+          fi
+          
+          echo ""
+          echo "✅ npm packages published successfully"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # ===========================================
+      # GITHUB RELEASE
+      # ===========================================
       - name: Extract release notes
+        if: ${{ inputs.skip_github_release != true }}
         run: |
-          # Check if RELEASE_NOTES.md exists (from the PR)
           if [ -f "RELEASE_NOTES.md" ]; then
             cp RELEASE_NOTES.md release_notes_for_tag.md
           else
-            # Generate release notes for this tag if not present
             echo "# Release v$VERSION" > release_notes_for_tag.md
             echo "" >> release_notes_for_tag.md
-            echo "This release was published from tag v$VERSION" >> release_notes_for_tag.md
+            echo "## Published Packages" >> release_notes_for_tag.md
+            echo "" >> release_notes_for_tag.md
+            echo "### Rust Crates (crates.io)" >> release_notes_for_tag.md
+            echo "- [\`stately@$VERSION\`](https://crates.io/crates/stately/$VERSION)" >> release_notes_for_tag.md
+            echo "- [\`stately-derive@$VERSION\`](https://crates.io/crates/stately-derive/$VERSION)" >> release_notes_for_tag.md
+            echo "- [\`stately-files@$VERSION\`](https://crates.io/crates/stately-files/$VERSION)" >> release_notes_for_tag.md
+            echo "- [\`stately-arrow@$VERSION\`](https://crates.io/crates/stately-arrow/$VERSION)" >> release_notes_for_tag.md
+            echo "" >> release_notes_for_tag.md
+            echo "### npm Packages" >> release_notes_for_tag.md
+            echo "- [\`@statelyjs/schema@$VERSION\`](https://www.npmjs.com/package/@statelyjs/schema/v/$VERSION)" >> release_notes_for_tag.md
+            echo "- [\`@statelyjs/ui@$VERSION\`](https://www.npmjs.com/package/@statelyjs/ui/v/$VERSION)" >> release_notes_for_tag.md
+            echo "- [\`@statelyjs/stately@$VERSION\`](https://www.npmjs.com/package/@statelyjs/stately/v/$VERSION)" >> release_notes_for_tag.md
+            echo "- [\`@statelyjs/arrow@$VERSION\`](https://www.npmjs.com/package/@statelyjs/arrow/v/$VERSION)" >> release_notes_for_tag.md
+            echo "- [\`@statelyjs/files@$VERSION\`](https://www.npmjs.com/package/@statelyjs/files/v/$VERSION)" >> release_notes_for_tag.md
           fi
 
       - name: Create GitHub Release
+        if: ${{ inputs.skip_github_release != true }}
         uses: softprops/action-gh-release@v2
         with:
           body_path: release_notes_for_tag.md
