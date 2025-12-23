@@ -243,7 +243,7 @@ See [`@statelyjs/files`](../files) and [`@statelyjs/arrow`](../arrow) for comple
 
 - `react` ^18.0.0 || ^19.0.0
 - `react-dom` ^18.0.0 || ^19.0.0
-- `lucide-react` ^0.554.0
+- `lucide-react` ^0.562.0
 - `sonner` ^2.0.7
 - `openapi-fetch` ^0.15
 

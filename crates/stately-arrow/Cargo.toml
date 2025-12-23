@@ -37,11 +37,7 @@ stately = { path = "../stately", features = ["axum"] }
 
 # Optional
 clickhouse-datafusion = { version = "0.2", optional = true }
-object_store = { version = "0.12", optional = true, default-features = false, features = [
-    "aws",
-    "azure",
-    "gcp"
-]}
+object_store = { workspace = true, optional = true, features = ["aws", "azure", "gcp"] }
 strum_macros = { version = "0.27", optional = true }
 tokio = { version = "1", optional = true, features = ["sync"] }
 uuid = { workspace = true, optional = true }

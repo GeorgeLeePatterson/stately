@@ -265,7 +265,7 @@ Use `@statelyjs/ui` directly only if:
 - `react` ^18.0.0 || ^19.0.0
 - `react-dom` ^18.0.0 || ^19.0.0
 - `@tanstack/react-query` ^5.90.10
-- `lucide-react` ^0.554.0
+- `lucide-react` ^0.562.0
 - `sonner` ^2.0.7
 
 ## Related Packages

@@ -16,7 +16,7 @@
     "@statelyjs/schema": "link:../../../packages/schema",
     "@statelyjs/stately": "link:../../../packages/stately",
     "@statelyjs/ui": "link:../../../packages/ui",
-    "lucide-react": "^0.554.0",
+    "lucide-react": "^0.562.0",
     "openapi-fetch": "^0.15.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

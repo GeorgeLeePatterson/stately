@@ -43,7 +43,8 @@ export function Root<
           'stately-main @container/stately',
           'bg-background relative overflow-hidden',
           'flex-1 h-full min-h-dvh w-full min-w-0',
-          'grid grid-rows-[auto_1fr]',
+          'grid',
+          headerProps?.enable ? 'grid-rows-[auto_1fr]' : 'grid-rows-[1fr]',
           mainProps.className,
         ])}
       >
