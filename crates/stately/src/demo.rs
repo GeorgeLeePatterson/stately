@@ -523,7 +523,7 @@ impl ForeignEntity for serde_json::Value {
         get_entity_by_id,
         update_entity,
         patch_entity_by_id,
-        remove_entity
+        remove_entity,
     ),
     components(
         responses(
@@ -712,11 +712,13 @@ impl ::serde::Serialize for EntitiesMap {
         use ::serde::ser::SerializeMap;
         let mut map = serializer.serialize_map(Some(self.entities.len()))?;
         for (state_entry, entities) in &self.entities {
-            let mut entity_map: crate::hashbrown::HashMap<crate::EntityId, ::serde_json::Value> =
-                crate::hashbrown::HashMap::default();
+            let mut entity_map: crate::hashbrown::HashMap<
+                crate::EntityId,
+                crate::serde_json::Value,
+            > = crate::hashbrown::HashMap::default();
             for (id, entity) in entities {
                 let inner_value =
-                    ::serde_json::to_value(entity).map_err(::serde::ser::Error::custom)?;
+                    crate::serde_json::to_value(entity).map_err(::serde::ser::Error::custom)?;
                 drop(entity_map.insert(id.clone(), inner_value));
             }
             map.serialize_entry(&state_entry.as_ref(), &entity_map)?;

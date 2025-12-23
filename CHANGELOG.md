@@ -2,7 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2025-12-23
+
+### 🚀 Features
+
+- Stately arrow and files plugins, all UI packages (#17)
+
 ## [0.3.2] - 2025-11-06
+
+### ⚙️ Miscellaneous Tasks
+
+- Prepare release v0.3.2 (#10)
 
 ### 📚 Documentation
 
