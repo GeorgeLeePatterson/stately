@@ -30,11 +30,13 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
   const formDisabled = 'name' in node.properties && isRootEntity && !entity?.name;
 
   devLog.debug('Core', 'EntityFormEdit', {
+    entity,
     formDisabled,
     isLoading,
     isRootEntity,
     node,
-    value: entity,
+    required,
+    sortedProperties,
   });
 
   return (

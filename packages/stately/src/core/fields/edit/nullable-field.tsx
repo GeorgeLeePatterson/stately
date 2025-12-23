@@ -65,7 +65,7 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
   );
 
   const formField = isPrimitive ? (
-    <EntityProperty fieldName={label} isRequired={isRequired} node={innerSchema}>
+    <EntityProperty className="py-2" fieldName={label} isRequired={isRequired} node={innerSchema}>
       <Field>{field}</Field>
     </EntityProperty>
   ) : (

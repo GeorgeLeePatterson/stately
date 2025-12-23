@@ -50,7 +50,7 @@ export function EntityList<Schema extends Schemas = Schemas>({
               <a
                 className="group"
                 href={resolveEntityUrl({
-                  id: checkSingleton(entity.id) ? 'singleton' : entity.id,
+                  id: checkSingleton(entity.id) ? 'default' : entity.id,
                   type: entityPath,
                 })}
               >
@@ -66,7 +66,7 @@ export function EntityList<Schema extends Schemas = Schemas>({
                       >
                         <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                       </Button>
-                      {checkSingleton(entity.id) ? 'view configuration' : entity.name}
+                      {checkSingleton(entity.id) ? 'view default' : entity.name}
                     </ItemTitle>
                     <ItemDescription>
                       <span className="text-xs hidden @md:flex text-muted-foreground font-mono">

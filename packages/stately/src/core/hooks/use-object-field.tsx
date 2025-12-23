@@ -2,6 +2,7 @@ import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
+import { useObjectCompare } from './use-object-compare';
 
 /**
  * State for a merged field from `allOf` composition.
@@ -110,6 +111,7 @@ export function useObjectField<S extends Schemas = Schemas>({
   const [resetKey, setResetKey] = useState(0);
 
   const changes = useRef<Map<string, any>>(new Map());
+  const hasChanged = useObjectCompare(value, formData, isDirty);
 
   const required = new Set<string>(node?.required || []);
   const valueFields = Object.entries(node.properties).filter(([fieldName]) => fieldName !== 'id');
@@ -239,53 +241,7 @@ export function useObjectField<S extends Schemas = Schemas>({
     setResetKey(k => k + 1);
   }, [value]);
 
-  const changed = useMemo(() => {
-    // Treat empty objects the same as undefined/null
-    const isValueEmpty = !value || (typeof value === 'object' && Object.keys(value).length === 0);
-    const isFormDataEmpty =
-      !formData || (typeof formData === 'object' && Object.keys(formData).length === 0);
-
-    if (isValueEmpty && isFormDataEmpty) return false;
-    if ((isValueEmpty && !isFormDataEmpty) || (!isValueEmpty && isFormDataEmpty)) return true;
-
-    const safeValue = value ?? {};
-    const safeFormData = formData ?? {};
-
-    // Start false
-    let isChanged = false;
-    for (const [name, val] of changes.current) {
-      // If neither are defined, skip
-      if (!(name in safeFormData) && !(name in safeValue)) continue;
-      // if form data has been cleared
-      if (!(name in safeFormData) && name in safeValue) {
-        isChanged = true;
-        break;
-      }
-      // If form data has been set
-      if (name in safeFormData && !(name in safeValue)) {
-        isChanged = true;
-        break;
-      }
-      // If the types are different at all
-      if (typeof safeFormData[name] !== typeof safeValue[name]) {
-        isChanged = true;
-        break;
-      }
-      // If it's an object like value, rely on isDirty, sacrifices depth for simplicity
-      if (
-        [safeValue[name], safeFormData[name]].some(v => Array.isArray(v) || typeof v === 'object')
-      ) {
-        isChanged = isDirty;
-      }
-      // Finally, check primitive values
-      if (safeValue[name] !== val) {
-        isChanged = true;
-        break;
-      }
-    }
-
-    return isChanged;
-  }, [value, formData, isDirty]);
+  const changed = useMemo(() => hasChanged(changes.current), [hasChanged]);
 
   return {
     extraFieldsValue,

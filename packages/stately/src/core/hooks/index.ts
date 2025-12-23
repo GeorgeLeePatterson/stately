@@ -25,6 +25,7 @@ import { useEntityDataInline } from './use-entity-data-inline';
 import { useEntitySchema } from './use-entity-schema';
 import { useEntityUrl } from './use-entity-url';
 import { useListEntities } from './use-list-entities';
+import { useObjectCompare } from './use-object-compare';
 import { useObjectField } from './use-object-field';
 import { useRemoveEntity } from './use-remove-entity';
 import { useUpdateEntity } from './use-update-entity';
@@ -36,6 +37,7 @@ export {
   useEntityDataInline,
   useEntityData,
   useObjectField,
+  useObjectCompare,
   useEntitySchema,
   useEntityUrl,
   useUpdateEntity,

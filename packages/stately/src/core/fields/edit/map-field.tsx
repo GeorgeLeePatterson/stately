@@ -16,9 +16,10 @@ import { Item, ItemContent, ItemGroup } from '@statelyjs/ui/components/base/item
 import { Separator } from '@statelyjs/ui/components/base/separator';
 import { BaseForm, type FieldEditProps } from '@statelyjs/ui/form';
 import { useViewMore } from '@statelyjs/ui/hooks';
-import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Trash2, X } from 'lucide-react';
-import { useCallback, useId, useState } from 'react';
+import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
+import { useCallback, useEffect, useId, useState } from 'react';
 import type { CoreNodeUnion } from '@/core';
+import { useObjectCompare } from '@/core/hooks';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
 import { KeyValue, MAX_ITEMS_VIEW_DEFAULT } from '../view/map-field';
@@ -74,6 +75,12 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   const [editValue, setEditValue] = useState<any>();
   const [isDirty, setIsDirty] = useState(false);
   const [isEditDirty, setIsEditDirty] = useState(false);
+
+  // Ensure updates to value update formData
+  const hasChanged = useObjectCompare(value, formData, isDirty || isEditDirty);
+  useEffect(() => {
+    if (hasChanged()) setFormData(d => ({ ...(value ?? {}), ...d }));
+  }, [value, hasChanged]);
 
   const formId_ = useId();
   const formId = parentFormId ? `${parentFormId}-${formId_}` : formId_;
@@ -228,6 +235,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
                       formId={generateFieldFormId(CoreNodeType.Map, key, formId)}
                       handleAdd={onAddEdit}
                       hasKey={true}
+                      isEditing
                       isWizard={isWizard}
                       label={saveLabels.edit}
                       newValue={editValue}
@@ -326,6 +334,7 @@ function ValueEdit<Schema extends Schemas = Schemas>({
   handleAdd,
   isDisabled,
   isWizard,
+  isEditing,
 }: {
   formId: string;
   node: CoreNodeUnion<Schema>;
@@ -336,6 +345,7 @@ function ValueEdit<Schema extends Schemas = Schemas>({
   handleAdd: (value: any) => void;
   isDisabled?: boolean;
   isWizard?: boolean;
+  isEditing?: boolean;
 }) {
   return (
     <FieldSet className="min-w-0" disabled={!hasKey}>
@@ -370,7 +380,17 @@ function ValueEdit<Schema extends Schemas = Schemas>({
                   size="xs"
                   variant={isDisabled || !hasKey ? 'ghost' : 'default'}
                 >
-                  Add <Plus />
+                  {isEditing ? (
+                    <>
+                      Update&nbsp;
+                      <Save />
+                    </>
+                  ) : (
+                    <>
+                      Add&nbsp;
+                      <Plus />
+                    </>
+                  )}
                 </InputGroupButton>
               </InputGroupAddon>
             </InputGroup>

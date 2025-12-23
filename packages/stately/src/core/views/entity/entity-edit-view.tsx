@@ -21,6 +21,7 @@ export interface EntityEditViewProps<Schema extends Schemas = Schemas> {
   onChange: (data: AnyRecord) => void;
   onSave?: () => void;
   isRootEntity?: boolean;
+  isSingleton?: boolean;
   isLoading?: boolean;
 }
 
