@@ -14,7 +14,7 @@ A Stately plugin consists of:
 ```
 my-plugin/
 ├── crates/
-│   └── stately-my-plugin/     # Rust crate
+│   └── my-plugin/          # Rust crate
 │       ├── Cargo.toml
 │       ├── src/
 │       │   ├── lib.rs
@@ -25,7 +25,7 @@ my-plugin/
 │           └── generate-openapi.rs
 │
 └── packages/
-    └── my-plugin/             # TypeScript package
+    └── my-plugin-ui/          # TypeScript package
         ├── package.json
         ├── src/
         │   ├── index.ts
@@ -99,57 +99,149 @@ use utoipa::OpenApi;
 
 #[derive(OpenApi)]
 #[openapi(paths(handlers::my_handler), components(schemas(MyResponse)))]
-struct ApiDoc;
+struct OpenApiDoc;
 
 fn main() {
-    println!("{}", serde_json::to_string_pretty(&ApiDoc::openapi()).unwrap());
+    let output_dir = std::env::args().nth(1).unwrap_or_else(|| {
+        eprintln!("Usage: my-plugin-openapi <output_dir>");
+        std::process::exit(1);
+    });
+
+    match stately::codegen::generate_openapi::<OpenApiDoc;>(&output_dir) {
+        Ok(path) => println!("OpenAPI spec written to {}", path.display()),
+        Err(e) => {
+            eprintln!("Failed to generate OpenAPI spec: {e}");
+            std::process::exit(1);
+        }
+    }
 }
 ```
 
 ```bash
-cargo run --bin generate-openapi > ../packages/my-plugin/openapi.json
+cargo run --bin my-plugin-openapi > ../packages/my-plugin-ui/openapi.json
 ```
 
 ### 3. Frontend Package
 
 ```typescript
 // src/plugin.ts
-import type { Schemas, PluginFactory, UiPluginFactory } from '@statelyjs/schema';
-import { createOperations } from '@statelyjs/stately/api';
-import type { MyPluginPaths } from './generated/types';
-import { MY_OPERATIONS } from './api';
+import type { DefinePlugin, Schemas, PluginFactory } from '@statelyjs/stately/schema';
+import {
+  type AnyUiPlugin,
+  registry as baseRegistry,
+  createOperations,
+  type DefineOptions,
+  type DefineUiPlugin,
+  type RouteOption,
+  type UiNavigationOptions,
+  type UiPluginFactory,
+} from '@statelyjs/ui';
+import { StarIcon } from 'lucide-react';
+
+import { MY_OPERATIONS, MyPluginPaths } from './api';
+import type { MyPluginData, MyPluginNodeMap, MyPluginTypes } from './schema';
+import { MyPluginNodeType } from './schema';
+import { type MyPluginUiUtils, type MyPluginUtils, myPluginUiUtils } from './utils';
+
+export const MY_PLUGIN_NAME = 'my-plugin' as const;
+
+
+/**
+ * Schema Plugin
+ */
+
+// Declare schema plugin definition
+export type MyPlugin = DefinePlugin<
+  typeof MY_PLUGIN_NAME,
+  // Declare any new nodes this plugin's codegen will parse and generate
+  MyPluginNodeMap,
+  // Declare any schema types that should be accessible during plugin development
+  MyPluginTypes,
+  // Declare any derived schema structures
+  MyPluginData,
+  // Declare any plugin utilities
+  MyPluginUtils,
+>;
 
 // Schema plugin - extends type system
-export function myPlugin<S extends Schemas>(): PluginFactory<S> {
+export function myPlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
   return runtime => ({
     ...runtime,
-    plugins: { ...runtime.plugins, myPlugin: {} },
+    plugins: { 
+      ...runtime.plugins, 
+      [MY_PLUGIN_NAME]: {
+        // Optionally provide any schema level utilities
+        // ...utils,
+        // Optionally provide a validation hook that will be run on every node during edit
+        // validate: (args: ValidateArgs<S>) => ({ valid: true, errors: [] }) 
+      } 
+    },
   });
 }
 
+/**
+ * UI Plugin
+ */
+
+// Declare the default route for any pages exported. User can override.
+export const myPluginRoutes: RouteOption = { icon: StarIcon, label: 'My Plugin', to: '/my-plugin' };
+
+// Define any options your ui plugin should accept
+export type MyPluginUiOptions = DefineOptions<{
+  /** API configuration for My Plugin endpoints */
+  api?: { pathPrefix?: string };
+  /** Navigation configuration for My Plugin routes */
+  navigation?: { routes?: UiNavigationOptions['routes'] };
+}>;
+
+// Declare ui plugin definition
+export type MyUiPlugin = DefineUiPlugin<
+  typeof MY_PLUGIN_NAME,
+  MyPluginPaths,
+  typeof MY_OPERATIONS,
+  MyPluginUiUtils,
+  MyPluginUiOptions,
+  typeof myPluginRoutes
+>;
+
 // UI plugin - registers components and API
-export function myUiPlugin(options?: MyPluginOptions): UiPluginFactory {
+export function myUiPlugin<
+  Schema extends Schemas<any, any> = Schemas,
+  Augments extends readonly AnyUiPlugin[] = [],
+>(options?: MyPluginUiOptions): UiPluginFactory {
   return runtime => {
     const { registry, client } = runtime;
-    const pathPrefix = options?.api?.pathPrefix ?? '/my-plugin';
+  
+    // Register any components that should be used for any node types introduced
+    registry.components.set(
+      baseRegistry.makeRegistryKey(MyPluginNodeType.MyNewNodeType, 'edit'),
+      MyPluginNodeEdit,
+    );
+    registry.components.set(
+      baseRegistry.makeRegistryKey(MyPluginNodeType.MyNewNodeType, 'view'),
+      MyPluginNodeView,
+    );
     
-    // Create typed API client
+    // Register any additional custom components or transformers (if any)
+    // registry.components.set('myOtherNodeType::edit', MyOtherNodeEdit);
+
+    // Create typed operations with user provided prefix
+    const basePathPrefix = runtime.options?.api?.pathPrefix;
+    const corePathPrefix = options?.api?.pathPrefix;
+    const pathPrefix = runtime.utils.mergePathPrefixOptions(basePathPrefix, corePathPrefix);
     const api = createOperations<MyPluginPaths, typeof MY_OPERATIONS>(
       client,
       MY_OPERATIONS,
       pathPrefix,
     );
     
-    // Register custom components (if any)
-    // registry.components.set('myNodeType::edit', MyEditComponent);
-    
-    return {
-      ...runtime,
-      plugins: {
-        ...runtime.plugins,
-        myPlugin: { api, options },
-      },
-    };
+    // This is how a user can override any routes defined
+    const routes = { ...myPluginRoutes, ...(options?.navigation?.routes || {}) };
+  
+    // Finally, declare your plugin
+    const plugin = { [MY_PLUGIN_NAME]: { api, options, routes, utils: myPluginUiUtils } };
+  
+    return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };
   };
 }
 ```
@@ -170,11 +262,19 @@ let app = Router::new()
 
 **Frontend:**
 ```typescript
-const schema = stately(spec, schemas)
-  .withPlugin(corePlugin())
+// ...user imports openapi spec and parsed definitions...
+import { type MyUiPlugin, myUiPlugin } from 'my-plugin';
+import { type MyPlugin, myPlugin } from 'my-plugin/schema';
+
+type AppSchemas = Schemas<
+  DefineConfig<components, paths, operations, ParseSchema>,
+  readonly [MyPlugin]
+>;
+
+const schema = stately<AppSchemas>(openApiSpec, PARSED_SCHEMAS)
   .withPlugin(myPlugin());
 
-const runtime = statelyUi({ client, schema, core })
+const runtime = statelyUi<AppSchemas, readonly [MyPlugin]>({ client, schema, core, options })
   .withPlugin(myUiPlugin({ api: { pathPrefix: '/my-plugin' } }));
 ```
 
@@ -201,13 +301,16 @@ Register components for custom node types:
 
 ```typescript
 // Edit component for your node type
-registry.components.set('myNodeType::edit', MyNodeEdit);
+registry.components.set(makeRegistryKey('myNodeType', 'edit'), MyNodeEdit);
 
 // View component
-registry.components.set('myNodeType::view', MyNodeView);
+registry.components.set(makeRegistryKey('myNodeType', 'view'), MyNodeView);
 
 // Transformer (modify props before rendering)
-registry.transformers.set('string::edit::myTransform', myTransformer);
+registry.transformers.set(
+  makeRegistryKey('primitive', 'edit', 'transformer', 'string'), 
+  myPropsTransformer
+);
 ```
 
 ### Codegen Plugin
@@ -217,11 +320,12 @@ Transform schemas during code generation:
 ```typescript
 export const myCodegenPlugin: CodegenPlugin = {
   name: 'my-plugin',
-  transformNode(node, context) {
-    if (matchesMyPattern(node)) {
-      return { ...node, nodeType: 'myCustomType' };
+  description: 'Detects nodes relevant to my plugin\'s api and parses them',
+  transform(schema, context) {
+    if (matchesMyPattern(schema, context)) {
+      return { description: schema?.description, nodeType: 'myCustomNodeType' };
     }
-    return node;
+    return null;
   },
 };
 ```
@@ -238,7 +342,18 @@ export const myCodegenPlugin: CodegenPlugin = {
 
 Study the built-in plugins for patterns:
 
+Files:
 - [stately-files](https://github.com/georgeleepatterson/stately/tree/main/crates/stately-files) - File management
-- [stately-arrow](https://github.com/georgeleepatterson/stately/tree/main/crates/stately-arrow) - Data connectivity
 - [@statelyjs/files](https://github.com/georgeleepatterson/stately/tree/main/packages/files) - File UI
+
+Arrow:
+- [stately-arrow](https://github.com/georgeleepatterson/stately/tree/main/crates/stately-arrow) - Data connectivity
 - [@statelyjs/arrow](https://github.com/georgeleepatterson/stately/tree/main/packages/arrow) - Data UI
+
+## TODOs
+
+[ ] Clarify how entrypoints => top-level schemas work. 
+> Entrypoints provide a way to reduce size of parsed output, which could get quite large. When generating for a plugin, omitting entrypoints translates to "parse and store everything". This makes sense for plugin developers since visibility into all parsed nodes is required. But for users, the "entrypoints", and thus the "top level build-time parsed schemas", represent page entrypoints. Currently only stately's core provides those, in the form of entities. But if a plugin wishes to create a page and that page receives data via an API call, and the returned type is dynamic, but has a pre-defined shape, then an entrypoint should be introduced. The remaining schemas can be accessed via 'runtime schema', and accessed with 'loadRuntimeSchemas' on the "runtime.schema" object.
+
+[ ] Clarify how "runtime schemas" works, how to access it, and how to introduce nodes into it.
+[ ] Introduce a 'cookie cutter' like template

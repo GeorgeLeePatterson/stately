@@ -55,4 +55,4 @@ Stately is designed to be extended with plugins that provide both backend and fr
 - [Frontend](./frontend/README.md) - TypeScript package documentation
 - [Plugins](./plugins/README.md) - Using the files and arrow plugins
 - [Plugin Development](./plugin-development/README.md) - Create your own plugins
-- [Guides](./guides/README.md) - Practical tutorials
+- [Guides](./guides/README.md) - Practical tutorials - Coming soon

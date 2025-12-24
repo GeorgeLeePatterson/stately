@@ -52,13 +52,13 @@
  */
 
 import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
-import type { RouteOption } from '@statelyjs/ui';
 import {
   type AnyUiPlugin,
   createOperations,
   type DefineOptions,
   type DefineUiPlugin,
   type DefineUiUtils,
+  type RouteOption,
   type UiNavigationOptions,
   type UiPluginFactory,
 } from '@statelyjs/ui';

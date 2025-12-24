@@ -464,7 +464,7 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "UserDefinedPath": {
-    "description": "Path that can be either managed by the application or user-defined.\n\nUse this type when a path could be either:\n- An uploaded file managed by the app (with version resolution)\n- A user-provided path on the filesystem\n\n# Examples\n```\n// Managed: uploads/config.json (resolved to latest UUID)\nUserDefinedPath::Managed(RelativePath::Data(VersionedPath::new(\"uploads/config.json\")))\n\n// External: /usr/local/bin/script.sh\nUserDefinedPath::External(\"/usr/local/bin/script.sh\".to_string())\n```",
+    "description": "Path that can be either managed by the application or user-defined.\n\nUse this type when a path could be either:\n- An uploaded file managed by the app (with version resolution)\n- A user-provided path on the filesystem\n\n# Examples\n```rust,ignore\n// Managed: uploads/config.json (resolved to latest UUID)\nUserDefinedPath::Managed(RelativePath::Data(VersionedPath::new(\"uploads/config.json\")))\n\n// External: /usr/local/bin/script.sh\nUserDefinedPath::External(\"/usr/local/bin/script.sh\".to_string())\n```",
     "keys": [
       "dir",
       "path"

@@ -36,8 +36,6 @@ use crate::path::VersionedPath;
             VersionedPath,
         )
     ),
-    tags(
-        (name = "files", description = "File management endpoints"),
-    )
+    tags((name = "files", description = "File management endpoints"))
 )]
 pub struct OpenApiDoc;

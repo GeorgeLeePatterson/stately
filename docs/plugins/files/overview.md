@@ -1,9 +1,9 @@
 ---
-title: Files Plugin Overview
+title: Stately Files Plugin Overview
 description: File upload, versioning, and management with the Stately files plugin
 ---
 
-# Files Plugin
+# Stately Files Plugin
 
 The files plugin provides comprehensive file management capabilities for Stately applications, including uploads, versioning, and path types for entity forms.
 
@@ -21,7 +21,7 @@ The files plugin provides comprehensive file management capabilities for Stately
 
 ```toml
 [dependencies]
-stately-files = "0.3"
+stately-files = "0.4"
 ```
 
 ### Frontend
@@ -35,8 +35,10 @@ pnpm add @statelyjs/files
 ### Backend Setup
 
 ```rust
-use stately_files::{router, FileState, Dirs};
 use axum::extract::FromRef;
+use stately_files::{router, FileState, Dirs};
+
+use crate::state::ApiState;
 
 // Configure directories
 impl FromRef<ApiState> for FileState {
@@ -60,19 +62,27 @@ pub fn app(state: ApiState) -> Router {
 ### Frontend Setup
 
 ```typescript
-import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
+import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/stately';
+import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
+import { type FilesPlugin, type FilesUiPlugin, filesPlugin, filesUiPlugin } from '@statelyjs/files';
 
-// Add to schema runtime
-const schema = createStately(spec, schemas)
-  .withPlugin(corePlugin())
+import openApiSpec from '../../openapi.json';
+import { PARSED_SCHEMAS, type ParsedSchema } from '../generated/schemas';
+import type { components, operations, paths } from '../generated/types';
+
+// Define app schema with plugin extensions 
+type AppSchemas = Schemas<
+  DefineConfig<components, paths, operations, ParsedSchema>,
+  readonly [FilesPlugin]
+>;
+
+const schema = stately<AppSchemas>(openApiSpec, PARSED_SCHEMAS)
   .withPlugin(filesPlugin());
 
-// Add to UI runtime
-const runtime = statelyUi({ client, schema, core })
-  .withPlugin(filesUiPlugin({
-    api: { pathPrefix: '/files' },
-  }));
+const runtime = statelyUi<AppSchemas, readonly [FilesUiPlugin]>({ client, schema, core, options })
+  .withPlugin(filesUiPlugin({ api: { pathPrefix: '/api/files' } }));
 ```
+
 
 ## API Endpoints
 
@@ -174,7 +184,8 @@ Form field for selecting files:
 ```typescript
 import { RelativePathEdit } from '@statelyjs/files/fields/edit';
 
-// Used automatically when schema contains RelativePath node
+// Included automatically when parsed schema contains RelativePath node. 
+// No need to use directly unless you have a use case to.
 ```
 
 ## Hooks

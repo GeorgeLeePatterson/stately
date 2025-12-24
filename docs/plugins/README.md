@@ -42,6 +42,7 @@ Data connectivity and SQL query execution via Apache Arrow.
 - Streaming Arrow IPC responses
 - Catalog and schema discovery
 - High-performance data table component
+- Plans to build out the most performant large-data arrow viewer available
 
 [Arrow Plugin Documentation](./arrow/overview.md)
 
@@ -49,12 +50,12 @@ Data connectivity and SQL query execution via Apache Arrow.
 
 ### Backend
 
-Add the plugin crate to your `Cargo.toml`:
+Add the plugin crate to your `Cargo.toml`. Verify versions as docs can become outdated:
 
 ```toml
 [dependencies]
-stately-files = "0.3"
-stately-arrow = "0.3"
+stately-files = "0.4"
+stately-arrow = "0.4"
 ```
 
 ### Frontend
@@ -74,6 +75,8 @@ pnpm add @statelyjs/files @statelyjs/arrow
 
 ```rust
 use stately_files::{router as files_router, FileState, Dirs};
+
+use crate::state::ApiState;
 
 // State extraction
 impl FromRef<ApiState> for FileState {
@@ -96,15 +99,25 @@ pub fn app(state: ApiState) -> Router {
 2. Configure the API path prefix
 
 ```typescript
-import { filesPlugin, filesUiPlugin } from '@statelyjs/files';
+import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/stately';
+import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
+import { type FilesPlugin, type FilesUiPlugin, filesPlugin, filesUiPlugin } from '@statelyjs/files';
 
-const schema = Stately(spec, schemas)
+import openApiSpec from '../../openapi.json';
+import { PARSED_SCHEMAS, type ParsedSchema } from '../generated/schemas';
+import type { components, operations, paths } from '../generated/types';
+
+// Define app schema with plugin extensions 
+type AppSchemas = Schemas<
+  DefineConfig<components, paths, operations, ParsedSchema>,
+  readonly [FilesPlugin]
+>;
+
+const schema = stately<AppSchemas>(openApiSpec, PARSED_SCHEMAS)
   .withPlugin(filesPlugin());
 
-const runtime = statelyUi({ client, schema, core })
-  .withPlugin(filesUiPlugin({
-    api: { pathPrefix: '/api/files' },
-  }));
+const runtime = statelyUi<AppSchemas, readonly [FilesUiPlugin]>({ client, schema, core, options })
+  .withPlugin(filesUiPlugin({ api: { pathPrefix: '/api/files' } }));
 ```
 
 ## Plugin Architecture
@@ -113,12 +126,13 @@ Plugins follow a consistent architecture:
 
 **Backend:**
 - Router factory function generic over application state
-- State extraction via Axum's `FromRef` trait
+- State definition and state extraction via Axum's `FromRef` trait
 - OpenAPI generation for type codegen
+- Request, Response, and Parameter types
 
 **Frontend:**
-- Schema plugin for type system extensions
-- UI plugin for component registration
+- Schema plugin and types for type system extensions
+- UI plugin and types for component registration, route navigation, and utilities
 - Typed API client and hooks
 - Pre-built components, views, and pages
 

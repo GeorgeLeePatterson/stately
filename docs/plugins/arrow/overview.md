@@ -1,11 +1,11 @@
 ---
-title: Arrow Plugin Overview
+title: Stately Arrow Plugin Overview
 description: Data connectivity and SQL queries with the Stately arrow plugin
 ---
 
-# Arrow Plugin
+# Stately Stately Arrow Plugin
 
-The arrow plugin provides data connectivity and SQL query execution capabilities using Apache Arrow and DataFusion. Connect to various data sources and run queries with streaming results.
+The arrow plugin provides data connectivity and SQL query execution capabilities using `Apache Arrow` and `DataFusion`. Connect to various data sources and run queries with streaming results.
 
 ## Features
 
@@ -21,14 +21,14 @@ The arrow plugin provides data connectivity and SQL query execution capabilities
 
 ```toml
 [dependencies]
-stately-arrow = "0.3"
+stately-arrow = "0.4"
 ```
 
 Feature flags for backends:
 
 ```toml
 [dependencies]
-stately-arrow = { version = "0.3", features = ["object-store", "clickhouse"] }
+stately-arrow = { version = "0.4", features = ["object-store", "clickhouse"] }
 ```
 
 ### Frontend
@@ -69,18 +69,27 @@ pub fn app(state: ApiState) -> Router {
 ### Frontend Setup
 
 ```typescript
-import { arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
+import { statelyUi, statelyUiProvider, useStatelyUi } from '@statelyjs/stately';
+import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
+import { type ArrowPlugin, type ArrowUiPlugin, arrowPlugin, arrowUiPlugin } from '@statelyjs/arrow';
 
-// Add to schema runtime
-const schema = stately(spec, schemas)
+import openApiSpec from '../../openapi.json';
+import { PARSED_SCHEMAS, type ParsedSchema } from '../generated/schemas';
+import type { components, operations, paths } from '../generated/types';
+
+// Define app schema with plugin extensions 
+type AppSchemas = Schemas<
+  DefineConfig<components, paths, operations, ParsedSchema>,
+  readonly [ArrowPlugin]
+>;
+
+const schema = stately<AppSchemas>(openApiSpec, PARSED_SCHEMAS)
   .withPlugin(arrowPlugin());
 
-// Add to UI runtime
-const runtime = statelyUi({ client, schema, core })
-  .withPlugin(arrowUiPlugin({
-    api: { pathPrefix: '/arrow' },
-  }));
+const runtime = statelyUi<AppSchemas, readonly [ArrowUiPlugin]>({ client, schema, core, options })
+  .withPlugin(arrowUiPlugin({ api: { pathPrefix: '/api/data' } }));
 ```
+
 
 ## API Endpoints
 
@@ -121,7 +130,7 @@ Supported stores:
 
 ### ClickHouse
 
-Connect to ClickHouse databases:
+Connect to ClickHouse databases (uses [clickhouse-datafusion](https://crates.io/crates/clickhouse-datafusion) under the hood):
 
 ```rust
 use stately_arrow::database::clickhouse::Config;
@@ -175,11 +184,13 @@ function QueryView() {
 }
 ```
 
+> Development is underway to support more sophisticated pagination and streaming of massive datasets. Check back in for updates.
+
 ## Frontend Components
 
 ### ArrowViewer
 
-Full-featured data exploration page:
+Full-featured data exploration and query page:
 
 ```typescript
 import { ArrowViewer } from '@statelyjs/arrow/pages';

@@ -68,7 +68,7 @@ tower-http = { version = "0.6", features = ["cors"] }
 utoipa = { version = "5", features = ["axum_extras", "uuid", "macros"] }
 
 [[bin]]
-name = "generate-openapi"
+name = "my-stately-app-openapi"
 path = "src/bin/openapi.rs"
 ```
 
@@ -134,7 +134,11 @@ pub struct ApiState {
 }
 
 /// API state wrapper
-#[stately::axum_api(AppState, openapi(components = [Task, TaskStatus, TaskMetrics]))]
+#[stately::axum_api(AppState, openapi(
+    server = "/api/v1/entity",
+    components = [Task, TaskStatus, TaskMetrics],
+    paths = [metrics]
+))]
 #[derive(Clone)]
 pub struct EntityState {}
 
@@ -162,7 +166,7 @@ pub fn router(state: &ApiState, tx: &tokio::sync::mpsc::Sender<ResponseEvent>) -
 /// Simple function to retrieve task metrics
 #[utoipa::path(
     get,
-    path = "/api/v1/metrics",
+    path = "/metrics",
     tag = "metrics",
     responses((status = 200, description = "Current task metrics", body = TaskMetrics))
 )]
@@ -232,7 +236,7 @@ use my_stately_app::api::EntityState;
 
 fn main() {
     let output_dir = std::env::args().nth(1).unwrap_or_else(|| {
-        eprintln!("Usage: generate-openapi <output_dir>");
+        eprintln!("Usage: my-stately-app-openapi <output_dir>");
         std::process::exit(1);
     });
 
@@ -256,7 +260,7 @@ pub mod state;
 Generate the spec:
 
 ```bash
-cargo run --bin generate-openapi . > openapi.json
+cargo run --bin my-stately-app-openapi . > openapi.json
 ```
 
 ### 7. Run the Backend

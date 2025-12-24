@@ -3,7 +3,7 @@ use tasks::api::EntityState;
 
 fn main() {
     let output_dir = std::env::args().nth(1).unwrap_or_else(|| {
-        eprintln!("Usage: generate-openapi <output_dir>");
+        eprintln!("Usage: demo-tasks-openapi <output_dir>");
         std::process::exit(1);
     });
 

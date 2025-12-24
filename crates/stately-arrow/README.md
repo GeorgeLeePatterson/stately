@@ -24,7 +24,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-stately-arrow = { path = "../stately-arrow", features = ["clickhouse", "object-store", "registry"] }
+stately-arrow = { path = "0.4", features = ["clickhouse", "object-store", "registry"] }
 ```
 
 ### Feature Flags
@@ -42,20 +42,34 @@ stately-arrow = { path = "../stately-arrow", features = ["clickhouse", "object-s
 ```rust
 use std::sync::Arc;
 use axum::Router;
-use stately_arrow::{api, QueryContext, QueryState, ConnectorRegistry};
+use stately_arrow::{self, api};
 
 #[tokio::main]
 async fn main() {
-    // Create a registry (implement ConnectorRegistry or use generic::Registry)
-    let registry: Arc<dyn ConnectorRegistry> = create_your_registry();
 
+    // Create `DataFusion` session, anything that impls `QuerySession`
+    let session = DefaultQuerySessionContext::default();
+
+    // Create a registry using anything that impls `ConnectorRegistry` 
+    // let registry: Arc<dyn stately_arrow::ConnectorRegistry> = create_your_registry();
+ 
+    // ...or use generic::Registry
+    // NOTE: Review `generic::Registry` for a complete example on how to impl `ConnectorRegistry`
+    let opts =
+        stately_arrow::generic::RegistryOptions { max_lifetime: None, max_pool_size: Some(2) };
+    let registry: Arc<dyn stately_arrow::ConnectorRegistry> =
+        Arc::new(stately_arrow::generic::Registry::new(Arc::clone(&state)).with_options(opts));
+    
     // Create query context
-    let query_context = QueryContext::new(registry);
+    let query_context = stately_arrow::QueryContext::with_session(session, registry);
+
+    // Create query state (or impl `axum::extract::FromRef` from your app's Api state)
+    let query_state = stately_arrow::QueryState::new(query_context);
 
     // Create the router
-    let arrow_router = api::router(QueryState::new(query_context));
+    let arrow_router = api::router(query_state);
 
-    // Mount under /arrow
+    // Mount under `/arrow` or whatever path you want
     let app = Router::new().nest("/arrow", arrow_router);
 
     // Start server...
@@ -121,8 +135,14 @@ impl Backend for MyBackend {
     }
 
     async fn list(&self, database: Option<&str>) -> Result<ListSummary> {
-        // Return available tables/files
-        Ok(ListSummary::Tables(vec![]))
+        // Return available databases/tables/files
+        if let Some(_db) = database {
+            // Query backend for list of tables (or whatever construct applies)
+            Ok(ListSummary::Tables(vec![]))
+        } else {
+            // Or return a list of databases (or whatever construct applies)
+            Ok(ListSummary::Databases(vec![]))
+        }
     }
 }
 ```
@@ -150,6 +170,10 @@ impl ConnectorRegistry for MyRegistry {
     }
 }
 ```
+
+#### 'Generic' Registry
+
+Refer to the [generic registry implementation](https://github.com/GeorgeLeePatterson/stately/blob/main/crates/stately-arrow/src/registry.rs) for a complete example of how to implement `ConnectorRegistry`. `generic::Registry` is provided as a convenience to use the out-of-the-box backends `stately-arrow` provides by default. But it serves as a starting point if the goal is to additionally provide custom `Backends`. 
 
 ### QuerySession
 
@@ -227,6 +251,8 @@ let config = Config {
 };
 ```
 
+ClickHouse support uses [clickhouse-datafusion](https://crates.io/crates/clickhouse-datafusion) under the hood to connect `ClickHouse` and `DataFusion`.
+
 ## Generic Registry
 
 Use the built-in generic registry with stately state (requires `registry` feature):
@@ -254,7 +280,7 @@ let registry = Registry::new(Arc::new(RwLock::new(state)));
 Generate the OpenAPI spec for frontend codegen:
 
 ```bash
-cargo run --bin generate-openapi --all-features -- ./packages/arrow/src/generated
+cargo run --bin stately-arrow-openapi --all-features -- ./packages/arrow/src/generated
 ```
 
 The spec includes conditional schemas based on enabled features.

@@ -288,7 +288,7 @@ export interface components {
          *     - A user-provided path on the filesystem
          *
          *     # Examples
-         *     ```
+         *     ```rust,ignore
          *     // Managed: uploads/config.json (resolved to latest UUID)
          *     UserDefinedPath::Managed(RelativePath::Data(VersionedPath::new("uploads/config.json")))
          *

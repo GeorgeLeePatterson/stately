@@ -29,7 +29,7 @@ uuid.workspace = true
 utoipa.workspace = true
 
 [[bin]]
-name = "generate-openapi"
+name = "stately-files-openapi"
 path = "src/bin/generate_openapi.rs"
 doc = false
 

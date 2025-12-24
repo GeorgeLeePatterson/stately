@@ -3,7 +3,7 @@
   "info": {
     "title": "stately-arrow",
     "description": "Arrow backend utilities for viewing data over API",
-    "version": "0.3.2"
+    "version": "0.4.0"
   },
   "paths": {
     "/catalogs": {

@@ -1,6 +1,6 @@
 //! Generate `OpenAPI` spec for stately-files.
 //!
-//! Run with: `cargo run --bin generate-openapi -- <output_dir>`
+//! Run with: `cargo run --bin stately-files-openapi -- <output_dir>`
 //!
 //! This outputs `openapi.json` to the specified directory,
 //! which can then be processed by `@statelyjs/codegen` to generate TypeScript types.
@@ -9,7 +9,7 @@ use stately_files::OpenApiDoc;
 
 fn main() {
     let output_dir = std::env::args().nth(1).unwrap_or_else(|| {
-        eprintln!("Usage: generate-openapi <output_dir>");
+        eprintln!("Usage: stately-files-openapi <output_dir>");
         std::process::exit(1);
     });
 

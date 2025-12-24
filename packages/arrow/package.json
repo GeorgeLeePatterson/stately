@@ -18,7 +18,7 @@
     "check": "tsc --noEmit",
     "dev": "tsdown --watch",
     "codegen": "pnpm run generate:openapi && pnpm run generate:types",
-    "generate:openapi": "cargo run -p stately-arrow --all-features --bin generate-openapi -- .",
+    "generate:openapi": "cargo run -p stately-arrow --all-features --bin stately-arrow-openapi -- .",
     "generate:types": "pnpm exec stately generate ./openapi.json -o ./src/generated"
   },
   "peerDependencies": {

@@ -107,7 +107,7 @@ If you modify the Rust entities:
 
 ```bash
 # Generate new OpenAPI spec
-cargo run --bin generate-openapi .
+cargo run --bin demo-tasks-openapi .
 
 # Regenerate TypeScript types
 cd ui

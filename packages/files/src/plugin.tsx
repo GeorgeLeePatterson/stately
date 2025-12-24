@@ -55,13 +55,13 @@
 
 import { CoreNodeType } from '@statelyjs/stately/core';
 import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
-import type { RouteOption } from '@statelyjs/ui';
 import {
   type AnyUiPlugin,
   registry as baseRegistry,
   createOperations,
   type DefineOptions,
   type DefineUiPlugin,
+  type RouteOption,
   type UiNavigationOptions,
   type UiPluginFactory,
 } from '@statelyjs/ui';
@@ -140,11 +140,7 @@ export const filesRoutes: RouteOption = { icon: Files, label: 'Files', to: '/fil
  */
 export function filesPlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
   return runtime => {
-    return {
-      ...runtime,
-      data: { ...runtime.data },
-      plugins: { ...runtime.plugins, [FILES_PLUGIN_NAME]: {} },
-    };
+    return { ...runtime, plugins: { ...runtime.plugins, [FILES_PLUGIN_NAME]: {} } };
   };
 }
 

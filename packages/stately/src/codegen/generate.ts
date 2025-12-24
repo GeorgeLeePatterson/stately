@@ -122,6 +122,7 @@ export async function generate(options: GenerateOptions): Promise<void> {
     resolveRef,
   };
 
+  // Main parsing function, recursive
   function parseSchema(schema: any, schemaName?: string): SerializedNode | null {
     if (!schema) return null;
 

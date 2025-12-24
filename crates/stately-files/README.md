@@ -217,7 +217,7 @@ Dirs::init(Dirs::new(
 Generate the OpenAPI spec for frontend codegen:
 
 ```bash
-cargo run --bin generate-openapi -- ./packages/files/src/generated
+cargo run --bin stately-files-openapi -- ./packages/files/src/generated
 ```
 
 This outputs `openapi.json` which is consumed by `@statelyjs/codegen` to generate TypeScript types.

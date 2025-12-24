@@ -8,12 +8,10 @@ use std::path::{Path, PathBuf};
 use crate::error::Result;
 use crate::settings::{Dirs, UPLOAD_DIR, VERSION_DIR};
 
-/// Newtype wrapper for versioned file paths.
+/// Wrapper for versioned file paths.
 ///
 /// Represents a logical file name that resolves to the latest UUID-versioned
 /// file in a directory (e.g., "config.json" → "uploads/config.json/{latest-uuid}").
-///
-/// The inner string is not directly accessible to prevent bypassing version resolution.
 #[derive(
     Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, utoipa::ToSchema,
 )]
@@ -64,11 +62,11 @@ impl VersionedPath {
 
 /// Path relative to an app directory (upload, data, config, or cache).
 ///
-/// Use this type in configuration structs when you need paths relative to
-/// app directories with optional version resolution for uploaded files.
+/// Use this type in configuration when you need paths relative to app directories with optional
+/// version resolution for uploaded files.
 ///
-/// For paths that are just strings (e.g., user-provided absolute paths or
-/// URLs), use `String` or `PathBuf` directly instead.
+/// For paths that are just strings (e.g., user-provided absolute paths or URLs), use `String` or
+/// path types directly instead.
 #[derive(
     Clone, Debug, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize, utoipa::ToSchema,
 )]
