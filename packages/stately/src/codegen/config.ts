@@ -5,15 +5,22 @@
  * structures used by the codegen system.
  */
 
+import { BaseNode } from "@statelyjs/schema";
+
 // =============================================================================
 // Core Types
 // =============================================================================
 
 /**
  * A serialized schema node - the output format of the parsing process.
- * TODO: Define a proper discriminated union as the schema stabilizes.
+ *
+ * All nodes must at least be structured on top of `BaseNode`
+ *
+ * Additional properties vary by node type (properties, items, variants, etc.).
  */
-export type SerializedNode = any;
+export interface SerializedNode extends BaseNode {
+  [key: string]: any;
+}
 
 /**
  * Cache entry for tracking schema parsing state.

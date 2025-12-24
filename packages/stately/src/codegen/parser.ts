@@ -249,6 +249,59 @@ function parseAllSchemas(ctx: ParseContext): Record<string, SerializedNode> {
 }
 
 // =============================================================================
+// Description Cleaning
+// =============================================================================
+
+/**
+ * Clean a description string by:
+ * 1. Extracting only the first paragraph (before any blank line)
+ * 2. Converting Rust doc syntax `[`Name`]` to just `Name`
+ */
+function cleanDescription(desc: string | undefined): string | undefined {
+  if (!desc) return desc;
+
+  // Extract first paragraph (split on double newline)
+  let cleaned = desc.split(/\n\s*\n/)[0] ?? desc;
+
+  // Convert Rust doc link syntax [`Name`] to just `Name`
+  cleaned = cleaned.replace(/\[`([^`]+)`\]/g, '`$1`');
+
+  return cleaned.trim() || undefined;
+}
+
+/**
+ * Recursively walk a node tree and clean all description fields.
+ */
+function cleanNodeDescriptions(node: SerializedNode): void {
+  if (!node || typeof node !== 'object') return;
+
+  // Clean this node's description
+  if ('description' in node && typeof node.description === 'string') {
+    node.description = cleanDescription(node.description);
+  }
+
+  // Recursively clean nested nodes
+  for (const value of Object.values(node)) {
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        cleanNodeDescriptions(item);
+      }
+    } else if (value && typeof value === 'object') {
+      cleanNodeDescriptions(value);
+    }
+  }
+}
+
+/**
+ * Clean all descriptions in a schema record.
+ */
+function cleanAllDescriptions(schemas: Record<string, SerializedNode>): void {
+  for (const node of Object.values(schemas)) {
+    cleanNodeDescriptions(node);
+  }
+}
+
+// =============================================================================
 // Bundle Splitting
 // =============================================================================
 
@@ -336,6 +389,10 @@ export function parse(
 
   // Split into main and runtime bundles
   const result = splitBundles(ctx, parsedSchemas, hasEntryPoints);
+
+  // Clean descriptions (extract first paragraph, fix Rust syntax)
+  cleanAllDescriptions(result.mainSchemas);
+  cleanAllDescriptions(result.runtimeSchemas);
 
   log(`\n✅ Main bundle: ${Object.keys(result.mainSchemas).length} schemas`);
   if (Object.keys(result.runtimeSchemas).length > 0) {
