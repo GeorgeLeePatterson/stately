@@ -323,10 +323,15 @@ function MyComponent() {
   const { plugins } = useStatelyUi();
   
   // Use files plugin to upload
-  const uploadedPath = await plugins.files.api.upload(file);
+  const {
+    full_path,
+    path,
+    success,
+    uuid,
+  } = await plugins.files.api.upload({ body: formData });
   
   // Use arrow plugin to query
-  const results = await plugins.arrow.api.query(sql);
+  const { response, error } = await plugins.arrow.api.execute_query({ body, parseAs: 'stream' });
 }
 ```
 
@@ -348,8 +353,9 @@ When using plugins that extend the schema (like Files), you need to configure co
 ```typescript
 // stately.codegen.config.ts (or any name you prefer)
 import { filesCodegenPlugin } from '@statelyjs/files/codegen';
+import { someOtherCodegenPlugin } from 'some-other-stately-plugin';
 
-export default [filesCodegenPlugin];
+export default [filesCodegenPlugin, someOtherCodegenPlugin];
 ```
 
 Then run codegen with the config:
