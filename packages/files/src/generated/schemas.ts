@@ -396,7 +396,7 @@ export const PARSED_SCHEMAS = {
     ]
   },
   "RelativePath": {
-    "description": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead.",
+    "description": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration when you need paths relative to app directories with optional\nversion resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or URLs), use `String` or\npath types directly instead.",
     "discriminator": "dir",
     "keys": [
       "dir",
@@ -451,7 +451,7 @@ export const PARSED_SCHEMAS = {
           "properties": {
             "path": {
               "nodeType": "primitive",
-              "description": "Newtype wrapper for versioned file paths.\n\nRepresents a logical file name that resolves to the latest UUID-versioned\nfile in a directory (e.g., \"config.json\" → \"uploads/config.json/{latest-uuid}\").\n\nThe inner string is not directly accessible to prevent bypassing version resolution.",
+              "description": "Wrapper for versioned file paths.\n\nRepresents a logical file name that resolves to the latest UUID-versioned\nfile in a directory (e.g., \"config.json\" → \"uploads/config.json/{latest-uuid}\").",
               "primitiveType": "string"
             }
           },
@@ -472,9 +472,9 @@ export const PARSED_SCHEMAS = {
     "nodeType": "union",
     "variants": [
       {
-        "label": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead.",
+        "label": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration when you need paths relative to app directories with optional\nversion resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or URLs), use `String` or\npath types directly instead.",
         "schema": {
-          "description": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration structs when you need paths relative to\napp directories with optional version resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or\nURLs), use `String` or `PathBuf` directly instead.",
+          "description": "Path relative to an app directory (upload, data, config, or cache).\n\nUse this type in configuration when you need paths relative to app directories with optional\nversion resolution for uploaded files.\n\nFor paths that are just strings (e.g., user-provided absolute paths or URLs), use `String` or\npath types directly instead.",
           "discriminator": "dir",
           "keys": [
             "dir",
@@ -529,7 +529,7 @@ export const PARSED_SCHEMAS = {
                 "properties": {
                   "path": {
                     "nodeType": "primitive",
-                    "description": "Newtype wrapper for versioned file paths.\n\nRepresents a logical file name that resolves to the latest UUID-versioned\nfile in a directory (e.g., \"config.json\" → \"uploads/config.json/{latest-uuid}\").\n\nThe inner string is not directly accessible to prevent bypassing version resolution.",
+                    "description": "Wrapper for versioned file paths.\n\nRepresents a logical file name that resolves to the latest UUID-versioned\nfile in a directory (e.g., \"config.json\" → \"uploads/config.json/{latest-uuid}\").",
                     "primitiveType": "string"
                   }
                 },
@@ -554,7 +554,7 @@ export const PARSED_SCHEMAS = {
   },
   "VersionedPath": {
     "nodeType": "primitive",
-    "description": "Newtype wrapper for versioned file paths.\n\nRepresents a logical file name that resolves to the latest UUID-versioned\nfile in a directory (e.g., \"config.json\" → \"uploads/config.json/{latest-uuid}\").\n\nThe inner string is not directly accessible to prevent bypassing version resolution.",
+    "description": "Wrapper for versioned file paths.\n\nRepresents a logical file name that resolves to the latest UUID-versioned\nfile in a directory (e.g., \"config.json\" → \"uploads/config.json/{latest-uuid}\").",
     "primitiveType": "string"
   }
 } as const;

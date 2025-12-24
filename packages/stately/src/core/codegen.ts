@@ -1,4 +1,4 @@
-import type { CodegenPlugin, CodegenPluginContext, OpenAPISpec } from '@/codegen/plugin-manager';
+import type { CodegenPlugin, CodegenPluginContext, OpenAPISpec } from '@/codegen/config';
 import { CoreNodeType } from '@/core/schema';
 
 /**

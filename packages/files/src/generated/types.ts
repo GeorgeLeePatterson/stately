@@ -258,11 +258,11 @@ export interface components {
         /**
          * @description Path relative to an app directory (upload, data, config, or cache).
          *
-         *     Use this type in configuration structs when you need paths relative to
-         *     app directories with optional version resolution for uploaded files.
+         *     Use this type in configuration when you need paths relative to app directories with optional
+         *     version resolution for uploaded files.
          *
-         *     For paths that are just strings (e.g., user-provided absolute paths or
-         *     URLs), use `String` or `PathBuf` directly instead.
+         *     For paths that are just strings (e.g., user-provided absolute paths or URLs), use `String` or
+         *     path types directly instead.
          */
         RelativePath: {
             /** @enum {string} */
@@ -298,12 +298,10 @@ export interface components {
          */
         UserDefinedPath: components["schemas"]["RelativePath"] | string;
         /**
-         * @description Newtype wrapper for versioned file paths.
+         * @description Wrapper for versioned file paths.
          *
          *     Represents a logical file name that resolves to the latest UUID-versioned
          *     file in a directory (e.g., "config.json" → "uploads/config.json/{latest-uuid}").
-         *
-         *     The inner string is not directly accessible to prevent bypassing version resolution.
          */
         VersionedPath: string;
     };
@@ -617,4 +615,3 @@ export interface operations {
         };
     };
 }
-

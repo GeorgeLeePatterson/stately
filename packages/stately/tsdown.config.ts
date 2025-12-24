@@ -9,7 +9,11 @@ export default defineConfig({
     "cli/index": "src/cli/index.ts",
     // Codegen (types for plugin authors + generator)
     "codegen/index": "src/codegen/index.ts",
-    "codegen/generate": "src/codegen/generate.ts",
+    "codegen/config": "src/codegen/config.ts",
+    "codegen/fs": "src/codegen/fs.ts",
+    "codegen/openapi": "src/codegen/openapi.ts",
+    "codegen/parser": "src/codegen/parser.ts",
+    "codegen/plugins": "src/codegen/plugins.ts",
     // Core plugin
     "core/index": "src/core/index.ts",
     "core/context/index": "src/core/context/index.ts",

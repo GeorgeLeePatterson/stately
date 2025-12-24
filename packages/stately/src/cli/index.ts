@@ -13,7 +13,12 @@
  */
 
 import { Command } from 'commander';
-import { generate } from '../codegen/generate.js';
+
+import { nodeFS } from '../codegen/fs.js';
+import { parse } from '../codegen/parser.js';
+import { readOpenAPISpec, writeTypes } from '../codegen/openapi.js';
+import { loadPlugins, writePluginOutput } from '../codegen/plugins.js';
+import { createCoreCodegenPlugin } from '../core/codegen.js';
 
 const program = new Command();
 
@@ -29,10 +34,39 @@ program
   .option('-o, --output <dir>', 'Output directory for generated files', './src/generated')
   .option('-c, --config <file>', 'Path to a plugin config file (e.g., stately.config.ts)')
   .action(async (openapi: string, options: { output: string; config?: string }) => {
+    const io = nodeFS;
+
     try {
-      await generate({ config: options.config, input: openapi, output: options.output });
+      // Resolve paths
+      const inputPath = io.resolvePath(openapi);
+      const outputDir = io.resolvePath(options.output);
+      const typesPath = io.joinPath(outputDir, 'types.ts');
+
+      // Validate input exists
+      if (!io.exists(inputPath)) {
+        io.log(`❌ OpenAPI spec not found: ${inputPath}`);
+        process.exit(1);
+      }
+
+      // Load inputs
+      const spec = readOpenAPISpec(io, inputPath);
+      const userPlugins = await loadPlugins(io, options.config);
+      if (userPlugins.length) {
+        io.log(`🔌 Loaded ${userPlugins.length} @statelyjs/codegen plugin(s)`);
+      }
+      const plugins = [...userPlugins, createCoreCodegenPlugin()];
+
+      // Parse (pure transformation)
+      const result = parse(spec, plugins, { log: io.log });
+
+      // Write outputs
+      io.ensureDir(outputDir);
+      writePluginOutput(io, outputDir, result);
+      await writeTypes(io, typesPath, inputPath);
+
+      io.log('✨ Schema generation complete!');
     } catch (error) {
-      console.error('[@statelyjs/stately] Generation failed:', error);
+      io.log(`❌ Generation failed: ${error}`);
       process.exit(1);
     }
   });
