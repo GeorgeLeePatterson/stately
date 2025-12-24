@@ -1,6 +1,6 @@
 {
   "name": "@statelyjs/stately",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "module",
   "description": "Stately - Schema-driven UI runtime with codegen and plugin system",
   "license": "Apache-2.0",
