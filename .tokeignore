@@ -3,3 +3,6 @@
 **/*.toml
 **/*.md
 **/*.json
+**/node_modules/
+**/dist/
+**/.turbo/

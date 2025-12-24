@@ -2,7 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/stately.svg)](https://crates.io/crates/stately)
 [![Documentation](https://docs.rs/stately/badge.svg)](https://docs.rs/stately)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/GeorgeLeePatterson/stately/tree/main/LICENSE)
 [![Coverage](https://codecov.io/gh/GeorgeLeePatterson/stately/branch/main/graph/badge.svg)](https://codecov.io/gh/GeorgeLeePatterson/stately)
 
 > Type-safe state management with entity relationships and CRUD operations
@@ -231,11 +231,11 @@ fn main() {
 }
 ```
 
-See the [examples](examples/) directory:
+See the [examples](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately/examples/) directory:
 
-- [`basic.rs`](examples/basic.rs) - Core CRUD operations and entity relationships
-- [`axum_api.rs`](examples/axum_api.rs) - Web API generation with Axum
-- [`doc_expand.rs`](examples/doc_expand.rs) - Example used to generate documentation
+- [`basic.rs`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately/examples/basic.rs) - Core CRUD operations and entity relationships
+- [`axum_api.rs`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately/examples/axum_api.rs) - Web API generation with Axum
+- [`doc_expand.rs`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately/examples/doc_expand.rs) - Example used to generate documentation
 
 Run examples:
 
@@ -485,13 +485,6 @@ The `#[stately::entity]` macro implements the `HasName` trait and supports these
 #[stately::entity(name_method = "get_identifier")]
 ```
 
-## Examples
-
-See the [examples directory](../examples/):
-
-- [`basic.rs`](examples/basic.rs) - Core functionality demonstration
-- [`axum_api.rs`](examples/axum_api.rs) - Web API generation
-
 ## API Reference
 
 ### Core Types
@@ -560,10 +553,11 @@ These enable type-safe event-driven architectures for persistence, logging, and 
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](../../LICENSE) for details.
+Licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/GeorgeLeePatterson/stately/tree/main/LICENSE) for details.
 
 ## Links
 
 - [Documentation](https://docs.rs/stately)
 - [Crates.io](https://crates.io/crates/stately)
 - [Repository](https://github.com/georgeleepatterson/stately)
+- [npm](https://www.npmjs.com/package/@statelyjs/stately)

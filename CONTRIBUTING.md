@@ -1,6 +1,6 @@
-# Contributing to clickhouse-datafusion
+# Contributing to stately
 
-Thank you for your interest in contributing to clickhouse-datafusion! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to stately! This document provides guidelines and instructions for contributing to the project.
 
 ## Getting Started
 
@@ -16,6 +16,7 @@ Thank you for your interest in contributing to clickhouse-datafusion! This docum
 ### Prerequisites
 
 - Rust 1.70+ (we use the 2024 edition)
+- Node 22+
 
 ### Building
 
@@ -25,6 +26,12 @@ cargo build
 
 # Build with release optimizations
 cargo build --release
+
+# Check the typescript of the UI
+pnpm check
+
+# Build the UI
+pnpm build
 ```
 
 ### Testing
@@ -42,13 +49,13 @@ Before submitting a PR, please ensure:
 
 ```bash
 # Format code
-cargo fmt
+cargo +nightly fmt
 
 # Run the checks the CI will perform (and some extra)
 just checks
 # or
 # Run clippy
-cargo clippy --all-features --all-targets
+cargo +nightly clippy --all-features --all-targets
 
 # Check for security issues
 cargo audit
@@ -58,7 +65,7 @@ cargo audit
 
 ### Code Style
 
-- Follow Rust standard formatting (use `cargo fmt`, pedantic linting is used)
+- Follow Rust standard formatting (use `cargo +nightly fmt`, pedantic linting is used)
 - Write clear, self-documenting code
 - Add documentation comments for public APIs
 - Include examples in documentation where appropriate
@@ -85,9 +92,8 @@ cargo audit
 ### Testing
 
 - Unit tests go inline with modules
-- Integration tests use Docker containers (via testcontainers)
 - All tests must pass before merging
-- Aim for high test coverage (currently at 90%+)
+- Aim for high test coverage
 
 ## Architecture Overview
 
@@ -100,7 +106,7 @@ Key components:
 When reporting issues, please include:
 
 - Rust version (`rustc --version`)
-- `ClickHouse` server version
+- Node version (`node --version`)
 - Minimal reproducible example
 - Error messages and stack traces
 - Expected vs actual behavior

@@ -3,7 +3,7 @@
 [![Crates.io](https://img.shields.io/crates/v/stately.svg)](https://crates.io/crates/stately)
 [![Documentation](https://docs.rs/stately/badge.svg)](https://docs.rs/stately)
 [![npm](https://img.shields.io/npm/v/@statelyjs/stately)](https://www.npmjs.com/package/@statelyjs/stately)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/georgeleepatterson/stately/blob/main/LICENSE)
 
 > Full-stack type-safe state management with auto-generated UI and a plugin architecture
 
@@ -108,7 +108,7 @@ pub struct State {
 pub struct ApiState {}
 ```
 
-See [`crates/stately`](crates/stately) for complete backend documentation.
+See [`crates/stately`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately) for complete backend documentation.
 
 ### Frontend Setup
 
@@ -153,9 +153,9 @@ export const useAppStatelyUi = useStatelyUi<AppSchemas>;
 export const AppStatelyUiProvider = statelyUiProvider<AppSchemas>();
 ```
 
-> **Working Example**: See the [`demos/tasks`](demos/tasks) application for a complete working example that follows this setup.
+> **Working Example**: See the [`demos/tasks`](https://github.com/GeorgeLeePatterson/stately/tree/main/demos/tasks) application for a complete working example that follows this setup.
 
-> See [`packages/stately`](packages/stately) for complete frontend documentation.
+> See [`packages/stately`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/stately) for complete frontend documentation.
 
 ## Packages
 
@@ -163,20 +163,20 @@ export const AppStatelyUiProvider = statelyUiProvider<AppSchemas>();
 
 | Crate | Description |
 |-------|-------------|
-| [`stately`](crates/stately) | Core library - entity macros, state management, Axum integration |
-| [`stately-derive`](crates/stately-derive) | Procedural macros (re-exported by `stately`) |
-| [`stately-files`](crates/stately-files) | File system plugin - browsing, upload, download |
-| [`stately-arrow`](crates/stately-arrow) | SQL query plugin - DataFusion, Arrow IPC streaming |
+| [`stately`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately) | Core library - entity macros, state management, Axum integration |
+| [`stately-derive`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately-derive) | Procedural macros (re-exported by `stately`) |
+| [`stately-files`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately-files) | File system plugin - browsing, upload, download |
+| [`stately-arrow`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately-arrow) | SQL query plugin - DataFusion, Arrow IPC streaming |
 
 ### TypeScript Packages
 
 | Package | Description |
 |---------|-------------|
-| [`@statelyjs/stately`](packages/stately) | Main package. Core plugin (entity CRUD) + codegen CLI |
-| [`@statelyjs/ui`](packages/ui) | Base React components, layout, theme, plugin runtime |
-| [`@statelyjs/schema`](packages/schema) | Lower level schema type definitions, parsing, validation |
-| [`@statelyjs/files`](packages/files) | File browser UI plugin |
-| [`@statelyjs/arrow`](packages/arrow) | SQL query UI plugin with Arrow IPC streaming |
+| [`@statelyjs/stately`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/stately) | Main package. Core plugin (entity CRUD) + codegen CLI |
+| [`@statelyjs/ui`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/ui) | Base React components, layout, theme, plugin runtime |
+| [`@statelyjs/schema`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/schema) | Lower level schema type definitions, parsing, validation |
+| [`@statelyjs/files`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/files) | File browser UI plugin |
+| [`@statelyjs/arrow`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/arrow) | SQL query UI plugin with Arrow IPC streaming |
 
 ## Plugin Architecture
 
@@ -209,8 +209,8 @@ const ui = statelyUi<AppSchemas>({ ... })
 ### For Plugin Authors
 
 See the existing plugins as examples:
-- **Files**: [`crates/stately-files`](crates/stately-files) + [`packages/files`](packages/files)
-- **Arrow**: [`crates/stately-arrow`](crates/stately-arrow) + [`packages/arrow`](packages/arrow)
+- **Files**: [`crates/stately-files`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately-files) + [`packages/files`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/files)
+- **Arrow**: [`crates/stately-arrow`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately-arrow) + [`packages/arrow`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/arrow)
 
 Key concepts:
 1. Backend plugins expose Axum routers and OpenAPI schemas
@@ -239,16 +239,16 @@ pnpm test
 
 | Example | Description |
 |---------|-------------|
-| [`demos/tasks`](demos/tasks) | Complete full-stack task management app demonstrating frontend setup |
-| [`crates/stately/examples`](crates/stately/examples) | Rust examples for backend entity definitions and Axum integration |
+| [`demos/tasks`](https://github.com/GeorgeLeePatterson/stately/tree/main/demos/tasks) | Complete full-stack task management app demonstrating frontend setup |
+| [`crates/stately/examples`](https://github.com/GeorgeLeePatterson/stately/tree/main/crates/stately/examples) | Rust examples for backend entity definitions and Axum integration |
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/georgeleepatterson/stately/blob/main/CONTRIBUTING.md) for guidelines.
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
+Licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/georgeleepatterson/stately/blob/main/LICENSE) for details.
 
 ## Links
 
