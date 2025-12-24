@@ -3,13 +3,13 @@
 [![Crates.io](https://img.shields.io/crates/v/stately-arrow.svg)](https://crates.io/crates/stately-arrow)
 [![Documentation](https://docs.rs/stately-arrow/badge.svg)](https://docs.rs/stately-arrow)
 [![npm](https://img.shields.io/npm/v/@statelyjs/arrow)](https://www.npmjs.com/package/@statelyjs/arrow)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../../LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/GeorgeLeePatterson/stately/tree/main/LICENSE)
 
 Arrow-based data connectivity and query execution over HTTP APIs.
 
 ## Overview
 
-This crate provides a flexible abstraction layer over DataFusion for building data query services with support for multiple backend connectors. It's designed to be mounted as an axum router and pairs with the [`@statelyjs/arrow`](../../packages/arrow/README.md) frontend plugin.
+This crate provides a flexible abstraction layer over DataFusion for building data query services with support for multiple backend connectors. It's designed to be mounted as an axum router and pairs with the [`@statelyjs/arrow`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/arrow/README.md) frontend plugin.
 
 ## Features
 
@@ -309,4 +309,4 @@ stately-arrow/
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](../../LICENSE) for details.
+Licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/GeorgeLeePatterson/stately/tree/main/LICENSE) for details.

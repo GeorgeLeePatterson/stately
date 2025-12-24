@@ -2,7 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/stately-derive.svg)](https://crates.io/crates/stately-derive)
 [![Documentation](https://docs.rs/stately-derive/badge.svg)](https://docs.rs/stately-derive)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](../LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://github.com/GeorgeLeePatterson/stately/tree/main/LICENSE)
 
 > Procedural macros for the Stately state management framework
 
@@ -61,4 +61,4 @@ For complete documentation and examples, see the [stately](https://docs.rs/state
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](../../LICENSE) for details.
+Licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/GeorgeLeePatterson/stately/tree/main/LICENSE) for details.

@@ -2,7 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1] - 2025-12-24
+
+### ⚙️ Miscellaneous Tasks
+
+- Updates turbo
+
+### 🐛 Bug Fixes
+
+- *(ci)* Remove explicit pnpm version to avoid conflict with packageManager
+- *(ui)* Refactors codegen in stately
+- *(ui)* Updates types in codegen, better typing
+
+### 📚 Documentation
+
+- Updates links and refs across docs
+- Updates docs, housekeeping, preparing for doc publish
+- Small updates to plugin docs
+
 ## [0.4.0] - 2025-12-23
+
+### ⚙️ Miscellaneous Tasks
+
+- Prepare release v0.4.0 (#18)
 
 ### 🚀 Features
 

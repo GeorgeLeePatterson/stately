@@ -14,7 +14,7 @@
   "groupOrder": ["Modules", "Classes", "Interfaces", "Type Aliases", "Functions", "Variables"],
   "navigationLinks": {
     "GitHub": "https://github.com/georgeleepatterson/stately",
-    "Documentation": "https://github.com/georgeleepatterson/stately/docs"
+    "Documentation": "https://github.com/GeorgeLeePatterson/stately/tree/main/docs"
   },
   "highlightLanguages": ["typescript", "bash", "json", "yaml", "toml", "rust", "tsx", "javascript"]
 }
