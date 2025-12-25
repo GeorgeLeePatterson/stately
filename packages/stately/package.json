@@ -51,7 +51,7 @@
   "dependencies": {
     "@statelyjs/schema": "workspace:*",
     "@statelyjs/ui": "workspace:*",
-    "commander": "^14",
+    "commander": "^14.0.2",
     "openapi-typescript": "^7.10.1"
   },
   "peerDependencies": {
@@ -62,7 +62,7 @@
     "sonner": "^2.0.7"
   },
   "devDependencies": {
-    "@tanstack/react-query": "^5.90.10",
+    "@tanstack/react-query": "^5.90.12",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "lucide-react": "^0.562.0",
