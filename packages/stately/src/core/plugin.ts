@@ -45,7 +45,7 @@ const { makeRegistryKey } = registry;
  */
 export interface CoreEntityOptions {
   /** Map of entity type names to icon components for sidebar and headers */
-  icons: Record<StateEntry, React.ComponentType<any>>;
+  icons?: Record<StateEntry, React.ComponentType<any>>;
 }
 
 /**
@@ -74,7 +74,7 @@ export type CoreUiOptions = DefineOptions<{
     pathPrefix?: string;
   };
   /** Entity display configuration */
-  entities: CoreEntityOptions;
+  entities?: CoreEntityOptions;
 }>;
 
 /**
@@ -136,7 +136,7 @@ export function coreUiPlugin<Schema extends Schemas, Augments extends readonly A
     devLog.debug('Core', 'registered core plugin', { options, pathPrefix, runtime });
 
     // Gather utils
-    const entityIcons = options?.entities?.icons || {};
+    const entityIcons = options?.entities?.icons ?? {};
     const utils: CoreUiUtils = createCoreUtils(runtime, options);
 
     // Create entity routes

@@ -289,7 +289,7 @@ export function createStatelyUi<
 
   return makeBuilder({
     client,
-    options: { ...defaultUiOptions, ...options },
+    options: { ...defaultUiOptions, ...(options ?? {}) },
     plugins: {} as AllUiPlugins<Schema, Augments>,
     registry: { components: new Map(), functions: new Map(), transformers: new Map() },
     schema,

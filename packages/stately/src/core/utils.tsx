@@ -52,7 +52,7 @@ export function createCoreUtils<S extends Schemas = Schemas, A extends readonly 
   runtime: StatelyUiRuntime<S, readonly [CoreUiPlugin, ...A]>,
   options?: CoreUiOptions,
 ): CoreUiUtils {
-  const entityIcons = options?.entities?.icons || {};
+  const entityIcons = options?.entities?.icons ?? {};
   return {
     generateEntityTypeDisplay() {
       return generateEntityTypeDisplay(runtime.schema.data);

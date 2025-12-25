@@ -10,11 +10,16 @@ export type PrimitiveViewProps<Schema extends Schemas = Schemas> = FieldViewProp
 export function PrimitiveView<Schema extends Schemas = Schemas>({
   value,
 }: PrimitiveViewProps<Schema>) {
-  const displayValue = typeof value === 'boolean' ? value.toString() : `"${String(value)}"`;
+  const displayValue =
+    typeof value === 'boolean'
+      ? value.toString()
+      : typeof value === 'number'
+        ? `${value}`
+        : `"${String(value)}"`;
   const extraClasses = displayValue.length > 256 ? 'overflow-y-auto overflow-x-hidden' : '';
   return (
     <div className={`flex flex-1 ${extraClasses}`}>
-      {typeof value === 'boolean' || !!value ? (
+      {typeof value === 'boolean' || (value !== undefined && value !== null) ? (
         <span className="text-sm py-1 px-2 rounded flex-1 bg-muted">{displayValue}</span>
       ) : (
         <NotSet />

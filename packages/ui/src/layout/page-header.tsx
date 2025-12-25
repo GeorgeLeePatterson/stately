@@ -48,9 +48,11 @@ export function PageHeader({
                   href={resolvedBackLink.href}
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  <span className="hidden @3xl/stately-page-header:inline">
-                    {resolvedBackLink.label}
-                  </span>
+                  {resolvedBackLink.label && (
+                    <span className="hidden @3xl/stately-page-header:inline">
+                      {resolvedBackLink.label}
+                    </span>
+                  )}
                 </a>
               }
               size="sm"

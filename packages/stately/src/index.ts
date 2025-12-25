@@ -75,7 +75,9 @@ import type { Schemas } from './schema.js';
  * @property core - Core plugin options (entity icons, API path prefix)
  */
 export type StatelyConfiguration<Schema extends Schemas<any, any> = Schemas> = Readonly<
-  StatelyUiConfiguration<Schema>
+  Omit<StatelyUiConfiguration<Schema>, 'options'> & {
+    options?: StatelyUiConfiguration<Schema>['options'];
+  }
 > & {
   /**
    * Core plugin configuration options.
@@ -165,9 +167,10 @@ export function statelyUi<
   core,
   ...stately
 }: StatelyConfiguration<Schema>): StatelyUiBuilder<Schema, readonly [CoreUiPlugin, ...Augments]> {
-  return createStatelyUi<Schema, readonly [CoreUiPlugin, ...Augments]>(stately).withPlugin(
-    coreUiPlugin<Schema, Augments>(core),
-  );
+  return createStatelyUi<Schema, readonly [CoreUiPlugin, ...Augments]>({
+    ...stately,
+    options: stately.options ?? {},
+  }).withPlugin(coreUiPlugin<Schema, Augments>(core));
 }
 
 // ============================================================================
