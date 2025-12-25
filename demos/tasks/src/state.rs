@@ -1,24 +1,57 @@
 use serde::{Deserialize, Serialize};
+use stately::Link;
 
-/// A dispatched task
+/// A task in our application
 #[stately::entity]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct Task {
-    /// The name of the task
+    // The task's friendly name
     pub name:        String,
-    /// The description of the task
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// The status of the task
+    // The task's current status
     pub status:      TaskStatus,
+    // The task's assigned user
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub assigned_to: Option<Link<User>>,
 }
 
-/// The status of a task
+/// A user in our application
+#[stately::entity]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
+pub struct User {
+    // The user's full name
+    pub name:   String,
+    // The user's title
+    pub title:  Option<String>,
+    // The user's current status
+    #[serde(default)]
+    pub status: UserStatus,
+}
+
+/// A task's status
 #[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 pub enum TaskStatus {
     #[default]
     Pending,
     InProgress,
     Complete,
+}
+
+/// A user's status
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
+pub enum UserStatus {
+    /// The user is working
+    #[default]
+    Working,
+    /// The user is currently on approved PTO
+    #[serde(rename = "PTO")]
+    Pto,
+    /// The user is currently out of office
+    #[serde(rename = "OOO")]
+    Ooo,
+    /// The user is currently absent without notice
+    Absent,
 }
 
 // Simple tracker for the ui
@@ -35,4 +68,5 @@ pub struct TaskMetrics {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct State {
     tasks: Task,
+    users: User,
 }

@@ -1,6 +1,6 @@
 # Tasks Demo
 
-A minimal task management application demonstrating Stately's core features. This is the companion example for the [Quick Start](../../docs/getting-started/quick-start.md) guide.
+A minimal task management application demonstrating Stately's core features. This is the companion example for the [Basic Demo](../../docs/guide/start/quick-start.md) guide.
 
 ## What's Included
 
@@ -113,9 +113,3 @@ cargo run --bin demo-tasks-openapi .
 cd ui
 pnpm exec stately generate ../openapi.json -o ./src/generated
 ```
-
-## Learn More
-
-- [Quick Start Guide](../../docs/getting-started/quick-start.md) - Step-by-step tutorial
-- [Entities and State](../../docs/concepts/entities-and-state.md) - Entity concepts
-- [Architecture Overview](../../docs/concepts/overview.md) - How it all fits together

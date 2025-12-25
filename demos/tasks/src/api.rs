@@ -1,3 +1,4 @@
+#![expect(clippy::needless_for_each)]
 use std::sync::Arc;
 
 use axum::extract::{FromRef, State};
@@ -5,7 +6,9 @@ use axum::{Json, Router};
 use tokio::sync::RwLock;
 use tower_http::cors::{Any, CorsLayer};
 
-use crate::state::{Entity, State as AppState, StateEntry, Task, TaskMetrics, TaskStatus};
+use crate::state::{
+    Entity, State as AppState, StateEntry, Task, TaskMetrics, TaskStatus, User, UserStatus,
+};
 
 /// Create API state used across all endpoints
 #[derive(Clone)]
@@ -18,7 +21,7 @@ pub struct ApiState {
 /// API state wrapper
 #[stately::axum_api(AppState, openapi(
     server = "/api/v1/entity",
-    components = [Task, TaskStatus, TaskMetrics],
+    components = [Task, TaskStatus, TaskMetrics, User, UserStatus],
     paths = [metrics]
 ))]
 #[derive(Clone)]

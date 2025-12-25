@@ -1,5 +1,5 @@
 {
-  "name": "tasks",
+  "name": "basic",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,13 +8,12 @@
     "build": "tsc -b && vite build",
     "check": "pnpm exec tsc --noEmit",
     "preview": "vite preview",
-    "generate:openapi": "cd ../ && cargo run --bin demo-tasks-openapi -- . && cd ./ui",
-    "codegen": "pnpm run generate:openapi && pnpm exec stately generate ../openapi.json -o ./src/generated",
-    "create:task": "curl -X PUT http://localhost:3000/api/v1/entity -H \"Content-Type: application/json\" -d '{\"type\": \"task\", \"data\": {\"name\": \"My First Task\", \"status\": \"Pending\"}}'"
+    "generate:openapi": "cd ../ && cargo run -- . && cd ./ui",
+    "codegen": "pnpm run generate:openapi && pnpm exec stately generate ../openapi.json -o ./src/generated"
   },
   "dependencies": {
     "@statelyjs/schema": "^0.4.1",
-    "@statelyjs/stately": "^0.4.1",
+    "@statelyjs/stately": "link:../../../packages/stately",
     "@statelyjs/ui": "^0.4.1",
     "lucide-react": "^0.562.0",
     "openapi-fetch": "^0.15.0",

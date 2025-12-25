@@ -30,7 +30,7 @@ async fn main() {
             match event {
                 ResponseEvent::Created { .. } => metrics.write().await.tasks_created += 1,
                 ResponseEvent::Deleted { .. } => metrics.write().await.tasks_removed += 1,
-                _ => { /* Ignore */ }
+                ResponseEvent::Updated { .. } => { /* Ignore */ }
             }
         }
     });

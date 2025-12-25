@@ -3,31 +3,72 @@
 
 export const PARSED_SCHEMAS = {
   "Task": {
-    "description": "A dispatched task",
+    "description": "A task in our application",
     "keys": [
+      "assigned_to",
       "description",
       "name",
       "status"
     ],
     "nodeType": "object",
     "properties": {
-      "description": {
-        "description": "The description of the task",
+      "assigned_to": {
         "innerSchema": {
-          "description": "The description of the task",
+          "nodeType": "link",
+          "description": "Reference configuration either by ID or inline, with entity type metadata",
+          "inlineSchema": {
+            "nodeType": "object",
+            "description": "A user in our application",
+            "keys": [
+              "name",
+              "status",
+              "title"
+            ],
+            "properties": {
+              "name": {
+                "nodeType": "primitive",
+                "primitiveType": "string"
+              },
+              "status": {
+                "nodeType": "enum",
+                "description": "A user's status",
+                "values": [
+                  "Working",
+                  "PTO",
+                  "OOO",
+                  "Absent"
+                ]
+              },
+              "title": {
+                "innerSchema": {
+                  "nodeType": "primitive",
+                  "primitiveType": "string"
+                },
+                "nodeType": "nullable"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "targetType": "user"
+        },
+        "nodeType": "nullable"
+      },
+      "description": {
+        "innerSchema": {
           "nodeType": "primitive",
           "primitiveType": "string"
         },
         "nodeType": "nullable"
       },
       "name": {
-        "description": "The name of the task",
         "nodeType": "primitive",
         "primitiveType": "string"
       },
       "status": {
         "nodeType": "enum",
-        "description": "The status of a task",
+        "description": "A task's status",
         "values": [
           "Pending",
           "InProgress",
@@ -40,10 +81,46 @@ export const PARSED_SCHEMAS = {
       "status"
     ]
   },
+  "User": {
+    "nodeType": "object",
+    "description": "A user in our application",
+    "keys": [
+      "name",
+      "status",
+      "title"
+    ],
+    "properties": {
+      "name": {
+        "nodeType": "primitive",
+        "primitiveType": "string"
+      },
+      "status": {
+        "nodeType": "enum",
+        "description": "A user's status",
+        "values": [
+          "Working",
+          "PTO",
+          "OOO",
+          "Absent"
+        ]
+      },
+      "title": {
+        "innerSchema": {
+          "nodeType": "primitive",
+          "primitiveType": "string"
+        },
+        "nodeType": "nullable"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  },
   "StateEntry": {
     "nodeType": "enum",
     "values": [
-      "task"
+      "task",
+      "user"
     ]
   }
 } as const;

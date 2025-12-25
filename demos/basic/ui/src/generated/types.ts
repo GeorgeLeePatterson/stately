@@ -36,23 +36,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/metrics": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Simple function to retrieve task metrics */
-        get: operations["metrics"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/{entry}/{id}": {
         parameters: {
             query?: never;
@@ -112,40 +95,31 @@ export interface components {
             entities: components["schemas"]["EntitiesMap"];
         };
         Entity: {
-            data: components["schemas"]["Task"];
+            data: components["schemas"]["Example"];
             /** @enum {string} */
-            type: "task";
-        } | {
-            data: components["schemas"]["User"];
-            /** @enum {string} */
-            type: "user";
+            type: "example";
         };
         /**
          * @description Entity identifier type - wraps String for flexibility with UUID v7 generation. Use the singleton ID '00000000-0000-0000-0000-000000000000' for singleton entities.
          * @example 00000000-0000-0000-0000-000000000000
          */
         EntityId: string;
+        /**
+         * @description Example entity
+         *
+         *     Doc comments appear as descriptions in the UI. Only the first line is used as the description,
+         *     any additional doc comments will not be displayed on the UI.
+         */
+        Example: {
+            /** @description Example count */
+            count: number;
+            /** @description Example name */
+            name: string;
+        };
         /** @description Response containing a single entity */
         GetEntityResponse: {
             entity: components["schemas"]["Entity"];
             id: components["schemas"]["EntityId"];
-        };
-        /** @description Reference configuration either by ID or inline, with entity type metadata */
-        LinkUser_User: {
-            /**
-             * @description The entity type this Link references
-             * @enum {string}
-             */
-            entity_type: "user";
-            /** @description Reference to an entity by ID */
-            ref: string;
-        } | {
-            /**
-             * @description The entity type this Link references
-             * @enum {string}
-             */
-            entity_type: "user";
-            inline: components["schemas"]["User"];
         };
         /** @description Response for entity summary list queries */
         ListResponse: {
@@ -178,7 +152,7 @@ export interface components {
             message: string;
         };
         /** @enum {string} */
-        StateEntry: "task" | "user";
+        StateEntry: "example";
         /** @description Summary of an entity for listings */
         Summary: {
             /** @description Optional description */
@@ -191,41 +165,6 @@ export interface components {
             /** @description Human-readable name */
             name: string;
         };
-        /** @description A task in our application */
-        Task: {
-            assigned_to?: null | components["schemas"]["LinkUser_User"];
-            description?: string | null;
-            name: string;
-            status: components["schemas"]["TaskStatus"];
-        };
-        TaskMetrics: {
-            /**
-             * Format: int64
-             * @description The number of tasks created
-             */
-            tasks_created: number;
-            /**
-             * Format: int64
-             * @description The number of tasks removed
-             */
-            tasks_removed: number;
-        };
-        /**
-         * @description A task's status
-         * @enum {string}
-         */
-        TaskStatus: "Pending" | "InProgress" | "Complete";
-        /** @description A user in our application */
-        User: {
-            name: string;
-            status?: components["schemas"]["UserStatus"];
-            title?: string | null;
-        };
-        /**
-         * @description A user's status
-         * @enum {string}
-         */
-        UserStatus: "Working" | "PTO" | "OOO" | "Absent";
     };
     responses: {
         /** @description Standard error shape returned by handlers */
@@ -377,26 +316,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ApiError"];
-                };
-            };
-        };
-    };
-    metrics: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current task metrics */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TaskMetrics"];
                 };
             };
         };

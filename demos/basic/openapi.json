@@ -1,18 +1,18 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "tasks",
+    "title": "basic",
     "description": "",
+    "contact": {
+      "name": "George Lee Patterson",
+      "email": "patterson.george@gmail.com"
+    },
     "license": {
-      "name": ""
+      "name": "Apache-2.0",
+      "identifier": "Apache-2.0"
     },
     "version": "0.1.0"
   },
-  "servers": [
-    {
-      "url": "/api/v1/entity"
-    }
-  ],
   "paths": {
     "/": {
       "put": {
@@ -90,27 +90,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/metrics": {
-      "get": {
-        "tags": [
-          "metrics"
-        ],
-        "summary": "Simple function to retrieve task metrics",
-        "operationId": "metrics",
-        "responses": {
-          "200": {
-            "description": "Current task metrics",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TaskMetrics"
                 }
               }
             }
@@ -403,8 +382,7 @@
             "propertyNames": {
               "type": "string",
               "enum": [
-                "task",
-                "user"
+                "example"
               ]
             }
           }
@@ -432,30 +410,12 @@
             ],
             "properties": {
               "data": {
-                "$ref": "#/components/schemas/Task"
+                "$ref": "#/components/schemas/Example"
               },
               "type": {
                 "type": "string",
                 "enum": [
-                  "task"
-                ]
-              }
-            }
-          },
-          {
-            "type": "object",
-            "required": [
-              "data",
-              "type"
-            ],
-            "properties": {
-              "data": {
-                "$ref": "#/components/schemas/User"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "user"
+                  "example"
                 ]
               }
             }
@@ -466,6 +426,25 @@
         "type": "string",
         "description": "Entity identifier type - wraps String for flexibility with UUID v7 generation. Use the singleton ID '00000000-0000-0000-0000-000000000000' for singleton entities.",
         "example": "00000000-0000-0000-0000-000000000000"
+      },
+      "Example": {
+        "type": "object",
+        "description": "Example entity\n\nDoc comments appear as descriptions in the UI. Only the first line is used as the description,\nany additional doc comments will not be displayed on the UI.",
+        "required": [
+          "name",
+          "count"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Example count",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string",
+            "description": "Example name"
+          }
+        }
       },
       "GetEntityResponse": {
         "type": "object",
@@ -482,50 +461,6 @@
             "$ref": "#/components/schemas/EntityId"
           }
         }
-      },
-      "LinkUser_User": {
-        "oneOf": [
-          {
-            "type": "object",
-            "required": [
-              "entity_type",
-              "ref"
-            ],
-            "properties": {
-              "entity_type": {
-                "type": "string",
-                "description": "The entity type this Link references",
-                "enum": [
-                  "user"
-                ]
-              },
-              "ref": {
-                "type": "string",
-                "description": "Reference to an entity by ID"
-              }
-            }
-          },
-          {
-            "type": "object",
-            "required": [
-              "entity_type",
-              "inline"
-            ],
-            "properties": {
-              "entity_type": {
-                "type": "string",
-                "description": "The entity type this Link references",
-                "enum": [
-                  "user"
-                ]
-              },
-              "inline": {
-                "$ref": "#/components/schemas/User"
-              }
-            }
-          }
-        ],
-        "description": "Reference configuration either by ID or inline, with entity type metadata"
       },
       "ListResponse": {
         "type": "object",
@@ -545,8 +480,7 @@
             "propertyNames": {
               "type": "string",
               "enum": [
-                "task",
-                "user"
+                "example"
               ]
             },
             "example": {
@@ -588,8 +522,7 @@
       "StateEntry": {
         "type": "string",
         "enum": [
-          "task",
-          "user"
+          "example"
         ]
       },
       "Summary": {
@@ -617,99 +550,6 @@
             "description": "Human-readable name"
           }
         }
-      },
-      "Task": {
-        "type": "object",
-        "description": "A task in our application",
-        "required": [
-          "name",
-          "status"
-        ],
-        "properties": {
-          "assigned_to": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/LinkUser_User"
-              }
-            ]
-          },
-          "description": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "name": {
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/TaskStatus"
-          }
-        }
-      },
-      "TaskMetrics": {
-        "type": "object",
-        "required": [
-          "tasks_created",
-          "tasks_removed"
-        ],
-        "properties": {
-          "tasks_created": {
-            "type": "integer",
-            "format": "int64",
-            "description": "The number of tasks created",
-            "minimum": 0
-          },
-          "tasks_removed": {
-            "type": "integer",
-            "format": "int64",
-            "description": "The number of tasks removed",
-            "minimum": 0
-          }
-        }
-      },
-      "TaskStatus": {
-        "type": "string",
-        "description": "A task's status",
-        "enum": [
-          "Pending",
-          "InProgress",
-          "Complete"
-        ]
-      },
-      "User": {
-        "type": "object",
-        "description": "A user in our application",
-        "required": [
-          "name"
-        ],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "status": {
-            "$ref": "#/components/schemas/UserStatus"
-          },
-          "title": {
-            "type": [
-              "string",
-              "null"
-            ]
-          }
-        }
-      },
-      "UserStatus": {
-        "type": "string",
-        "description": "A user's status",
-        "enum": [
-          "Working",
-          "PTO",
-          "OOO",
-          "Absent"
-        ]
       }
     },
     "responses": {
@@ -802,8 +642,7 @@
                   "propertyNames": {
                     "type": "string",
                     "enum": [
-                      "task",
-                      "user"
+                      "example"
                     ]
                   },
                   "example": {
