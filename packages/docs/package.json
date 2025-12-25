@@ -1,0 +1,20 @@
+{
+  "name": "@statelyjs/docs",
+  "version": "0.4.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "rspress dev",
+    "build": "rspress build",
+    "preview": "rspress preview",
+    "clean": "rm -rf doc_build node_modules .rspress"
+  },
+  "devDependencies": {
+    "@rspress/core": "2.0.0-rc.3",
+    "@types/node": "^22.19.3"
+  },
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  }
+}
