@@ -42,6 +42,7 @@ flamegraph.svg
 
 # Distribution / packaging
 build/
+doc_build/
 dist/
 downloads/
 lib64/
