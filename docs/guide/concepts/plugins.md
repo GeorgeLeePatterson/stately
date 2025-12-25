@@ -14,19 +14,18 @@ Traditional plugin systems often work at a single layer - backend middleware, fr
 ```
 ┌─────────────────────────────────────────┐
 │              Your Application           │
-├─────────────────────────────────────────┤
-│                                         │
-│   ┌─────────────┐   ┌─────────────┐     │
-│   │ @statelyjs/ │   │ @statelyjs/ │     │
-│   │    files    │   │    arrow    │     │
-│   └─────────────┘   └─────────────┘     │
-│          ↓                 ↓            │
-│   ┌─────────────┐   ┌─────────────┐     │
-│   │  stately-   │   │  stately-   │     │
-│   │    files    │   │    arrow    │     │
-│   └─────────────┘   └─────────────┘     │
-│                                         │
-└─────────────────────────────────────────┘
+├────────────────────┬────────────────────┤
+│        Files       │       Arrow        │ 
+│   ┌─────────────┐  │  ┌─────────────┐   │
+│   │ @statelyjs/ │  │  │ @statelyjs/ │   │
+│   │    files    │  │  │    arrow    │   │
+│   └─────────────┘  │  └─────────────┘   │
+│          ↓         │         ↓          │
+│   ┌─────────────┐  │  ┌─────────────┐   │
+│   │  stately-   │  │  │  stately-   │   │
+│   │    files    │  │  │    arrow    │   │
+│   └─────────────┘  │  └─────────────┘   │
+└────────────────────┴────────────────────┘
 ```
 
 When you add file upload capabilities, you get:
@@ -337,7 +336,7 @@ function MyComponent() {
 
 ## Creating Your Own Plugin
 
-See the [Plugin Development](../plugin-development/README.md) guide for a complete walkthrough of creating custom plugins.
+See the [Plugin Development](../../develop/plugins.md) guide for a complete walkthrough of creating custom plugins.
 
 Key steps:
 1. Define your backend Rust crate with router and handlers
@@ -365,9 +364,3 @@ pnpm exec stately generate ./openapi.json -o ./src/generated -c ./stately.codege
 ```
 
 Codegen plugins transform schema nodes during generation. For example, the files plugin detects `RelativePath` and `UserDefinedPath` patterns and generates appropriate node types.
-
-## Next Steps
-
-- [Files Plugin](../plugins/files/overview.md) - Using the files plugin
-- [Arrow Plugin](../plugins/arrow/overview.md) - Using the arrow plugin
-- [Plugin Development](../plugin-development/README.md) - Creating custom plugins

@@ -139,9 +139,3 @@ pnpm exec stately generate ./openapi.json -o ./src/lib/generated
 This creates:
 - `types.ts` - TypeScript types from OpenAPI components
 - `schemas.ts` - Parsed schema definitions for runtime form generation
-
-## Next Steps
-
-- [Concepts Overview](../concepts/overview.md) - Understand the architecture
-- [Plugins](../concepts/plugins.md) - Learn about the plugin system
-- [Quick Start](../getting-started/quick-start.md) - Build a complete example

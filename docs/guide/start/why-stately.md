@@ -1,9 +1,9 @@
 ---
-title: Introduction
+title: What is Stately? 
 description: What is Stately and why use it for your applications
 ---
 
-# Introduction
+# A Unified Approach 
 
 Stately is a framework for building Rust backends and TypeScript/React frontends, with an emphasis on configuration-driven applications. It provides a unified approach to state management, API generation, and UI rendering that spans your entire stack.
 
@@ -50,11 +50,17 @@ From this definition, Stately generates:
 On the frontend, you consume the generated OpenAPI spec:
 
 ```typescript
-type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSchemas>>;
+type AppSchemas = Schemas<
+  DefineConfig<components, paths, operations, ParsedSchemas>,
+  readonly [/** Plugin Schema Factories */]
+>;
 
-const runtime = statelyUi({
+const runtime = statelyUi<AppSchemas, readonly [/** Plugin UI Factories */]>({
+  // Provide openapi-fetch client
   client: createClient({ baseUrl: '/api' }),
+  // Provide stately schema 
   schema: stately<AppSchemas>(openapiSpec, PARSED_SCHEMAS),
+  // Options and configuration
   options: { /** Configure Stately options */ },
   core: { /** Configure Stately's core plugin */ },
 });
@@ -239,9 +245,3 @@ Plugins are vertical slices of functionality, spanning frontend to backend:
 │ stately │   │  stately-files   │ │  stately-arrow   │     │  plugin-backend │
 ╰─────────╯   ╰──────────────────╯ ╰──────────────────╯     ╰─────────────────╯
 ```
-
-## Next Steps
-
-- [Installation](./installation.md) - Install the Stately packages
-- [Quick Start](./quick-start.md) - Build your first Stately application
-- [Concepts Overview](../concepts/overview.md) - Deep dive into Stately's architecture

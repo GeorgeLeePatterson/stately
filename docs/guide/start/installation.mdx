@@ -1,0 +1,107 @@
+---
+title: Installation
+description: How to install Stately packages for your project
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# Installation Details
+
+Stately consists of Rust crates for the backend and TypeScript packages for the frontend. Install the packages you need based on your project requirements.
+
+## Backend (Rust)
+
+### Core Packages
+
+Add the core Stately crates to your `Cargo.toml`:
+
+```shellscript
+cargo add stately
+```
+
+The `stately` crate re-exports `stately-derive`, so you don't need to add it separately.
+
+### Feature Flags
+
+Stately supports several feature flags:
+
+| Feature | Default | Description |
+|---------|---------|-------------|
+| `openapi` | Yes | OpenAPI schema generation via `utoipa` |
+| `axum` | No | Axum web framework integration (includes `openapi`) |
+
+To enable Axum API generation for example, install with the feature included:
+
+```shellscript
+cargo add stately --features axum
+```
+
+If using Stately's "axum" and "openapi" integrations (and you should, it's what glues the backend to the frontend and provides a lot of the magic), be sure to install some additional dependencies:
+
+```shellscript
+cargo add axum 
+cargo add serde --features derive
+cargo add tokio --features rt,rt-multi-thread,sync,macros
+cargo add tower-http --features cors # for CORS support
+cargo add utoipa --features axum_extras,uuid,macros
+```
+
+### Plugin Crates
+
+For file management capabilities:
+
+```shellscript
+cargo add stately-files
+```
+
+For data connectivity and Arrow-based queries, optionally adding object-store functionality and clickhouse integration:
+
+```shellscript
+cargo add stately-arrow --features object-store,clickhouse
+```
+
+## Frontend (TypeScript)
+
+### Packages 
+
+Stately packages are published to npm. Install using your preferred package manager:
+
+<PackageManagerTabs command="install @statelyjs/stately @statelyjs/ui @statelyjs/schema" />
+
+### Peer Dependencies
+
+The packages require several peer dependencies:
+
+<PackageManagerTabs command="install react react-dom @tanstack/react-query lucide-react sonner openapi-fetch" />
+
+
+Stately uses tailwind and [base-ui](https://base-ui.com/). Ensure tailwind is installed:
+
+<PackageManagerTabs command="install -D tailwindcss" />
+
+If you plan on using the `Editor` component from `@statelyjs/ui`, install `CodeMirror`:
+
+<PackageManagerTabs command="install @uiw/react-codemirror" />
+
+### Plugin Packages
+
+For file management:
+
+<PackageManagerTabs command="install @statelyjs/files" />
+
+For data connectivity:
+
+<PackageManagerTabs  command="install @statelyjs/arrow @tanstack/react-table @tanstack/react-virtual" />
+
+## Development Setup
+
+### Rust Requirements
+
+- Rust 2024 edition (1.85+)
+- Cargo
+
+### TypeScript Requirements
+
+- A node runtime (Node.js 20+, bun, deno)
+- A package manager (npm, pnpm, or yarn)
+- TypeScript 5.0+

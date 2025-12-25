@@ -343,17 +343,18 @@ export const myCodegenPlugin: CodegenPlugin = {
 Study the built-in plugins for patterns:
 
 Files:
-- [stately-files](https://github.com/georgeleepatterson/stately/tree/main/crates/stately-files) - File management
-- [@statelyjs/files](https://github.com/georgeleepatterson/stately/tree/main/packages/files) - File UI
+* [stately-files](https://github.com/georgeleepatterson/stately/tree/main/crates/stately-files) File management
+* [@statelyjs/files](https://github.com/georgeleepatterson/stately/tree/main/packages/files) File UI
 
 Arrow:
-- [stately-arrow](https://github.com/georgeleepatterson/stately/tree/main/crates/stately-arrow) - Data connectivity
-- [@statelyjs/arrow](https://github.com/georgeleepatterson/stately/tree/main/packages/arrow) - Data UI
+* [stately-arrow](https://github.com/georgeleepatterson/stately/tree/main/crates/stately-arrow) Data connectivity
+* [@statelyjs/arrow](https://github.com/georgeleepatterson/stately/tree/main/packages/arrow) Data UI
 
-## TODOs
+## Todo
 
 [ ] Clarify how entrypoints => top-level schemas work. 
 > Entrypoints provide a way to reduce size of parsed output, which could get quite large. When generating for a plugin, omitting entrypoints translates to "parse and store everything". This makes sense for plugin developers since visibility into all parsed nodes is required. But for users, the "entrypoints", and thus the "top level build-time parsed schemas", represent page entrypoints. Currently only stately's core provides those, in the form of entities. But if a plugin wishes to create a page and that page receives data via an API call, and the returned type is dynamic, but has a pre-defined shape, then an entrypoint should be introduced. The remaining schemas can be accessed via 'runtime schema', and accessed with 'loadRuntimeSchemas' on the "runtime.schema" object.
 
 [ ] Clarify how "runtime schemas" works, how to access it, and how to introduce nodes into it.
+
 [ ] Introduce a 'cookie cutter' like template

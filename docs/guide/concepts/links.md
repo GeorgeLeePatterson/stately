@@ -328,17 +328,7 @@ pub struct Category {
 ## Best Practices
 
 1. **Use references for shared entities**: If multiple entities reference the same target, use `Link::Ref` to avoid duplication.
-
 2. **Use inline for configuration**: When an entity is configuration that belongs to its parent, inline keeps them together.
-
 3. **Consider update patterns**: References allow updating the target independently. Inline requires updating the parent.
-
 4. **Validate references**: References can become dangling if the target is deleted. Consider cascade delete or validation.
-
 5. **Document link semantics**: Make it clear in your documentation whether a link is expected to be a reference or inline.
-
-## Next Steps
-
-- [Entities and State](./entities-and-state.md) - Managing entity collections
-- [Plugins](./plugins.md) - Extending Stately with plugins
-- [Quick Start](../getting-started/quick-start.md) - Build a complete example

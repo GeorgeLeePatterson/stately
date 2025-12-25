@@ -280,8 +280,3 @@ pub trait Backend: Send + Sync {
     async fn list(&self, database: Option<&str>) -> Result<ListSummary>;
 }
 ```
-
-## Next Steps
-
-- [Plugin Development](../../plugin-development/README.md) - Learn how to create your own plugins
-- [Concepts: Plugins](../../concepts/plugins.md) - Understand plugin architecture

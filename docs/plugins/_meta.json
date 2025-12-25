@@ -1,0 +1,17 @@
+[
+  {
+    "type": "file",
+    "name": "index",
+    "label": "Plugins"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "stately",
+    "label": "Stately Plugins"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "community",
+    "label": "Community Plugins"
+  }
+]

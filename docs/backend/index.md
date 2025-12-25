@@ -29,12 +29,12 @@ The `stately-derive` crate provides three main macros:
 - `#[stately::state]` - Generate state management infrastructure
 - `#[stately::axum_api]` - Generate HTTP API handlers
 
-See [Entities and State](../concepts/entities-and-state.md) for detailed usage.
+See [Entities and State](../guide/concepts/entities-and-state.md) for detailed usage.
 
 ## Core Types
 
 - `EntityId` - UUID v7 identifiers
-- `Link<T>` - Entity relationships (see [Links](../concepts/links.md))
+- `Link<T>` - Entity relationships (see [Links](../guide/concepts/links.md))
 - `Collection<T>` - Entity collections
 - `Singleton<T>` - Single-instance containers
 
@@ -95,9 +95,3 @@ Enable features in `Cargo.toml`:
 [dependencies]
 stately = { version = "0.3", features = ["axum"] }
 ```
-
-## Next Steps
-
-- [Entities and State](../concepts/entities-and-state.md) - Learn about defining entities
-- [Links](../concepts/links.md) - Entity relationships
-- [Quick Start](../getting-started/quick-start.md) - Build a complete example

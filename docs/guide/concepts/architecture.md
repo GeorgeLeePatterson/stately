@@ -274,9 +274,3 @@ function myUiPlugin(options?: Options): UiPluginFactory {
 | `StatelyConfig` | Configuration containing union of all schema node types |
 | `UiRegistry` | Component and transformer registries |
 | `StatelyUiRuntime` | Combined schema + UI runtime |
-
-## Next Steps
-
-- [Entities and State](./entities-and-state.md) - Deep dive into entity definitions
-- [Links](./links.md) - Understanding entity relationships
-- [Plugins](./plugins.md) - How the plugin system works

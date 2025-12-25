@@ -7,6 +7,8 @@ description: Defining entities and managing application state with Stately
 
 Entities are the core data structures in Stately. They represent the things your application manages - configurations, resources, settings...anything really. State is the container that holds collections of entities and provides operations for working with them.
 
+Since proc-macros tend to generate a lot of "magic", it can sometimes be difficult to "see" what's being provided. Stately generates a simple demo page that can be found in the [Stately rust docs](https://docs.rs/stately/latest/stately/demo/index.html), a module demonstrating the output derived from the [doc_expand example](https://github.com/GeorgeLeePatterson/stately/blob/main/crates/stately/examples/doc_expand.rs).
+
 ## Defining Entities
 
 An entity is a Rust struct with the `#[stately::entity]` attribute:
@@ -356,7 +358,7 @@ pub struct Summary {
 Use summaries when you need to display entities without loading full data:
 
 ```rust
-// Get summaries for all entities
+// Get summaries for the pipeline entity 
 let summaries = state.pipelines.list();
 
 for summary in summaries {
@@ -364,8 +366,16 @@ for summary in summaries {
 }
 ```
 
-## Next Steps
+All summaries for all entities can be retrieved using the `list_entities` method on the state struct:
 
-- [Links](./links.md) - Learn about entity relationships
-- [Plugins](./plugins.md) - Extending Stately with plugins
-- [Quick Start](../getting-started/quick-start.md) - Build a complete example
+```rust
+// Get summaries for all entities
+let summaries = state.list_entities();
+
+for (entity_type, entity_summaries) in summaries {
+    println!("Entity Summaries for type {}:", entity_type);
+    for summary in entity_summaries {
+        println!("  {}: {} - {:?}", summary.id, summary.name, summary.description);
+    }
+}
+```

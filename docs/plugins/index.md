@@ -25,7 +25,7 @@ File upload, versioning, and management capabilities.
 - RelativePath field type for entity forms
 - File manager page component
 
-[Files Plugin Documentation](./files/overview.md)
+[Files Plugin Documentation](./stately/files.md)
 
 ### Arrow Plugin
 
@@ -44,7 +44,7 @@ Data connectivity and SQL query execution via Apache Arrow.
 - High-performance data table component
 - Plans to build out the most performant large-data arrow viewer available
 
-[Arrow Plugin Documentation](./arrow/overview.md)
+[Arrow Plugin Documentation](./stately/arrow.md)
 
 ## Installing Plugins
 
@@ -136,4 +136,4 @@ Plugins follow a consistent architecture:
 - Typed API client and hooks
 - Pre-built components, views, and pages
 
-See [Plugin Development](../plugin-development/README.md) for details on creating your own plugins.
+See [Plugin Development](../develop/plugins.md) for details on creating your own plugins.

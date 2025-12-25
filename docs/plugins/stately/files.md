@@ -207,8 +207,3 @@ function MyComponent() {
   // ...
 }
 ```
-
-## Next Steps
-
-- [Plugin Development](../../plugin-development/README.md) - Learn how to create your own plugins
-- [Concepts: Plugins](../../concepts/plugins.md) - Understand plugin architecture

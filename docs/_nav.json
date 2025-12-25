@@ -1,0 +1,31 @@
+[
+  {
+    "text": "Guide",
+    "link": "/guide/start/introduction",
+    "activeMatch": "/guide/"
+  },
+  {
+    "text": "Backend",
+    "link": "/backend/",
+    "activeMatch": "/backend/"
+  },
+  {
+    "text": "Frontend",
+    "link": "/frontend/",
+    "activeMatch": "/frontend/"
+  },
+  {
+    "text": "Plugins",
+    "link": "/plugins/",
+    "activeMatch": "/plugins/"
+  },
+  {
+    "text": "Develop",
+    "link": "/develop/plugins",
+    "activeMatch": "/develop/"
+  },
+  {
+    "text": "docs.rs",
+    "link": "https://docs.rs/stately"
+  }
+]

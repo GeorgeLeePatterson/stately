@@ -1,16 +1,23 @@
 ---
-title: Quick Start
-description: Build your first Stately application in minutes
+title: Tasks Demo 
+description: A dead-simple Task application using Stately
 ---
 
-# Quick Start
+# Tasks 
 
-This guide walks you through building a minimal Stately application with a Rust backend and React frontend. By the end, you'll have entities defined, an API running, and a UI rendering forms.
+The [Quick Start](../start/quick-start.md) guide builds a simple end-to-end application using Stately. The Tasks demo takes a bit further but still keeps it dead simple. Almost nothing on the UI side will change, yet simple additions to the backend result in a more complex application with more capabilities.
+
+The only shortcoming of this demo is that it doesn't follow through with some important additional concepts, like nesting `Link<T>` which leverage recursive references, api state composition across different sub-routers, and more advanced concepts. The goal instead is to demonstrate how extending an application's capabilities works alongside what Stately already provides. We'll save the more advanced concepts for the advanced guide. 
+
+## Goal
+
+The goal of this guide is to demonstrate how simply adding entities to the backend, in this case `Task`s and `User`s, requires almost no changes to the UI. In fact, any changes to the UI were done to enhance the UI, otherwise the quick start's UI would work out of the box. To that end, we will add a new page, `Dashboard`, and show how to configure it against stately's configuration options, automatically including it in the sidebar, and accessing api endpoints using stately provided functionality. That new endpoint, `/metrics`, demonstrates how to listen in on CRUD operations, providing additional capabilities across the stack. 
 
 ## What We're Building
 
 A simple task management application with:
 - A `Task` entity with name, description, and status
+- A `User` entity with name, title, and status
 - CRUD API endpoints
 - A React UI for listing and creating tasks
 
@@ -43,7 +50,7 @@ my-stately-app/
 
 ### 1. Create a New Rust Project
 
-```bash
+```shellscript
 cargo new my-stately-app --bin
 cd my-stately-app
 ```
@@ -78,16 +85,37 @@ Create `src/state.rs`:
 
 ```rust
 use serde::{Deserialize, Serialize};
+use stately::Link;
 
 /// A task in our application
 #[stately::entity]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct Task {
+    // The task's friendly name
     pub name: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    // The task's current status
     pub status: TaskStatus,
+    // The task's assigned user
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub assigned_to: Option<Link<User>>,
 }
 
+/// A user in our application
+#[stately::entity]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
+pub struct User {
+    // The user's full name
+    pub name: String,
+    // The user's title
+    pub title: Option<String>,
+    // The user's current status
+    #[serde(default)]
+    pub status: UserStatus,
+}
+
+/// A task's status
 #[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 pub enum TaskStatus {
     #[default]
@@ -96,11 +124,29 @@ pub enum TaskStatus {
     Complete,
 }
 
+/// A user's status
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
+pub enum UserStatus {
+    /// The user is working
+    #[default]
+    Working,
+    /// The user is currently on approved PTO
+    #[serde(rename = "PTO")]
+    Pto,
+    /// The user is currently out of office
+    #[serde(rename = "OOO")]
+    Ooo,
+    /// The user is currently absent without notice 
+    Absent,
+}
+
 // Simple tracker for the ui
 #[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 pub struct TaskMetrics {
-  pub tasks_created: u64,
-  pub tasks_removed: u64,
+    /// The number of tasks created
+    pub tasks_created: u64,
+    /// The number of tasks removed
+    pub tasks_removed: u64,
 }
 
 /// Application state containing all entity collections
@@ -108,6 +154,7 @@ pub struct TaskMetrics {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct State {
     tasks: Task,
+    users: User,
 }
 ```
 
@@ -135,7 +182,7 @@ pub struct ApiState {
 
 /// API state wrapper
 #[stately::axum_api(AppState, openapi(
-    server = "/api/v1/entity",
+    server = "/api/v1",
     components = [Task, TaskStatus, TaskMetrics],
     paths = [metrics]
 ))]
@@ -190,6 +237,7 @@ use tokio::sync::RwLock;
 async fn main() {
     // Bring some derived types into scope
     use api::ResponseEvent;
+    use state::Entity;
 
     // Create channel to listen to entity events
     let (tx, mut rx) = tokio::sync::mpsc::channel(32);
@@ -210,8 +258,12 @@ async fn main() {
     tokio::spawn(async move {
         while let Some(event) = rx.recv().await {
             match event {
-                ResponseEvent::Created { .. } => metrics.write().await.tasks_created += 1,
-                ResponseEvent::Deleted { .. } => metrics.write().await.tasks_removed += 1,
+                ResponseEvent::Created { entity, .. } if matches!(entity, Entity::Task(_)) => {
+                    metrics.write().await.tasks_created += 1;
+                }
+                ResponseEvent::Deleted { entity, .. } if matches!(entity, Entity::Task(_)) => {
+                    metrics.write().await.tasks_removed += 1;
+                }
                 _ => { /* Ignore */ }
             }
         }
@@ -231,7 +283,7 @@ async fn main() {
 Add a binary target to generate the OpenAPI spec. Create `src/bin/openapi.rs`:
 
 ```rust
-#![expect(unused_crate_dependencies)] // Suppresses lints if pedantic lints are set
+#![expect(unused_crate_dependencies)] // Suppresses lint warnings from utoipa if pedantic lints 
 use my_stately_app::api::EntityState;
 
 fn main() {
@@ -259,38 +311,47 @@ pub mod state;
 
 Generate the spec:
 
-```bash
+```shellscript
 cargo run --bin my-stately-app-openapi . > openapi.json
 ```
 
 ### 7. Run the Backend
 
-```bash
+```shellscript
 cargo run
 ```
 
 Your API is now running at `http://localhost:3000`. Test it:
 
-```bash
+```shellscript
 # List tasks (empty initially)
 curl http://localhost:3000/api/v1/entity/list/task
 
-# Create a task
+# Create a user
+curl -X PUT http://localhost:3000/api/v1/entity \
+  -H "Content-Type: application/json" \
+  -d '{"type": "user", "data": {"name": "Alice User", "status": "Working"}}'
+
+# Create a task, assigned to no one yet.
 curl -X PUT http://localhost:3000/api/v1/entity \
   -H "Content-Type: application/json" \
   -d '{"type": "task", "data": {"name": "My First Task", "status": "Pending"}}'
 
 # List tasks again
 curl http://localhost:3000/api/v1/entity/list/task
+
+# List users 
+curl http://localhost:3000/api/v1/entity/list/user
 ```
 
 ## Frontend Setup
 
-> **Note:** This example uses [React Router](https://reactrouter.com/) for routing, but Stately works with any routing library (e.g., TanStack Router, Next.js App Router). Routing helpers are planned for a future release.
+> [!Note]
+> This example uses [React Router](https://reactrouter.com/) for routing, but Stately works with any routing library (e.g., TanStack Router, Next.js App Router). Routing helpers are planned for a future release.
 
 ### 1. Create a React Project
 
-```bash
+```shellscript
 # Intall pnpm
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 # Create ui directory
@@ -301,7 +362,7 @@ pnpm create vite . --template react-ts --no-interactive
 
 ### 2. Install Dependencies
 
-```bash
+```shellscript
 # Install stately
 pnpm add @statelyjs/stately @statelyjs/ui @statelyjs/schema
 # Install ui essentials
@@ -314,7 +375,7 @@ pnpm add -D @tailwindcss/vite tailwindcss
 
 Assuming `openapi.json` was created in the root directory, generate types:
 
-```bash
+```shellscript
 pnpm exec stately generate ../openapi.json -o ./src/generated
 ```
 
@@ -377,7 +438,7 @@ export const useStately = useStatelyUi<AppSchemas>;
 
 Update `src/main.tsx`:
 
-```typescript
+```tsx
 import './index.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -432,7 +493,7 @@ export default defineConfig({
 
 Create `src/Dashboard.tsx`:
 
-```typescript
+```tsx
 import { Note } from '@statelyjs/ui/components';
 import { Card, CardContent, CardHeader, CardTitle } from '@statelyjs/ui/components/base/card';
 import { Spinner } from '@statelyjs/ui/components/base/spinner';
@@ -505,7 +566,7 @@ export function Dashboard() {
 
 Update `src/App.tsx`:
 
-```typescript
+```tsx
 import {
   EntitiesIndexPage,
   EntityDetailsPage,
@@ -577,7 +638,7 @@ export default App;
 
 ### 9. Run the Frontend
 
-```bash
+```shellscript
 pnpm dev
 ```
 
@@ -604,12 +665,3 @@ Open `http://localhost:5173` to see your application. You now have:
    - Auto-generated forms based on your entity schemas
    - Navigation sidebar with entity types
    - Responsive layout with header and breadcrumbs
-
-## Next Steps
-
-This quick start showed the minimal path. To build a complete application:
-
-- [Entities and State](../concepts/entities-and-state.md) - Learn about entity relationships with `Link<T>`
-- [Backend Guide](../backend/README.md) - Customize your API and add persistence
-- [Frontend Guide](../frontend/README.md) - Use pre-built views and pages
-- [Plugins](../plugins/README.md) - Add file management or data connectivity
