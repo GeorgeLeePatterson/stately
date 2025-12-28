@@ -1,6 +1,6 @@
 import { Input } from '@statelyjs/ui/components/base/input';
 import { Switch } from '@statelyjs/ui/components/base/switch';
-import type { FieldEditProps } from '@statelyjs/ui/form';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
 import type { Schemas } from '@/core/schema';
 import { PrimitiveStringEdit } from './primitive-string';
 

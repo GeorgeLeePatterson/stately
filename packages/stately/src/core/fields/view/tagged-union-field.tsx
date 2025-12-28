@@ -1,6 +1,6 @@
 import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { FieldItem } from '@statelyjs/ui/components';
-import type { FieldViewProps } from '@statelyjs/ui/form';
+import type { FieldViewProps } from '@statelyjs/ui/registry';
 import type { Schemas } from '@/core/schema';
 import { EnumFieldView } from './untagged-enum-field';
 

@@ -4,10 +4,11 @@ import {
   statelyUiProvider,
   useStatelyUi,
 } from '@statelyjs/stately';
+import { codemirror } from '@statelyjs/stately/plugins';
 import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
 import { Check, LayoutDashboard } from 'lucide-react';
-
 import createClient from 'openapi-fetch';
+
 import openapiSpec from '../../../openapi.json';
 import { PARSED_SCHEMAS, type ParsedSchema } from '../generated/schemas';
 import type { components, operations, paths } from '../generated/types';
@@ -19,7 +20,7 @@ export const client = createClient<paths>({ baseUrl: 'http://localhost:3000/api/
 type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSchema>>;
 
 // Configure stately application options
-const runtimeOpts: StatelyConfiguration<AppSchemas> = {
+const runtimeOptions: StatelyConfiguration<AppSchemas> = {
   client,
   // Configure included core plugin options
   core: { api: { pathPrefix: '/entity' }, entities: { icons: { task: Check } } },
@@ -41,7 +42,15 @@ const runtimeOpts: StatelyConfiguration<AppSchemas> = {
 };
 
 // Create stately runtime
-export const runtime = statelyUi<AppSchemas>(runtimeOpts);
+export const runtime = statelyUi<AppSchemas>(runtimeOptions);
+
+// Register codemirror plugin
+codemirror.enable({
+  codemirrorProps: {
+    supportedLanguages: ['bash', 'yaml', 'json', 'sql', 'c++', 'markdown'],
+    themeOptions: { includeDefaults: true },
+  },
+});
 
 // Create application's context provider
 export const StatelyProvider = statelyUiProvider<AppSchemas>();

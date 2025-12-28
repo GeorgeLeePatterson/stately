@@ -10,12 +10,21 @@
     "preview": "vite preview",
     "generate:openapi": "cd ../ && cargo run --bin demo-tasks-openapi -- . && cd ./ui",
     "codegen": "pnpm run generate:openapi && pnpm exec stately generate ../openapi.json -o ./src/generated",
+    "create:user": "curl -X PUT http://localhost:3000/api/v1/entity -H \"Content-Type: application/json\" -d '{\"type\": \"user\", \"data\": {\"name\": \"Alice User\", \"status\": \"Working\"}}'",
     "create:task": "curl -X PUT http://localhost:3000/api/v1/entity -H \"Content-Type: application/json\" -d '{\"type\": \"task\", \"data\": {\"name\": \"My First Task\", \"status\": \"Pending\"}}'"
   },
+  "pnpm": {
+    "overrides": {
+      "@statelyjs/ui": "file:../../../packages/ui/statelyjs-ui-0.4.1.tgz",
+      "@statelyjs/stately": "file:../../../packages/stately/statelyjs-stately-0.4.1.tgz"
+    }
+  },
   "dependencies": {
-    "@statelyjs/schema": "^0.4.1",
-    "@statelyjs/stately": "^0.4.1",
-    "@statelyjs/ui": "^0.4.1",
+    "@statelyjs/stately": "file:../../../packages/stately/statelyjs-stately-0.4.1.tgz",
+    "@statelyjs/ui": "file:../../../packages/ui/statelyjs-ui-0.4.1.tgz",
+    "@tanstack/react-query": "^5.90.12",
+    "@uiw/codemirror-extensions-langs": "^4.25.4",
+    "@uiw/react-codemirror": "^4.25.3",
     "lucide-react": "^0.562.0",
     "openapi-fetch": "^0.15.0",
     "react": "^19.2.3",
@@ -25,7 +34,6 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
-    "@tanstack/react-query": "^5.90.12",
     "@types/node": "^24.10.4",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",

@@ -20,7 +20,7 @@ pub struct ApiState {
 
 /// API state wrapper
 #[stately::axum_api(AppState, openapi(
-    server = "/api/v1/entity",
+    server = "/api/v1",
     components = [Task, TaskStatus, TaskMetrics, User, UserStatus],
     paths = [metrics]
 ))]

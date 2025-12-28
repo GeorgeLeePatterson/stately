@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* shared theme */
+@import "../../ui/src/styles/theme.css";
+
+/* runtime tokens/global/animations (plain css, safe) */
+@import "@statelyjs/ui/tokens.css";
+@import "@statelyjs/ui/global.css";
+@import "@statelyjs/ui/animations.css";
+
+/* scan stately + ui sources */
+@source "./**/*.{ts,tsx}";
+@source "../../ui/src/**/*.{ts,tsx}";

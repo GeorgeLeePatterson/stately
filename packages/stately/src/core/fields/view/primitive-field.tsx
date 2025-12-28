@@ -1,5 +1,5 @@
 import { NotSet } from '@statelyjs/ui/components';
-import type { FieldViewProps } from '@statelyjs/ui/form';
+import type { FieldViewProps } from '@statelyjs/ui/registry';
 import type { Schemas } from '@/core/schema';
 
 export type PrimitiveViewProps<Schema extends Schemas = Schemas> = FieldViewProps<

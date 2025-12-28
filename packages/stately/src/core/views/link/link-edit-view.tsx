@@ -1,7 +1,7 @@
 import { Button } from '@statelyjs/ui/components/base/button';
 import { ButtonGroup } from '@statelyjs/ui/components/base/button-group';
 import { FieldGroup, FieldSet } from '@statelyjs/ui/components/base/field';
-import type { FieldEditProps } from '@statelyjs/ui/form';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
 import { useCallback, useMemo, useState } from 'react';
 import type { CoreEntityData, CoreStateEntry } from '@/core';
 import { useListEntities } from '@/core/hooks';

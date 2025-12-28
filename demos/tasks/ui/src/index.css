@@ -1,6 +1,15 @@
-/* Load Tailwind framework */
+/* App Tailwind (for the demo app’s own classes) */
 @import "tailwindcss";
-/* Import Stately UI theme variables and base styles */
-@import "@statelyjs/ui/styles.css";
-/* Tell Tailwind to scan all Stately packages (core + plugins) for utility class usage */
-@source "../node_modules/@statelyjs/**/dist/*.css";
+
+/* Framework + UI (prebuilt) */
+@import "@statelyjs/stately/styles.css";
+
+/* Tell Tailwind to scan the demo app source */
+@source "./**/*.{ts,tsx}";
+
+/* If looking to override any stately tokens... */
+/*
+:root {
+  --stately-primary: oklch(...);
+}
+*/

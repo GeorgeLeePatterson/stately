@@ -5,9 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@statelyjs/ui/components/base/card';
-import { Layout, type PageProps } from '@statelyjs/ui/layout';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
+import { Layout, type PageProps } from '@/layout';
 import { useEntityUrl } from '../hooks';
 
 export function EntitiesIndexPage<Schema extends Schemas = Schemas>(props: Partial<PageProps>) {

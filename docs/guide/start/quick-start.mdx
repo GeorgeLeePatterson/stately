@@ -164,18 +164,18 @@ If the build succeeds, go ahead and generate the `openapi.json` spec in the curr
 cargo run -- . 
 ```
 
-If the spec was generated successfully, you should see the json file in the root of the project. Time to integrate the frontend!
+If the spec was generated successfully, you should see the `openapi.json` file in the root of the project. Time to integrate the frontend!
 
 ## Frontend
 
-Time to build the frontend application. Change into the `ui` directory if you haven't already:
+Let's now build the frontend application. Change into the `ui` directory if you haven't already:
 
 ```shellscript
 cd ui
 ```
 
 > [!DETAILS]
-> This demo uses `Vite`, `React 19`, and `React Router`. If you don't know how to setup a project with these tools, the source code of this demo is provided at the end of this guide.
+> This demo uses `Vite`, `React 19`, and `React Router`. If you don't know how to setup a project with these tools, a link to the source code of the quick-start is provided at the end of this guide.
 
 ### TypeScript Codegen via OpenAPI
 
@@ -186,7 +186,7 @@ Stately includes a CLI for generating TypeScript types from your OpenAPI spec:
 pnpm exec stately generate ../openapi.json -o ./src/generated 
 ```
 
-If using a plugin configuration file, run the command with the configuration option:
+If using a plugin configuration file, run the command with the configuration option (this demo does not):
 
 ```shellscript
 # Provide path to optional plugin configuration, not used in this demo
@@ -205,6 +205,8 @@ Now that the types have been generated, bootstrap and integrate your frontend ap
 mkdir -p src/lib
 touch src/lib/stately.ts
 ```
+
+Add the following to the file just created, `ui/src/lib/stately.ts`:
 
 ```typescript
 // Application imports
@@ -250,7 +252,7 @@ Finally, let's setup the app entrypoint, using `react-router-dom` to route our a
 
 ```tsx
 import * as EntityPages from '@statelyjs/stately/core/pages';
-import { Layout } from '@statelyjs/ui/layout';
+import { Layout } from '@statelyjs/stately/ui';
 import { Gem } from 'lucide-react';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 
@@ -259,9 +261,17 @@ const useRequiredParams = <T extends Record<string, unknown>>() => useParams() a
 function App() {
   return (
     <Layout.Root
-      sidebarProps={{ collapsible: 'icon', logo: <Gem />, logoName: 'Basic', variant: 'floating' }}
+      sidebarProps={{ 
+        collapsible: 'icon', 
+        logo: <Gem />, 
+        logoName: 'Quick-start', 
+        variant: 'floating' 
+      }}
     >
       <Routes>
+        {/* Home */}
+        <Route element={<Home />} index path="/" />
+      
         {/* Entity routes */}
         <Route element={<Entities />} path="/entities/*" />
 
@@ -269,6 +279,21 @@ function App() {
         <Route element={<Navigate replace to="/" />} path="*" />
       </Routes>
     </Layout.Root>
+  );
+}
+
+// Simple Home component
+function Home() {
+  return (
+    <Layout.Page title="Welcome to the Quick-start Demo!">
+      <p>
+        Click&nbsp;
+        <a href="/entities" style={{ color: 'var(--color-blue-600)' }}>
+          here
+        </a>
+        &nbsp;to explore entities.
+      </p>
+    </Layout.Page>
   );
 }
 
@@ -307,17 +332,19 @@ function Entity({ entity }: React.ComponentProps<typeof EntityPages.EntityNewPag
 export default App;
 ```
 
+> [!INFO]
+> In the previous file, `@statelyjs/ui` components were imported using `@statelyjs/stately/ui`. For simple use cases, stately re-exports the most commonly used components from 'ui'. If you want access to the base components or other items not exported by stately, you can install `@statelyjs/ui` directly and import them yourself.
+
 ### Styles and Tailwind
 
-Stately uses tailwindcss under the hood. Create `src/index.css` and configure it to pull in Stately's styles:
+Stately uses tailwindcss under the hood. Create `src/index.css` and pull in Stately's styles.
+
+> [!INFO]
+> If your app is *not* using Tailwind, then this is sufficient. Otherwise, refer to [Tailwind's documentation](https://tailwindcss.com/docs) on how to configure your project. All of Stately's styles have been compiled already, so all you need to do is import them, unless the goal is to customize the styles yourself or overwrite some of the tokens used:
 
 ```css
-/* Load Tailwind framework */
-@import "tailwindcss";
-/* Import Stately UI theme variables and base styles */
-@import "@statelyjs/ui/styles.css";
-/* Tell Tailwind to scan all Stately packages (core + plugins) for utility class usage */
-@source "../node_modules/@statelyjs/**/dist/*.css";
+/* Stately framework styles (includes ui tokens/global + all utilities) */
+@import "@statelyjs/stately/styles.css";
 ```
 
 ### Stately's UI Context Provider
@@ -368,8 +395,8 @@ pnpm dev
 
 ## Source Code
 
-All of the source code for this simple quick-start are available in the stately demos folder, this quick start can be found in the [basic demo](https://github.com/GeorgeLeePatterson/stately/tree/main/demos/basic).
+All of the source code for this simple quick-start are available in the stately demos folder, this quick start can be found in the [Quick-start demo's source](https://github.com/GeorgeLeePatterson/stately/tree/main/demos/quick-start).
 
 ## Next Steps
 
-To see a similar demo with a bit more concepts expanded, review the [Tasks demo](../demos/basic.md). To learn a bit more about why stately was built in the way it was, head over to [`Why Stately`](./why-stately.md).
+To see a similar demo with a core concepts expanded, review the [Tasks demo](../demos/basic.md). To learn a bit more about why stately was built the way it was, head over to [`Why Stately`](./why-stately.md).

@@ -49,11 +49,11 @@
 import {
   type AnyUiPlugin,
   createStatelyUi,
-  createUseStatelyUi,
   type StatelyUiBuilder,
   type StatelyUiConfiguration,
   type StatelyUiRuntime,
 } from '@statelyjs/ui';
+import { createUseStatelyUi } from './context.js';
 import { statelyUiProvider as coreStatelyUiProvider } from './core/context.js';
 import { type CoreUiOptions, type CoreUiPlugin, coreUiPlugin } from './core/index.js';
 import type { Schemas } from './schema.js';

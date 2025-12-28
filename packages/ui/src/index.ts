@@ -58,22 +58,6 @@ export type {
   UiPluginFactory,
 } from './plugin.js';
 
-// Context
-import { createStatelyUiProvider, createUseStatelyUi, StatelyUiProvider } from './context';
-
-export type { StatelyProviderProps } from './context';
-export { createStatelyUiProvider, createUseStatelyUi, StatelyUiProvider };
-
-// Layout
-import { Layout } from './layout';
-
-export { Layout };
-
-// Form
-import { BaseForm } from './form';
-
-export { BaseForm };
-
 // Theme
 import {
   defaultStorageKey,
@@ -91,6 +75,8 @@ import * as registry from './registry.js';
 
 export type {
   ComponentRegistry,
+  FieldEditProps,
+  FieldViewProps,
   FunctionRegistry,
   NodeTypeComponent,
   RegistryKey,
@@ -155,3 +141,28 @@ export { devLogger, devLog };
 // Assertions
 import { devAssert } from './lib/assertions.js';
 export { devAssert };
+
+// Extensions
+import { createExtensible, defineExtension } from './extension.js';
+
+export type {
+  ExtendInput,
+  Extensible,
+  ExtensibleConfig,
+  ExtensibleHook,
+  ExtensionPoint,
+  ExtensionPointConfig,
+  ExtensionState,
+} from './extension.js';
+export { createExtensible, defineExtension };
+
+// Feature Plugins
+import { createFeaturePlugin, FeatureComponent } from './feature-plugin.js';
+
+export type {
+  FeatureComponentProps,
+  FeaturePlugin,
+  FeaturePluginConfig,
+  FeaturePluginContext,
+} from './feature-plugin.js';
+export { createFeaturePlugin, FeatureComponent };

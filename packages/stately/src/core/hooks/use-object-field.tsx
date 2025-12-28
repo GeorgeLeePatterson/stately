@@ -117,7 +117,6 @@ export function useObjectField<S extends Schemas = Schemas>({
   const valueFields = Object.entries(node.properties).filter(([fieldName]) => fieldName !== 'id');
   const fields = schema.plugins.core.sortEntityProperties<S['plugin']['AnyNode']>(
     valueFields,
-    value,
     required,
   );
 

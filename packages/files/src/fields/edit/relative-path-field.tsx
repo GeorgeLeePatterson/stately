@@ -1,8 +1,7 @@
-import type { StringMode } from '@statelyjs/stately/core/fields/edit';
-import { Editor } from '@statelyjs/ui/components';
+import type { StringMode } from '@statelyjs/stately/core/extensions/add-string-modes';
+import { CodemirrorEditorToggle } from '@statelyjs/stately/plugins/codemirror/toggled';
 import { Button } from '@statelyjs/ui/components/base/button';
 import { ButtonGroup } from '@statelyjs/ui/components/base/button-group';
-
 import { Input } from '@statelyjs/ui/components/base/input';
 import { InputGroup } from '@statelyjs/ui/components/base/input-group';
 import {
@@ -157,31 +156,33 @@ export function RelativePathEdit({
             placeholder="Name (required) eg. config.json"
             value={filename}
           />
-          <Editor
+          <CodemirrorEditorToggle
             content={content}
+            editorWrapperProps={{
+              saveButton: (
+                <Button
+                  className="cursor-pointer"
+                  disabled={!filename || !content || saveMutation.isPending}
+                  onClick={onCompose}
+                  size="sm"
+                  type="button"
+                  variant="outline"
+                >
+                  <span className="flex flex-row items-center gap-2">
+                    {saveMutation.isPending ? (
+                      <Spinner className="w-3.5 h-3.5" />
+                    ) : (
+                      <FileText className="w-3.5 h-3.5" />
+                    )}
+                    {saveMutation.isPending ? 'Saving...' : 'Save'}
+                  </span>
+                </Button>
+              ),
+            }}
             formId={formId}
             isLoading={saveMutation.isPending}
             onContent={setContent}
             placeholder="Type or paste content..."
-            saveButton={
-              <Button
-                className="cursor-pointer"
-                disabled={!filename || !content || saveMutation.isPending}
-                onClick={onCompose}
-                size="sm"
-                type="button"
-                variant="outline"
-              >
-                <span className="flex flex-row items-center gap-2">
-                  {saveMutation.isPending ? (
-                    <Spinner className="w-3.5 h-3.5" />
-                  ) : (
-                    <FileText className="w-3.5 h-3.5" />
-                  )}
-                  {saveMutation.isPending ? 'Saving...' : 'Save'}
-                </span>
-              </Button>
-            }
           />
         </div>
       )}

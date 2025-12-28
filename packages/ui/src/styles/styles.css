@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Component animations */
+@import "./animations.css";
+
+/* Include tailwind's inline theme definition */
+@import "./theme.css";
+
+/* Ensure Tailwind scans this package's source for classnames */
+@source "../**/*.{ts,tsx}";

@@ -1,19 +1,11 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-// TODO: Remove - consolidate the two functions below, the first is basically useless
 /**
- * Helpful with react-query errors
+ * Helper type to deal with 'maybe' `ApiError` types and extract error message. Especially helpful
+ * with react-query errors.
  */
 export function messageFromError(err: unknown): string | undefined {
-  if (!err) return;
-  return parseApiError(err);
-}
-
-/**
- * Helper type to deal with 'maybe' `ApiError` types and extract error message.
- */
-export function parseApiError(err: unknown): string | undefined {
   if (!err) return;
   let errMsg: string | undefined;
   if (typeof err === 'string') errMsg = err;

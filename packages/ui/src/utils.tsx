@@ -123,7 +123,7 @@ export const mergePathPrefixOptions = (base?: string, incoming?: string): string
  * ```
  */
 export function generateFieldLabel(field: string): string {
-  return toSpaceCase(camelCaseToKebabCase(field));
+  return toTitleCase(field);
 }
 
 /**
@@ -140,6 +140,26 @@ export function generateFieldLabel(field: string): string {
 export function generateFieldFormId(fieldType: string, propertyName: string, formId = ''): string {
   const suffix = formId ? `__${formId}` : '';
   return `[${[fieldType, propertyName].join('__')}]${suffix}`;
+}
+
+/**
+ * Split a string into words.
+ *
+ * @param input - The string to split
+ * @returns An array of words
+ */
+export function splitWords(input: string): string[] {
+  return (
+    input
+      // XMLParser → XML Parser
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+      // userId → user Id
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      // snake_case / kebab-case → spaces
+      .replace(/[_-]+/g, ' ')
+      .trim()
+      .split(/\s+/)
+  );
 }
 
 /**
@@ -193,10 +213,11 @@ export function toKebabCase(str: string): string {
  * ```
  */
 export function toTitleCase(str: string): string {
-  return str
-    .replace(/-/g, '_')
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+  return splitWords(str)
+    .map(w =>
+      // Preserve ALL-CAPS acronyms like XML, ID, HTTP
+      w.length > 1 && w === w.toUpperCase() ? w : w[0].toUpperCase() + w.slice(1),
+    )
     .join(' ');
 }
 

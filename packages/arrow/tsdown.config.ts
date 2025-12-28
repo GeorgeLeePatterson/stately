@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
@@ -25,4 +26,10 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: ["react", "react-dom"],
+  onSuccess() {
+    // Generate pre-built Tailwind utilities CSS
+    execSync('pnpm exec tailwindcss -i src/styles.css -o dist/styles.css --minify', {
+      stdio: 'inherit',
+    });
+  },
 });

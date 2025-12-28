@@ -1,9 +1,9 @@
 import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@statelyjs/ui/components/base/tabs';
-import { BaseForm } from '@statelyjs/ui/form';
 import { FileJson, FormInput, WandSparkles } from 'lucide-react';
 import { useState } from 'react';
 import type { Schemas } from '@/core/schema';
+import { BaseForm } from '@/form';
 import { EntityFormEdit } from './entity-form-edit';
 import { EntityJsonView } from './entity-properties';
 import { EntityWizardEdit } from './entity-wizard-view';

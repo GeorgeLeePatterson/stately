@@ -8,8 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@statelyjs/ui/components/base/select';
-import { BaseForm, type FieldEditProps } from '@statelyjs/ui/form';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
 import type { Schemas } from '@/core/schema';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
 
 export type UntaggedEnumEditProps<Schema extends Schemas = Schemas> = FieldEditProps<

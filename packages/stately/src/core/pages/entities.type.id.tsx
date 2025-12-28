@@ -1,6 +1,4 @@
-import { devLog, Layout } from '@statelyjs/ui';
 import { Button } from '@statelyjs/ui/components/base/button';
-import type { PageProps } from '@statelyjs/ui/layout';
 import { useQueryClient } from '@tanstack/react-query';
 import { CopyPlus, Edit, Trash2 } from 'lucide-react';
 import { useEntityData, useEntityUrl, useRemoveEntity } from '@/core/hooks';
@@ -8,6 +6,9 @@ import type { Schemas } from '@/core/schema';
 import { EntityDetailView } from '@/core/views/entity';
 import { EntityRemove } from '@/core/views/entity/entity-remove';
 import { useStatelyUi } from '@/index';
+import { Layout } from '@/layout';
+import type { PageProps } from '@/layout/page';
+import { log } from '@/utils';
 import type { CoreStateEntry } from '..';
 import { useEntityPage } from '../hooks/use-entity-page';
 import { isSingletonId } from '../schema/utils';
@@ -53,7 +54,7 @@ export function EntityDetailsPage<Schema extends Schemas = Schemas>({
     errorDisplay,
   } = useEntityPage<Schema>({ entity: data?.entity, isFetched, isLoading, queryError, stateEntry });
 
-  devLog.debug('Core', 'EntityDetail', { data, entityId, entityName, isLoading, queryError });
+  log.debug('Core', 'EntityDetail', { data, entityId, entityName, isLoading, queryError });
 
   return (
     <Layout.Page

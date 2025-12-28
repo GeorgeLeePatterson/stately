@@ -1,15 +1,16 @@
-import { devLog, Layout } from '@statelyjs/ui';
 import { Alert, AlertDescription } from '@statelyjs/ui/components/base/alert';
 import { FieldGroup } from '@statelyjs/ui/components/base/field';
-import { BaseForm } from '@statelyjs/ui/form';
-import type { PageProps } from '@statelyjs/ui/layout';
 import { useQueryClient } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useEntityData, useEntityUrl, useUpdateEntity } from '@/core/hooks';
 import type { Schemas } from '@/core/schema';
 import { EntityEditView } from '@/core/views/entity';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
+import { Layout } from '@/layout';
+import type { PageProps } from '@/layout/page';
+import { log } from '@/utils';
 import type { CoreEntityData, CoreStateEntry } from '..';
 import { useEntityPage } from '../hooks/use-entity-page';
 
@@ -52,7 +53,7 @@ export function EntityEditPage<Schema extends Schemas = Schemas>({
       { data: formData, type: stateEntry },
       {
         onSuccess: data => {
-          devLog.debug('Core', 'Entity updated successfully', { data });
+          log.debug('Core', 'Entity updated successfully', { data });
           window.location.href = resolveEntityUrl({ id: data?.id ?? id, type: entityPath });
         },
       },
@@ -80,7 +81,7 @@ export function EntityEditPage<Schema extends Schemas = Schemas>({
 
   const isValid = schema.plugins.core.isEntityValid(formData, entitySchema.node);
 
-  devLog.debug('Core', 'Entity edit', { data, entitySchema, formData, isValid, queryError });
+  log.debug('Core', 'Entity edit', { data, entitySchema, formData, isValid, queryError });
 
   return (
     <Layout.Page

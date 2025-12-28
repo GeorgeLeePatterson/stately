@@ -32,6 +32,9 @@ target
 /*.tar.gz
 /*.gz
 
+# Any local packages
+packages/**/statelyjs-*.tgz
+
 # Sampling
 coverage/*
 flamegraph.svg

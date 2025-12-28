@@ -19,6 +19,9 @@ Building full-stack applications often involves significant boilerplate:
 
 Changes to your data model cascade through layers of code, each requiring manual updates. Poor decisions up front can escalate problems later on as your application's capabilities grow.
 
+> [!NOTE]
+> In more cases than I can count, I needed to build an application that a user could install themself. The common method was to provide a configuration file argument that users could supply a path to a local file which would change the way the application behaved. Over time I realized providing users with a simple UI they could run and access locally was a much better experience. What I needed was a framework I could leverage to cut down on the boilerplate inherent to these types of applications. This is just one use case where state and configuration align. In reality, there are countless possible.
+
 ## The Stately Approach
 
 Stately takes a different approach: **define your entities, derive everything else**.

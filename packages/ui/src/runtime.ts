@@ -171,7 +171,7 @@ export interface UiPluginRuntime<
   Augments extends readonly AnyUiPlugin[] = readonly [],
 > {
   /** Component and transformer registry for dynamic rendering */
-  registry: UiRegistry;
+  registry: UiRegistry<Schema>;
   /** Utility functions available throughout the application */
   utils: UiUtils;
   /** Installed plugins accessible by name */
@@ -291,7 +291,12 @@ export function createStatelyUi<
     client,
     options: { ...defaultUiOptions, ...(options ?? {}) },
     plugins: {} as AllUiPlugins<Schema, Augments>,
-    registry: { components: new Map(), functions: new Map(), transformers: new Map() },
+    registry: {
+      components: new Map(),
+      functions: new Map(),
+      nodes: { edit: new Map(), view: new Map() },
+      transformers: new Map(),
+    },
     schema,
     utils: runtimeUtils({}),
   });

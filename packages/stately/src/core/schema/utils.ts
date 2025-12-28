@@ -152,26 +152,19 @@ export function isEntityValid(
 
 function sortEntityProperties<N extends BaseNode = BaseNode>(
   properties: Array<[string, N]>,
-  value: any,
   required: Set<string>,
 ): Array<[string, N]> {
-  return properties.sort(([nameA, nodeA], [nameB, nodeB]) => {
+  return [...properties].sort(([nameA, nodeA], [nameB, nodeB]) => {
     const isRequiredA = required.has(nameA);
     const isRequiredB = required.has(nameB);
-    const valueA = value?.[nameA];
-    const valueB = value?.[nameB];
-    const isEmptyA = valueA === undefined || valueA === null;
-    const isEmptyB = valueB === undefined || valueB === null;
     const isNullableA = nodeA.nodeType === CoreNodeType.Nullable;
     const isNullableB = nodeB.nodeType === CoreNodeType.Nullable;
 
-    const priorityA = (isRequiredA ? 2 : 0) + (isEmptyA ? 0 : 1);
-    const priorityB = (isRequiredB ? 2 : 0) + (isEmptyB ? 0 : 1);
+    // Required fields first, then non-nullable, then nullable
+    const priorityA = (isRequiredA ? 2 : 0) - (isNullableA ? 0.5 : 0);
+    const priorityB = (isRequiredB ? 2 : 0) - (isNullableB ? 0.5 : 0);
 
-    const finalPriorityA = priorityA - (isNullableA ? 0.5 : 0);
-    const finalPriorityB = priorityB - (isNullableB ? 0.5 : 0);
-
-    return finalPriorityB - finalPriorityA;
+    return priorityB - priorityA;
   });
 }
 

@@ -1,5 +1,3 @@
-import { devLog, registry as uiRegistry } from '@statelyjs/ui';
-import { Editor } from '@statelyjs/ui/components';
 import { ButtonGroup } from '@statelyjs/ui/components/base/button-group';
 import {
   InputGroup,
@@ -14,49 +12,16 @@ import {
   SelectLabel,
   SelectTrigger,
 } from '@statelyjs/ui/components/base/select';
-import type { FieldEditProps } from '@statelyjs/ui/form';
-import { FileText, Link as LinkIcon, Type } from 'lucide-react';
-import { type ComponentType, useMemo, useState } from 'react';
+import { BaseEditor } from '@statelyjs/ui/components/editor';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
+import { useMemo, useState } from 'react';
+import {
+  CORE_STRING_MODES,
+  type StringModeGroup,
+  useStringModes,
+} from '@/core/extensions/add-string-modes';
 import type { Schemas } from '@/core/schema';
-import { CoreNodeType } from '@/core/schema/nodes';
-import { useStatelyUi } from '@/index';
-
-const { getEditTransformer } = uiRegistry;
-
-export interface StringMode {
-  description: string;
-  icon: ComponentType<any>;
-  label: string;
-  value: string;
-}
-
-export interface StringModeGroup {
-  name: string;
-  modes: StringMode[];
-}
-
-/// Core string input modes available by default
-const CORE_STRING_MODES: StringModeGroup = {
-  modes: [
-    { description: 'Plain text', icon: Type, label: 'Text', value: 'text' },
-    { description: 'Web address', icon: LinkIcon, label: 'URL', value: 'url' },
-    { description: 'Multi-line text', icon: FileText, label: 'Editor', value: 'editor' },
-  ],
-  name: 'Text Entry',
-};
-
-export type PrimitiveStringEditTransformerProps<Schema extends Schemas = Schemas> =
-  PrimitiveStringEditProps<Schema> & { extra?: PrimitiveStringExtra };
-
-export interface PrimitiveStringExtra {
-  mode?: string;
-  modeGroups?: StringModeGroup[];
-  component?: ComponentType<{
-    formId: string;
-    value: string | number | null | undefined;
-    onChange: (value: string | number | null | undefined) => void;
-  }>;
-}
+import { log } from '@/utils';
 
 export type PrimitiveStringEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
   Schema,
@@ -64,56 +29,41 @@ export type PrimitiveStringEditProps<Schema extends Schemas = Schemas> = FieldEd
   string | number | null | undefined
 >;
 
+/**
+ * String primitive edit component with extensible input modes.
+ *
+ * Plugins can add custom modes via the `stringModes` extension point.
+ *
+ * @see {@link useStringModes} for extension documentation
+ */
 export function PrimitiveStringEdit<Schema extends Schemas = Schemas>(
   props: PrimitiveStringEditProps<Schema>,
 ) {
-  const { registry } = useStatelyUi();
+  const { formId, onChange, placeholder, value } = props;
   const [mode, setMode] = useState<string>('text');
 
-  // Look up prop transformer for 'primitive::edit::string'
-  const { formId, onChange, placeholder, value, extra } = useMemo(() => {
-    let propsAndExtra: PrimitiveStringEditTransformerProps = {
-      ...props,
-      extra: { mode, modeGroups: [CORE_STRING_MODES] },
-    };
+  // Memoize options to prevent unnecessary re-renders
+  const options = useMemo(
+    () => ({ formId, mode, onChange, placeholder, value }),
+    [formId, value, onChange, placeholder, mode],
+  );
 
-    const propTransformer = getEditTransformer<
-      PrimitiveStringExtra,
-      Schema,
-      Schema['plugin']['Nodes']['primitive'],
-      string | number | null | undefined
-    >(registry.transformers, CoreNodeType.Primitive, 'string');
+  // Use the extensible hook - handles initial state and transformations
+  const {
+    component: ModeComponent,
+    modeState: { mode: currentMode, modeGroups },
+  } = useStringModes(options);
 
-    if (typeof propTransformer === 'function') {
-      try {
-        const transformed = propTransformer(propsAndExtra);
-        if (transformed) propsAndExtra = transformed;
-      } catch (e) {
-        console.warn('PrimitiveStringField prop transformer failed:', e);
-      }
-    }
+  // Flatten all modes for lookup
+  const currentModeConfig =
+    modeGroups.flatMap(group => group.modes).find(m => m.value === currentMode) ??
+    CORE_STRING_MODES.modes[0];
+  const Icon = currentModeConfig?.icon;
 
-    return propsAndExtra;
-  }, [props, mode, registry.transformers]);
-
-  // Extract final state
-  const ExtraComponent = extra?.component;
-  const currentMode = extra?.mode ?? mode;
-  const modeGroups = [CORE_STRING_MODES, ...(extra?.modeGroups || [])];
-  const allModes = [
-    ...CORE_STRING_MODES.modes,
-    ...(extra?.modeGroups?.flatMap(group => group.modes) || []),
-  ];
-  const currentModeConfig = allModes.find(m => m.value === currentMode);
-  const Icon = currentModeConfig?.icon ?? Type;
-
-  devLog.debug('Core', 'PrimitiveString resolved: ', {
+  log.debug('Core', 'PrimitiveString resolved:', {
     currentMode,
-    ExtraComponent,
-    extra,
-    mode,
-    props,
-    value,
+    hasComponent: !!ModeComponent,
+    modeGroups: modeGroups.map(g => g.name),
   });
 
   return (
@@ -122,11 +72,10 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>(
       <ButtonGroup>
         <Select onValueChange={v => v && setMode(v)} value={currentMode}>
           <SelectTrigger className="w-auto min-w-12 gap-1.5 bg-background" id={`select-${formId}`}>
-            <Icon />
+            {Icon && <Icon />}
           </SelectTrigger>
           <SelectContent className="min-w-40">
-            {/* Mode groups */}
-            {modeGroups.map(({ name, modes }) => (
+            {modeGroups.map(({ name, modes }: StringModeGroup) => (
               <SelectGroup key={`select-mode-group-${name}`}>
                 <SelectLabel>{name}</SelectLabel>
                 {modes.map(modeConfig => {
@@ -150,10 +99,15 @@ export function PrimitiveStringEdit<Schema extends Schemas = Schemas>(
       </ButtonGroup>
 
       {/* Custom component takes precedence */}
-      {ExtraComponent ? (
-        <ExtraComponent formId={formId} onChange={onChange} value={value} />
-      ) : currentMode === 'editor' ? (
-        <Editor
+      {ModeComponent ? (
+        <ModeComponent
+          formId={formId}
+          onChange={onChange}
+          placeholder={placeholder}
+          value={value}
+        />
+      ) : currentMode === 'multiline' ? (
+        <BaseEditor
           content={value ? (typeof value === 'string' ? value : String(value)) : ''}
           formId={formId}
           onContent={onChange}

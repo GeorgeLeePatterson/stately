@@ -1,0 +1,53 @@
+/* Dark variant */
+@custom-variant dark (&:is(.dark *));
+
+/* Map Tailwind theme tokens to runtime CSS variables */
+@theme inline {
+  --color-background: var(--stately-background);
+  --color-foreground: var(--stately-foreground);
+
+  --color-card: var(--stately-card);
+  --color-card-foreground: var(--stately-card-foreground);
+
+  --color-popover: var(--stately-popover);
+  --color-popover-foreground: var(--stately-popover-foreground);
+
+  --color-primary: var(--stately-primary);
+  --color-primary-foreground: var(--stately-primary-foreground);
+
+  --color-secondary: var(--stately-secondary);
+  --color-secondary-foreground: var(--stately-secondary-foreground);
+
+  --color-muted: var(--stately-muted);
+  --color-muted-foreground: var(--stately-muted-foreground);
+
+  --color-accent: var(--stately-accent);
+  --color-accent-foreground: var(--stately-accent-foreground);
+
+  --color-destructive: var(--stately-destructive);
+  --color-destructive-foreground: var(--stately-destructive-foreground);
+
+  --color-border: var(--stately-border);
+  --color-input: var(--stately-input);
+  --color-ring: var(--stately-ring);
+
+  --color-chart-1: var(--stately-chart-1);
+  --color-chart-2: var(--stately-chart-2);
+  --color-chart-3: var(--stately-chart-3);
+  --color-chart-4: var(--stately-chart-4);
+  --color-chart-5: var(--stately-chart-5);
+
+  --color-sidebar: var(--stately-sidebar);
+  --color-sidebar-foreground: var(--stately-sidebar-foreground);
+  --color-sidebar-primary: var(--stately-sidebar-primary);
+  --color-sidebar-primary-foreground: var(--stately-sidebar-primary-foreground);
+  --color-sidebar-accent: var(--stately-sidebar-accent);
+  --color-sidebar-accent-foreground: var(--stately-sidebar-accent-foreground);
+  --color-sidebar-border: var(--stately-sidebar-border);
+  --color-sidebar-ring: var(--stately-sidebar-ring);
+
+  --radius-sm: calc(var(--stately-radius) - 4px);
+  --radius-md: calc(var(--stately-radius) - 2px);
+  --radius-lg: var(--stately-radius);
+  --radius-xl: calc(var(--stately-radius) + 4px);
+}

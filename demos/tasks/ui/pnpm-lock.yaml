@@ -4,19 +4,29 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@statelyjs/ui': file:../../../packages/ui/statelyjs-ui-0.4.1.tgz
+  '@statelyjs/stately': file:../../../packages/stately/statelyjs-stately-0.4.1.tgz
+
 importers:
 
   .:
     dependencies:
-      '@statelyjs/schema':
-        specifier: ^0.4.1
-        version: 0.4.1
       '@statelyjs/stately':
-        specifier: ^0.4.1
-        version: 0.4.1(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)(@tanstack/react-query@5.90.12(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.3)
+        specifier: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz
+        version: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz(6cdb7cc34dfb120b9050af6fc4cd59d1)
       '@statelyjs/ui':
-        specifier: ^0.4.1
-        version: 0.4.1(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+        specifier: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz
+        version: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+      '@tanstack/react-query':
+        specifier: ^5.90.12
+        version: 5.90.12(react@19.2.3)
+      '@uiw/codemirror-extensions-langs':
+        specifier: ^4.25.4
+        version: 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)
+      '@uiw/react-codemirror':
+        specifier: ^4.25.3
+        version: 4.25.4(@babel/runtime@7.28.4)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.39.7)(codemirror@6.0.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       lucide-react:
         specifier: ^0.562.0
         version: 0.562.0(react@19.2.3)
@@ -39,9 +49,6 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.1.18(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2))
-      '@tanstack/react-query':
-        specifier: ^5.90.12
-        version: 5.90.12(react@19.2.3)
       '@types/node':
         specifier: ^24.10.4
         version: 24.10.4
@@ -263,6 +270,9 @@ packages:
 
   '@codemirror/state@6.5.3':
     resolution: {integrity: sha512-MerMzJzlXogk2fxWFU1nKp36bY5orBG59HnPiz0G9nLRebWa0zXuv2siH6PLIHBvv5TH8CkQRqjBs0MlxCZu+A==}
+
+  '@codemirror/theme-one-dark@6.1.3':
+    resolution: {integrity: sha512-NzBdIvEJmx6fjeremiGp3t/okrLPYT0d9orIc7AFun8oZcRk58aejkqhv6spnz4MLAevrKNPMQYXEWMg4s+sKA==}
 
   '@codemirror/view@6.39.7':
     resolution: {integrity: sha512-3Vif9hnNHJnl2YgOtkR/wzGzhYcQ8gy3LGdUhkLUU8xSBbgsTxrE8he/CMTpeINm5TgxLe2FmzvF6IYQL/BSAg==}
@@ -836,30 +846,37 @@ packages:
   '@statelyjs/schema@0.4.1':
     resolution: {integrity: sha512-zgM6og1rP0cplChTH9PUNpNUcuaYEBOvrzFjV0O+ClHDozouufQc/hJxSHU4Tze1Oq5bi6AnKLGaD+V9a1PqPw==}
 
-  '@statelyjs/stately@0.4.1':
-    resolution: {integrity: sha512-C6NDvTcCuzw/nw22TYutZyRDr77KZQ0QqE8TmWhOA/RfwKszkI6IwiiPlQNzxOrTt7Aet8mZqo/SHbbLV9qBxA==}
+  '@statelyjs/stately@file:../../../packages/stately/statelyjs-stately-0.4.1.tgz':
+    resolution: {integrity: sha512-UaJJiXcJN1UfqSdJyH0dMi5OIzz9MF+kVCCC4ZbGOLLWTnm5ptrhJRhDP+UfydL4l6DY0lXKqoThCdK7B7xxrg==, tarball: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz}
+    version: 0.4.1
     hasBin: true
     peerDependencies:
       '@tanstack/react-query': ^5.90.10
-      lucide-react: ^0.562.0
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-      sonner: ^2.0.7
-
-  '@statelyjs/ui@0.4.1':
-    resolution: {integrity: sha512-T/HEKuCk+l3xCHKEbKsmK8CGEC9D2PTsMdAyl2fBO9NZbsbnLmD9cTm6bYh39oCwJalS9k/2Hd39IKh8NHXC7g==}
-    peerDependencies:
-      '@types/react': ^18.0.0 || ^19.0.0
-      '@types/react-dom': ^18.0.0 || ^19.0.0
+      '@uiw/codemirror-extensions-basic-setup': ^4.25.4
+      '@uiw/codemirror-extensions-langs': ^4.25.4
+      '@uiw/codemirror-theme-github': ^4.25.4
+      '@uiw/codemirror-theme-gruvbox-dark': ^4.25.4
+      '@uiw/codemirror-theme-vscode': ^4.25.4
       '@uiw/react-codemirror': ^4.25.3
       lucide-react: ^0.562.0
-      openapi-fetch: ^0.15
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
       sonner: ^2.0.7
     peerDependenciesMeta:
       '@uiw/react-codemirror':
         optional: true
+
+  '@statelyjs/ui@file:../../../packages/ui/statelyjs-ui-0.4.1.tgz':
+    resolution: {integrity: sha512-ZxW2lb13qyR+4tNA00Pqi4Vd/i0OH0KVPVMGXG3bjGg3XyuTDvgBrjhqFKSOg9ZuMDPhkXahTBkviVGWyhePuA==, tarball: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz}
+    version: 0.4.1
+    peerDependencies:
+      '@types/react': ^18.0.0 || ^19.0.0
+      '@types/react-dom': ^18.0.0 || ^19.0.0
+      lucide-react: ^0.562.0
+      openapi-fetch: ^0.15
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+      sonner: ^2.0.7
 
   '@tailwindcss/node@4.1.18':
     resolution: {integrity: sha512-DoR7U1P7iYhw16qJ49fgXUlry1t4CpXeErJHnQ44JgTSKMaZUdf17cfn5mHchfJ4KRBZRFA/Coo+MUF5+gOaCQ==}
@@ -1018,6 +1035,17 @@ packages:
       '@codemirror/state': '>=6.0.0'
       '@codemirror/view': '>=6.0.0'
 
+  '@uiw/react-codemirror@4.25.4':
+    resolution: {integrity: sha512-ipO067oyfUw+DVaXhQCxkB0ZD9b7RnY+ByrprSYSKCHaULvJ3sqWYC/Zen6zVQ8/XC4o5EPBfatGiX20kC7XGA==}
+    peerDependencies:
+      '@babel/runtime': '>=7.11.0'
+      '@codemirror/state': '>=6.0.0'
+      '@codemirror/theme-one-dark': '>=6.0.0'
+      '@codemirror/view': '>=6.0.0'
+      codemirror: '>=6.0.0'
+      react: '>=17.0.0'
+      react-dom: '>=17.0.0'
+
   '@vitejs/plugin-react@5.1.2':
     resolution: {integrity: sha512-EcA07pHJouywpzsoTUqNh5NwGayl2PPVEJKUSinGGSxFGYn+shYbqMGBg6FXDqgXum9Ou/ecb+411ssw8HImJQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -1069,6 +1097,9 @@ packages:
 
   codemirror-lang-mermaid@0.5.0:
     resolution: {integrity: sha512-Taw/2gPCyNArQJCxIP/HSUif+3zrvD+6Ugt7KJZ2dUKou/8r3ZhcfG8krNTZfV2iu8AuGnymKuo7bLPFyqsh/A==}
+
+  codemirror@6.0.2:
+    resolution: {integrity: sha512-VhydHotNW5w1UGK0Qj96BwSk/Zqbp9WbnyK2W/eVMv4QyF41INRGpjUhFJY7/uDNuudSc33a/PKr4iDqRduvHw==}
 
   colorette@1.4.0:
     resolution: {integrity: sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==}
@@ -1932,6 +1963,13 @@ snapshots:
     dependencies:
       '@marijn/find-cluster-break': 1.0.2
 
+  '@codemirror/theme-one-dark@6.1.3':
+    dependencies:
+      '@codemirror/language': 6.12.1
+      '@codemirror/state': 6.5.3
+      '@codemirror/view': 6.39.7
+      '@lezer/highlight': 1.2.3
+
   '@codemirror/view@6.39.7':
     dependencies:
       '@codemirror/state': 6.5.3
@@ -2416,50 +2454,36 @@ snapshots:
       openapi-types: 12.1.3
       openapi-typescript-helpers: 0.0.15
 
-  '@statelyjs/stately@0.4.1(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)(@tanstack/react-query@5.90.12(react@19.2.3))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.3)':
+  '@statelyjs/stately@file:../../../packages/stately/statelyjs-stately-0.4.1.tgz(6cdb7cc34dfb120b9050af6fc4cd59d1)':
     dependencies:
       '@statelyjs/schema': 0.4.1
-      '@statelyjs/ui': 0.4.1(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+      '@statelyjs/ui': file:../../../packages/ui/statelyjs-ui-0.4.1.tgz(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@tanstack/react-query': 5.90.12(react@19.2.3)
+      '@uiw/codemirror-extensions-basic-setup': 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
+      '@uiw/codemirror-extensions-langs': 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)
+      '@uiw/codemirror-theme-github': 4.25.4(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
+      '@uiw/codemirror-theme-gruvbox-dark': 4.25.4(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
+      '@uiw/codemirror-theme-vscode': 4.25.4(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
       commander: 14.0.2
       lucide-react: 0.562.0(react@19.2.3)
       openapi-typescript: 7.10.1(typescript@5.9.3)
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
       sonner: 2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+    optionalDependencies:
+      '@uiw/react-codemirror': 4.25.4(@babel/runtime@7.28.4)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.39.7)(codemirror@6.0.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
     transitivePeerDependencies:
-      - '@codemirror/autocomplete'
-      - '@codemirror/commands'
-      - '@codemirror/lang-css'
-      - '@codemirror/lang-html'
-      - '@codemirror/lang-javascript'
-      - '@codemirror/language'
-      - '@codemirror/language-data'
-      - '@codemirror/lint'
-      - '@codemirror/search'
-      - '@codemirror/state'
-      - '@codemirror/view'
-      - '@lezer/common'
-      - '@lezer/highlight'
-      - '@lezer/javascript'
-      - '@lezer/lr'
       - '@types/react'
       - '@types/react-dom'
-      - '@uiw/react-codemirror'
       - openapi-fetch
       - typescript
 
-  '@statelyjs/ui@0.4.1(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
+  '@statelyjs/ui@file:../../../packages/ui/statelyjs-ui-0.4.1.tgz(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
     dependencies:
       '@base-ui/react': 1.0.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@statelyjs/schema': 0.4.1
       '@types/react': 19.2.7
       '@types/react-dom': 19.2.3(@types/react@19.2.7)
-      '@uiw/codemirror-extensions-basic-setup': 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
-      '@uiw/codemirror-extensions-langs': 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)
-      '@uiw/codemirror-theme-github': 4.25.4(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
-      '@uiw/codemirror-theme-gruvbox-dark': 4.25.4(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
-      '@uiw/codemirror-theme-vscode': 4.25.4(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
       class-variance-authority: 0.7.1
       clsx: 2.1.1
       lucide-react: 0.562.0(react@19.2.3)
@@ -2471,22 +2495,6 @@ snapshots:
       sonner: 2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       tailwind-merge: 3.4.0
       vaul: 1.1.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-    transitivePeerDependencies:
-      - '@codemirror/autocomplete'
-      - '@codemirror/commands'
-      - '@codemirror/lang-css'
-      - '@codemirror/lang-html'
-      - '@codemirror/lang-javascript'
-      - '@codemirror/language'
-      - '@codemirror/language-data'
-      - '@codemirror/lint'
-      - '@codemirror/search'
-      - '@codemirror/state'
-      - '@codemirror/view'
-      - '@lezer/common'
-      - '@lezer/highlight'
-      - '@lezer/javascript'
-      - '@lezer/lr'
 
   '@tailwindcss/node@4.1.18':
     dependencies:
@@ -2658,6 +2666,23 @@ snapshots:
       '@codemirror/state': 6.5.3
       '@codemirror/view': 6.39.7
 
+  '@uiw/react-codemirror@4.25.4(@babel/runtime@7.28.4)(@codemirror/autocomplete@6.20.0)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.39.7)(codemirror@6.0.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+    dependencies:
+      '@babel/runtime': 7.28.4
+      '@codemirror/commands': 6.10.1
+      '@codemirror/state': 6.5.3
+      '@codemirror/theme-one-dark': 6.1.3
+      '@codemirror/view': 6.39.7
+      '@uiw/codemirror-extensions-basic-setup': 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
+      codemirror: 6.0.2
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
+    transitivePeerDependencies:
+      - '@codemirror/autocomplete'
+      - '@codemirror/language'
+      - '@codemirror/lint'
+      - '@codemirror/search'
+
   '@vitejs/plugin-react@5.1.2(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2))':
     dependencies:
       '@babel/core': 7.28.5
@@ -2711,6 +2736,16 @@ snapshots:
       '@codemirror/language': 6.12.1
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.5
+
+  codemirror@6.0.2:
+    dependencies:
+      '@codemirror/autocomplete': 6.20.0
+      '@codemirror/commands': 6.10.1
+      '@codemirror/language': 6.12.1
+      '@codemirror/lint': 6.9.2
+      '@codemirror/search': 6.5.11
+      '@codemirror/state': 6.5.3
+      '@codemirror/view': 6.39.7
 
   colorette@1.4.0: {}
 

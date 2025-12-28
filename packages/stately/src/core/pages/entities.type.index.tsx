@@ -9,13 +9,13 @@ import {
   EmptyTitle,
 } from '@statelyjs/ui/components/base/empty';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
-import { Layout, type PageProps } from '@statelyjs/ui/layout';
 import { useQueryClient } from '@tanstack/react-query';
 import { FileText, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { useEntityUrl, useListEntities, useRemoveEntity } from '@/core/hooks';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
+import { Layout, type PageProps } from '@/layout';
 import type { CoreStateEntry } from '..';
 import { EntityList } from '../views/entity/entity-list-view';
 import { EntityRemove } from '../views/entity/entity-remove';
@@ -44,7 +44,7 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
   const entities = listData?.entities?.[stateEntry] || [];
 
   // Format type name for display
-  const typeName = schema.data.entityDisplayNames[stateEntry];
+  const typeName = schema.data.entityDisplayNames[stateEntry] ?? stateEntry;
 
   const {
     mutation: removeMutation,

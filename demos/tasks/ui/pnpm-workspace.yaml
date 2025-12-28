@@ -1,0 +1,8 @@
+packages:
+  - .
+
+ignoredBuiltDependencies:
+  - esbuild
+
+onlyBuiltDependencies:
+  - esbuild

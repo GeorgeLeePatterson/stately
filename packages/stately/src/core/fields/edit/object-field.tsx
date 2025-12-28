@@ -11,12 +11,13 @@ import {
   FieldSet,
 } from '@statelyjs/ui/components/base/field';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@statelyjs/ui/components/base/tabs';
-import { BaseForm, type FieldEditProps } from '@statelyjs/ui/form';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
 import { FormInput, WandSparkles } from 'lucide-react';
 import { Fragment, useId } from 'react';
 import { useObjectField } from '@/core/hooks/use-object-field';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
 import { ObjectWizardEdit } from './object-wizard';
 

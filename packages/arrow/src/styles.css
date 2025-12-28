@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* shared theme */
+@import "../../ui/src/styles/theme.css";
+
+/* scan only this plugin’s source */
+@source "./**/*.{ts,tsx}";

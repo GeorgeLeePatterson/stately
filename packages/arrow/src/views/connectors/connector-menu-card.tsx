@@ -137,7 +137,7 @@ export function ConnectorMenuCard({
     <Card {...rest} className={cn(['connector-select-card gap-4', rest?.className])}>
       <CardHeader>
         {/* Connector Details */}
-        <CardTitle className="flex items-center justify-between gap-2 h-full h-8">
+        <CardTitle className="flex items-center justify-between gap-2 h-full min-h-8">
           <div className="flex items-center gap-2">
             <Database className="h-4 w-4" />
             Connections
@@ -180,7 +180,7 @@ export function ConnectorMenuCard({
                 <div
                   className={cn(
                     'flex-auto flex flex-col space-y-2',
-                    'px-2 py-3 min-h-[94px]',
+                    'px-2 py-3 min-h-23.5',
                     'border-border border-x bg-muted/40',
                     'inset-shadow-sm/10',
                   )}

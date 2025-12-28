@@ -199,12 +199,12 @@ This includes Tailwind CSS utilities and component styles. Your app should have 
  *
  * @import "tailwindcss";
  * @import "@statelyjs/ui/styles.css";
- * @source "../node_modules/@statelyjs/** /dist";
+ * @source "../node_modules/@statelyjs/ui/dist";
+ * @source "../node_modules/@statelyjs/stately/dist";
  *
- * The wildcard @source pattern automatically includes all Stately packages
- * (core UI + plugins). This is required because node_modules is automatically
- * excluded from Tailwind's class detection. Without it, utility classes
- * used in Stately components won't be generated.
+ * Explicit @source paths are required because node_modules is automatically
+ * excluded from Tailwind's class detection. Add additional @source lines
+ * for any Stately plugins you use (e.g., @statelyjs/arrow, @statelyjs/files).
  */
 ```
 

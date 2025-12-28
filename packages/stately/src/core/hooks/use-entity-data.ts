@@ -1,8 +1,8 @@
-import { devLog } from '@statelyjs/ui';
 import { useQuery } from '@tanstack/react-query';
 import type { CoreEntityWrapped, CoreStateEntry } from '@/core';
 import { useStatelyUi } from '@/index';
 import type { Schemas } from '@/schema';
+import { log } from '@/utils';
 
 const NON_RETRYABLE_CODES = [400, 401, 403, 404];
 
@@ -75,14 +75,14 @@ export function useEntityData<Schema extends Schemas = Schemas>({
         throw new Error('Failed to fetch entity');
       }
 
-      devLog.debug('Core', 'Successfully fetched entity', { data });
+      log.debug('Core', 'Successfully fetched entity', { data });
       return data as { entity: CoreEntityWrapped<Schema>; id: string } | undefined;
     },
     queryKey: ['entity', entity, identifier],
     retry: (failureCount, error) => {
       if ((error?.message || '').startsWith('Failed to fetch')) return false;
       if (NON_RETRYABLE_CODES.some(c => error?.message?.includes(`[Code: ${c}]`))) {
-        devLog.warn('Core', 'Non-retryable error encountered', { error });
+        log.warn('Core', 'Non-retryable error encountered', { error });
         return false;
       }
       return failureCount <= 3;

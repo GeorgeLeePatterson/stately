@@ -1,7 +1,7 @@
+import { Layout } from '@statelyjs/stately/layout';
 import { Note } from '@statelyjs/ui/components';
 import { Card, CardContent, CardHeader, CardTitle } from '@statelyjs/ui/components/base/card';
 import { Spinner } from '@statelyjs/ui/components/base/spinner';
-import { Layout } from '@statelyjs/ui/layout';
 import { useQuery } from '@tanstack/react-query';
 import { client } from './lib/stately';
 

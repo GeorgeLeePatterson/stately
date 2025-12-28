@@ -1,6 +1,0 @@
-/* Load Tailwind framework */
-@import "tailwindcss";
-/* Import Stately UI theme variables and base styles */
-@import "@statelyjs/ui/styles.css";
-/* Tell Tailwind to scan all Stately packages (core + plugins) for utility class usage */
-@source "../node_modules/@statelyjs/**/dist/*.css";

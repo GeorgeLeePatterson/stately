@@ -57,12 +57,47 @@ import type { StatelyConfig } from '@statelyjs/schema/generated';
 import type { BaseNode } from '@statelyjs/schema/nodes';
 import type { StatelySchemas } from '@statelyjs/schema/schema';
 import type { ComponentType } from 'react';
-import type { FieldEditProps } from '@/form/field-edit';
-import type { FieldViewProps } from '@/form/field-view';
 
 // ============================================================================
 // Registry Types
 // ============================================================================
+
+/**
+ * Common interface for all 'view' type fields registered
+ */
+export interface FieldViewProps<
+  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
+  N extends BaseNode = PluginNodeUnion<S>,
+  V = unknown,
+> {
+  node: N;
+  value: V;
+}
+
+/**
+ * Common interface for all 'edit' type fields registered
+ */
+export interface FieldEditProps<
+  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
+  N extends BaseNode = S['plugin']['AnyNode'],
+  V = unknown,
+> {
+  formId: string;
+  node: N;
+  value?: V;
+  onChange: (value: V) => void;
+  label?: string;
+  description?: string;
+  placeholder?: string;
+  isRequired?: boolean;
+  isWizard?: boolean;
+}
+
+/** Map of registry keys to React components. */
+export type NodeTypeRegistry<S extends StatelySchemas<any, any>> = {
+  edit: Map<S['plugin']['NodeNames'], ComponentType<FieldEditProps<S>>>;
+  view: Map<S['plugin']['NodeNames'], ComponentType<FieldEditProps<S>>>;
+};
 
 /** Map of registry keys to React components. */
 export type ComponentRegistry = Map<string, ComponentType<any>>;
@@ -86,7 +121,9 @@ export type Transformer<T, U = T> = (value: T) => U extends never ? T : U;
  *
  * Access via `runtime.registry` to register or retrieve components.
  */
-export interface UiRegistry {
+export interface UiRegistry<Schema extends StatelySchemas<any, any>> {
+  /** Node Type registry - maps node types to edit/view React components */
+  nodes: NodeTypeRegistry<Schema>;
   /** Component registry - maps node types to React components */
   components: ComponentRegistry;
   /** Transformer registry - maps node types to prop transformers */

@@ -8,7 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@statelyjs/ui/components/base/select';
-import { BaseForm, type FieldEditProps } from '@statelyjs/ui/form';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
+import { BaseForm } from '@/form';
 import { useState } from 'react';
 import { CoreNodeType, PrimitiveType, type Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';

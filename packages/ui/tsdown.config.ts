@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
@@ -5,8 +6,16 @@ export default defineConfig({
   exports: {
     all: true,
     customExports(pkg) {
-      // Add CSS export that's copied via the 'copy' option
+      // Delete wildcard exports
+      delete pkg['./*'];
+
+      // Add CSS exports that are copied/generated via hooks
       pkg['./styles.css'] = './dist/styles.css';
+      pkg['./tokens.css'] = './dist/tokens.css';
+      pkg['./global.css'] = './dist/global.css';
+      pkg['./animations.css'] = './dist/animations.css';
+      // Provide the theme css directly
+      pkg['./theme.css'] = './dist/theme.css';
       return pkg;
     },
   },
@@ -15,5 +24,17 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: ["react", "react-dom"],
-  copy: [{ from: 'src/index.css', rename: 'styles.css' }],
+  // Ensure all CSS are shipped in dist/
+  copy: [
+    { from: "src/styles/tokens.css", rename: "tokens.css" },
+    { from: "src/styles/global.css", rename: "global.css" },
+    { from: "src/styles/animations.css", rename: "animations.css" },
+    { from: "src/styles/theme.css", rename: "theme.css" },
+  ],
+  onSuccess() {
+    // Generate pre-built Tailwind utilities CSS
+    execSync('pnpm exec tailwindcss -i src/styles/styles.css -o dist/styles.css --minify', {
+      stdio: 'inherit',
+    });
+  },
 });

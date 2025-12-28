@@ -1,11 +1,5 @@
-import {
-  EntitiesIndexPage,
-  EntityDetailsPage,
-  EntityEditPage,
-  EntityNewPage,
-  EntityTypeListPage,
-} from '@statelyjs/stately/core/pages';
-import { Layout } from '@statelyjs/ui/layout';
+import * as EntitiesPages from '@statelyjs/stately/core/pages';
+import { Layout } from '@statelyjs/stately/layout';
 import { Gem } from 'lucide-react';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { Dashboard } from './Dashboard';
@@ -35,7 +29,7 @@ function App() {
 function Entities() {
   return (
     <Routes>
-      <Route element={<EntitiesIndexPage />} index path="/" />
+      <Route element={<EntitiesPages.EntitiesIndexPage />} index path="/" />
       <Route element={<EntityType />} path="/:type/*" />
     </Routes>
   );
@@ -46,21 +40,22 @@ function EntityType() {
   const { type } = useRequiredParams<{ type: string }>();
   return (
     <Routes>
-      <Route element={<EntityTypeListPage entity={type} />} index path="/" />
-      <Route element={<EntityNewPage entity={type} />} path="/new" />
+      <Route element={<EntitiesPages.EntityTypeListPage entity={type} />} index path="/" />
+      <Route element={<EntitiesPages.EntityNewPage entity={type} />} path="/new" />
       <Route element={<Entity entity={type} />} path="/:id/*" />
     </Routes>
   );
 }
 
 // Entrypoint into an instance of an entity
-function Entity({ entity }: React.ComponentProps<typeof EntityNewPage>) {
+function Entity({ entity }: React.ComponentProps<typeof EntitiesPages.EntityNewPage>) {
   const { id } = useRequiredParams<{ id: string }>();
   return (
     <Routes>
-      <Route element={<EntityDetailsPage entity={entity} id={id} />} index path="/" />
-      <Route element={<EntityEditPage entity={entity} id={id} />} path="/edit" />
+      <Route element={<EntitiesPages.EntityDetailsPage entity={entity} id={id} />} index path="/" />
+      <Route element={<EntitiesPages.EntityEditPage entity={entity} id={id} />} path="/edit" />
     </Routes>
   );
 }
+
 export default App;

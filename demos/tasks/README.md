@@ -1,6 +1,6 @@
 # Tasks Demo
 
-A minimal task management application demonstrating Stately's core features. This is the companion example for the [Basic Demo](../../docs/guide/start/quick-start.md) guide.
+A minimal task management application demonstrating Stately's core features. This is the follow up demo for the [Quick-start Demo](../../docs/guide/start/quick-start.md) guide.
 
 ## What's Included
 

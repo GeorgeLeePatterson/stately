@@ -6,9 +6,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@statelyjs/ui/components/base/select';
-import type { FieldEditProps } from '@statelyjs/ui/form';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
 import type { Schemas } from '@/core/schema';
-import { useStatelyUi } from '@/index';
 
 export type EnumEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
   Schema,
@@ -27,20 +26,18 @@ export function EnumEdit<Schema extends Schemas = Schemas>({
   onChange,
   placeholder,
 }: EnumEditProps<Schema>) {
-  const { utils } = useStatelyUi<Schema>();
-
   return (
     <Field>
       <Select onValueChange={v => v && onChange(v)} value={value || ''}>
         <SelectTrigger className="bg-background" id={formId}>
           <SelectValue>
-            {v => v || (placeholder ? `Select ${placeholder.toLowerCase()}...` : 'Select value')}
+            {v => (v ? v : placeholder ? `Select ${placeholder}...` : 'Select value')}
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {node.values.map((option: string) => (
             <SelectItem key={option} value={option}>
-              {utils?.generateFieldLabel(option)}
+              {option}
             </SelectItem>
           ))}
         </SelectContent>

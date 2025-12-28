@@ -14,8 +14,8 @@ import {
   ItemGroup,
   ItemTitle,
 } from '@statelyjs/ui/components/base/item';
-import type { FieldViewProps } from '@statelyjs/ui/form';
-import { BaseForm } from '@statelyjs/ui/form';
+import type { FieldViewProps } from '@statelyjs/ui/registry';
+import { BaseForm } from '@/form';
 import { useViewMore } from '@statelyjs/ui/hooks';
 import { ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown, Variable } from 'lucide-react';
 import type { Schemas } from '@/core/schema';

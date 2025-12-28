@@ -92,7 +92,7 @@ export function ViewLinkDialog<Schema extends Schemas = Schemas>({
                   type="button"
                   variant="ghost"
                 >
-                  <span className="truncate max-w-[150px]">{crumb.entityType}</span>
+                  <span className="truncate max-w-37.5">{crumb.entityType}</span>
                 </Button>
               </Fragment>
             ))}

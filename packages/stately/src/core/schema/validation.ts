@@ -10,10 +10,10 @@ import type {
   ValidationOptions,
   ValidationResult,
 } from '@statelyjs/schema';
-import { devLog } from '@statelyjs/ui';
-import type { Schemas } from './index.js';
-import { CoreNodeType } from './nodes.js';
-import { isObject } from './utils.js';
+import type { Schemas } from './index';
+import { CoreNodeType } from './nodes';
+import { isObject } from './utils';
+import { log } from '@/utils';
 
 export type ValidatorCallback = (value: unknown, schema: unknown) => boolean;
 
@@ -47,7 +47,7 @@ export function validateNode<S extends Schemas = Schemas>({
   options = {},
 }: ValidateArgs<S>): ValidationResult {
   const { debug = true } = options;
-  if (debug) devLog.debug('Core/Validation', 'Validation', { data, options, path, schema });
+  if (debug) log.debug('Core/Validation', 'Validation', { data, options, path, schema });
 
   // Check cache first
   const cacheKey = createValidationCacheKey(path, data);
@@ -56,11 +56,11 @@ export function validateNode<S extends Schemas = Schemas>({
 
   const { depth = 0, warnDepth = 15, maxDepth = 20, onDepthWarning } = options;
 
-  if (debug) devLog.debug('Core/Validation', `${path} at depth ${depth}`, { data, schema });
+  if (debug) log.debug('Core/Validation', `${path} at depth ${depth}`, { data, schema });
 
   // Check depth limits
   if (depth >= maxDepth) {
-    if (debug) devLog.warn('Core/Validation', `Maximum depth (${maxDepth}) reached at ${path}`);
+    if (debug) log.warn('Core/Validation', `Maximum depth (${maxDepth}) reached at ${path}`);
     onDepthWarning?.(path, depth);
     return { errors: [], valid: true };
   }
@@ -268,7 +268,7 @@ export function validateObject<S extends Schemas>(args: ValidateArgs<S>): Valida
   const { path, data, schema, options } = args;
   const { debug = false } = options || {};
 
-  if (debug) devLog.debug('Core/Validation', `Object at ${path}`, { data, schema });
+  if (debug) log.debug('Core/Validation', `Object at ${path}`, { data, schema });
 
   if (!data || typeof data !== 'object') {
     return { errors: [{ message: 'Expected an object', path, value: data }], valid: false };

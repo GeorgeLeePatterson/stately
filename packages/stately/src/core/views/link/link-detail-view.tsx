@@ -1,5 +1,5 @@
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
-import type { FieldViewProps } from '@statelyjs/ui/form';
+import type { FieldViewProps } from '@statelyjs/ui/registry';
 import type { CoreStateEntry } from '@/core';
 import { useEntityData } from '@/core/hooks/use-entity-data';
 import type { Schemas } from '@/core/schema';

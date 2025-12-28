@@ -1,9 +1,9 @@
-import { devLog } from '@statelyjs/ui';
 import { type QueryClient, useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import type { CoreStateEntry } from '..';
+import { log } from '@/utils';
 
 /**
  * Remove an entity with confirmation dialog support.
@@ -67,7 +67,7 @@ export function useRemoveEntity<Schema extends Schemas = Schemas>({
         params: { path: { entry: entity, id } },
       });
       if (error) throw new Error('Failed to remove entity');
-      devLog.debug('Core', 'Successfully removed entity', { data, entity, id });
+      log.debug('Core', 'Successfully removed entity', { data, entity, id });
       return data;
     },
     onSuccess: _ => queryClient?.invalidateQueries({ queryKey: ['entities', entity] }),

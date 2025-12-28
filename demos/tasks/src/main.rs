@@ -8,6 +8,7 @@ use tokio::sync::RwLock;
 async fn main() {
     // Bring some derived types into scope
     use api::ResponseEvent;
+    use state::{Entity, StateEntry};
 
     // Create channel to listen to entity events
     let (tx, mut rx) = tokio::sync::mpsc::channel(32);
@@ -28,9 +29,13 @@ async fn main() {
     let _handle = tokio::spawn(async move {
         while let Some(event) = rx.recv().await {
             match event {
-                ResponseEvent::Created { .. } => metrics.write().await.tasks_created += 1,
-                ResponseEvent::Deleted { .. } => metrics.write().await.tasks_removed += 1,
-                ResponseEvent::Updated { .. } => { /* Ignore */ }
+                ResponseEvent::Created { entity, .. } if matches!(entity, Entity::Task(_)) => {
+                    metrics.write().await.tasks_created += 1;
+                }
+                ResponseEvent::Deleted { entry, .. } if matches!(entry, StateEntry::Task) => {
+                    metrics.write().await.tasks_removed += 1;
+                }
+                _ => { /* Ignore */ }
             }
         }
     });

@@ -21,17 +21,16 @@ import {
   createOperations,
   type DefineOptions,
   type DefineUiPlugin,
-  devLog,
   registry,
   type StatelyUiRuntime,
-  type TransformerRegistry,
   type UiNavigationOptions,
   type UiPluginFactory,
 } from '@statelyjs/ui';
 import { Cog } from 'lucide-react';
-import { defaultPrimitiveStringTransformer, EditFields, ViewFields } from '@/core/fields';
+import { EditFields, ViewFields } from '@/core/fields';
 import type { Schemas } from '@/core/schema';
 import * as linkFields from '@/core/views/link';
+import { log } from '@/utils';
 import { CORE_OPERATIONS, type CorePaths } from './schema/api';
 import type { StateEntry } from './schema/helpers';
 import { CoreNodeType as NodeType } from './schema/nodes';
@@ -121,9 +120,6 @@ export function coreUiPlugin<Schema extends Schemas, Augments extends readonly A
     // Register core components
     registerCoreComponents(runtime.registry.components);
 
-    // Register core transformers
-    registerCoreTransformers(runtime.registry.transformers);
-
     // Create api bundle
     const basePathPrefix = runtime.options?.api?.pathPrefix;
     const corePathPrefix = options?.api?.pathPrefix;
@@ -133,7 +129,7 @@ export function coreUiPlugin<Schema extends Schemas, Augments extends readonly A
       CORE_OPERATIONS,
       pathPrefix,
     );
-    devLog.debug('Core', 'registered core plugin', { options, pathPrefix, runtime });
+    log.debug('Core', 'registered core plugin', { options, pathPrefix, runtime });
 
     // Gather utils
     const entityIcons = options?.entities?.icons ?? {};
@@ -141,7 +137,7 @@ export function coreUiPlugin<Schema extends Schemas, Augments extends readonly A
 
     // Create entity routes
     const entityRoutes = createEntityRoutes(utils);
-    devLog.debug('Core', 'created entity routes', { entityIcons, entityRoutes });
+    log.debug('Core', 'created entity routes', { entityIcons, entityRoutes });
 
     // Create plugin
     const plugin = { [CORE_PLUGIN_NAME]: { api, options, routes: entityRoutes, utils } };
@@ -186,14 +182,6 @@ function registerCoreComponents(registry: ComponentRegistry) {
 
   registry.set(makeRegistryKey(NodeType.Link, 'edit'), linkFields.LinkEditView);
   registry.set(makeRegistryKey(NodeType.Link, 'view'), linkFields.LinkDetailView);
-}
-
-function registerCoreTransformers(registry: TransformerRegistry) {
-  /** Add any plugin enhancements here */
-  registry.set(
-    makeRegistryKey(NodeType.Primitive, 'edit', 'transformer', 'string'),
-    defaultPrimitiveStringTransformer,
-  );
 }
 
 function createEntityRoutes(utils: CoreUiUtils): UiNavigationOptions['routes'] {

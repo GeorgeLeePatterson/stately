@@ -1,4 +1,4 @@
-import { BaseForm } from '@statelyjs/ui/form';
+import { BaseForm } from '@/form';
 import type { Schemas } from '@/schema';
 import { type EntityFormProps, EntityProperty, useEntityProperties } from './entity-properties';
 

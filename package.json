@@ -22,17 +22,16 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.5",
-    "@types/node": "^22.10.1",
-    "openapi-fetch": "^0.15",
+    "@types/node": "^24.10.4",
     "turbo": "^2.7.2",
-    "typedoc": "^0.28.15",
-    "typescript": "^5.7.2"
+    "typedoc": "^0.28.15"
   },
   "pnpm": {
     "overrides": {
       "csstype": "^3.2.3"
     },
     "onlyBuiltDependencies": [
+      "@parcel/watcher",
       "core-js"
     ]
   }

@@ -1,4 +1,4 @@
-import { Layout } from '@statelyjs/ui';
+import { Layout } from '@statelyjs/stately/layout';
 import { Button } from '@statelyjs/ui/components/base/button';
 import { useSidebar } from '@statelyjs/ui/components/base/sidebar';
 import { cn, messageFromError } from '@statelyjs/ui/lib/utils';

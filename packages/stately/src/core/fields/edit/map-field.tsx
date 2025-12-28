@@ -14,7 +14,8 @@ import {
 } from '@statelyjs/ui/components/base/input-group';
 import { Item, ItemContent, ItemGroup } from '@statelyjs/ui/components/base/item';
 import { Separator } from '@statelyjs/ui/components/base/separator';
-import { BaseForm, type FieldEditProps } from '@statelyjs/ui/form';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
+import { BaseForm } from '@/form';
 import { useViewMore } from '@statelyjs/ui/hooks';
 import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
 import { useCallback, useEffect, useId, useState } from 'react';

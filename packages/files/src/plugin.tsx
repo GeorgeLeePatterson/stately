@@ -53,7 +53,7 @@
  * @module
  */
 
-import { CoreNodeType } from '@statelyjs/stately/core';
+import { stringModes } from '@statelyjs/stately/core/extensions/add-string-modes';
 import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
 import {
   type AnyUiPlugin,
@@ -68,7 +68,7 @@ import {
 import { Files } from 'lucide-react';
 
 import { FILES_OPERATIONS, type FilesPaths } from './api';
-import { primitiveStringTransformer } from './fields/edit/primitive-string';
+import { filesStringExtension } from './fields/edit/primitive-string';
 import { RelativePathEdit } from './fields/edit/relative-path-field';
 import { RelativePathView } from './fields/view/relative-path-field';
 import type { FilesData, FilesNodeMap, FilesTypes } from './schema';
@@ -216,11 +216,8 @@ export function filesUiPlugin<
       RelativePathView,
     );
 
-    // Register transformers
-    registry.transformers.set(
-      baseRegistry.makeRegistryKey(CoreNodeType.Primitive, 'edit', 'transformer', 'string'),
-      primitiveStringTransformer,
-    );
+    // Extend string field with file upload mode
+    stringModes.extend(filesStringExtension);
 
     // Create typed operations with user's prefix
     const basePathPrefix = runtime.options?.api?.pathPrefix;

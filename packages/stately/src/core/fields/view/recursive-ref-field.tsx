@@ -1,6 +1,6 @@
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
-import type { FieldViewProps } from '@statelyjs/ui/form';
-import { BaseForm } from '@statelyjs/ui/form';
+import type { FieldViewProps } from '@statelyjs/ui/registry';
+import { BaseForm } from '@/form';
 import { useEffect, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';

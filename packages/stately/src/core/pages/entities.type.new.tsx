@@ -1,13 +1,14 @@
-import { devLog, Layout } from '@statelyjs/ui';
 import { Note } from '@statelyjs/ui/components';
-import { BaseForm } from '@statelyjs/ui/form';
-import type { PageProps } from '@statelyjs/ui/layout';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useCreateEntity, useEntityData, useEntitySchema, useEntityUrl } from '@/core/hooks';
 import type { Schemas } from '@/core/schema';
 import { EntityEditView } from '@/core/views/entity';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
+import { Layout } from '@/layout';
+import type { PageProps } from '@/layout/page';
+import { log } from '@/utils';
 import type { CoreEntityData, CoreStateEntry } from '..';
 
 export function EntityNewPage<Schema extends Schemas = Schemas>({
@@ -91,7 +92,7 @@ export function EntityNewPage<Schema extends Schemas = Schemas>({
 
   const isValid = schema.plugins.core.isEntityValid(formData, entitySchema.node);
 
-  devLog.debug('Core', 'Entity new: ', {
+  log.debug('Core', 'Entity new: ', {
     formData,
     isValid,
     requiredFields,

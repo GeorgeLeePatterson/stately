@@ -3,7 +3,6 @@ title: Installation
 description: How to install Stately packages for your project
 ---
 
-import { PackageManagerTabs } from '@theme';
 
 # Installation Details
 
@@ -66,7 +65,15 @@ cargo add stately-arrow --features object-store,clickhouse
 
 Stately packages are published to npm. Install using your preferred package manager:
 
-<PackageManagerTabs command="install @statelyjs/stately @statelyjs/ui @statelyjs/schema" />
+import { PackageManagerTabs } from '@theme';
+
+<PackageManagerTabs command="install @statelyjs/stately" />
+
+> [!DETAILS]
+> For simple use cases, stately re-exports the most commonly used components from 'ui', such as `Layout`, `BaseForm`, etc. If you want access to the base components or other items not re-exported by stately, you can install `@statelyjs/ui` directly and import them yourself.
+
+> [!DETAILS]
+> Stately also provides a low level library `@statelyjs/schema`. There are few cases where you will need to install this yourself, much of what it provides is re-exported from `@statelyjs/stately` and enhanced to include all "core" functionality. Of course, if you find yourself needing access to some of those primitives, you can install the library directly as well.
 
 ### Peer Dependencies
 
@@ -74,12 +81,11 @@ The packages require several peer dependencies:
 
 <PackageManagerTabs command="install react react-dom @tanstack/react-query lucide-react sonner openapi-fetch" />
 
+While Stately uses tailwind and [base-ui](https://base-ui.com/), for most use cases, you shouldn't need to install tailwind yourself. But, if you are using tailwind, or want to override stately's tokens, you will need to ensure tailwind is installed:
 
-Stately uses tailwind and [base-ui](https://base-ui.com/). Ensure tailwind is installed:
+<PackageManagerTabs command="install -D tailwindcss @tailwindcss/cli" />
 
-<PackageManagerTabs command="install -D tailwindcss" />
-
-If you plan on using the `Editor` component from `@statelyjs/ui`, install `CodeMirror`:
+If you plan on using the `Editor` component from `@statelyjs/ui` or any plugins that require it, install `CodeMirror`:
 
 <PackageManagerTabs command="install @uiw/react-codemirror" />
 

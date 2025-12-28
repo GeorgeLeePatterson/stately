@@ -1,6 +1,6 @@
 packages:
   - packages/*
-  - '!demos/*'
+  - '!demos/**'
 
 ignoredBuiltDependencies:
   - esbuild

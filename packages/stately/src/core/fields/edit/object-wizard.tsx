@@ -4,7 +4,7 @@ import { Button } from '@statelyjs/ui/components/base/button';
 import { Field, FieldGroup, FieldLegend, FieldSet } from '@statelyjs/ui/components/base/field';
 import { Progress } from '@statelyjs/ui/components/base/progress';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
-import { BaseForm } from '@statelyjs/ui/form';
+import { BaseForm } from '@/form';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { useObjectField } from '@/core/hooks/use-object-field';

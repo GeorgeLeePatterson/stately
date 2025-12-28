@@ -1,22 +1,34 @@
-import type { PrimitiveStringEditTransformerProps } from '@statelyjs/stately/core/fields/edit';
+import type {
+  StringEditState,
+  StringModeGroup,
+} from '@statelyjs/stately/core/extensions/add-string-modes';
 import { Upload } from 'lucide-react';
 import { RelativePathEdit } from './relative-path-field';
 
+/**
+ * Upload mode configuration for the string field mode selector.
+ */
 export const UploadMode = {
   description: 'Browse/upload files',
   icon: Upload,
   label: 'Upload',
-  placeholder: '',
   value: 'upload' as const,
 };
 
-export const UploadModeGroup = { modes: [UploadMode], name: 'File Management' };
+/**
+ * Mode group containing file management modes.
+ */
+export const UploadModeGroup: StringModeGroup = { modes: [UploadMode], name: 'File Management' };
 
-export const primitiveStringTransformer = (props: PrimitiveStringEditTransformerProps) => ({
-  ...props,
-  extra: {
-    ...props.extra,
-    component: props.extra?.mode === 'upload' ? RelativePathEdit : null,
-    modeGroups: [UploadModeGroup],
+/**
+ * Extension transformer that adds file upload mode to string fields.
+ *
+ * Uses the new partial return - no need to spread state.
+ */
+export const filesStringExtension = (state: StringEditState): Partial<StringEditState> => ({
+  component: state.modeState.mode === 'upload' ? RelativePathEdit : state.component,
+  modeState: {
+    mode: state.modeState.mode,
+    modeGroups: [...(state.modeState.modeGroups ?? []), UploadModeGroup],
   },
 });

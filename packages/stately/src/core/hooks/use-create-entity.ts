@@ -1,8 +1,9 @@
-import { devAssert, devLog } from '@statelyjs/ui';
+import { devAssert } from '@statelyjs/ui';
 import { type QueryClient, useMutation } from '@tanstack/react-query';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import type { CoreEntityWrapped, CoreStateEntry } from '..';
+import { log } from '@/utils';
 
 /**
  * Create a new entity.
@@ -83,10 +84,10 @@ export function useCreateEntity<Schema extends Schemas = Schemas>({
 
       const { data, error } = await coreApi.create_entity({ body: input });
       if (error) {
-        devLog.error('Core', 'Failed to create entity', { error, input });
+        log.error('Core', 'Failed to create entity', { error, input });
         throw new Error('Failed to create entity');
       }
-      devLog.debug('Core', 'Successfully created entity', { data, entity });
+      log.debug('Core', 'Successfully created entity', { data, entity });
       return data;
     },
     onSuccess: _ => queryClient?.invalidateQueries({ queryKey: ['entities', entity] }),

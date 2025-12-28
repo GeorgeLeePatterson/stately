@@ -1,10 +1,11 @@
 import { Tuple } from '@statelyjs/schema/helpers';
-import { BaseForm, cn } from '@statelyjs/ui';
+import { cn } from '@statelyjs/ui';
 import { DescriptionLabel, Explain } from '@statelyjs/ui/components';
 import { Cog } from 'lucide-react';
 import { useMemo } from 'react';
 import type { CoreEntityData } from '@/core';
 import type { PrimitiveNode, Schemas } from '@/core/schema';
+import { BaseForm, type JsonViewProps } from '@/form';
 import { useStatelyUi } from '@/index';
 
 export interface EntityFormProps<Schema extends Schemas = Schemas> {
@@ -80,7 +81,7 @@ export function EntityJsonView({
   isOpen,
   setIsOpen,
   ...rest
-}: React.ComponentProps<typeof BaseForm.JsonView> & React.HTMLAttributes<HTMLDivElement>) {
+}: JsonViewProps & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div {...rest} className={cn('flex flex-col gap-6 w-full min-w-0', rest.className)}>
       <BaseForm.JsonView data={data} isOpen={isOpen} setIsOpen={setIsOpen} />
@@ -113,8 +114,8 @@ export function useEntityProperties<Schema extends Schemas = Schemas>({
   );
 
   const sortedProperties = useMemo(
-    () => schema.plugins.core.sortEntityProperties(entityProperties, entity, required),
-    [entityProperties, entity, required, schema.plugins.core.sortEntityProperties],
+    () => schema.plugins.core.sortEntityProperties(entityProperties, required),
+    [entityProperties, required, schema.plugins.core.sortEntityProperties],
   );
 
   return { name, required, sortedProperties };

@@ -1,10 +1,10 @@
-import { Button} from '@statelyjs/ui/components/base/button';
+import { Button } from '@statelyjs/ui/components/base/button';
+import { ScrollArea } from '@statelyjs/ui/components/base/scroll-area';
 import { ArrowLeft, Download, History } from 'lucide-react';
 import { useFilesStatelyUi } from '@/context';
 import { useDownload } from '@/hooks/use-download';
 import type { FileInfo } from '@/types/api';
 import { filesUiUtils } from '@/utils';
-import { ScrollArea } from '@statelyjs/ui/components/base/scroll-area';
 
 export interface VersionedFileDetailsProps {
   entry: FileInfo;

@@ -1,0 +1,17 @@
+[package]
+name = "quick-start"
+version = "0.1.0"
+edition = "2024"
+authors = ["George Lee Patterson <patterson.george@gmail.com>"]
+license = "Apache-2.0"
+
+[dependencies]
+axum = "0.8"
+serde = { version = "1", features = ["derive"] }
+stately = { path = "../../crates/stately", features = ["axum"] }
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "sync", "macros"] }
+tower-http = { version = "0.6", features = ["cors"] }
+utoipa = { version = "5", features = ["axum_extras", "uuid", "macros"] }
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }

@@ -2,7 +2,7 @@
  * QueryEditor - Pure SQL input component with flexible sql input field
  */
 
-import { Editor } from '@statelyjs/ui/components';
+import { CodemirrorEditorToggle } from '@statelyjs/stately/plugins/codemirror/toggled';
 import { Badge } from '@statelyjs/ui/components/base/badge';
 import { Button } from '@statelyjs/ui/components/base/button';
 import { Spinner } from '@statelyjs/ui/components/base/spinner';
@@ -76,25 +76,27 @@ export function QueryEditor({
   return (
     <div {...rest} className={cn('flex flex-col space-y-2', rest?.className)}>
       <div className="@container/queryeditor flex flex-col flex-1 overflow-hidden">
-        <Editor
-          className="min-h-full flex-1"
+        <CodemirrorEditorToggle
           content={value}
+          editorWrapperProps={{
+            inputGroupProps: { className: 'min-h-full flex-1' },
+            saveButton: (
+              <Button
+                className="cursor-pointer"
+                disabled={value.trim().length === 0 || isExecuting}
+                onClick={onRun}
+                size="sm"
+                type="button"
+                variant="outline"
+              >
+                {isExecuting ? <Spinner className="h-4 w-4" /> : <TableIcon className="h-4 w-4" />}
+                Run&nbsp;<span className="hidden @sm/queryeditor:inline">Query</span>
+              </Button>
+            ),
+          }}
           formId={`query-editor-${formId}`}
           onContent={onChange}
           placeholder={placeholder}
-          saveButton={
-            <Button
-              className="cursor-pointer"
-              disabled={value.trim().length === 0 || isExecuting}
-              onClick={onRun}
-              size="sm"
-              type="button"
-              variant="outline"
-            >
-              {isExecuting ? <Spinner className="h-4 w-4" /> : <TableIcon className="h-4 w-4" />}
-              Run&nbsp;<span className="hidden @sm/queryeditor:inline">Query</span>
-            </Button>
-          }
           supportedLanguages={['sql']}
         />
       </div>

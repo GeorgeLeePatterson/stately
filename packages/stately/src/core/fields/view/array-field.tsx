@@ -1,7 +1,7 @@
 import { ArrayIndex, NotSet } from '@statelyjs/ui/components';
 import { Item, ItemContent, ItemGroup } from '@statelyjs/ui/components/base/item';
-import type { FieldViewProps } from '@statelyjs/ui/form';
-import { BaseForm } from '@statelyjs/ui/form';
+import type { FieldViewProps } from '@statelyjs/ui/registry';
+import { BaseForm } from '@/form';
 import { useId } from 'react';
 import type { Schemas } from '@/core/schema';
 

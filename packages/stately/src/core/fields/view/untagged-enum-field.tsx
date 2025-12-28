@@ -1,6 +1,6 @@
 import { FieldItem, SimpleLabel } from '@statelyjs/ui/components';
-import type { FieldViewProps } from '@statelyjs/ui/form';
-import { BaseForm } from '@statelyjs/ui/form';
+import type { FieldViewProps } from '@statelyjs/ui/registry';
+import { BaseForm } from '@/form';
 import type { CoreNodeUnion } from '@/core';
 import type { Schemas } from '@/core/schema';
 

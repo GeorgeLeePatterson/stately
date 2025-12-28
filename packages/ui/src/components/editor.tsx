@@ -1,11 +1,5 @@
-import { basicSetup } from '@uiw/codemirror-extensions-basic-setup';
-import { langs } from '@uiw/codemirror-extensions-langs';
-import { githubDark } from '@uiw/codemirror-theme-github';
-import { gruvboxDark } from '@uiw/codemirror-theme-gruvbox-dark';
-import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { Check, Code, Maximize, Text } from 'lucide-react';
-import { lazy, Suspense, useMemo, useState } from 'react';
-import { Button } from '@/components/base/button';
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -17,69 +11,78 @@ import {
 import { InputGroup, InputGroupAddon, InputGroupTextarea } from '@/components/base/input-group';
 import { Spinner } from '@/components/base/spinner';
 import { cn } from '@/lib/utils';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './base/select';
+import { Button } from './base/button';
 import { ToggleGroup, ToggleGroupItem } from './base/toggle-group';
 
-const CodeMirror = lazy(() => import('@uiw/react-codemirror'));
-
-const themes = [
-  { key: 'github-dark' as const, label: 'GitHub Dark', value: githubDark },
-  { key: 'vscode' as const, label: 'Vscode', value: vscodeDark },
-  { key: 'gruvbox' as const, label: 'Gruvbox Dark', value: gruvboxDark },
-];
-
-type ThemeKey = (typeof themes)[number]['key'];
-
-export type SupportedLanguage = 'yaml' | 'json' | 'bash' | 'toml' | 'sql';
-export const DEFAULT_LANGUAGES: SupportedLanguage[] = ['bash', 'yaml', 'json', 'toml', 'sql'];
-
-// Helper to get the language extension based on selected language
-const getLanguageExtension = (language: SupportedLanguage) => {
-  switch (language) {
-    case 'yaml':
-      return langs.yaml();
-    case 'json':
-      return langs.json();
-    case 'bash':
-      return langs.bash();
-    case 'toml':
-      return langs.toml();
-    case 'sql':
-      return langs.sql();
-    default:
-      return langs.bash(); // fallback
-  }
-};
-
-export interface EditorProps {
+export interface BaseEditorProps {
   formId?: string;
   content?: string;
   onContent: (value: string) => void;
-  placeholder: string;
-  supportedLanguages?: SupportedLanguage[];
-  saveButton?: React.ReactNode;
+  placeholder?: string;
   isLoading?: boolean;
 }
 
-export function Editor({
-  formId,
-  content,
-  placeholder,
-  supportedLanguages,
-  saveButton,
-  isLoading,
-  onContent,
-  ...rest
-}: EditorProps & React.ComponentProps<typeof InputGroup>) {
-  const [editorOpen, setEditorOpen] = useState<boolean>(false);
+export type EditorWrapperProps = React.PropsWithChildren<{
+  saveButton?: React.ReactNode;
+  toggleButton?: React.ReactNode;
+  isLoading?: boolean;
+  inputGroupProps?: React.ComponentProps<typeof InputGroup>;
+}>;
 
+/**
+ * A simple, styled textarea component for editing multiline text
+ *
+ * @param props - TextEditor props (see {@link BaseEditorProps})
+ * @returns JSX.Element
+ */
+export function TextEditor({
+  content,
+  onContent,
+  isLoading,
+  placeholder,
+  ...rest
+}: BaseEditorProps &
+  Omit<React.ComponentProps<typeof InputGroupTextarea>, 'onChange' | 'value' | 'placeholder'>) {
+  return (
+    <InputGroupTextarea
+      {...rest}
+      className={cn('bg-background font-mono text-xs resize-y rounded-t-md', rest.className)}
+      disabled={rest.disabled ?? isLoading}
+      onChange={e => onContent(e.target.value)}
+      placeholder={placeholder}
+      rows={rest.rows ?? 6}
+      value={content || ''}
+    />
+  );
+}
+
+/**
+ * Wraps an editor with controls allowing for opening into a dialog.
+ *
+ * @param props - EditorWrapper props (see {@link EditorWrapperProps} & {@link InputGroupProps})
+ * @returns JSX.Element
+ */
+export function EditorWrapper({
+  saveButton,
+  toggleButton,
+  isLoading,
+  children,
+  inputGroupProps,
+}: EditorWrapperProps) {
+  const [editorOpen, setEditorOpen] = useState<boolean>(false);
   const editorView = (
-    <EditorContent
-      content={content}
-      defaultMode={editorOpen ? 'code' : 'text'}
-      formId={formId}
-      isLoading={isLoading}
-      modalTrigger={
+    <InputGroup
+      {...(inputGroupProps ?? {})}
+      className={cn('@container/editor', 'min-w-0 min-h-48 flex-1', inputGroupProps?.className)}
+    >
+      {children}
+
+      <InputGroupAddon align="block-end" className="flex justify-between items-center">
+        {saveButton}
+
+        {/* Toggle mode */}
+        {isLoading ? <Spinner /> : toggleButton}
+
         <DialogTrigger
           render={
             <Button
@@ -95,13 +98,8 @@ export function Editor({
           {editorOpen ? <Check /> : <Maximize />}
           <span className="hidden @md/editor:inline">{editorOpen ? 'Done' : 'Open Editor'}</span>
         </DialogTrigger>
-      }
-      placeholder={placeholder}
-      saveButton={saveButton}
-      setContent={onContent}
-      supportedLanguages={supportedLanguages}
-      {...rest}
-    />
+      </InputGroupAddon>
+    </InputGroup>
   );
 
   return (
@@ -132,164 +130,112 @@ export function Editor({
   );
 }
 
-interface EditorContentProps {
-  formId?: string;
-  content?: string;
-  setContent: (content: string) => void;
-  defaultMode: 'text' | 'code';
-  supportedLanguages?: SupportedLanguage[];
-  modalTrigger: React.ReactNode;
-  saveButton?: React.ReactNode;
-  placeholder: string;
-  isLoading?: boolean;
+/**
+ * Implementation of `TextEditor` with `EditorWrapper`
+ *
+ * @param props - BaseEditor props (see {@link BaseEditorProps} & {@link EditorWrapperProps})
+ * @returns JSX.Element
+ */
+export function BaseEditor({
+  // Base editor
+  formId,
+  placeholder,
+  content,
+  onContent,
+  isLoading,
+  // Editor wrapper
+  ...rest
+}: BaseEditorProps & Omit<EditorWrapperProps, 'children'>) {
+  return (
+    <EditorWrapper isLoading={isLoading} {...rest}>
+      <TextEditor
+        content={content}
+        disabled={isLoading}
+        id={`textarea-content-${formId}`}
+        onContent={onContent}
+        placeholder={placeholder}
+      />
+    </EditorWrapper>
+  );
 }
 
-function EditorContent({
-  formId,
-  content,
+export interface ToggleEditorProps {
+  defaultMode?: 'simple' | 'alt';
+  altIcon?: React.ReactNode;
+  render: React.ComponentType<BaseEditorProps>;
+}
+
+export function ToggledEditor({
+  // Toggle editor
   defaultMode,
-  supportedLanguages,
-  modalTrigger,
-  saveButton,
+  altIcon,
+  render: AltEditor,
+  // Base editor
   placeholder,
+  content,
+  onContent,
   isLoading,
-  setContent,
+  // Editor wrapper
+  formId,
   ...rest
-}: EditorContentProps & React.ComponentProps<typeof InputGroup>) {
-  const languages =
-    supportedLanguages && supportedLanguages.length > 0 ? supportedLanguages : DEFAULT_LANGUAGES;
-
-  const [mode, setMode] = useState<'text' | 'code'>(defaultMode);
-  const [lang, setLang] = useState<SupportedLanguage>(languages[0]);
-  const [theme, setTheme] = useState<ThemeKey>(themes[0].key);
-
-  const extensions = useMemo(
-    () => [basicSetup({ foldGutter: false, tabSize: 2 }), getLanguageExtension(lang)],
-    [lang],
-  );
-
-  const loader = (
-    <div className="h-full w-full flex-1 flex flex-col justify-center items-center">
-      <Spinner />
-    </div>
-  );
+}: ToggleEditorProps & BaseEditorProps & Omit<EditorWrapperProps, 'children'>) {
+  const [mode, setMode] = useState<'simple' | 'alt'>(defaultMode || 'simple');
 
   return (
-    <InputGroup
+    <EditorWrapper
       {...rest}
-      className={cn('@container/editor', 'min-w-0 min-h-48 flex-1', rest?.className)}
+      isLoading={isLoading}
+      toggleButton={
+        <>
+          {rest.toggleButton ?? (
+            <ToggleGroup
+              disabled={isLoading}
+              multiple={false}
+              onValueChange={value => {
+                if (value.length > 0) setMode(value[0] as 'simple' | 'alt');
+              }}
+              size="sm"
+              value={[mode]}
+              variant="outline"
+            >
+              {/* Text */}
+              <ToggleGroupItem
+                aria-label="Toggle text"
+                className={cn('cursor-pointer')}
+                value="simple"
+              >
+                <Text className="h-4 w-4" />
+              </ToggleGroupItem>
+
+              {/* Code */}
+              <ToggleGroupItem
+                aria-label="Toggle code"
+                className={cn('cursor-pointer')}
+                value="alt"
+              >
+                {altIcon ?? <Code className="h-4 w-4" />}
+              </ToggleGroupItem>
+            </ToggleGroup>
+          )}
+        </>
+      }
     >
-      {/* Mode toggle */}
-      {mode === 'text' ? (
-        <InputGroupTextarea
-          className={cn('bg-background font-mono text-xs resize-y rounded-t-md')}
+      {mode === 'simple' ? (
+        <TextEditor
+          content={content}
           disabled={isLoading}
           id={`textarea-content-${formId}`}
-          onChange={e => setContent(e.target.value)}
+          onContent={onContent}
           placeholder={placeholder}
-          rows={6}
-          value={content || ''}
         />
       ) : (
-        <Suspense fallback={loader}>
-          <div
-            className={cn(
-              'w-full h-full flex flex-col overflow-hidden',
-              defaultMode === 'text' ? 'max-h-64' : '',
-            )}
-          >
-            <CodeMirror
-              basicSetup={{ autocompletion: true }}
-              className={cn('w-full h-full flex-1 overflow-auto')}
-              extensions={extensions}
-              height="100%"
-              indentWithTab
-              minHeight="6rem"
-              minWidth="100%"
-              onChange={setContent}
-              placeholder={placeholder}
-              readOnly={isLoading}
-              theme={(themes.find(t => t.key === theme) || themes[0]).value}
-              value={content || ''}
-              width="100%"
-            />
-          </div>
-        </Suspense>
+        <AltEditor
+          content={content}
+          isLoading={isLoading}
+          onContent={onContent}
+          placeholder={placeholder}
+        />
       )}
-
-      {mode === 'code' && (
-        <InputGroupAddon align="block-start" className="flex w-full justify-between">
-          {/* Language toggle */}
-          {languages.length > 1 && (
-            <Select onValueChange={val => setLang(val as SupportedLanguage)} value={lang}>
-              <SelectTrigger
-                className="w-[180px] text-xs h-7!"
-                disabled={isLoading}
-                id={`select-language-${formId}`}
-                size="sm"
-              >
-                <SelectValue>{value => value || 'Language'}</SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {languages.map(lang => (
-                  <SelectItem key={lang} value={lang}>
-                    {lang}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-
-          {/* Theme toggle */}
-          <Select onValueChange={t => setTheme(t as ThemeKey)} value={theme}>
-            <SelectTrigger
-              className="w-[180px] text-xs h-7!"
-              disabled={isLoading}
-              id={`select-theme-${formId}`}
-              size="sm"
-            >
-              <SelectValue>
-                {value => themes.find(t => t.key === value)?.label || 'Theme'}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {themes.map(config => (
-                <SelectItem key={`theme-${config.key}`} value={config.key}>
-                  {config.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </InputGroupAddon>
-      )}
-
-      <InputGroupAddon align="block-end" className="flex justify-between items-center">
-        {saveButton}
-
-        {/* Toggle mode */}
-        <ToggleGroup
-          disabled={isLoading}
-          multiple={false}
-          onValueChange={value => {
-            if (value.length > 0) setMode(value[0] as 'text' | 'code');
-          }}
-          size="sm"
-          value={[mode]}
-          variant="outline"
-        >
-          {/* Text */}
-          <ToggleGroupItem aria-label="Toggle text" className={cn('cursor-pointer')} value="text">
-            <Text className="h-4 w-4" />
-          </ToggleGroupItem>
-
-          {/* Code */}
-          <ToggleGroupItem aria-label="Toggle code" className={cn('cursor-pointer')} value="code">
-            <Code className="h-4 w-4" />
-          </ToggleGroupItem>
-        </ToggleGroup>
-
-        {modalTrigger}
-      </InputGroupAddon>
-    </InputGroup>
+    </EditorWrapper>
   );
 }

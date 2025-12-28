@@ -1,6 +1,7 @@
 import { generateFieldFormId } from '@statelyjs/ui';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
-import { BaseForm, type FieldEditProps } from '@statelyjs/ui/form';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
+import { BaseForm } from '@/form';
 import { useEffect, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';

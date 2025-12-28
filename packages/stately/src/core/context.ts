@@ -7,7 +7,8 @@
  * @module context
  */
 
-import { type AnyUiPlugin, createStatelyUiProvider, type UiOptions } from '@statelyjs/ui';
+import type { AnyUiPlugin, UiOptions } from '@statelyjs/ui';
+import { createStatelyUiProvider } from '@/context';
 import type { Schemas } from '@/core/schema';
 import type { CoreUiPlugin } from '.';
 import { LinkExplorerProvider } from './context/link-explore-context';

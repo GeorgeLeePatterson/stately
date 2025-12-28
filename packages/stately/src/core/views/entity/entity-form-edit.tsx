@@ -1,11 +1,12 @@
-import { devLog, generateFieldFormId } from '@statelyjs/ui';
+import { generateFieldFormId } from '@statelyjs/ui';
 import { Field, FieldSet } from '@statelyjs/ui/components/base/field';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
-import { BaseForm } from '@statelyjs/ui/form';
 import { useId } from 'react';
 import type { CoreEntityData } from '@/core';
 import type { Schemas } from '@/core/schema';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
+import { log } from '@/utils';
 import { type EntityFormProps, EntityProperty, useEntityProperties } from './entity-properties';
 
 export interface EntityFormEditProps<Schema extends Schemas = Schemas> {
@@ -29,7 +30,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
   const fieldTypePrefix = isRootEntity ? 'Entity' : 'LinkedEntity';
   const formDisabled = 'name' in node.properties && isRootEntity && !entity?.name;
 
-  devLog.debug('Core', 'EntityFormEdit', {
+  log.debug('Core', 'EntityFormEdit', {
     entity,
     formDisabled,
     isLoading,

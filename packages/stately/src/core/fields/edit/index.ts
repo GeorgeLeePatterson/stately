@@ -16,13 +16,7 @@ export type { MapEditProps } from './map-field';
 export type { NullableEditProps } from './nullable-field';
 export type { ObjectEditProps } from './object-field';
 export type { PrimitiveEditProps } from './primitive-field';
-export type {
-  PrimitiveStringEditProps,
-  PrimitiveStringEditTransformerProps,
-  PrimitiveStringExtra,
-  StringMode,
-  StringModeGroup,
-} from './primitive-string';
+export type { PrimitiveStringEditProps } from './primitive-string';
 export type { RecursiveRefEditProps } from './recursive-ref-field';
 export type { TaggedUnionEditProps } from './tagged-union-field';
 export type { TupleEditProps } from './tuple-field';

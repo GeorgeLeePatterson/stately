@@ -1,0 +1,33 @@
+{
+  "name": "quick-start",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "check": "pnpm exec tsc --noEmit",
+    "preview": "vite preview",
+    "generate:openapi": "cd ../ && cargo run -- . && cd ./ui",
+    "codegen": "pnpm run generate:openapi && pnpm exec stately generate ../openapi.json -o ./src/generated"
+  },
+  "dependencies": {
+    "@statelyjs/stately": "file:../../../packages/stately/statelyjs-stately-0.4.1.tgz",
+    "lucide-react": "^0.562.0",
+    "openapi-fetch": "^0.15.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-router-dom": "^7.11.0",
+    "sonner": "^2.0.7"
+  },
+  "devDependencies": {
+    "@tanstack/react-query": "^5.90.12",
+    "@types/node": "^24.10.4",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "globals": "^16.5.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.0"
+  }
+}

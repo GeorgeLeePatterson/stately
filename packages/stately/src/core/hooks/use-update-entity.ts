@@ -1,8 +1,9 @@
-import { devAssert, devLog } from '@statelyjs/ui';
+import { devAssert } from '@statelyjs/ui';
 import { type QueryClient, useMutation } from '@tanstack/react-query';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import type { CoreEntityWrapped, CoreStateEntry } from '..';
+import { log } from '@/utils';
 
 /**
  * Update an existing entity.
@@ -88,10 +89,10 @@ export function useUpdateEntity<Schema extends Schemas = Schemas>({
       });
 
       if (error) {
-        devLog.error('Core', 'Failed to update entity', { error, id, input });
+        log.error('Core', 'Failed to update entity', { error, id, input });
         throw new Error('Failed to update entity');
       }
-      devLog.debug('Core', 'Successfully updated entity', { data, entity, id });
+      log.debug('Core', 'Successfully updated entity', { data, entity, id });
       return data;
     },
     onSuccess: data => {

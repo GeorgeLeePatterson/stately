@@ -24,23 +24,29 @@ A simple task management application with:
 The folder structure will assume:
 
 ```
-my-stately-app/
+tasks/
 ├── Cargo.toml
 │── src/
+│   ├── bin/                            # Openapi generation 
+│   │   └── openapi.rs                         
 │   ├── main.rs                         # Entry point
+│   ├── lib.rs 
 │   ├── state.rs                        # Entity definitions
 │   └── api.rs                          # API configuration
 ├── ui/
 │   ├── package.json
 │   ├── src/
-│   │   ├── index.css                   # Pull tailwind styles into scope
+│   │   ├── index.css                   # Pull stately styles into scope
 │   │   ├── lib/
-│   │   │   └── stately.ts  # Stately integration
+│   │   │   └── stately.ts              # Stately integration
 │   │   ├── generated/                  # Generated from OpenAPI
 │   │   │   ├── types.ts
 │   │   │   └── schemas.ts
-│   │   └── App.tsx
-│   └── tsconfig.json
+│   │   ├── App.tsx
+│   │   ├── Dashboard.tsx
+│   │   └── main.tsx
+│   ├── index.html
+│   ├── tsconfig.json
 │   └── vite.config.ts
 └── openapi.json                        # Generated OpenAPI spec
 ```
@@ -61,21 +67,21 @@ Update your `Cargo.toml`:
 
 ```toml
 [package]
-name = "my-stately-app"
+name = "tasks"
 version = "0.1.0"
 edition = "2024"
-default-run = "my-stately-app"
+default-run = "tasks"
 
 [dependencies]
 axum = "0.8"
 serde = { version = "1", features = ["derive"] }
 stately = { version = "0.3", features = ["axum"] }
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "sync", "macros" }
 tower-http = { version = "0.6", features = ["cors"] }
 utoipa = { version = "5", features = ["axum_extras", "uuid", "macros"] }
 
 [[bin]]
-name = "my-stately-app-openapi"
+name = "demo-tasks-openapi"
 path = "src/bin/openapi.rs"
 ```
 
@@ -170,7 +176,9 @@ use axum::{Json, Router};
 use tokio::sync::RwLock;
 use tower_http::cors::{Any, CorsLayer};
 
-use crate::state::{Entity, State as AppState, StateEntry, Task, TaskMetrics, TaskStatus};
+use crate::state::{
+    Entity, State as AppState, StateEntry, Task, TaskMetrics, TaskStatus, User, UserStatus,
+};
 
 /// Create API state used across all endpoints
 #[derive(Clone)]
@@ -183,7 +191,7 @@ pub struct ApiState {
 /// API state wrapper
 #[stately::axum_api(AppState, openapi(
     server = "/api/v1",
-    components = [Task, TaskStatus, TaskMetrics],
+    components = [Task, TaskStatus, TaskMetrics, User, UserStatus],
     paths = [metrics]
 ))]
 #[derive(Clone)]
@@ -206,6 +214,7 @@ pub fn router(state: &ApiState, tx: &tokio::sync::mpsc::Sender<ResponseEvent>) -
                 EntityState::event_middleware::<ResponseEvent>(tx.clone()),
             )),
         )
+        // Ensure cors is enabled
         .layer(CorsLayer::new().allow_headers(Any).allow_methods(Any).allow_origin(Any))
         .with_state(state.clone())
 }
@@ -227,8 +236,8 @@ pub async fn metrics(State(state): State<ApiState>) -> Json<TaskMetrics> {
 Update `src/main.rs`:
 
 ```rust
-use std::sync::Arc;
 use std::net::SocketAddr;
+use std::sync::Arc;
 
 use tasks::{api, state};
 use tokio::sync::RwLock;
@@ -237,7 +246,7 @@ use tokio::sync::RwLock;
 async fn main() {
     // Bring some derived types into scope
     use api::ResponseEvent;
-    use state::Entity;
+    use state::{Entity, StateEntry};
 
     // Create channel to listen to entity events
     let (tx, mut rx) = tokio::sync::mpsc::channel(32);
@@ -261,7 +270,7 @@ async fn main() {
                 ResponseEvent::Created { entity, .. } if matches!(entity, Entity::Task(_)) => {
                     metrics.write().await.tasks_created += 1;
                 }
-                ResponseEvent::Deleted { entity, .. } if matches!(entity, Entity::Task(_)) => {
+                ResponseEvent::Deleted { entry, .. } if matches!(entry, StateEntry::Task) => {
                     metrics.write().await.tasks_removed += 1;
                 }
                 _ => { /* Ignore */ }
@@ -283,12 +292,11 @@ async fn main() {
 Add a binary target to generate the OpenAPI spec. Create `src/bin/openapi.rs`:
 
 ```rust
-#![expect(unused_crate_dependencies)] // Suppresses lint warnings from utoipa if pedantic lints 
-use my_stately_app::api::EntityState;
+use tasks::api::EntityState;
 
 fn main() {
     let output_dir = std::env::args().nth(1).unwrap_or_else(|| {
-        eprintln!("Usage: my-stately-app-openapi <output_dir>");
+        eprintln!("Usage: demo-tasks-openapi <output_dir>");
         std::process::exit(1);
     });
 
@@ -309,10 +317,10 @@ pub mod api;
 pub mod state;
 ```
 
-Generate the spec:
+Generate the OpenAPI spec:
 
 ```shellscript
-cargo run --bin my-stately-app-openapi . > openapi.json
+cargo run --bin demo-tasks-openapi -- .
 ```
 
 ### 7. Run the Backend
@@ -362,14 +370,24 @@ pnpm create vite . --template react-ts --no-interactive
 
 ### 2. Install Dependencies
 
-```shellscript
-# Install stately
-pnpm add @statelyjs/stately @statelyjs/ui @statelyjs/schema
-# Install ui essentials
-pnpm add @tanstack/react-query lucide-react sonner openapi-fetch react-router-dom
-# Install tailwind helpers
-pnpm add -D @tailwindcss/vite tailwindcss
-```
+#### Install stately and additional packages
+
+import { PackageManagerTabs } from '@theme';
+
+Install the stately and ui packages:
+
+<PackageManagerTabs command="install @statelyjs/stately @statelyjs/ui" />
+
+> [!NOTE]
+> In this demo, we are installed `@statelyjs/ui` since we will leverage base ui components, which `@statelyjs/stately` doesn't re-export.
+
+Install required peer dependencies:
+
+<PackageManagerTabs command="install @tanstack/react-query lucide-react sonner openapi-fetch react-router-dom" />
+
+Since we'll be leveraging tailwind classes, let's get tailwind setup as well:
+
+<PackageManagerTabs command="install -D @tailwindcss/vite tailwindcss" />
 
 ### 3. Generate TypeScript Types
 
@@ -381,7 +399,7 @@ pnpm exec stately generate ../openapi.json -o ./src/generated
 
 ### 4. Create the Stately Runtime
 
-Create `src/lib/stately.ts`:
+Create `ui/src/lib/stately.ts`:
 
 ```typescript
 import {
@@ -392,8 +410,8 @@ import {
 } from '@statelyjs/stately';
 import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
 import { Check, LayoutDashboard } from 'lucide-react';
-
 import createClient from 'openapi-fetch';
+
 import openapiSpec from '../../../openapi.json';
 import { PARSED_SCHEMAS, type ParsedSchema } from '../generated/schemas';
 import type { components, operations, paths } from '../generated/types';
@@ -405,7 +423,7 @@ export const client = createClient<paths>({ baseUrl: 'http://localhost:3000/api/
 type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSchema>>;
 
 // Configure stately application options
-const runtimeOpts: StatelyConfiguration<AppSchemas> = {
+const runtimeOptions: StatelyConfiguration<AppSchemas> = {
   client,
   // Configure included core plugin options
   core: { api: { pathPrefix: '/entity' }, entities: { icons: { task: Check } } },
@@ -427,7 +445,7 @@ const runtimeOpts: StatelyConfiguration<AppSchemas> = {
 };
 
 // Create stately runtime
-export const runtime = statelyUi<AppSchemas>(runtimeOpts);
+export const runtime = statelyUi<AppSchemas>(runtimeOptions);
 
 // Create application's context provider
 export const StatelyProvider = statelyUiProvider<AppSchemas>();
@@ -468,20 +486,30 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 Create `src/index.css`:
 
 ```css
-/* Load Tailwind framework */
+/* App Tailwind (for this app’s own classes) */
 @import "tailwindcss";
-/* Import Stately UI theme variables and base styles */
-@import "@statelyjs/ui/styles.css";
-/* Tell Tailwind to scan all Stately packages (core + plugins) for utility class usage */
-@source "../node_modules/@statelyjs/**/dist/*.css";
+
+/* Framework + UI (prebuilt) */
+@import "@statelyjs/stately/styles.css";
+
+/* Tell Tailwind to scan the app source */
+@source "./**/*.{ts,tsx}";
+
+/* If looking to override any stately tokens... */
+/*
+:root { --stately-primary: oklch(...); }
+*/
 ```
+
+> [!NOTE]
+> `@statelyjs/stately/styles.css` already imports the styles from `@statelyjs/ui`. Don't re-include them as that will result in duplicate style definitions.
 
 Update `vite.config.ts`:
 
 ```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'; // Add tailwindcss vite plugin
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -567,13 +595,7 @@ export function Dashboard() {
 Update `src/App.tsx`:
 
 ```tsx
-import {
-  EntitiesIndexPage,
-  EntityDetailsPage,
-  EntityEditPage,
-  EntityNewPage,
-  EntityTypeListPage,
-} from '@statelyjs/stately/core/pages';
+import * as EntitiesPages from '@statelyjs/stately/core/pages';
 import { Layout } from '@statelyjs/ui/layout';
 import { Gem } from 'lucide-react';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
@@ -604,7 +626,7 @@ function App() {
 function Entities() {
   return (
     <Routes>
-      <Route element={<EntitiesIndexPage />} index path="/" />
+      <Route element={<EntitiesPages.EntitiesIndexPage />} index path="/" />
       <Route element={<EntityType />} path="/:type/*" />
     </Routes>
   );
@@ -615,20 +637,20 @@ function EntityType() {
   const { type } = useRequiredParams<{ type: string }>();
   return (
     <Routes>
-      <Route element={<EntityTypeListPage entity={type} />} index path="/" />
-      <Route element={<EntityNewPage entity={type} />} path="/new" />
+      <Route element={<EntitiesPages.EntityTypeListPage entity={type} />} index path="/" />
+      <Route element={<EntitiesPages.EntityNewPage entity={type} />} path="/new" />
       <Route element={<Entity entity={type} />} path="/:id/*" />
     </Routes>
   );
 }
 
 // Entrypoint into an instance of an entity
-function Entity({ entity }: React.ComponentProps<typeof EntityNewPage>) {
+function Entity({ entity }: React.ComponentProps<typeof EntitiesPages.EntityNewPage>) {
   const { id } = useRequiredParams<{ id: string }>();
   return (
     <Routes>
-      <Route element={<EntityDetailsPage entity={entity} id={id} />} index path="/" />
-      <Route element={<EntityEditPage entity={entity} id={id} />} path="/edit" />
+      <Route element={<EntitiesPages.EntityDetailsPage entity={entity} id={id} />} index path="/" />
+      <Route element={<EntitiesPages.EntityEditPage entity={entity} id={id} />} path="/edit" />
     </Routes>
   );
 }
@@ -653,7 +675,7 @@ Open `http://localhost:5173` to see your application. You now have:
 
 ## What Just Happened?
 
-1. **Backend**: You defined a `Task` entity with `#[stately::entity]` and a state container with `#[stately::state]`. The `#[stately::axum_api]` macro generated complete CRUD endpoints.
+1. **Backend**: You defined `Task` and `User` entities with `#[stately::entity]` and a state container with `#[stately::state]`. The `#[stately::axum_api]` macro generated complete CRUD endpoints.
 
 2. **OpenAPI**: The backend generated an OpenAPI spec describing all your entities and endpoints.
 

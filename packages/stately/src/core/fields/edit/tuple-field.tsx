@@ -1,7 +1,8 @@
 import { generateFieldFormId } from '@statelyjs/ui';
 import { GlowingSave } from '@statelyjs/ui/components';
 import { FieldSet } from '@statelyjs/ui/components/base/field';
-import { BaseForm, type FieldEditProps } from '@statelyjs/ui/form';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
+import { BaseForm } from '@/form';
 import { useCallback, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 

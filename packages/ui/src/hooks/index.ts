@@ -1,6 +1,14 @@
 import { CLICK_TRACK_STORAGE_KEY, useClickTracking } from './use-click-tracking';
 import { useMediaQuery } from './use-media-query';
+import { useOptionalPeer } from './use-optional-peer';
 import { useViewMore } from './use-view-more';
 
 export type { ClickTrack } from './use-click-tracking';
-export { useMediaQuery, useViewMore, useClickTracking, CLICK_TRACK_STORAGE_KEY as STORAGE_KEY };
+export type { PeerStatus as Status } from './use-optional-peer';
+export {
+  useMediaQuery,
+  useViewMore,
+  useClickTracking,
+  useOptionalPeer,
+  CLICK_TRACK_STORAGE_KEY as STORAGE_KEY,
+};
