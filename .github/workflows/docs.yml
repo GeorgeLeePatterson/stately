@@ -1,13 +1,14 @@
 name: Deploy Docs to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'docs/**'
-      - 'packages/docs/**'
-      - '.github/workflows/docs.yml'
+  # TODO: Re-enable automatic deployment once docs are stable
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'docs/**'
+  #     - 'packages/docs/**'
+  #     - '.github/workflows/docs.yml'
   workflow_dispatch:
 
 permissions:

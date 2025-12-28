@@ -2,22 +2,17 @@ import * as path from 'node:path';
 import { defineConfig } from '@rspress/core';
 
 export default defineConfig({
-  // base: '',
-  // builderConfig: {
-  //   html: { tags: [] },
-  // },
+  // Set base path for GitHub Pages deployment (https://georgeleepatterson.github.io/stately/)
+  base: '/stately/',
   description:
     'A composable state management framework for building full-stack applications with Rust and TypeScript/React',
   icon: '/favicon.ico',
   llms: true,
-  logo: '/stately-icon.png',
+  // Note: logo path must include base path for GitHub Pages deployment
+  logo: { dark: '/stately/stately-icon.png', light: '/stately/stately-icon.png' },
   logoText: 'Stately',
   markdown: {
-    link: {
-      checkDeadLinks: {
-        excludes: ['/stately-icon.png', '/llms-full.txt'],
-      },
-    },
+    link: { checkDeadLinks: { excludes: ['/stately/stately-icon.png', '/llms-full.txt'] } },
     showLineNumbers: true,
   },
   root: path.join(__dirname, '../../docs'),

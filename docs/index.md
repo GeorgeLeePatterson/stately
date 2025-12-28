@@ -16,7 +16,7 @@ hero:
       text: Quick Start 
       link: ./guide/start/quick-start 
   image:
-    src: /stately-icon.png
+    src: /stately/stately-icon.png
     alt: Stately 
 features:
   - title: Rust Backend
