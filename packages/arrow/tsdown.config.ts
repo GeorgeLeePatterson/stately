@@ -25,7 +25,15 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
-  external: ["react", "react-dom"],
+  external: [
+    "react",
+    "react-dom",
+    // Peer dependencies - don't bundle, let consumers provide these
+    "@statelyjs/stately",
+    "@statelyjs/ui",
+    /^@statelyjs\/stately\//,
+    /^@statelyjs\/ui\//,
+  ],
   onSuccess() {
     // Generate pre-built Tailwind utilities CSS
     execSync('pnpm exec tailwindcss -i src/styles.css -o dist/styles.css --minify', {

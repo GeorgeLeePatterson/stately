@@ -41,7 +41,7 @@ export interface CodemirrorEditorBaseProps {
   themeOptions?: CodemirrorEditorThemeOptions;
 }
 
-interface CodemirrorEditorProps extends CodemirrorEditorBaseProps, BaseEditorProps {
+export interface CodemirrorEditorProps extends CodemirrorEditorBaseProps, BaseEditorProps {
   Codemirror: React.LazyExoticComponent<React.ComponentType<ReactCodeMirrorProps>>;
 }
 

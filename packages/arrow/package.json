@@ -26,6 +26,7 @@
   },
   "peerDependencies": {
     "@statelyjs/stately": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.10",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.12",

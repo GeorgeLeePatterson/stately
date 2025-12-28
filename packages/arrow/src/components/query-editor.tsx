@@ -2,7 +2,7 @@
  * QueryEditor - Pure SQL input component with flexible sql input field
  */
 
-import { CodemirrorEditorToggle } from '@statelyjs/stately/plugins/codemirror/toggled';
+import { codemirror } from '@statelyjs/stately/features';
 import { Badge } from '@statelyjs/ui/components/base/badge';
 import { Button } from '@statelyjs/ui/components/base/button';
 import { Spinner } from '@statelyjs/ui/components/base/spinner';
@@ -71,12 +71,14 @@ export function QueryEditor({
   resultsHrefId,
   ...rest
 }: QueryEditorProps & Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>) {
+  const { ToggledEditor } = codemirror.extras ?? {};
+
   const formId = useId();
 
   return (
     <div {...rest} className={cn('flex flex-col space-y-2', rest?.className)}>
       <div className="@container/queryeditor flex flex-col flex-1 overflow-hidden">
-        <CodemirrorEditorToggle
+        <ToggledEditor
           content={value}
           editorWrapperProps={{
             inputGroupProps: { className: 'min-h-full flex-1' },

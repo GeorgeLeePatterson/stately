@@ -291,12 +291,7 @@ export function createStatelyUi<
     client,
     options: { ...defaultUiOptions, ...(options ?? {}) },
     plugins: {} as AllUiPlugins<Schema, Augments>,
-    registry: {
-      components: new Map(),
-      functions: new Map(),
-      nodes: { edit: new Map(), view: new Map() },
-      transformers: new Map(),
-    },
+    registry: { components: new Map() },
     schema,
     utils: runtimeUtils({}),
   });

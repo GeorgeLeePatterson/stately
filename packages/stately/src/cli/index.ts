@@ -15,8 +15,8 @@
 import { Command } from 'commander';
 
 import { nodeFS } from '../codegen/fs.js';
-import { parse } from '../codegen/parser.js';
 import { readOpenAPISpec, writeTypes } from '../codegen/openapi.js';
+import { parse } from '../codegen/parser.js';
 import { loadPlugins, writePluginOutput } from '../codegen/plugins.js';
 import { createCoreCodegenPlugin } from '../core/codegen.js';
 

@@ -14,13 +14,13 @@ importers:
     dependencies:
       '@statelyjs/stately':
         specifier: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz
-        version: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz(6cdb7cc34dfb120b9050af6fc4cd59d1)
+        version: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz(23f7c0e648baffb6aa66da16f53acee2)
       '@statelyjs/ui':
         specifier: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz
         version: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@tanstack/react-query':
         specifier: ^5.90.12
-        version: 5.90.12(react@19.2.3)
+        version: 5.90.14(react@19.2.3)
       '@uiw/codemirror-extensions-langs':
         specifier: ^4.25.4
         version: 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)
@@ -847,7 +847,7 @@ packages:
     resolution: {integrity: sha512-zgM6og1rP0cplChTH9PUNpNUcuaYEBOvrzFjV0O+ClHDozouufQc/hJxSHU4Tze1Oq5bi6AnKLGaD+V9a1PqPw==}
 
   '@statelyjs/stately@file:../../../packages/stately/statelyjs-stately-0.4.1.tgz':
-    resolution: {integrity: sha512-UaJJiXcJN1UfqSdJyH0dMi5OIzz9MF+kVCCC4ZbGOLLWTnm5ptrhJRhDP+UfydL4l6DY0lXKqoThCdK7B7xxrg==, tarball: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz}
+    resolution: {integrity: sha512-vizYtnwoJjBvJx5eJn+EV3o57PbhZvYMCOK1JOKST1Aqr/Xy43UXlcwzzN1RsCjTVfYJDv/I+BPA06gP1U4DTw==, tarball: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz}
     version: 0.4.1
     hasBin: true
     peerDependencies:
@@ -867,7 +867,7 @@ packages:
         optional: true
 
   '@statelyjs/ui@file:../../../packages/ui/statelyjs-ui-0.4.1.tgz':
-    resolution: {integrity: sha512-ZxW2lb13qyR+4tNA00Pqi4Vd/i0OH0KVPVMGXG3bjGg3XyuTDvgBrjhqFKSOg9ZuMDPhkXahTBkviVGWyhePuA==, tarball: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz}
+    resolution: {integrity: sha512-X0JPlX3uLr8BcPsH4euITBk8cXfn1aEAMzUNAZgqnmyHnHE45NoeR1g/TArKQmpJD6gAiXurBMx6lFWAatLe3Q==, tarball: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz}
     version: 0.4.1
     peerDependencies:
       '@types/react': ^18.0.0 || ^19.0.0
@@ -968,11 +968,11 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7
 
-  '@tanstack/query-core@5.90.12':
-    resolution: {integrity: sha512-T1/8t5DhV/SisWjDnaiU2drl6ySvsHj1bHBCWNXd+/T+Hh1cf6JodyEYMd5sgwm+b/mETT4EV3H+zCVczCU5hg==}
+  '@tanstack/query-core@5.90.14':
+    resolution: {integrity: sha512-/6di2yNI+YxpVrH9Ig74Q+puKnkCE+D0LGyagJEGndJHJc6ahkcc/UqirHKy8zCYE/N9KLggxcQvzYCsUBWgdw==}
 
-  '@tanstack/react-query@5.90.12':
-    resolution: {integrity: sha512-graRZspg7EoEaw0a8faiUASCyJrqjKPdqJ9EwuDRUF9mEYJ1YPczI9H+/agJ0mOJkPCJDk0lsz5QTrLZ/jQ2rg==}
+  '@tanstack/react-query@5.90.14':
+    resolution: {integrity: sha512-JAMuULej09hrZ14W9+mxoRZ44rR2BuZfCd6oKTQVNfynQxCN3muH3jh3W46gqZNw5ZqY0ZVaS43Imb3dMr6tgw==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -2454,11 +2454,11 @@ snapshots:
       openapi-types: 12.1.3
       openapi-typescript-helpers: 0.0.15
 
-  '@statelyjs/stately@file:../../../packages/stately/statelyjs-stately-0.4.1.tgz(6cdb7cc34dfb120b9050af6fc4cd59d1)':
+  '@statelyjs/stately@file:../../../packages/stately/statelyjs-stately-0.4.1.tgz(23f7c0e648baffb6aa66da16f53acee2)':
     dependencies:
       '@statelyjs/schema': 0.4.1
       '@statelyjs/ui': file:../../../packages/ui/statelyjs-ui-0.4.1.tgz(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
-      '@tanstack/react-query': 5.90.12(react@19.2.3)
+      '@tanstack/react-query': 5.90.14(react@19.2.3)
       '@uiw/codemirror-extensions-basic-setup': 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
       '@uiw/codemirror-extensions-langs': 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/lang-css@6.3.1)(@codemirror/lang-html@6.4.11)(@codemirror/lang-javascript@6.2.4)(@codemirror/language-data@6.5.2)(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)(@lezer/common@1.5.0)(@lezer/highlight@1.2.3)(@lezer/javascript@1.5.4)(@lezer/lr@1.4.5)
       '@uiw/codemirror-theme-github': 4.25.4(@codemirror/language@6.12.1)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
@@ -2564,11 +2564,11 @@ snapshots:
       tailwindcss: 4.1.18
       vite: 7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)
 
-  '@tanstack/query-core@5.90.12': {}
+  '@tanstack/query-core@5.90.14': {}
 
-  '@tanstack/react-query@5.90.12(react@19.2.3)':
+  '@tanstack/react-query@5.90.14(react@19.2.3)':
     dependencies:
-      '@tanstack/query-core': 5.90.12
+      '@tanstack/query-core': 5.90.14
       react: 19.2.3
 
   '@types/babel__core@7.20.5':

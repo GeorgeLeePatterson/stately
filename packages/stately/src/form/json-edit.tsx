@@ -4,7 +4,7 @@ import { Note } from '@statelyjs/ui/components/note';
 import { cn } from '@statelyjs/ui/lib/utils';
 import { Save, X } from 'lucide-react';
 import { useCallback, useId, useMemo, useState } from 'react';
-import { CodemirrorEditorToggle } from '@/plugins/codemirror/toggled';
+import { CodemirrorEditorToggle } from '@/features/codemirror/toggled';
 
 type JsonStatus = { valid: boolean; error?: string; msg?: string };
 

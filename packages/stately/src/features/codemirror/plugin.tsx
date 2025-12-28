@@ -62,7 +62,7 @@ import {
   stringModes,
 } from '@/core/extensions/add-string-modes';
 import { CodemirrorEditor, type CodemirrorEditorBaseProps } from './editor';
-import { setLazyCodemirror } from './toggled';
+import { CodemirrorEditorToggle, type CodemirrorEditorToggleProps } from './toggled';
 
 /**
  * Default string mode configuration
@@ -105,6 +105,13 @@ export interface CodemirrorPluginOptions {
 }
 
 /**
+ * Extras provided by the CodeMirror plugin.
+ */
+export interface CodeMirrorExtras {
+  ToggledEditor: React.ComponentType<CodemirrorEditorToggleProps>;
+}
+
+/**
  * CodeMirror feature plugin.
  *
  * Provides syntax-highlighted code editing for string fields.
@@ -133,9 +140,15 @@ export interface CodemirrorPluginOptions {
  * }
  * ```
  */
-export const codemirror = createFeaturePlugin<CodemirrorPluginOptions, ReactCodeMirrorProps>({
+export const codemirror = createFeaturePlugin<
+  CodemirrorPluginOptions,
+  ReactCodeMirrorProps,
+  CodeMirrorExtras
+>({
   // Lazy load the heavy CodeMirror component
   component: () => import('@uiw/react-codemirror'),
+  // Default extras
+  defaultExtras: { ToggledEditor: CodemirrorEditorToggle },
 
   // Default options
   defaults: { modeGroup: CORE_STRING_MODE_GROUP },
@@ -147,17 +160,12 @@ export const codemirror = createFeaturePlugin<CodemirrorPluginOptions, ReactCode
     const stringMode: StringMode = { ...defaultCodemirrorStringMode, ...(options?.mode ?? {}) };
     const modeValue = stringMode.value;
 
-    // Set the lazy component for CodemirrorEditorToggle
-    if (ctx.Component) {
-      setLazyCodemirror(ctx.Component);
-    }
-
     // Define component outside the extend callback to maintain stable reference
-    const CodemirrorComponent: React.FC<{
+    const CodemirrorComponent = (props: {
       value: unknown;
       onChange?: (value: string) => void;
       placeholder?: string;
-    }> = props => {
+    }) => {
       // ctx.Component is guaranteed to exist when this renders (plugin is enabled)
       const LazyCodeMirror = ctx.Component;
       if (LazyCodeMirror === null) return null;
@@ -174,7 +182,19 @@ export const codemirror = createFeaturePlugin<CodemirrorPluginOptions, ReactCode
       );
     };
 
-    // Extend string modes with the new deep merge API
+    // Create a stable reference to the ToggledEditor component
+    const ToggledEditor: CodeMirrorExtras['ToggledEditor'] = props => {
+      return (
+        <CodemirrorEditorToggle
+          {...options?.codemirrorProps}
+          {...props}
+          Codemirror={ctx.Component ?? undefined}
+          placeholder={props.placeholder ?? 'Enter code...'}
+        />
+      );
+    };
+
+    // Extend string modes
     stringModes.extend(state => ({
       component: state.modeState.mode === modeValue ? CodemirrorComponent : state.component,
       modeState: {
@@ -191,5 +211,7 @@ export const codemirror = createFeaturePlugin<CodemirrorPluginOptions, ReactCode
         ],
       },
     }));
+
+    return { ToggledEditor };
   },
 });

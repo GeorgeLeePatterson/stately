@@ -56,14 +56,11 @@
 import { stringModes } from '@statelyjs/stately/core/extensions/add-string-modes';
 import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
 import {
-  type AnyUiPlugin,
-  registry as baseRegistry,
-  createOperations,
+  createUiPlugin,
   type DefineOptions,
   type DefineUiPlugin,
   type RouteOption,
   type UiNavigationOptions,
-  type UiPluginFactory,
 } from '@statelyjs/ui';
 import { Files } from 'lucide-react';
 
@@ -174,11 +171,6 @@ export type FilesUiPlugin = DefineUiPlugin<
  * - String primitive transformers
  * - Typed API operations for file management
  *
- * @typeParam Schema - The schemas type, defaults to base Schemas
- * @typeParam Augments - Additional UI plugins already registered
- * @param options - Optional configuration for API paths and navigation
- * @returns A UI plugin factory function that augments the runtime
- *
  * @example
  * ```typescript
  * import { statelyUi } from '@statelyjs/stately';
@@ -197,44 +189,26 @@ export type FilesUiPlugin = DefineUiPlugin<
  * const result = await plugins.files.api.list_files();
  * ```
  */
-export function filesUiPlugin<
-  Schema extends Schemas<any, any> = Schemas,
-  Augments extends readonly AnyUiPlugin[] = [],
->(options?: FilesOptions): UiPluginFactory<Schema, Augments> {
-  return runtime => {
-    log.debug('Files', 'registering', { options, runtime });
+export const filesUiPlugin = createUiPlugin<FilesUiPlugin>({
+  name: FILES_PLUGIN_NAME,
+  operations: FILES_OPERATIONS,
+  routes: filesRoutes,
 
-    const { registry, client } = runtime;
+  setup: (ctx, options) => {
+    log.debug('Files', 'registering', { options });
 
     // Register components
-    registry.components.set(
-      baseRegistry.makeRegistryKey(FilesNodeType.RelativePath, 'edit'),
-      props => <RelativePathEdit {...props} standalone />,
-    );
-    registry.components.set(
-      baseRegistry.makeRegistryKey(FilesNodeType.RelativePath, 'view'),
-      RelativePathView,
-    );
+    ctx.registerComponent(FilesNodeType.RelativePath, 'edit', props => (
+      <RelativePathEdit {...props} standalone />
+    ));
+    ctx.registerComponent(FilesNodeType.RelativePath, 'view', RelativePathView);
 
     // Extend string field with file upload mode
     stringModes.extend(filesStringExtension);
 
-    // Create typed operations with user's prefix
-    const basePathPrefix = runtime.options?.api?.pathPrefix;
-    const corePathPrefix = options?.api?.pathPrefix;
-    const pathPrefix = runtime.utils.mergePathPrefixOptions(basePathPrefix, corePathPrefix);
-    const api = createOperations<FilesPaths, typeof FILES_OPERATIONS>(
-      client,
-      FILES_OPERATIONS,
-      pathPrefix,
-    );
-    log.debug('Files', 'registered plugin', { options, pathPrefix, runtime });
+    log.debug('Files', 'registered plugin', { pathPrefix: ctx.pathPrefix });
 
-    // Files only supports a top level route, only provides a single page.
-    const routes = { ...filesRoutes, ...(options?.navigation?.routes || {}) };
-    log.debug('Files', 'registered routes', { routes });
-
-    const plugin = { [FILES_PLUGIN_NAME]: { api, options, routes, utils: filesUiUtils } };
-    return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };
-  };
-}
+    return {};
+  },
+  utils: filesUiUtils,
+});

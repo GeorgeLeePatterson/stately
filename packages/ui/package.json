@@ -20,7 +20,7 @@
     "build": "tsdown",
     "check": "tsc --noEmit",
     "dev": "tsdown --watch",
-    "tarball": "rm statelyjs-ui-*.tgz && pnpm --filter @statelyjs/ui pack"
+    "tarball": "rm statelyjs-ui-*.tgz || true && pnpm --filter @statelyjs/ui pack"
   },
   "peerDependencies": {
     "@types/react": "^18.0.0 || ^19.0.0",

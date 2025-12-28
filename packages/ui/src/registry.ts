@@ -7,46 +7,30 @@
  *
  * ## How It Works
  *
- * Components and transformers are registered with composite keys:
+ * Components are registered with composite keys:
  * - `{nodeType}::edit::component` - Edit component for a node type
  * - `{nodeType}::view::component` - View component for a node type
- * - `{nodeType}::edit::transformer::{state}` - Transform props before rendering
  *
  * ## For Plugin Authors
  *
  * Register custom components for your plugin's node types:
  *
  * ```typescript
- * import { registry, makeRegistryKey } from '@statelyjs/ui/registry';
  *
  * // In your plugin factory
- * function myPlugin(runtime) {
+ * export const myUiPlugin = createUiPlugin<MyUiPlugin>({
+ *  name: PLUGIN_NAME,
+ *  operations: PLUGIN_OPERATIONS,
+ *
+ *  setup: (ctx, options) => {
  *   // Register edit component for custom node type
- *   runtime.registry.components.set(
- *     makeRegistryKey('myCustomType', 'edit'),
- *     MyCustomEditComponent
- *   );
+ *   ctx.registerComponent('myCustomType', 'edit', MyCustomEditComponent);
  *
  *   // Register view component
- *   runtime.registry.components.set(
- *     makeRegistryKey('myCustomType', 'view'),
- *     MyCustomViewComponent
- *   );
+ *   ctx.registerComponent('myCustomType', 'view', MyCustomViewComponent);
  *
- *   return runtime;
- * }
- * ```
- *
- * ## Transformers
- *
- * Transformers modify props before they reach a component. Useful for
- * adding computed values or reformatting data:
- *
- * ```typescript
- * runtime.registry.transformers.set(
- *   makeRegistryKey('string', 'edit', 'transformer', 'password'),
- *   (props) => ({ ...props, inputType: 'password' })
- * );
+ *   return {};
+ * });
  * ```
  *
  * @packageDocumentation
@@ -93,20 +77,15 @@ export interface FieldEditProps<
   isWizard?: boolean;
 }
 
-/** Map of registry keys to React components. */
-export type NodeTypeRegistry<S extends StatelySchemas<any, any>> = {
-  edit: Map<S['plugin']['NodeNames'], ComponentType<FieldEditProps<S>>>;
-  view: Map<S['plugin']['NodeNames'], ComponentType<FieldEditProps<S>>>;
-};
+// TODO: Remove or use
+// /** Map of registry keys to React components. */
+// export type NodeTypeRegistry<S extends StatelySchemas<any, any>> = {
+//   edit: Map<S['plugin']['NodeNames'], ComponentType<FieldEditProps<S>>>;
+//   view: Map<S['plugin']['NodeNames'], ComponentType<FieldEditProps<S>>>;
+// };
 
 /** Map of registry keys to React components. */
 export type ComponentRegistry = Map<string, ComponentType<any>>;
-
-/** Map of registry keys to transformer functions. */
-export type TransformerRegistry = Map<string, Transformer<any>>;
-
-/** Map of registry keys to utility functions. */
-export type FunctionRegistry = Map<string, (...args: any[]) => any>;
 
 /**
  * A transformer function that modifies props before they reach a component.
@@ -116,20 +95,15 @@ export type FunctionRegistry = Map<string, (...args: any[]) => any>;
  */
 export type Transformer<T, U = T> = (value: T) => U extends never ? T : U;
 
+// TODO: Remove - type parameter was meant for NodeTypeRegistry. Decide if it stays
 /**
  * The UI registry containing all registered components, transformers, and functions.
  *
  * Access via `runtime.registry` to register or retrieve components.
  */
-export interface UiRegistry<Schema extends StatelySchemas<any, any>> {
-  /** Node Type registry - maps node types to edit/view React components */
-  nodes: NodeTypeRegistry<Schema>;
+export interface UiRegistry<_Schema extends StatelySchemas<any, any>> {
   /** Component registry - maps node types to React components */
   components: ComponentRegistry;
-  /** Transformer registry - maps node types to prop transformers */
-  transformers: TransformerRegistry;
-  /** Function registry - maps keys to utility functions */
-  functions: FunctionRegistry;
 }
 
 // ============================================================================
@@ -139,23 +113,18 @@ export interface UiRegistry<Schema extends StatelySchemas<any, any>> {
 /** The mode for a registry entry: 'edit' for form inputs, 'view' for display. */
 export type RegistryMode = 'edit' | 'view';
 
-/** The type of registry entry: component or transformer. */
-export type RegistryType = 'component' | 'transformer';
-
 /**
  * A composite key for registry lookup.
  *
- * Format: `{nodeType}::{mode}::{type}::{state?}`
+ * Format: `{nodeType}::{mode}::{type}`
  *
  * @example
  * - `"string::edit::component"` - String edit component
  * - `"object::view::component"` - Object view component
- * - `"string::edit::transformer::password"` - Password transformer for strings
  */
 export type RegistryKey =
   | `${string}::${RegistryMode}` // Same as w/ 'component'
-  | `${string}::${RegistryMode}::${RegistryType}`
-  | `${string}::${RegistryMode}::${RegistryType}::${string}`;
+  | `${string}::${RegistryMode}::component`;
 
 /**
  * Union type of all components that can be registered.
@@ -168,6 +137,7 @@ export type NodeTypeComponent<
 // Registry Helpers
 // ============================================================================
 
+// TODO: Remove - this is no longer needed, after registry is changed
 /**
  * Create a registry key for component or transformer lookup.
  *
@@ -184,15 +154,8 @@ export type NodeTypeComponent<
  * makeRegistryKey('string', 'edit', 'transformer', 'password'); // "string::edit::transformer::password"
  * ```
  */
-export function makeRegistryKey(
-  node: string,
-  mode: RegistryMode,
-  discriminator: RegistryType = 'component',
-  state?: string,
-): RegistryKey {
-  let key: RegistryKey = `${node}::${mode}::${discriminator}`;
-  if (state) key = `${key}::${state}`;
-  return key;
+export function makeRegistryKey(node: string, mode: RegistryMode): RegistryKey {
+  return `${node}::${mode}::component`;
 }
 
 /**
@@ -212,25 +175,6 @@ export function getComponent(registry: ComponentRegistry, key: string): unknown 
 }
 
 /**
- * Get a transformer from the registry by key.
- *
- * @param registry - The transformer registry
- * @param key - The registry key
- * @returns The transformer function if found, undefined otherwise
- */
-export function getTransformer<T>(
-  registry: TransformerRegistry,
-  key: string,
-): Transformer<T> | undefined {
-  const comp = registry.get(key);
-  if (!comp) {
-    console.error(`Transformer not found for key: ${key}`);
-    return;
-  }
-  return comp as Transformer<T>;
-}
-
-/**
  * Get a component by building a key from path segments.
  *
  * @param registry - The component registry
@@ -243,21 +187,6 @@ export function getComponentByPath(
   path: string[],
 ): ComponentType<any> | undefined {
   return getComponent(registry, [node, ...path].join('::')) as ComponentType<any>;
-}
-
-/**
- * Get a transformer by building a key from path segments.
- *
- * @param registry - The transformer registry
- * @param node - The node type
- * @param path - Additional path segments to append
- */
-export function getTransformerByPath<T>(
-  registry: TransformerRegistry,
-  node: string,
-  path: string[],
-): Transformer<any> | undefined {
-  return getTransformer<T>(registry, [node, ...path].join('::')) as Transformer<T>;
 }
 
 /**
@@ -280,13 +209,8 @@ export function getEditComponent<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
   N extends BaseNode = PluginNodeUnion<S>,
   V = unknown,
->(
-  registry: ComponentRegistry,
-  node: string,
-
-  state?: string,
-): ComponentType<FieldEditProps<S, N, V>> | undefined {
-  return getComponent(registry, makeRegistryKey(node, 'edit', 'component', state)) as ComponentType<
+>(registry: ComponentRegistry, node: string): ComponentType<FieldEditProps<S, N, V>> | undefined {
+  return getComponent(registry, makeRegistryKey(node, 'edit')) as ComponentType<
     FieldEditProps<S, N, V>
   >;
 }
@@ -305,88 +229,8 @@ export function getViewComponent<
   S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
   N extends BaseNode = PluginNodeUnion<S>,
   V = unknown,
->(
-  registry: ComponentRegistry,
-  node: string,
-  state?: string,
-): ComponentType<FieldViewProps<S, N, V>> | undefined {
-  return getComponent(registry, makeRegistryKey(node, 'view', 'component', state)) as ComponentType<
+>(registry: ComponentRegistry, node: string): ComponentType<FieldViewProps<S, N, V>> | undefined {
+  return getComponent(registry, makeRegistryKey(node, 'view')) as ComponentType<
     FieldViewProps<S, N, V>
   >;
-}
-
-// ============================================================================
-// Transformer Props Types
-// ============================================================================
-
-/**
- * Props passed to an edit transformer function.
- *
- * Extends `FieldEditProps` with an optional `extra` object for custom data.
- */
-export type TransformerEditProps<
-  T extends {} = Record<string, any>,
-  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
-  N extends BaseNode = PluginNodeUnion<S>,
-  V = unknown,
-> = FieldEditProps<S, N, V> & { extra?: T };
-
-/**
- * Get an edit transformer for a node type.
- *
- * @param registry - The transformer registry
- * @param node - The node type name
- * @param state - Optional state discriminator
- * @returns The transformer function if found
- */
-export function getEditTransformer<
-  T extends {} = Record<string, any>,
-  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
-  N extends BaseNode = PluginNodeUnion<S>,
-  V = unknown,
->(
-  registry: TransformerRegistry,
-  node: N['nodeType'],
-  state?: string,
-): Transformer<TransformerEditProps<T, S, N, V>> | undefined {
-  return getTransformer<TransformerEditProps<T, S, N, V>>(
-    registry,
-    makeRegistryKey(node, 'edit', 'transformer', state),
-  );
-}
-
-/**
- * Props passed to a view transformer function.
- *
- * Extends `FieldViewProps` with an optional `extra` object for custom data.
- */
-export type TransformerViewProps<
-  T extends {} = Record<string, any>,
-  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
-  N extends BaseNode = PluginNodeUnion<S>,
-  V = unknown,
-> = FieldViewProps<S, N, V> & { extra?: T };
-
-/**
- * Get a view transformer for a node type.
- *
- * @param registry - The transformer registry
- * @param node - The node type name
- * @param state - Optional state discriminator
- * @returns The transformer function if found
- */
-export function getViewTransformer<
-  T extends {} = Record<string, any>,
-  S extends StatelySchemas<any, any> = StatelySchemas<any, any>,
-  N extends BaseNode = PluginNodeUnion<S>,
-  V = unknown,
->(
-  registry: TransformerRegistry,
-  node: string,
-  state?: string,
-): Transformer<TransformerViewProps<T, S, N, V>> | undefined {
-  return getTransformer<TransformerViewProps<T, S, N, V>>(
-    registry,
-    makeRegistryKey(node, 'view', 'transformer', state),
-  );
 }

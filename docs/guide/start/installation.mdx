@@ -70,10 +70,10 @@ import { PackageManagerTabs } from '@theme';
 <PackageManagerTabs command="install @statelyjs/stately" />
 
 > [!DETAILS]
-> For simple use cases, stately re-exports the most commonly used components from 'ui', such as `Layout`, `BaseForm`, etc. If you want access to the base components or other items not re-exported by stately, you can install `@statelyjs/ui` directly and import them yourself.
+> For out-of-the-box use cases, stately exports the most commonly used components, such as `Layout`, `BaseForm`, etc. If you want access to the base components or other items not re-exported by stately, you can install `@statelyjs/ui` directly and import them yourself.
 
 > [!DETAILS]
-> Stately also provides a low level library `@statelyjs/schema`. There are few cases where you will need to install this yourself, much of what it provides is re-exported from `@statelyjs/stately` and enhanced to include all "core" functionality. Of course, if you find yourself needing access to some of those primitives, you can install the library directly as well.
+> Stately also provides a low level library `@statelyjs/schema`. There are few cases where you will need to install this yourself, much of what it provides is re-exported from `@statelyjs/stately` and enhanced to include all "core" functionality. Of course, if you find yourself needing access to some of those primitives, you can install the library directly.
 
 ### Peer Dependencies
 
@@ -85,9 +85,9 @@ While Stately uses tailwind and [base-ui](https://base-ui.com/), for most use ca
 
 <PackageManagerTabs command="install -D tailwindcss @tailwindcss/cli" />
 
-If you plan on using the `Editor` component from `@statelyjs/ui` or any plugins that require it, install `CodeMirror`:
+If you plan on using the `codemirror` feature of `@statelyjs/stately` (found at `@statelyjs/stately/plugins`), or any plugins that require it (both `@statelyjs/files` and `@statelyjs/arrow` provide enhanced functionality when it is available), be sure to install `@uiw/react-codemirror` and other peer dependencies:
 
-<PackageManagerTabs command="install @uiw/react-codemirror" />
+<PackageManagerTabs command="install @uiw/react-codemirror @uiw/codemirror-extensions-langs" />
 
 ### Plugin Packages
 

@@ -53,14 +53,12 @@
 
 import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
 import {
-  type AnyUiPlugin,
-  createOperations,
+  createUiPlugin,
   type DefineOptions,
   type DefineUiPlugin,
   type DefineUiUtils,
   type RouteOption,
   type UiNavigationOptions,
-  type UiPluginFactory,
 } from '@statelyjs/ui';
 import { Database } from 'lucide-react';
 import { ARROW_OPERATIONS, type ArrowPaths } from './api';
@@ -177,11 +175,6 @@ export type ArrowUiPlugin = DefineUiPlugin<
  * navigation routes into the Stately UI runtime. It provides typed access
  * to Arrow API endpoints through React Query hooks.
  *
- * @typeParam Schema - The schemas type, defaults to base Schemas
- * @typeParam Augments - Additional UI plugins already registered
- * @param options - Optional configuration for API paths and navigation
- * @returns A UI plugin factory function that augments the runtime
- *
  * @example
  * ```typescript
  * import { statelyUi } from '@statelyjs/stately';
@@ -200,43 +193,13 @@ export type ArrowUiPlugin = DefineUiPlugin<
  * const result = await plugins.arrow.api.list_catalogs();
  * ```
  */
-export function arrowUiPlugin<
-  Schema extends Schemas<any, any> = Schemas,
-  Augments extends readonly AnyUiPlugin[] = [],
->(options?: ArrowOptions): UiPluginFactory<Schema, Augments> {
-  return runtime => {
-    log.debug('Arrow', 'registering', { options, runtime });
+export const arrowUiPlugin = createUiPlugin<ArrowUiPlugin>({
+  name: ARROW_PLUGIN_NAME,
+  operations: ARROW_OPERATIONS,
+  routes: arrowRoutes,
 
-    const { client } = runtime;
-
-    // // Register components
-    // registry.components.set(
-    //   baseRegistry.makeRegistryKey(ArrowNodeType.RelativePath, 'edit'),
-    //   props => <RelativePathEdit {...props} standalone />,
-    // );
-
-    // Register transformers
-    // TODO: Implement string view type
-    // registry.transformers.set(
-    //   baseRegistry.makeRegistryKey(CoreNodeType.Primitive, 'edit', 'transformer', 'string'),
-    //   primitiveStringTransformer,
-    // );
-
-    // Create typed operations with user's prefix
-    const basePathPrefix = runtime.options?.api?.pathPrefix;
-    const corePathPrefix = options?.api?.pathPrefix;
-    const pathPrefix = runtime.utils.mergePathPrefixOptions(basePathPrefix, corePathPrefix);
-    const api = createOperations<ArrowPaths, typeof ARROW_OPERATIONS>(
-      client,
-      ARROW_OPERATIONS,
-      pathPrefix,
-    );
-    log.debug('Arrow', 'registered plugin', { options, pathPrefix, runtime });
-
-    const routes = { ...arrowRoutes, ...(options?.navigation?.routes || {}) };
-    log.debug('Arrow', 'registered routes', { routes });
-
-    const plugin = { [ARROW_PLUGIN_NAME]: { api, options, routes } };
-    return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };
-  };
-}
+  setup: (ctx, options) => {
+    log.debug('Arrow', 'registering', { options, pathPrefix: ctx.pathPrefix });
+    return {};
+  },
+});

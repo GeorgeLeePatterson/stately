@@ -95,7 +95,7 @@ export type StatelyConfiguration<Schema extends Schemas<any, any> = Schemas> = R
  * and any additional plugins you've added via `withPlugin()`.
  *
  * @typeParam S - Your application's schema type
- * @typeParam ExtraAugments - Additional plugins beyond core (inferred from `withPlugin` calls)
+ * @typeParam Augments - Additional plugins beyond core (inferred from `withPlugin` calls)
  *
  * @example Accessing the runtime
  * ```typescript
@@ -111,8 +111,8 @@ export type StatelyConfiguration<Schema extends Schemas<any, any> = Schemas> = R
  */
 export type StatelyUi<
   S extends Schemas<any, any> = Schemas,
-  ExtraAugments extends readonly AnyUiPlugin[] = readonly [],
-> = StatelyUiRuntime<S, readonly [CoreUiPlugin, ...ExtraAugments]>;
+  Augments extends readonly AnyUiPlugin[] = readonly [],
+> = StatelyUiRuntime<S, readonly [CoreUiPlugin, ...Augments]>;
 
 // ============================================================================
 // Runtime Factory
@@ -170,7 +170,7 @@ export function statelyUi<
   return createStatelyUi<Schema, readonly [CoreUiPlugin, ...Augments]>({
     ...stately,
     options: stately.options ?? {},
-  }).withPlugin(coreUiPlugin<Schema, Augments>(core));
+  }).withPlugin(coreUiPlugin<Schema, readonly [CoreUiPlugin, ...Augments]>(core));
 }
 
 // ============================================================================

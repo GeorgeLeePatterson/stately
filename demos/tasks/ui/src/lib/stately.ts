@@ -4,7 +4,7 @@ import {
   statelyUiProvider,
   useStatelyUi,
 } from '@statelyjs/stately';
-import { codemirror } from '@statelyjs/stately/plugins';
+import { codemirror } from '@statelyjs/stately/features';
 import { type DefineConfig, type Schemas, stately } from '@statelyjs/stately/schema';
 import { Check, LayoutDashboard } from 'lucide-react';
 import createClient from 'openapi-fetch';

@@ -22,10 +22,12 @@
     "dev": "tsdown --watch",
     "codegen": "pnpm run generate:openapi && pnpm run generate:types",
     "generate:openapi": "cargo run -p stately-files --bin stately-files-openapi -- .",
-    "generate:types": "pnpm exec stately generate ./openapi.json -o ./src/generated"
+    "generate:types": "pnpm exec stately generate ./openapi.json -o ./src/generated",
+    "tarball": "rm statelyjs-files-*.tgz || true && pnpm --filter @statelyjs/files pack"
   },
   "peerDependencies": {
     "@statelyjs/stately": "workspace:*",
+    "@statelyjs/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.10",
     "@types/react": "^18.0.0 || ^19.0.0",
     "@types/react-dom": "^18.0.0 || ^19.0.0",

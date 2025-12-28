@@ -1,5 +1,5 @@
 import type { StringMode } from '@statelyjs/stately/core/extensions/add-string-modes';
-import { CodemirrorEditorToggle } from '@statelyjs/stately/plugins/codemirror/toggled';
+import { codemirror } from '@statelyjs/stately/features';
 import { Button } from '@statelyjs/ui/components/base/button';
 import { ButtonGroup } from '@statelyjs/ui/components/base/button-group';
 import { Input } from '@statelyjs/ui/components/base/input';
@@ -156,7 +156,7 @@ export function RelativePathEdit({
             placeholder="Name (required) eg. config.json"
             value={filename}
           />
-          <CodemirrorEditorToggle
+          <codemirror.extras.ToggledEditor
             content={content}
             editorWrapperProps={{
               saveButton: (

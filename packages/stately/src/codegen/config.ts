@@ -5,7 +5,7 @@
  * structures used by the codegen system.
  */
 
-import { BaseNode } from "@statelyjs/schema";
+import type { BaseNode } from '@statelyjs/schema';
 
 // =============================================================================
 // Core Types

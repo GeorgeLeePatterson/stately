@@ -44,6 +44,8 @@ export type { TypedOperations } from './api';
 export { createOperations };
 
 // Plugin
+import { createUiPlugin } from './plugin.js';
+
 export type {
   AllUiPlugins,
   AnyUiAugments,
@@ -55,8 +57,13 @@ export type {
   PluginFunction,
   PluginFunctionMap,
   PluginRuntime,
+  UiPluginConfig,
+  UiPluginContext,
   UiPluginFactory,
+  UiPluginFactoryFn,
+  UiPluginResult,
 } from './plugin.js';
+export { createUiPlugin };
 
 // Theme
 import {
@@ -77,15 +84,10 @@ export type {
   ComponentRegistry,
   FieldEditProps,
   FieldViewProps,
-  FunctionRegistry,
   NodeTypeComponent,
   RegistryKey,
   RegistryMode,
-  RegistryType,
   Transformer,
-  TransformerEditProps,
-  TransformerRegistry,
-  TransformerViewProps,
   UiRegistry,
 } from './registry.js';
 export { registry };

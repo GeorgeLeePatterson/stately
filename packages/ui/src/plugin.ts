@@ -1,11 +1,12 @@
 /**
- * StatelyUi Plugin System (low-level API).
+ * StatelyUi Plugin System.
  *
- * This module provides the type infrastructure for creating UI plugins that extend
+ * This module provides the infrastructure for creating UI plugins that extend
  * the Stately runtime. Plugins can add:
  * - API operations (typed fetch clients)
  * - Utility functions
  * - Navigation routes
+ * - Custom components for node types
  * - Custom configuration options
  *
  * ## For Most Users
@@ -27,12 +28,12 @@
  *
  * ## For Plugin Authors
  *
- * Use these types when building plugins that extend the StatelyUi runtime.
+ * Use `createUiPlugin` to build plugins with an ergonomic API:
  *
  * 1. Define your plugin's type using `DefineUiPlugin`:
  *
  * ```typescript
- * import type { DefineUiPlugin, DefineOptions, DefineUiUtils } from '@statelyjs/ui/plugin';
+ * import type { DefineUiPlugin, DefineOptions } from '@statelyjs/ui';
  *
  * export type MyPlugin = DefineUiPlugin<
  *   'my-plugin',           // Unique plugin name (string literal)
@@ -43,26 +44,36 @@
  * >;
  * ```
  *
- * 2. Create a factory function that returns `UiPluginFactory`:
+ * 2. Create the plugin factory using `createUiPlugin`:
  *
  * ```typescript
- * import type { UiPluginFactory } from '@statelyjs/ui/plugin';
+ * import { createUiPlugin } from '@statelyjs/ui';
  *
- * export function myUiPlugin<S extends Schemas>(
- *   options?: MyOptions
- * ): UiPluginFactory<S, readonly [MyPlugin, ...any[]]> {
- *   return (runtime) => {
- *     const api = createOperations(runtime.client, MY_OPERATIONS, options?.api?.pathPrefix);
- *     return {
- *       ...runtime,
- *       plugins: {
- *         ...runtime.plugins,
- *         'my-plugin': { api, options, utils: myUtils },
- *       },
- *     };
- *   };
- * }
+ * export const myUiPlugin = createUiPlugin<MyPlugin>({
+ *   name: 'my-plugin',
+ *   operations: MY_OPERATIONS,
+ *   routes: myDefaultRoutes,
+ *   utils: myUtils,
+ *
+ *   setup: (ctx, options) => {
+ *     // Register custom components
+ *     ctx.registerComponent('MyNodeType', 'edit', MyEditComponent);
+ *     ctx.registerComponent('MyNodeType', 'view', MyViewComponent);
+ *
+ *     // Extend extension points
+ *     someExtension.extend(myTransformer);
+ *
+ *     return {};
+ *   },
+ * });
  * ```
+ *
+ * The `createUiPlugin` helper provides:
+ * - **No manual spreading** - Return only what you're adding
+ * - **Automatic API creation** - Provide operations, get typed API
+ * - **Simplified component registration** - `ctx.registerComponent()` handles keys
+ * - **Path prefix merging** - Handled automatically
+ * - **Single type parameter** - Derive everything from your `DefineUiPlugin` type
  *
  * @module plugin
  */
@@ -70,14 +81,132 @@
 import type { StatelySchemas } from '@statelyjs/schema';
 import type { AnyPaths, OperationBindings } from '@statelyjs/schema/api';
 import type { AnyRecord, EmptyRecord, RequireLiteral } from '@statelyjs/schema/helpers';
-import type { ComponentType } from 'react';
-import type { TypedOperations } from './api';
+import { createOperations, type TypedOperations } from './api';
+import { devLog } from './lib/logging';
+import type { ComponentRegistry, RegistryMode } from './registry';
 import type { StatelyUiRuntime, UiNavigationOptions } from './runtime';
-import type { UiUtils } from './utils';
+import { mergePathPrefixOptions, type UiUtils } from './utils';
 
 // ============================================================================
 // Plugin Factory
 // ============================================================================
+
+/**
+ * Configuration for creating a UI plugin.
+ *
+ * @typeParam Plugin - The plugin type (extends AnyUiPlugin)
+ */
+export interface UiPluginConfig<Plugin extends AnyUiPlugin> {
+  /**
+   * Unique plugin name. Must match the name in your DefineUiPlugin type.
+   *
+   * @example FILES_PLUGIN_NAME, ARROW_PLUGIN_NAME
+   */
+  name: Plugin['name'];
+
+  /**
+   * Operation bindings for creating typed API operations.
+   * If provided, the plugin will automatically create typed operations.
+   */
+  operations?: Plugin['ops'];
+
+  /**
+   * Default navigation routes for this plugin.
+   * Can be overridden by user options.
+   */
+  routes?: Plugin['routes'];
+
+  /** Static utility functions provided by this plugin */
+  utils?: Plugin['utils'];
+
+  /**
+   * Setup function called when the plugin is installed.
+   *
+   * Receives a context object with access to the runtime and helpers.
+   * Returns only the parts the plugin is adding - no spreading required.
+   *
+   * @param ctx - Plugin context with runtime access and helpers
+   * @param options - User-provided options for this plugin
+   * @returns The plugin's contributions (api, utils, routes)
+   */
+  setup: (
+    ctx: UiPluginContext<StatelySchemas<any, any>, readonly [Plugin, ...AnyUiPlugin[]]>,
+    options: Plugin['options'] | undefined,
+  ) => UiPluginResult<Plugin>;
+}
+
+/**
+ * The result returned from a plugin setup function.
+ *
+ * Plugins only return what they're adding - no need to spread runtime or plugins.
+ * The framework handles merging automatically.
+ *
+ * @typeParam Plugin - The plugin type (extends AnyUiPlugin)
+ */
+export interface UiPluginResult<Plugin extends AnyUiPlugin> {
+  /** Typed API operations (optional - created automatically if operations provided) */
+  api?: TypedOperations<Plugin['paths'], Plugin['ops']>;
+  /** Navigation routes for this plugin that might need access to runtime. */
+  routes?: Plugin['routes'];
+  /** Additional utility functions provided by this plugin that might need access to runtime */
+  utils?: Plugin['utils'];
+}
+
+/**
+ * Context provided to plugin setup functions.
+ *
+ * Gives plugins access to the runtime for reading configuration,
+ * registering components, and accessing utilities.
+ *
+ * @typeParam Schema - The application's schema type
+ */
+export interface UiPluginContext<
+  Schema extends StatelySchemas<any, any>,
+  Augments extends readonly AnyUiPlugin[] = readonly [],
+> {
+  /**
+   * Get a typed view of the runtime.
+   *
+   * Use this when you need access to runtime properties with proper typing.
+   * The type parameter should match your plugin's schema requirements.
+   */
+  getRuntime<
+    S extends StatelySchemas<any, any>,
+    A extends readonly AnyUiPlugin[] = readonly [],
+  >(): StatelyUiRuntime<S, A>;
+
+  /** The openapi-fetch client for API calls */
+  readonly client: StatelyUiRuntime<Schema, Augments>['client'];
+
+  /** Resolved path prefix (merged from runtime and plugin options) */
+  readonly pathPrefix: string;
+
+  /**
+   * Register a component for a node type.
+   *
+   * Simplified API that handles key generation automatically.
+   *
+   * @param nodeType - The node type name (e.g., 'RelativePath', 'Primitive')
+   * @param mode - 'edit' or 'view'
+   * @param component - The React component to register
+   *
+   * @example
+   * ```typescript
+   * ctx.registerComponent('RelativePath', 'edit', RelativePathEdit);
+   * ctx.registerComponent('RelativePath', 'view', RelativePathView);
+   * ```
+   */
+  registerComponent(
+    nodeType: string,
+    mode: RegistryMode,
+    component: React.ComponentType<any>,
+  ): void;
+
+  /**
+   * Direct access to the component registry for advanced use cases.
+   */
+  readonly registry: ComponentRegistry;
+}
 
 /**
  * Factory function type for creating UI plugins.
@@ -107,14 +236,21 @@ export type UiPluginFactory<
   Augments extends readonly AnyUiPlugin[] = readonly [],
 > = (runtime: StatelyUiRuntime<Schema, Augments>) => StatelyUiRuntime<Schema, Augments>;
 
-/** @internal */
-export type DeepPartialExtends<T extends object> = T extends ComponentType<any>
-  ? T
-  : T extends Record<string, any>
-    ? {
-        [K in keyof T]: DeepPartialExtends<T[K]>;
-      } & Record<string, any>
-    : T;
+/**
+ * Configurable UI Plugin Factory Function.
+ *
+ * Called by end users to provide initial configuration to a plugin.
+ * Returns a `UiPluginFactory` that passes through the augments unchanged.
+ *
+ * Users declare all plugins in their type parameters upfront, and the
+ * factories simply operate on that declared type.
+ */
+export type UiPluginFactoryFn<Plugin extends AnyUiPlugin> = <
+  Schema extends StatelySchemas<any, any>,
+  Augments extends readonly AnyUiPlugin[],
+>(
+  options?: Plugin['options'],
+) => UiPluginFactory<Schema, Augments>;
 
 // ============================================================================
 // Plugin Definition Helpers
@@ -326,3 +462,140 @@ export type AllUiPlugins<
   Schema extends StatelySchemas<any, any>,
   Augments extends readonly AnyUiPlugin[],
 > = MergeUiAugments<Schema, Augments>;
+
+/**
+ * Create a UI plugin with ergonomic API.
+ *
+ * This helper wraps the low-level plugin pattern with:
+ * - **No manual spreading** - Return only what you're adding
+ * - **Automatic API creation** - Provide operations, get typed API
+ * - **Simplified component registration** - `ctx.registerComponent()` instead of `makeRegistryKey`
+ * - **Path prefix merging** - Handled automatically
+ * - **Single type parameter** - Derive everything from your `DefineUiPlugin` type
+ *
+ * ## Example
+ *
+ * ```typescript
+ * import { createUiPlugin } from '@statelyjs/ui';
+ *
+ * // Define the plugin type (as before)
+ * export type FilesUiPlugin = DefineUiPlugin<
+ *   typeof FILES_PLUGIN_NAME,
+ *   FilesPaths,
+ *   typeof FILES_OPERATIONS,
+ *   FilesUiUtils,
+ *   FilesOptions,
+ *   typeof filesRoutes
+ * >;
+ *
+ * // Create the plugin factory with a single type parameter
+ * export const filesUiPlugin = createUiPlugin<FilesUiPlugin>({
+ *   name: FILES_PLUGIN_NAME,
+ *   operations: FILES_OPERATIONS,
+ *   defaultRoutes: filesRoutes,
+ *
+ *   setup: (ctx, options) => {
+ *     // Register components - no makeRegistryKey needed
+ *     ctx.registerComponent('RelativePath', 'edit', RelativePathEdit);
+ *     ctx.registerComponent('RelativePath', 'view', RelativePathView);
+ *
+ *     // Extend other extension points
+ *     stringModes.extend(filesStringExtension);
+ *
+ *     // Return only what you're adding - no spreading
+ *     return {
+ *       utils: filesUiUtils,
+ *       routes: { ...filesRoutes, ...options?.navigation?.routes },
+ *     };
+ *   },
+ * });
+ *
+ * // Usage unchanged
+ * const runtime = statelyUi({ ... })
+ *   .withPlugin(filesUiPlugin({ api: { pathPrefix: '/files' } }));
+ * ```
+ *
+ * @typeParam Plugin - The plugin type created with DefineUiPlugin
+ *
+ * @param config - Plugin configuration
+ * @returns A factory function that accepts options and returns a UiPluginFactory
+ */
+export function createUiPlugin<Plugin extends AnyUiPlugin>(
+  config: UiPluginConfig<Plugin>,
+): UiPluginFactoryFn<Plugin> {
+  return <Schema extends StatelySchemas<any, any>, Augments extends readonly AnyUiPlugin[]>(
+    options?: Plugin['options'],
+  ): UiPluginFactory<Schema, Augments> => {
+    return (runtime: StatelyUiRuntime<Schema, Augments>): StatelyUiRuntime<Schema, Augments> => {
+      devLog.debug(config.name, 'registering plugin', { options });
+
+      // Merge path prefixes
+      const basePathPrefix = runtime.options?.api?.pathPrefix;
+      const pluginPathPrefix = options?.api?.pathPrefix;
+      const pathPrefix = mergePathPrefixOptions(basePathPrefix, pluginPathPrefix);
+
+      // Call setup function
+      const result =
+        config.setup(
+          // Plugin context
+          {
+            client: runtime.client,
+            getRuntime<S extends StatelySchemas<any, any>, A extends readonly AnyUiPlugin[]>() {
+              return runtime as unknown as StatelyUiRuntime<S, A>;
+            },
+            pathPrefix,
+            registerComponent(
+              nodeType: string,
+              mode: RegistryMode,
+              component: React.ComponentType<any>,
+            ) {
+              const key = `${nodeType}::${mode}::component`;
+              runtime.registry.components.set(key, component);
+            },
+            registry: runtime.registry.components,
+          },
+          options,
+        ) ?? {};
+
+      // Create API operations if operations config provided and not already created
+      let api = result.api;
+      if (!api && config.operations) {
+        api = createOperations<Plugin['paths'], Plugin['ops']>(
+          runtime.client,
+          config.operations,
+          pathPrefix,
+        );
+      }
+
+      // Merge routes with defaults
+      const routes = {
+        ...(config.routes ?? {}),
+        ...(result.routes ?? {}),
+        ...(options?.navigation?.routes ?? {}),
+      };
+
+      // Merge runtime utils with static utils
+      const utils = { ...(config.utils ?? {}), ...(result.utils ?? {}) };
+
+      // Build plugin runtime
+      const pluginRuntime: PluginRuntime<
+        Plugin['paths'],
+        Plugin['ops'],
+        Plugin['utils'],
+        Plugin['options'],
+        Plugin['routes']
+      > = { api, options, routes, utils };
+
+      devLog.debug(config.name, 'registered plugin', { pathPrefix, pluginRuntime });
+
+      // Return merged runtime
+      return {
+        ...runtime,
+        plugins: {
+          ...runtime.plugins,
+          [config.name]: { api, options, routes, utils: result.utils },
+        },
+      };
+    };
+  };
+}

@@ -16,15 +16,11 @@
  */
 
 import {
-  type AnyUiPlugin,
-  type ComponentRegistry,
-  createOperations,
+  createUiPlugin,
   type DefineOptions,
   type DefineUiPlugin,
-  registry,
-  type StatelyUiRuntime,
   type UiNavigationOptions,
-  type UiPluginFactory,
+  type UiPluginContext,
 } from '@statelyjs/ui';
 import { Cog } from 'lucide-react';
 import { EditFields, ViewFields } from '@/core/fields';
@@ -36,8 +32,6 @@ import type { StateEntry } from './schema/helpers';
 import { CoreNodeType as NodeType } from './schema/nodes';
 import { CORE_PLUGIN_NAME } from './schema/plugin';
 import { type CoreUiUtils, createCoreUtils } from './utils';
-
-const { makeRegistryKey } = registry;
 
 /**
  * Configuration for entity display in the UI.
@@ -113,75 +107,63 @@ export const CoreRouteBasePath = '/entities';
  *
  * @internal
  */
-export function coreUiPlugin<Schema extends Schemas, Augments extends readonly AnyUiPlugin[]>(
-  options?: CoreUiOptions,
-): UiPluginFactory<Schema, readonly [CoreUiPlugin, ...Augments]> {
-  return (runtime: StatelyUiRuntime<Schema, readonly [CoreUiPlugin, ...Augments]>) => {
-    // Register core components
-    registerCoreComponents(runtime.registry.components);
+export const coreUiPlugin = createUiPlugin<CoreUiPlugin>({
+  name: CORE_PLUGIN_NAME,
+  operations: CORE_OPERATIONS,
 
-    // Create api bundle
-    const basePathPrefix = runtime.options?.api?.pathPrefix;
-    const corePathPrefix = options?.api?.pathPrefix;
-    const pathPrefix = runtime.utils.mergePathPrefixOptions(basePathPrefix, corePathPrefix);
-    const api = createOperations<CorePaths, typeof CORE_OPERATIONS>(
-      runtime.client,
-      CORE_OPERATIONS,
-      pathPrefix,
-    );
-    log.debug('Core', 'registered core plugin', { options, pathPrefix, runtime });
+  setup: (ctx, options) => {
+    // Get current runtime
+    const runtime = ctx.getRuntime<Schemas, readonly [CoreUiPlugin]>();
+    log.debug('Files', 'registering', { options, runtime });
 
-    // Gather utils
-    const entityIcons = options?.entities?.icons ?? {};
+    // Register components
+    registerCoreComponents(ctx);
+
     const utils: CoreUiUtils = createCoreUtils(runtime, options);
+    const routes = createEntityRoutes(utils);
 
-    // Create entity routes
-    const entityRoutes = createEntityRoutes(utils);
-    log.debug('Core', 'created entity routes', { entityIcons, entityRoutes });
+    log.debug('Files', 'registered plugin', { pathPrefix: ctx.pathPrefix });
 
-    // Create plugin
-    const plugin = { [CORE_PLUGIN_NAME]: { api, options, routes: entityRoutes, utils } };
+    return { routes, utils };
+  },
+});
 
-    return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };
-  };
-}
+function registerCoreComponents(ctx: UiPluginContext<any, any>) {
+  ctx.registerComponent(NodeType.Array, 'edit', EditFields.ArrayEdit);
+  ctx.registerComponent(NodeType.Array, 'view', ViewFields.ArrayView);
 
-function registerCoreComponents(registry: ComponentRegistry) {
-  registry.set(makeRegistryKey(NodeType.Array, 'edit'), EditFields.ArrayEdit);
-  registry.set(makeRegistryKey(NodeType.Array, 'view'), ViewFields.ArrayView);
+  ctx.registerComponent(NodeType.Enum, 'edit', EditFields.EnumEdit);
+  ctx.registerComponent(NodeType.Enum, 'view', ViewFields.PrimitiveView);
 
-  registry.set(makeRegistryKey(NodeType.Enum, 'edit'), EditFields.EnumEdit);
-  registry.set(makeRegistryKey(NodeType.Enum, 'view'), ViewFields.PrimitiveView);
+  ctx.registerComponent(NodeType.Map, 'edit', EditFields.MapEdit);
+  ctx.registerComponent(NodeType.Map, 'view', ViewFields.MapView);
 
-  registry.set(makeRegistryKey(NodeType.Map, 'edit'), EditFields.MapEdit);
-  registry.set(makeRegistryKey(NodeType.Map, 'view'), ViewFields.MapView);
+  ctx.registerComponent(NodeType.Nullable, 'edit', EditFields.NullableEdit);
+  ctx.registerComponent(NodeType.Nullable, 'view', ViewFields.NullableView);
 
-  registry.set(makeRegistryKey(NodeType.Nullable, 'edit'), EditFields.NullableEdit);
-  registry.set(makeRegistryKey(NodeType.Nullable, 'view'), ViewFields.NullableView);
+  ctx.registerComponent(NodeType.Object, 'edit', EditFields.ObjectEdit);
+  ctx.registerComponent(NodeType.Object, 'view', ViewFields.ObjectView);
 
-  registry.set(makeRegistryKey(NodeType.Object, 'edit'), EditFields.ObjectEdit);
-  registry.set(makeRegistryKey(NodeType.Object, 'view'), ViewFields.ObjectView);
+  ctx.registerComponent(NodeType.Primitive, 'edit', EditFields.PrimitiveEdit);
+  ctx.registerComponent(NodeType.Primitive, 'view', ViewFields.PrimitiveView);
 
-  registry.set(makeRegistryKey(NodeType.Primitive, 'edit'), EditFields.PrimitiveEdit);
-  registry.set(makeRegistryKey(NodeType.Primitive, 'view'), ViewFields.PrimitiveView);
+  ctx.registerComponent(NodeType.RecursiveRef, 'edit', EditFields.RecursiveRefEdit);
+  ctx.registerComponent(NodeType.RecursiveRef, 'view', ViewFields.RecursiveRefView);
 
-  registry.set(makeRegistryKey(NodeType.RecursiveRef, 'edit'), EditFields.RecursiveRefEdit);
-  registry.set(makeRegistryKey(NodeType.RecursiveRef, 'view'), ViewFields.RecursiveRefView);
+  ctx.registerComponent(NodeType.Tuple, 'edit', EditFields.TupleEdit);
+  ctx.registerComponent(NodeType.Tuple, 'view', ViewFields.TupleView);
 
-  registry.set(makeRegistryKey(NodeType.Tuple, 'edit'), EditFields.TupleEdit);
-  registry.set(makeRegistryKey(NodeType.Tuple, 'view'), ViewFields.TupleView);
+  ctx.registerComponent(NodeType.TaggedUnion, 'edit', EditFields.TaggedUnionEdit);
+  ctx.registerComponent(NodeType.TaggedUnion, 'view', ViewFields.TaggedUnionView);
 
-  registry.set(makeRegistryKey(NodeType.TaggedUnion, 'edit'), EditFields.TaggedUnionEdit);
-  registry.set(makeRegistryKey(NodeType.TaggedUnion, 'view'), ViewFields.TaggedUnionView);
+  ctx.registerComponent(NodeType.UntaggedEnum, 'edit', EditFields.UntaggedEnumEdit);
+  ctx.registerComponent(NodeType.UntaggedEnum, 'view', ViewFields.UntaggedEnumView);
 
-  registry.set(makeRegistryKey(NodeType.UntaggedEnum, 'edit'), EditFields.UntaggedEnumEdit);
-  registry.set(makeRegistryKey(NodeType.UntaggedEnum, 'view'), ViewFields.UntaggedEnumView);
+  ctx.registerComponent(NodeType.Union, 'edit', EditFields.UnionEdit);
+  ctx.registerComponent(NodeType.Union, 'view', ViewFields.UnionView);
 
-  registry.set(makeRegistryKey(NodeType.Union, 'edit'), EditFields.UnionEdit);
-  registry.set(makeRegistryKey(NodeType.Union, 'view'), ViewFields.UnionView);
-
-  registry.set(makeRegistryKey(NodeType.Link, 'edit'), linkFields.LinkEditView);
-  registry.set(makeRegistryKey(NodeType.Link, 'view'), linkFields.LinkDetailView);
+  ctx.registerComponent(NodeType.Link, 'edit', linkFields.LinkEditView);
+  ctx.registerComponent(NodeType.Link, 'view', linkFields.LinkDetailView);
 }
 
 function createEntityRoutes(utils: CoreUiUtils): UiNavigationOptions['routes'] {

@@ -73,8 +73,9 @@ export interface FeaturePluginContext<TComponentProps> {
  *
  * @typeParam TOptions - Options accepted by `.enable()`
  * @typeParam TComponentProps - Props type for the lazy-loaded component
+ * @typeParam TExtras - Additional properties to expose on the plugin object
  */
-export interface FeaturePluginConfig<TOptions, TComponentProps> {
+export interface FeaturePluginConfig<TOptions, TComponentProps, TExtras extends object = never> {
   /**
    * Unique identifier for this plugin.
    *
@@ -98,15 +99,36 @@ export interface FeaturePluginConfig<TOptions, TComponentProps> {
    * Setup function called once when `.enable()` is invoked.
    * Use this to register extensions, configure behavior, etc.
    *
+   * Optionally return an object with additional properties (extras) that will
+   * be spread onto the plugin object, making them accessible as `plugin.extraName`.
+   *
    * @param ctx - Plugin context with lazy component and state
    * @param options - Options passed to `.enable()`
+   * @returns Optional extras object to merge into the plugin
+   *
+   * @example
+   * ```typescript
+   * setup: (ctx, options) => {
+   *   // Register extensions...
+   *
+   *   // Return extras that become plugin properties
+   *   return {
+   *     ToggledEditor: (props) => <MyToggled {...options} {...props} />,
+   *   };
+   * },
+   * ```
    */
-  setup: (ctx: FeaturePluginContext<TComponentProps>, options: TOptions) => void;
+  setup: (ctx: FeaturePluginContext<TComponentProps>, options: TOptions) => TExtras | undefined;
 
   /**
    * Default options applied when `.enable()` is called without arguments.
    */
   defaults?: Partial<TOptions>;
+
+  /**
+   * Default extras if `.enable()` is never called.
+   */
+  defaultExtras: TExtras;
 }
 
 /**
@@ -115,7 +137,7 @@ export interface FeaturePluginConfig<TOptions, TComponentProps> {
  * @typeParam TOptions - Options accepted by `.enable()`
  * @typeParam TComponentProps - Props type for the lazy-loaded component
  */
-export interface FeaturePlugin<TOptions, TComponentProps> {
+export interface FeaturePlugin<TOptions, TComponentProps, TExtras extends object = never> {
   /**
    * Unique identifier for this plugin.
    */
@@ -174,6 +196,12 @@ export interface FeaturePlugin<TOptions, TComponentProps> {
    * Returns undefined if not enabled.
    */
   getOptions(): TOptions | undefined;
+
+  /**
+   * Get the extras that were passed to `.enable()`.
+   * Returns undefined if not enabled.
+   */
+  extras: TExtras;
 }
 
 // ----
@@ -242,20 +270,23 @@ export interface FeaturePlugin<TOptions, TComponentProps> {
  * @param config - Plugin configuration
  * @returns A feature plugin instance
  */
-export function createFeaturePlugin<TOptions = void, TComponentProps = unknown>(
-  config: FeaturePluginConfig<TOptions, TComponentProps>,
-): FeaturePlugin<TOptions, TComponentProps> {
+export function createFeaturePlugin<
+  TOptions = void,
+  TComponentProps = unknown,
+  TExtras extends object = never,
+>(
+  config: FeaturePluginConfig<TOptions, TComponentProps, TExtras>,
+): FeaturePlugin<TOptions, TComponentProps, TExtras> {
   // Plugin state
   let enabled = false;
   let lazyComponent: LazyExoticComponent<ComponentType<TComponentProps>> | null = null;
   let enabledOptions: TOptions | undefined;
+  let extras = config.defaultExtras;
 
   return {
     enable(options?: TOptions): void {
       // Idempotent - only run setup once
-      if (enabled) {
-        return;
-      }
+      if (enabled) return;
 
       // Merge with defaults
       const mergedOptions = { ...(config.defaults ?? {}), ...(options ?? {}) } as TOptions;
@@ -273,10 +304,17 @@ export function createFeaturePlugin<TOptions = void, TComponentProps = unknown>(
         isEnabled: true,
       };
 
-      // Run setup
-      config.setup(ctx, mergedOptions);
+      // Run setup, initialize extras if present
+      const providedExtras = config.setup(ctx, mergedOptions);
+      if (providedExtras) {
+        extras = providedExtras;
+      }
 
       enabled = true;
+    },
+
+    get extras(): TExtras {
+      return extras;
     },
 
     getOptions(): TOptions | undefined {
