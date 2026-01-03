@@ -12,7 +12,7 @@
  *
  * ```typescript
  * const { plugins } = useStatelyUi();
- * const { data } = await plugins.core.api.operations.listEntities(...);
+ * const { data } = await plugins.core.api.operations.list_entities(...);
  * ```
  *
  * ## For Plugin Authors
@@ -75,6 +75,8 @@ type MaybeOptionalInitParam<Init> = RequiredKeysOf<Init> extends never
  *   createUser: async (init) => { ... },
  * };
  * ```
+ *
+ * @internal
  */
 export type TypedOperations<
   Paths,
@@ -91,13 +93,17 @@ export type TypedOperations<
         ) => Promise<FetchResponse<Op, Init, Media>>
       : never
     : never;
-};
-
-/**
+}; /**
  * Create typed API operations from operation bindings.
  *
  * Takes an openapi-fetch client and operation bindings, returning an object
  * where each key is a typed function that calls the corresponding API endpoint.
+ *
+ * ## Note for plugin authors
+ *
+ * When declaring a plugin's factory function, `createUiPlugin`, if `operations` are provided, then
+ * it is not necessary to call this functions. Otherwise, if not `operations` are provided, be sure
+ * to call this in `UiPluginConfig.setup()` and return the "api" created.
  *
  * @typeParam Paths - OpenAPI paths type from generated types
  * @typeParam Bindings - Operation bindings mapping names to method/path pairs

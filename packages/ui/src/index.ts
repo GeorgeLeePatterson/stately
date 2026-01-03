@@ -29,9 +29,9 @@
  * ## Key Exports
  *
  * - **`createStatelyUi`** - Low-level runtime builder (without core plugin)
+ * - **`createUiPlugin`** - Create a UI plugin factory function that users will import
  * - **`createOperations`** - Create typed API operations from bindings
  * - **`DefineUiPlugin`** - Helper type for defining UI plugins
- * - **`registry`** - Component and transformer registry utilities
  * - **`ThemeProvider`** - Theme context provider
  *
  * @packageDocumentation
@@ -87,7 +87,6 @@ export type {
   NodeTypeComponent,
   RegistryKey,
   RegistryMode,
-  Transformer,
   UiRegistry,
 } from './registry.js';
 export { registry };

@@ -1,3 +1,4 @@
+/** @import { ExtensionPoint } from "./extension" */
 /**
  * Feature Plugin System
  *
@@ -5,16 +6,20 @@
  * Stately's functionality. Feature plugins wrap extension points with a simple
  * `.enable()` API and handle lazy loading of heavy dependencies.
  *
- * ## Layer 2: User-Facing Plugin API
+ * For details on the lower level extension apis, refer to the {@link ExtensionPoint} interface.
  *
- * This sits above the extension system (Layer 0-1) and provides:
+ * @remarks
+ * ## User-Facing Plugin API
+ *
+ * Feature plugins sit above the extension system and provides:
  * - Simple `.enable()` API for users
  * - Lazy loading of heavy components
  * - Dependency management between plugins
- * - `useComponent()` hook for consuming lazy components
+ * - `lazyComponent` for consuming lazy components
  *
  * ## For Users
  *
+ * @example
  * ```typescript
  * import { codemirror } from '@statelyjs/stately/plugins';
  *
@@ -30,6 +35,7 @@
  *
  * ## For Plugin Authors
  *
+ * @example
  * ```typescript
  * import { createFeaturePlugin } from '@statelyjs/ui/feature-plugin';
  * import { addStringModes } from './extensions';
@@ -45,7 +51,7 @@
  * });
  * ```
  *
- * @packageDocumentation
+ * @module
  */
 
 import { type ComponentType, type JSX, type LazyExoticComponent, lazy, Suspense } from 'react';
@@ -132,10 +138,11 @@ export interface FeaturePluginConfig<TOptions, TComponentProps, TExtras extends 
 }
 
 /**
- * A feature plugin instance with `.enable()` and `.useComponent()` APIs.
+ * A feature plugin instance with `.enable()`, `.lazyComponent`, and other APIs.
  *
  * @typeParam TOptions - Options accepted by `.enable()`
  * @typeParam TComponentProps - Props type for the lazy-loaded component
+ * @typeParam TExtras - Extras object, initialized via `FeaturePluginConfig.defaultExtras` or `.setup()`.
  */
 export interface FeaturePlugin<TOptions, TComponentProps, TExtras extends object = never> {
   /**
@@ -165,7 +172,7 @@ export interface FeaturePlugin<TOptions, TComponentProps, TExtras extends object
   isEnabled(): boolean;
 
   /**
-   * React hook to get the lazy-loaded component.
+   * Getter to access the lazy-loaded component.
    *
    * Returns `null` if the plugin hasn't been enabled.
    * The component is wrapped with `React.lazy()` for automatic code splitting.
@@ -198,17 +205,11 @@ export interface FeaturePlugin<TOptions, TComponentProps, TExtras extends object
   getOptions(): TOptions | undefined;
 
   /**
-   * Get the extras that were passed to `.enable()`.
+   * Get the extras from `FeaturePluginConfig.defaultExtras` or `.setup()`.
    * Returns undefined if not enabled.
    */
   extras: TExtras;
-}
-
-// ----
-// TODO: (dev) Add third type parameter that allows providing anything additional to the exported
-// second tuple arg, so that plugins can extend the feature with anything
-// ----
-/**
+} /**
  * Create a feature plugin with a user-friendly `.enable()` API.
  *
  * Feature plugins are the recommended way to expose optional functionality
@@ -221,6 +222,7 @@ export interface FeaturePlugin<TOptions, TComponentProps, TExtras extends object
  *
  * ## Example: Creating a Plugin
  *
+ * @example
  * ```typescript
  * import { createFeaturePlugin } from '@statelyjs/ui/feature-plugin';
  * import { addStringModes } from '@statelyjs/stately/core/extensions';
@@ -252,6 +254,7 @@ export interface FeaturePlugin<TOptions, TComponentProps, TExtras extends object
  *
  * ## Example: Using a Plugin
  *
+ * @example
  * ```typescript
  * // At app startup
  * import { myPlugin } from '@my-org/my-plugin';
@@ -267,8 +270,9 @@ export interface FeaturePlugin<TOptions, TComponentProps, TExtras extends object
  *
  * @typeParam TOptions - Options accepted by `.enable()`
  * @typeParam TComponentProps - Props type for the lazy-loaded component
- * @param config - Plugin configuration
- * @returns A feature plugin instance
+ * @typeParam TExtras - Optional additional data provided by the plugin
+ * @param {FeaturePluginConfig} config - Plugin configuration
+ * @returns {FeaturePlugin} A feature plugin instance
  */
 export function createFeaturePlugin<
   TOptions = void,
@@ -327,9 +331,6 @@ export function createFeaturePlugin<
     },
 
     get lazyComponent(): LazyExoticComponent<ComponentType<TComponentProps>> | null {
-      // This is a hook in name only - it doesn't use React hooks internally
-      // because the lazy component is created once during enable().
-      // This pattern allows it to be called conditionally if needed.
       return lazyComponent;
     },
   };
@@ -337,6 +338,7 @@ export function createFeaturePlugin<
 
 /**
  * Props for the FeatureComponent wrapper.
+ * @expand
  */
 export interface FeatureComponentProps<TProps extends JSX.IntrinsicAttributes> {
   /**

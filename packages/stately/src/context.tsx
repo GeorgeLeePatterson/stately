@@ -1,7 +1,7 @@
 /**
- * Low-level React context and providers for StatelyUi.
+ * Low-level React context and providers for Stately.
  *
- * This module provides the base context infrastructure for making the StatelyUi
+ * This module provides the base context infrastructure for making the Stately
  * runtime available throughout your React application. These are intended for
  * plugin authors and advanced use cases.
  *
@@ -21,7 +21,7 @@
  * // In components - core plugin is typed automatically
  * function MyComponent() {
  *   const { plugins } = useStatelyUi();
- *   plugins.core.api.operations.listEntities(...);
+ *   plugins.core.api.operations.list_entities(...);
  * }
  * ```
  *
@@ -50,14 +50,14 @@ import {
 import { type ComponentType, createContext, type PropsWithChildren, useContext } from 'react';
 
 /**
- * React context for the StatelyUi runtime.
+ * React context for the Stately runtime.
  *
  * @internal Use hooks from `@statelyjs/stately` or `createUseStatelyUi` to access.
  */
 const StatelyUiContext = createContext<StatelyUiRuntime<any, any> | null>(null);
 
 /**
- * Props for the StatelyUi provider component.
+ * Props for the Stately provider component.
  *
  * @typeParam Schema - The application's StatelySchemas type
  * @typeParam Augments - Tuple of installed plugin types
@@ -66,12 +66,12 @@ export type StatelyProviderProps<
   Schema extends StatelySchemas<any, any>,
   Augments extends readonly AnyUiPlugin[],
 > = PropsWithChildren<{
-  /** The StatelyUi runtime instance */
+  /** The Stately runtime instance */
   runtime: StatelyUiRuntime<Schema, Augments>;
 }>;
 
 /**
- * Create a typed StatelyUi provider component (low-level API).
+ * Create a typed Stately provider component (low-level API).
  *
  * This is a **low-level API** for plugin authors. Most users should use
  * `StatelyProvider` from `@statelyjs/stately` which includes core types.
@@ -143,7 +143,7 @@ export function createStatelyUiProvider<
 export const StatelyUiProvider = createStatelyUiProvider();
 
 /**
- * Create a typed hook for accessing StatelyUi runtime (low-level API).
+ * Create a typed hook for accessing Stately runtime (low-level API).
  *
  * This is a **low-level API** for plugin authors. Most users should use
  * `useStatelyUi` from `@statelyjs/stately` which includes core types.
@@ -177,14 +177,14 @@ export function createUseStatelyUi<
 }
 
 /**
- * Access the StatelyUi runtime without plugin type assumptions.
+ * Access the Stately runtime without plugin type assumptions.
  *
  * This is a **low-level API** primarily for internal use or plugin authors
  * who need runtime access without specific plugin types.
  *
  * @typeParam Schema - The application's StatelySchemas type
  * @typeParam Augments - Tuple of plugin types (defaults to empty)
- * @returns The StatelyUi runtime
+ * @returns The Stately runtime
  *
  * @throws Error if called outside of a StatelyUiProvider
  */

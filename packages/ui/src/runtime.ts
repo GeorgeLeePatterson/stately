@@ -171,7 +171,7 @@ export interface UiPluginRuntime<
   Augments extends readonly AnyUiPlugin[] = readonly [],
 > {
   /** Component and transformer registry for dynamic rendering */
-  registry: UiRegistry<Schema>;
+  registry: UiRegistry;
   /** Utility functions available throughout the application */
   utils: UiUtils;
   /** Installed plugins accessible by name */

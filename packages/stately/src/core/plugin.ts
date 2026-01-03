@@ -4,7 +4,7 @@
  * The core plugin provides all the essential functionality for working with
  * Stately entities in the UI:
  *
- * - **API Operations**: CRUD operations for entities (`listEntities`, `getEntity`, etc.)
+ * - **API Operations**: CRUD operations for entities (`list_entities`, `get_entity`, etc.)
  * - **Field Components**: Edit and view components for all schema node types
  * - **Navigation Routes**: Sidebar routes for entity management
  * - **Utility Functions**: Entity icons, URL generation, display formatting

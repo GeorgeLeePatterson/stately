@@ -25,6 +25,11 @@
     "activeMatch": "/develop/"
   },
   {
+    "text": "API",
+    "link": "/api/",
+    "activeMatch": "/api/"
+  },
+  {
     "text": "docs.rs",
     "link": "https://docs.rs/stately"
   }

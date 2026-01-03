@@ -2,7 +2,13 @@
   "$schema": "https://typedoc.org/schema.json",
   "name": "Stately",
   "entryPointStrategy": "packages",
-  "entryPoints": ["packages/*"],
+  "entryPoints": [
+    "packages/arrow",
+    "packages/files",
+    "packages/schema",
+    "packages/stately",
+    "packages/ui"
+  ],
   "exclude": ["**/generated/(schemas|types).ts"],
   "out": "tsdocs",
   "includeVersion": true,
@@ -16,5 +22,15 @@
     "GitHub": "https://github.com/georgeleepatterson/stately",
     "Documentation": "https://github.com/GeorgeLeePatterson/stately/tree/main/docs"
   },
-  "highlightLanguages": ["typescript", "bash", "json", "yaml", "toml", "rust", "tsx", "javascript"]
+  "highlightLanguages": [
+    "typescript",
+    "bash",
+    "json",
+    "yaml",
+    "toml",
+    "rust",
+    "tsx",
+    "javascript",
+    "css"
+  ]
 }

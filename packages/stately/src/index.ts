@@ -5,6 +5,9 @@
  * - **Core Plugin**: Entity CRUD operations, hooks, views, and field components
  * - **Codegen CLI**: Generate TypeScript types from OpenAPI specs (`pnpm exec stately`)
  * - **Schema Re-exports**: Convenient access to `@statelyjs/schema` types
+ * - **Dynamic Form Component**: `FieldView` and `FieldEdit` that render forms based on node type
+ * - **Layout Components**: Root layout with sidebar, Page, PageHeader, and Navigation Components
+ * - **Feature plugins**: Optional feature plugins, like `codemirror`
  *
  * Most users should install this package rather than `@statelyjs/ui` directly.
  * The base `@statelyjs/ui` package provides layout, theming, and plugin infrastructure
@@ -102,11 +105,11 @@ export type StatelyConfiguration<Schema extends Schemas<any, any> = Schemas> = R
  * const runtime: StatelyUi<MySchemas> = statelyUi({ ... });
  *
  * // Access core plugin
- * runtime.plugins.core.api.operations.listEntities({ ... });
+ * runtime.plugins.core.api.operations.list_entities({ ... });
  * runtime.plugins.core.utils.getEntityIcon('Pipeline');
  *
  * // Access other plugins
- * runtime.plugins.files?.api.operations.listFiles({ ... });
+ * runtime.plugins.files?.api.operations.list_files({ ... });
  * ```
  */
 export type StatelyUi<

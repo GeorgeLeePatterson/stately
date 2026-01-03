@@ -1,3 +1,28 @@
+/**
+ * Entity view components for displaying and editing schema-driven entities.
+ *
+ * This module provides React components for rendering entity data in various
+ * modes: detail views for read-only display, edit views for form-based editing,
+ * and wizard views for step-by-step entity creation.
+ *
+ * @example
+ * ```tsx
+ * import { EntityDetailView, EntityEditView, EditMode } from '@statelyjs/stately/core/views/entity';
+ *
+ * // Display entity details (read-only)
+ * <EntityDetailView entityType="User" entityId={userId} />
+ *
+ * // Edit an entity with a form
+ * <EntityEditView
+ *   entityType="User"
+ *   entityId={userId}
+ *   mode={EditMode.Form}
+ * />
+ * ```
+ *
+ * @module core/views/entity
+ */
+
 import { EntityDetailView } from './entity-detail-view';
 import { EditMode, EntityEditView } from './entity-edit-view';
 import { EntityFormEdit } from './entity-form-edit';

@@ -2,11 +2,25 @@
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": [
     "./src/index.ts",
+    "./src/context.tsx",
     "./src/schema.ts",
+    "./src/ui.ts",
+    "./src/utils.ts",
     "./src/codegen/index.ts",
     "./src/core/utils.tsx",
+    "./src/core/context/index.ts",
+    "./src/core/dialogs/index.ts",
+    "./src/core/extensions/add-string-modes.ts",
+    "./src/core/fields/index.ts",
     "./src/core/hooks/index.ts",
-    "./src/core/schema/utils.ts"
+    "./src/core/pages/index.ts",
+    "./src/core/schema/utils.ts",
+    "./src/core/views/entity/index.ts",
+    "./src/core/views/link/index.ts",
+    "./src/features/index.ts",
+    "./src/features/codemirror/plugin.tsx",
+    "./src/form/index.ts",
+    "./src/layout/index.ts"
   ],
   "exclude": ["./src/core/generated/schemas.ts", "./src/core/generated/types.ts"],
   "tsconfig": "./tsconfig.json"

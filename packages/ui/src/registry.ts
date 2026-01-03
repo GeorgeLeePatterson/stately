@@ -1,5 +1,5 @@
 /**
- * @statelyjs/ui Component & Transformer Registry
+ * @statelyjs/ui Component Registry
  *
  * The registry system enables dynamic component resolution based on schema node types.
  * When rendering a field, the form system looks up the appropriate component from the
@@ -77,31 +77,15 @@ export interface FieldEditProps<
   isWizard?: boolean;
 }
 
-// TODO: Remove or use
-// /** Map of registry keys to React components. */
-// export type NodeTypeRegistry<S extends StatelySchemas<any, any>> = {
-//   edit: Map<S['plugin']['NodeNames'], ComponentType<FieldEditProps<S>>>;
-//   view: Map<S['plugin']['NodeNames'], ComponentType<FieldEditProps<S>>>;
-// };
-
 /** Map of registry keys to React components. */
 export type ComponentRegistry = Map<string, ComponentType<any>>;
 
-/**
- * A transformer function that modifies props before they reach a component.
- *
- * @typeParam T - Input props type
- * @typeParam U - Output props type (defaults to T)
- */
-export type Transformer<T, U = T> = (value: T) => U extends never ? T : U;
-
-// TODO: Remove - type parameter was meant for NodeTypeRegistry. Decide if it stays
 /**
  * The UI registry containing all registered components, transformers, and functions.
  *
  * Access via `runtime.registry` to register or retrieve components.
  */
-export interface UiRegistry<_Schema extends StatelySchemas<any, any>> {
+export interface UiRegistry {
   /** Component registry - maps node types to React components */
   components: ComponentRegistry;
 }
@@ -110,7 +94,11 @@ export interface UiRegistry<_Schema extends StatelySchemas<any, any>> {
 // Registry Keys
 // ============================================================================
 
-/** The mode for a registry entry: 'edit' for form inputs, 'view' for display. */
+/**
+ * The mode for a registry entry: 'edit' for form inputs, 'view' for display.
+ *
+ * @internal
+ */
 export type RegistryMode = 'edit' | 'view';
 
 /**
@@ -121,6 +109,8 @@ export type RegistryMode = 'edit' | 'view';
  * @example
  * - `"string::edit::component"` - String edit component
  * - `"object::view::component"` - Object view component
+ *
+ * @internal
  */
 export type RegistryKey =
   | `${string}::${RegistryMode}` // Same as w/ 'component'
@@ -148,11 +138,7 @@ export type NodeTypeComponent<
  *
  * @returns A formatted registry key
  *
- * @example
- * ```typescript
- * makeRegistryKey('string', 'edit'); // "string::edit::component"
- * makeRegistryKey('string', 'edit', 'transformer', 'password'); // "string::edit::transformer::password"
- * ```
+ * @internal
  */
 export function makeRegistryKey(node: string, mode: RegistryMode): RegistryKey {
   return `${node}::${mode}::component`;

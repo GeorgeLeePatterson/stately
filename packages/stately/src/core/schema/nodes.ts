@@ -27,7 +27,6 @@ export const PrimitiveType = {
   Boolean: 'boolean',
   Integer: 'integer',
   Number: 'number',
-  Path: 'path',
   String: 'string',
 } as const;
 

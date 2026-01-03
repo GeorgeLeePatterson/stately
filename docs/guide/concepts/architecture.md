@@ -129,7 +129,6 @@ Each layer is useful independently.
 - **Codegen**: Parses OpenAPI schemas into typed node trees
 - **UI Runtime**: Combines schema with API client and plugins
 - **Component Registry**: Maps node types to React components
-- **Transformer Registry**: Provides plugin authors the ability to define hook points to add additional functionality...anywhere.
 - **Hooks**: React Query-based data fetching and mutations
 - **Views/Pages**: Pre-built UI for common entity operations
 

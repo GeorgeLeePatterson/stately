@@ -14,7 +14,7 @@ A Stately plugin consists of:
 ```
 my-plugin/
 ├── crates/
-│   └── my-plugin/          # Rust crate
+│   └── my-plugin/             # Rust crate
 │       ├── Cargo.toml
 │       ├── src/
 │       │   ├── lib.rs
@@ -301,16 +301,10 @@ Register components for custom node types:
 
 ```typescript
 // Edit component for your node type
-registry.components.set(makeRegistryKey('myNodeType', 'edit'), MyNodeEdit);
+ctx.registerComponent('myNodeType', 'edit', MyNodeEdit);
 
 // View component
-registry.components.set(makeRegistryKey('myNodeType', 'view'), MyNodeView);
-
-// Transformer (modify props before rendering)
-registry.transformers.set(
-  makeRegistryKey('primitive', 'edit', 'transformer', 'string'), 
-  myPropsTransformer
-);
+ctx.registerComponent('myNodeType', 'view', MyNodeView);
 ```
 
 ### Codegen Plugin

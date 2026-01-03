@@ -83,8 +83,11 @@ importers:
         version: 19.2.3(react@19.2.3)
     devDependencies:
       '@rspress/core':
-        specifier: 2.0.0-rc.3
-        version: 2.0.0-rc.3(@types/react@19.2.7)
+        specifier: 2.0.0-rc.4
+        version: 2.0.0-rc.4(@types/react@19.2.7)
+      '@rspress/plugin-typedoc':
+        specifier: 2.0.0-rc.4
+        version: 2.0.0-rc.4(@rspress/core@2.0.0-rc.4(@types/react@19.2.7))(typescript@5.9.3)
       '@types/node':
         specifier: ^22.19.3
         version: 22.19.3
@@ -1150,9 +1153,9 @@ packages:
       webpack-hot-middleware:
         optional: true
 
-  '@rspress/core@2.0.0-rc.3':
-    resolution: {integrity: sha512-VsD0vvKaR3xFOr5r8XKDab6zqf8dHCtVg+NDMnefh2u0JpqXn3q5Zi/+N0DXLwIgi+Oy69MgFzNkZ4zkm8pXyw==}
-    engines: {node: '>=18.0.0'}
+  '@rspress/core@2.0.0-rc.4':
+    resolution: {integrity: sha512-EHJjbc8yA/La6sJN3bjZus24KhSCdh5lEIVtjt7EBEnLteDN+wULzO1sFKj8agH3BXYE0XOuz2W1HbTTGfcGJQ==}
+    engines: {node: '>=20.9.0'}
     hasBin: true
 
   '@rspress/mdx-rs-darwin-arm64@0.6.6':
@@ -1207,12 +1210,18 @@ packages:
     resolution: {integrity: sha512-NpNhTKBIlV3O6ADhoZkgHvBFvXMW2TYlIWmIT1ysJESUBqDpaN9H3Teve5fugjU2pQ2ORBZO6SQGKliMw/8m/Q==}
     engines: {node: '>= 10'}
 
-  '@rspress/runtime@2.0.0-rc.3':
-    resolution: {integrity: sha512-Q+DgtgGG+oB7uiHOBDGv/V9xruxMfgXWdrQ60qNb7ulJM3TL8sZlFG3GSxBBDmx19LdyR7xK0HRwPZu4xm+PtA==}
-    engines: {node: '>=18.0.0'}
+  '@rspress/plugin-typedoc@2.0.0-rc.4':
+    resolution: {integrity: sha512-tPaBh5Sxyi2Z4UdDCYQL8u+3SO+yGiTJF+9CqOa7m+vhLJwh3guUy1zMUZjSpMlEdnTE0d23PwmwAAEuZz5JDg==}
+    engines: {node: '>=20.9.0'}
+    peerDependencies:
+      '@rspress/core': ^2.0.0-rc.4
 
-  '@rspress/shared@2.0.0-rc.3':
-    resolution: {integrity: sha512-qAVfoWK+DQ1U8XY3ZCw3IfuGr35PnVhvx7RKz5ae+ev5J6PatNlbOa3lmKS+KDcZbqlb8fM3JbZz78WxttC9Bg==}
+  '@rspress/runtime@2.0.0-rc.4':
+    resolution: {integrity: sha512-BcNs6zpIXcWfhXGCDS525HDwSgLXO+S+q2Ty6sQPmyYJzOg+V9tHIlulKTOfuBCyEhTZeTAJofP4+rG4EZBUgw==}
+    engines: {node: '>=20.9.0'}
+
+  '@rspress/shared@2.0.0-rc.4':
+    resolution: {integrity: sha512-46jTwxV8SRLMbe3euCEMWQudmdYE2Tf+EN/5l6EP10i6QICOXMIzUFFWfr0LOTr4aZCSTSJu7Tp6Xxml6JbheA==}
 
   '@selderee/plugin-htmlparser2@0.11.0':
     resolution: {integrity: sha512-P33hHGdldxGabLFjPPpaTxVolMrzrcegejx+0GxjrIb9Zv48D8yAIA/QTDR2dFl7Uz7urX8aX6+5bCZslr+gWQ==}
@@ -2680,6 +2689,12 @@ packages:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
 
+  typedoc-plugin-markdown@4.9.0:
+    resolution: {integrity: sha512-9Uu4WR9L7ZBgAl60N/h+jqmPxxvnC9nQAlnnO/OujtG2ubjnKTVUFY1XDhcMY+pCqlX3N2HsQM2QTYZIU9tJuw==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      typedoc: 0.28.x
+
   typedoc@0.28.15:
     resolution: {integrity: sha512-mw2/2vTL7MlT+BVo43lOsufkkd2CJO4zeOSuWQQsiXoV2VuEn7f6IZp2jsUDPmBMABpgR0R5jlcJ2OGEFYmkyg==}
     engines: {node: '>= 18', pnpm: '>= 10'}
@@ -3810,15 +3825,15 @@ snapshots:
       html-entities: 2.6.0
       react-refresh: 0.18.0
 
-  '@rspress/core@2.0.0-rc.3(@types/react@19.2.7)':
+  '@rspress/core@2.0.0-rc.4(@types/react@19.2.7)':
     dependencies:
       '@mdx-js/mdx': 3.1.1
       '@mdx-js/react': 3.1.1(@types/react@19.2.7)(react@19.2.3)
       '@rsbuild/core': 1.6.15
       '@rsbuild/plugin-react': 1.4.2(@rsbuild/core@1.6.15)
       '@rspress/mdx-rs': 0.6.6
-      '@rspress/runtime': 2.0.0-rc.3
-      '@rspress/shared': 2.0.0-rc.3
+      '@rspress/runtime': 2.0.0-rc.4
+      '@rspress/shared': 2.0.0-rc.4
       '@shikijs/rehype': 3.20.0
       '@types/unist': 3.0.3
       '@unhead/react': 2.1.1(react@19.2.3)
@@ -3895,15 +3910,23 @@ snapshots:
       '@rspress/mdx-rs-win32-arm64-msvc': 0.6.6
       '@rspress/mdx-rs-win32-x64-msvc': 0.6.6
 
-  '@rspress/runtime@2.0.0-rc.3':
+  '@rspress/plugin-typedoc@2.0.0-rc.4(@rspress/core@2.0.0-rc.4(@types/react@19.2.7))(typescript@5.9.3)':
     dependencies:
-      '@rspress/shared': 2.0.0-rc.3
+      '@rspress/core': 2.0.0-rc.4(@types/react@19.2.7)
+      typedoc: 0.28.15(typescript@5.9.3)
+      typedoc-plugin-markdown: 4.9.0(typedoc@0.28.15(typescript@5.9.3))
+    transitivePeerDependencies:
+      - typescript
+
+  '@rspress/runtime@2.0.0-rc.4':
+    dependencies:
+      '@rspress/shared': 2.0.0-rc.4
       '@unhead/react': 2.1.1(react@19.2.3)
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
       react-router-dom: 7.11.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
-  '@rspress/shared@2.0.0-rc.3':
+  '@rspress/shared@2.0.0-rc.4':
     dependencies:
       '@rsbuild/core': 1.6.15
       '@shikijs/rehype': 3.20.0
@@ -5726,6 +5749,10 @@ snapshots:
       turbo-windows-arm64: 2.7.2
 
   type-fest@4.41.0: {}
+
+  typedoc-plugin-markdown@4.9.0(typedoc@0.28.15(typescript@5.9.3)):
+    dependencies:
+      typedoc: 0.28.15(typescript@5.9.3)
 
   typedoc@0.28.15(typescript@5.9.3):
     dependencies:

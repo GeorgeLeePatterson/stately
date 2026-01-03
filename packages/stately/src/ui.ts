@@ -1,8 +1,10 @@
 /**
- * Stately's UI module simply re-exports the most used pieces of @statelyjs/ui.
+ * Stately's UI module simply re-exports common components from @statelyjs/ui.
  *
  * If building a project that requires more customization, these re-exports may not be sufficient,
  * and in that case, @statelyjs/ui should be installed and imported directly.
+ *
+ * @module ui
  */
 
 /**

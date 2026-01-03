@@ -1,5 +1,5 @@
 /**
- * StatelyUi Plugin System.
+ * Stately Plugin System.
  *
  * This module provides the infrastructure for creating UI plugins that extend
  * the Stately runtime. Plugins can add:
@@ -14,16 +14,20 @@
  * Use `statelyUi` from `@statelyjs/stately` to create runtimes with the core
  * plugin included, then add additional plugins via `withPlugin()`:
  *
+ * @example
  * ```typescript
  * import { statelyUi } from '@statelyjs/stately';
- * import { filesUiPlugin } from '@statelyjs/files';
+ * import { type FilesUiPlugin, filesUiPlugin } from '@statelyjs/files';
  *
- * const runtime = statelyUi<MySchemas>({ schema, client, options })
- *   .withPlugin(filesUiPlugin({ api: { pathPrefix: '/files' } }));
+ * const runtime = statelyUi<MySchemas, readonly [FilesUiPlugin]>({
+ *   schema,
+ *   client,
+ *   options
+ * }).withPlugin(filesUiPlugin({ api: { pathPrefix: '/files' } }));
  *
  * // Access plugin functionality
- * runtime.plugins.core.api.operations.listEntities(...); // Core plugin
- * runtime.plugins.files.api.operations.listFiles(...);   // Files plugin
+ * runtime.plugins.core.api.operations.list_entities(...); // Core plugin
+ * runtime.plugins.files.api.operations.list_files(...);   // Files plugin
  * ```
  *
  * ## For Plugin Authors
@@ -32,13 +36,14 @@
  *
  * 1. Define your plugin's type using `DefineUiPlugin`:
  *
+ * @example
  * ```typescript
  * import type { DefineUiPlugin, DefineOptions } from '@statelyjs/ui';
  *
  * export type MyPlugin = DefineUiPlugin<
- *   'my-plugin',           // Unique plugin name (string literal)
- *   MyPaths,               // OpenAPI paths type
- *   typeof MY_OPERATIONS,  // Operation bindings
+ *   'my-plugin',           // Unique plugin name (must be string literal)
+ *   MyPaths,               // OpenAPI paths type (generated from Rust OpenAPI)
+ *   typeof MY_OPERATIONS,  // Operation bindings (generated from Rust OpenAPI)
  *   MyUtils,               // Utility functions type
  *   MyOptions              // Configuration options type
  * >;
@@ -46,6 +51,7 @@
  *
  * 2. Create the plugin factory using `createUiPlugin`:
  *
+ * @example
  * ```typescript
  * import { createUiPlugin } from '@statelyjs/ui';
  *
@@ -69,7 +75,7 @@
  * ```
  *
  * The `createUiPlugin` helper provides:
- * - **No manual spreading** - Return only what you're adding
+ * - **No manual spreading** - Return only what's being added
  * - **Automatic API creation** - Provide operations, get typed API
  * - **Simplified component registration** - `ctx.registerComponent()` handles keys
  * - **Path prefix merging** - Handled automatically
@@ -218,18 +224,7 @@ export interface UiPluginContext<
  * @typeParam Schema - The application's schema type
  * @typeParam Augments - Tuple of plugin types that will be available
  *
- * @example
- * ```typescript
- * const myPlugin: UiPluginFactory<MySchemas, [MyPlugin]> = (runtime) => {
- *   return {
- *     ...runtime,
- *     plugins: {
- *       ...runtime.plugins,
- *       'my-plugin': { api, utils, options },
- *     },
- *   };
- * };
- * ```
+ * @see {@link createUiPlugin}
  */
 export type UiPluginFactory<
   Schema extends StatelySchemas<any, any>,
@@ -284,6 +279,9 @@ export type DefineOptions<T extends object = EmptyRecord> = T;
  *   label: 'My Plugin';
  *   to: '/my-plugin';
  *   icon: MyIcon;
+ *   items: [
+ *     // Any additional sub-routes
+ *   ]
  * }>;
  * ```
  */
@@ -319,7 +317,7 @@ export type DefineRoutes<T extends UiNavigationOptions['routes'] = UiNavigationO
  * >;
  *
  * // Use in factory function signature
- * export function filesUiPlugin(options?: FilesOptions): UiPluginFactory<S, [FilesUiPlugin]>
+ * export function filesUiPlugin(options?: FilesOptions): UiPluginFactory<S, readonly [FilesUiPlugin]>
  * ```
  */
 export type DefineUiPlugin<
@@ -381,6 +379,8 @@ export type DefineUiUtils<T extends object = PluginFunctionMap> = T & Partial<Ui
  * @typeParam Utils - Utility functions type
  * @typeParam Options - Configuration options type
  * @typeParam Routes - Navigation routes type
+ *
+ * @internal
  */
 export interface PluginRuntime<
   Paths extends AnyPaths,
@@ -475,6 +475,7 @@ export type AllUiPlugins<
  *
  * ## Example
  *
+ * @example
  * ```typescript
  * import { createUiPlugin } from '@statelyjs/ui';
  *
@@ -503,21 +504,18 @@ export type AllUiPlugins<
  *     stringModes.extend(filesStringExtension);
  *
  *     // Return only what you're adding - no spreading
- *     return {
- *       utils: filesUiUtils,
- *       routes: { ...filesRoutes, ...options?.navigation?.routes },
- *     };
+ *     return { utils: filesUiUtils };
  *   },
  * });
  *
- * // Usage unchanged
+ * // Usage in user's application
  * const runtime = statelyUi({ ... })
  *   .withPlugin(filesUiPlugin({ api: { pathPrefix: '/files' } }));
  * ```
  *
  * @typeParam Plugin - The plugin type created with DefineUiPlugin
  *
- * @param config - Plugin configuration
+ * @param {UiPluginConfig<Plugin>} config - Plugin configuration
  * @returns A factory function that accepts options and returns a UiPluginFactory
  */
 export function createUiPlugin<Plugin extends AnyUiPlugin>(

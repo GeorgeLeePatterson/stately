@@ -63,6 +63,16 @@ export function PrimitiveEdit<Schema extends Schemas = Schemas>({
       );
 
     default:
-      return null;
+      return (
+        <Input
+          id={formId}
+          onChange={e => {
+            const val = e.target.value;
+            onChange(val === '' ? null : val);
+          }}
+          placeholder={placeholder ? `Enter ${placeholder.toLowerCase()}...` : 'Enter value'}
+          value={value ?? ''}
+        />
+      );
   }
 }

@@ -28,8 +28,6 @@
  * - **`DefinePlugin`** - Helper type for defining schema plugins
  * - **`BaseNode`** - Base interface for all schema nodes
  * - **`StatelySchemas`** - The complete schemas type
- *
- * @packageDocumentation
  */
 
 import type { DefineOperations } from './api.js';

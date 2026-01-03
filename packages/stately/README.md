@@ -248,6 +248,50 @@ import {
 import type { CodegenPlugin, CodegenPluginContext } from '@statelyjs/stately/codegen';
 ```
 
+## Core Node Types
+
+### Primitives
+
+| Primitive Type | Description |
+|-----------|-------------|
+| `string` | String values, with optional format (date, uri, etc.) |
+| `integer` | Integer numbers |
+| `number` | Floating point numbers |
+| `boolean` | Boolean values |
+
+### Composites
+
+| Node Type | Description |
+|-----------|-------------|
+| `object` | Objects with typed properties |
+| `array` | Arrays with typed items |
+| `tuple` | Fixed-length arrays with typed positions |
+| `map` | Key-value pairs |
+
+### References
+
+| Node Type | Description |
+|-----------|-------------|
+| `recursiveRef` | Reference to another schema (`$ref`) |
+| `link` | Stately `Link<T>` - inline or by-reference entity |
+
+### Unions
+
+| Node Type | Description |
+|-----------|-------------|
+| `union` | Union of multiple types (`oneOf/anyOf` fallback) |
+| `enum` | Enumeration of string values |
+| `taggedUnion` | Tagged union with discriminator property |
+| `untaggedEnum` | Untagged enum with object variants |
+| `nullable` | Any schema that can be null |
+
+### Special
+
+| Node Type | Description |
+|-----------|-------------|
+| `unknown` | Unknown/any type |
+| `const` | Constant value |
+
 ## Difference from @statelyjs/ui
 
 | Package | Purpose |

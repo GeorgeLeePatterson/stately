@@ -177,49 +177,6 @@ This produces:
 - `types.ts` - TypeScript interfaces matching your OpenAPI spec
 - `schemas.ts` - Parsed `PARSED_SCHEMAS` object for runtime use
 
-## Node Types
-
-### Primitives
-
-| Node Type | Description |
-|-----------|-------------|
-| `string` | String values, with optional format (date, uri, etc.) |
-| `integer` | Integer numbers |
-| `number` | Floating point numbers |
-| `boolean` | Boolean values |
-| `null` | Null values |
-
-### Composites
-
-| Node Type | Description |
-|-----------|-------------|
-| `object` | Objects with typed properties |
-| `array` | Arrays with typed items |
-| `record` | Dictionaries with string keys |
-| `tuple` | Fixed-length arrays with typed positions |
-
-### References
-
-| Node Type | Description |
-|-----------|-------------|
-| `ref` | Reference to another schema (`$ref`) |
-| `link` | Stately `Link<T>` - inline or by-reference entity |
-
-### Unions
-
-| Node Type | Description |
-|-----------|-------------|
-| `union` | Union of multiple types (`oneOf`) |
-| `enum` | Enumeration of string values |
-| `discriminatedUnion` | Tagged union with discriminator property |
-
-### Special
-
-| Node Type | Description |
-|-----------|-------------|
-| `unknown` | Unknown/any type |
-| `const` | Constant value |
-
 ## Validation
 
 ```typescript
@@ -235,7 +192,7 @@ if (!result.valid) {
 
 ## API Reference
 
-### `createStately(openapiDoc, parsedSchemas)`
+### `createStately(openapiDoc, parsedSchemas, createStatelyOptions)`
 
 Creates a Stately schema runtime.
 
@@ -244,8 +201,8 @@ Creates a Stately schema runtime.
 Type guard for checking node types:
 
 ```typescript
-if (isNodeOfType(node, 'string')) {
-  // node is typed as StringNode
+if (isNodeOfType(node, NodeType.Primitive)) {
+  // node is typed as Primitive 
 }
 ```
 
