@@ -3,5 +3,15 @@
     "type": "file",
     "name": "plugins",
     "label": "Plugin Development"
+  },
+  {
+    "type": "file",
+    "name": "extensions",
+    "label": "Extensions"
+  },
+  {
+    "type": "file",
+    "name": "features",
+    "label": "Feature Plugins"
   }
 ]
