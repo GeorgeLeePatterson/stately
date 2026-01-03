@@ -6,7 +6,7 @@
 
 > `const` **tabsListVariants**: (`props?`) => `string`
 
-Defined in: [packages/ui/src/components/base/tabs.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/tabs.tsx#L26)
+Defined in: [packages/ui/src/components/base/tabs.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/tabs.tsx#L26)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ ConfigVariants\<\{ variant: \{ default: string; line: string; \}; \}\> & ClassPr
 
 > **Tabs**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/tabs.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/tabs.tsx#L8)
+Defined in: [packages/ui/src/components/base/tabs.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/tabs.tsx#L8)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/tabs.tsx:8](https://github.com/Geor
 
 > **TabsContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/tabs.tsx:72](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/tabs.tsx#L72)
+Defined in: [packages/ui/src/components/base/tabs.tsx:72](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/tabs.tsx#L72)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/tabs.tsx:72](https://github.com/Geo
 
 > **TabsList**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/tabs.tsx:41](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/tabs.tsx#L41)
+Defined in: [packages/ui/src/components/base/tabs.tsx:41](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/tabs.tsx#L41)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/tabs.tsx:41](https://github.com/Geo
 
 > **TabsTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/tabs.tsx:56](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/tabs.tsx#L56)
+Defined in: [packages/ui/src/components/base/tabs.tsx:56](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/tabs.tsx#L56)
 
 #### Parameters
 

@@ -4,7 +4,7 @@
 
 ### CoreUiUtils
 
-Defined in: [packages/stately/src/core/utils.tsx:31](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L31)
+Defined in: [packages/stately/src/core/utils.tsx:31](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L31)
 
 #### Methods
 
@@ -12,7 +12,7 @@ Defined in: [packages/stately/src/core/utils.tsx:31](https://github.com/GeorgeLe
 
 > **generateEntityTypeDisplay**\<`S`\>(): `object`[]
 
-Defined in: [packages/stately/src/core/utils.tsx:36](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L36)
+Defined in: [packages/stately/src/core/utils.tsx:36](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L36)
 
 ###### Type Parameters
 
@@ -28,7 +28,7 @@ Defined in: [packages/stately/src/core/utils.tsx:36](https://github.com/GeorgeLe
 
 > **getDefaultValue**(`node`): `any`
 
-Defined in: [packages/stately/src/core/utils.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L34)
+Defined in: [packages/stately/src/core/utils.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L34)
 
 ###### Parameters
 
@@ -44,7 +44,7 @@ Defined in: [packages/stately/src/core/utils.tsx:34](https://github.com/GeorgeLe
 
 > **getEntityIcon**\<`S`\>(`entity`): `ComponentType`\<`any`\>
 
-Defined in: [packages/stately/src/core/utils.tsx:42](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L42)
+Defined in: [packages/stately/src/core/utils.tsx:42](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L42)
 
 ###### Type Parameters
 
@@ -66,7 +66,7 @@ Defined in: [packages/stately/src/core/utils.tsx:42](https://github.com/GeorgeLe
 
 > **getNodeTypeIcon**(`nodeType`): `ComponentType`\<`any`\> \| `null`
 
-Defined in: [packages/stately/src/core/utils.tsx:33](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L33)
+Defined in: [packages/stately/src/core/utils.tsx:33](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L33)
 
 ###### Parameters
 
@@ -82,7 +82,7 @@ Defined in: [packages/stately/src/core/utils.tsx:33](https://github.com/GeorgeLe
 
 > **resolveEntityType**\<`S`\>(`entity`): `CoreStateEntry`\<`S`\>
 
-Defined in: [packages/stately/src/core/utils.tsx:43](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L43)
+Defined in: [packages/stately/src/core/utils.tsx:43](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L43)
 
 ###### Type Parameters
 
@@ -104,7 +104,7 @@ Defined in: [packages/stately/src/core/utils.tsx:43](https://github.com/GeorgeLe
 
 > **resolveEntityUrl**(`entityParts?`, `params?`, `omitBasePath?`): `string`
 
-Defined in: [packages/stately/src/core/utils.tsx:44](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L44)
+Defined in: [packages/stately/src/core/utils.tsx:44](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L44)
 
 ###### Parameters
 
@@ -130,7 +130,7 @@ Defined in: [packages/stately/src/core/utils.tsx:44](https://github.com/GeorgeLe
 
 > **EntityUrlParts** = \{ `id?`: `never`; `mode?`: `never`; `type?`: `string`; \} \| \{ `id?`: `string`; `mode?`: `never`; `type`: `string`; \} \| \{ `id?`: `never`; `mode?`: `string`; `type`: `string`; \} \| \{ `id`: `string`; `mode?`: `string`; `type`: `string`; \}
 
-Defined in: [packages/stately/src/core/utils.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L25)
+Defined in: [packages/stately/src/core/utils.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L25)
 
 ## Functions
 
@@ -138,7 +138,7 @@ Defined in: [packages/stately/src/core/utils.tsx:25](https://github.com/GeorgeLe
 
 > **createCoreUtils**\<`S`, `A`\>(`runtime`, `options?`): [`CoreUiUtils`](#coreuiutils)
 
-Defined in: [packages/stately/src/core/utils.tsx:51](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L51)
+Defined in: [packages/stately/src/core/utils.tsx:51](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L51)
 
 #### Type Parameters
 
@@ -186,7 +186,7 @@ Entity display configuration
 
 > **generateEntityTypeDisplay**\<`S`\>(`data`): `object`[]
 
-Defined in: [packages/stately/src/core/utils.tsx:166](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L166)
+Defined in: [packages/stately/src/core/utils.tsx:166](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L166)
 
 Generate entity types from metadata
 
@@ -216,7 +216,7 @@ Stately['data']
 
 > **getDefaultValue**(`node`): `any`
 
-Defined in: [packages/stately/src/core/utils.tsx:106](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L106)
+Defined in: [packages/stately/src/core/utils.tsx:106](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L106)
 
 Default value generation
 
@@ -239,7 +239,7 @@ Returns null for unknown/plugin node types (graceful degradation).
 
 > **getNodeTypeIcon**(`nodeType`): `ComponentType`\<`any`\> \| `null`
 
-Defined in: [packages/stately/src/core/utils.tsx:77](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L77)
+Defined in: [packages/stately/src/core/utils.tsx:77](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L77)
 
 Get icon component for a node type
 
@@ -259,7 +259,7 @@ Get icon component for a node type
 
 > **resolveEntityType**\<`S`\>(`entity`, `data`): `CoreStateEntry`\<`S`\>
 
-Defined in: [packages/stately/src/core/utils.tsx:184](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L184)
+Defined in: [packages/stately/src/core/utils.tsx:184](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L184)
 
 Attempts to resolve a string signifying an entity type into a proper `StateEntry`.
 
@@ -295,7 +295,7 @@ The resolved StateEntry, or the original string cast as StateEntry if not found
 
 > **resolveEntityUrl**\<`S`, `A`\>(`runtime`, `entityParts?`, `params?`, `omitBasePath?`): `string`
 
-Defined in: [packages/stately/src/core/utils.tsx:201](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/utils.tsx#L201)
+Defined in: [packages/stately/src/core/utils.tsx:201](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/utils.tsx#L201)
 
 Resolve an entity URL, respecting base path
 

@@ -6,7 +6,7 @@
 
 > **CoreUtils** = [`DefineUtils`](../../schema.md#defineutils)\<\{ `extractNodeInnerType`: *typeof* [`extractNodeInnerType`](#extractnodeinnertype); `isEntityValid`: *typeof* [`isEntityValid`](#isentityvalid); `isPrimitiveNodeLike`: *typeof* [`isPrimitiveNodeLike`](#isprimitivenodelike); `isSingletonId`: *typeof* [`isSingletonId`](#issingletonid); `sortEntityProperties`: *typeof* `sortEntityProperties`; \}\>
 
-Defined in: [packages/stately/src/core/schema/utils.ts:179](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L179)
+Defined in: [packages/stately/src/core/schema/utils.ts:179](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L179)
 
 ## Variables
 
@@ -14,7 +14,7 @@ Defined in: [packages/stately/src/core/schema/utils.ts:179](https://github.com/G
 
 > `const` **coreUtils**: [`CoreUtils`](#coreutils)
 
-Defined in: [packages/stately/src/core/schema/utils.ts:171](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L171)
+Defined in: [packages/stately/src/core/schema/utils.ts:171](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L171)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [packages/stately/src/core/schema/utils.ts:171](https://github.com/G
 
 > `const` **SINGLETON\_ID**: `"00000000-0000-0000-0000-000000000000"` = `'00000000-0000-0000-0000-000000000000'`
 
-Defined in: [packages/stately/src/core/schema/utils.ts:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L23)
+Defined in: [packages/stately/src/core/schema/utils.ts:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L23)
 
 ID utilities
 
@@ -32,7 +32,7 @@ ID utilities
 
 > **extractNodeInnerType**(`schema`): `string`
 
-Defined in: [packages/stately/src/core/schema/utils.ts:106](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L106)
+Defined in: [packages/stately/src/core/schema/utils.ts:106](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L106)
 
 Extract the inner node type from `NullableNode` or `ArrayNode`.
 
@@ -56,7 +56,7 @@ string
 
 > **isArray**(`schema`): `schema is ArrayNode<any>`
 
-Defined in: [packages/stately/src/core/schema/utils.ts:54](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L54)
+Defined in: [packages/stately/src/core/schema/utils.ts:54](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L54)
 
 Determine if a node if of type `ArrayNode`.
 
@@ -80,7 +80,7 @@ boolean
 
 > **isEntityValid**(`entity`, `schema`): `boolean`
 
-Defined in: [packages/stately/src/core/schema/utils.ts:124](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L124)
+Defined in: [packages/stately/src/core/schema/utils.ts:124](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L124)
 
 Entity validation helper. Simpler than object validation with some extra checks.
 
@@ -104,7 +104,7 @@ Entity validation helper. Simpler than object validation with some extra checks.
 
 > **isNullable**(`schema`): `schema is NullableNode<any>`
 
-Defined in: [packages/stately/src/core/schema/utils.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L41)
+Defined in: [packages/stately/src/core/schema/utils.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L41)
 
 Determine if a node if of type `NullableNode`.
 
@@ -128,7 +128,7 @@ boolean
 
 > **isObject**(`schema`): `schema is ObjectNode<any>`
 
-Defined in: [packages/stately/src/core/schema/utils.ts:65](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L65)
+Defined in: [packages/stately/src/core/schema/utils.ts:65](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L65)
 
 Determine if a node if of type `ObjectNode`.
 
@@ -152,7 +152,7 @@ boolean
 
 > **isPrimitive**(`schema`): `schema is PrimitiveNode`
 
-Defined in: [packages/stately/src/core/schema/utils.ts:76](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L76)
+Defined in: [packages/stately/src/core/schema/utils.ts:76](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L76)
 
 Determine if a node if of type `PrimitiveNode`.
 
@@ -176,7 +176,7 @@ boolean
 
 > **isPrimitiveNodeLike**(`schema`): `boolean`
 
-Defined in: [packages/stately/src/core/schema/utils.ts:92](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L92)
+Defined in: [packages/stately/src/core/schema/utils.ts:92](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L92)
 
 Determine if a node if of a 'primitive-like' type, ie `PrimitiveNode` or `EnumNode`, or either
 wrapped in `NullableNode`.
@@ -205,7 +205,7 @@ boolean
 
 > **isSingletonId**(`id`): `boolean`
 
-Defined in: [packages/stately/src/core/schema/utils.ts:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/utils.ts#L26)
+Defined in: [packages/stately/src/core/schema/utils.ts:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/utils.ts#L26)
 
 Is the ID a singleton ID, ie '00000000-0000-0000-0000-000000000000'
 

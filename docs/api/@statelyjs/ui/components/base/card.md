@@ -6,7 +6,7 @@
 
 > **Card**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/card.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/card.tsx#L5)
+Defined in: [packages/ui/src/components/base/card.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/card.tsx#L5)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/card.tsx:5](https://github.com/Geor
 
 > **CardAction**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/card.tsx:59](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/card.tsx#L59)
+Defined in: [packages/ui/src/components/base/card.tsx:59](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/card.tsx#L59)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/card.tsx:59](https://github.com/Geo
 
 > **CardContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/card.tsx:69](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/card.tsx#L69)
+Defined in: [packages/ui/src/components/base/card.tsx:69](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/card.tsx#L69)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/card.tsx:69](https://github.com/Geo
 
 > **CardDescription**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/card.tsx:49](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/card.tsx#L49)
+Defined in: [packages/ui/src/components/base/card.tsx:49](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/card.tsx#L49)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/card.tsx:49](https://github.com/Geo
 
 > **CardFooter**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/card.tsx:79](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/card.tsx#L79)
+Defined in: [packages/ui/src/components/base/card.tsx:79](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/card.tsx#L79)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/card.tsx:79](https://github.com/Geo
 
 > **CardHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/card.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/card.tsx#L23)
+Defined in: [packages/ui/src/components/base/card.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/card.tsx#L23)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/ui/src/components/base/card.tsx:23](https://github.com/Geo
 
 > **CardTitle**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/card.tsx:36](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/card.tsx#L36)
+Defined in: [packages/ui/src/components/base/card.tsx:36](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/card.tsx#L36)
 
 #### Parameters
 

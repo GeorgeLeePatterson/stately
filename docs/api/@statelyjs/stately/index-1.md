@@ -53,7 +53,7 @@ const runtime = statelyUi<MySchemas>({ ... })
 
 > **StatelyConfiguration**\<`Schema`\> = `Readonly`\<`Omit`\<`StatelyUiConfiguration`\<`Schema`\>, `"options"`\> & `object`\> & `object`
 
-Defined in: [packages/stately/src/index.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/index.ts#L80)
+Defined in: [packages/stately/src/index.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/index.ts#L80)
 
 Configuration for creating a Stately runtime.
 
@@ -81,7 +81,7 @@ Your application's schema type (from `Schemas<DefineConfig<...>>`)
 
 > **StatelyUi**\<`S`, `Augments`\> = `StatelyUiRuntime`\<`S`, readonly \[`CoreUiPlugin`, `...Augments`\]\>
 
-Defined in: [packages/stately/src/index.ts:115](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/index.ts#L115)
+Defined in: [packages/stately/src/index.ts:115](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/index.ts#L115)
 
 The Stately runtime type with core plugin installed.
 
@@ -121,7 +121,7 @@ runtime.plugins.files?.api.operations.list_files({ ... });
 
 > `const` **statelyUiProvider**: \<`Schema`, `Augments`\>(`themeOptions?`) => (`__namedParameters`) => `Element` = `coreStatelyUiProvider`
 
-Defined in: [packages/stately/src/index.ts:248](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/index.ts#L248)
+Defined in: [packages/stately/src/index.ts:248](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/index.ts#L248)
 
 Create a typed React context provider for your Stately runtime.
 
@@ -227,7 +227,7 @@ export default function RootLayout({ children }) {
 
 > **statelyUi**\<`Schema`, `Augments`\>(`config`): `StatelyUiBuilder`\<`Schema`, readonly \[`CoreUiPlugin`, `Augments`\]\>
 
-Defined in: [packages/stately/src/index.ts:166](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/index.ts#L166)
+Defined in: [packages/stately/src/index.ts:166](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/index.ts#L166)
 
 Create a Stately runtime with the core plugin pre-installed.
 
@@ -298,7 +298,7 @@ const runtime = statelyUi<MySchemas>({ ... })
 
 > **useStatelyUi**\<`Schema`, `ExtraAugments`\>(): `StatelyUiRuntime`\<`Schema`, readonly \[`CoreUiPlugin`, `ExtraAugments`\]\>
 
-Defined in: [packages/stately/src/index.ts:211](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/index.ts#L211)
+Defined in: [packages/stately/src/index.ts:211](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/index.ts#L211)
 
 Access the Stately runtime from React context.
 

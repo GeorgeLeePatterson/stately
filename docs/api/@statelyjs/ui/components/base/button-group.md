@@ -6,7 +6,7 @@
 
 > `const` **buttonGroupVariants**: (`props?`) => `string`
 
-Defined in: [packages/ui/src/components/base/button-group.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/button-group.tsx#L8)
+Defined in: [packages/ui/src/components/base/button-group.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/button-group.tsx#L8)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ ConfigVariants\<\{ orientation: \{ horizontal: string; vertical: string; \}; \}\
 
 > **ButtonGroup**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/button-group.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/button-group.tsx#L25)
+Defined in: [packages/ui/src/components/base/button-group.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/button-group.tsx#L25)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/button-group.tsx:25](https://github
 
 > **ButtonGroupSeparator**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/button-group.tsx:64](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/button-group.tsx#L64)
+Defined in: [packages/ui/src/components/base/button-group.tsx:64](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/button-group.tsx#L64)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/button-group.tsx:64](https://github
 
 > **ButtonGroupText**(`__namedParameters`): `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\>
 
-Defined in: [packages/ui/src/components/base/button-group.tsx:41](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/button-group.tsx#L41)
+Defined in: [packages/ui/src/components/base/button-group.tsx:41](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/button-group.tsx#L41)
 
 #### Parameters
 

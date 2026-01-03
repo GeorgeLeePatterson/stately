@@ -163,7 +163,7 @@ type MyComponentsSchemas = DefineComponentSchemas<{
 
 > **DefineConfig**\<`C`, `P`, `O`, `N`\> = `DefineCoreConfig`\<`C`, `P`, [`DefineOperations`](#defineoperations)\<`O`\>, `N`\>
 
-Defined in: [packages/stately/src/schema.ts:69](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/schema.ts#L69)
+Defined in: [packages/stately/src/schema.ts:69](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/schema.ts#L69)
 
 Define your application's Stately configuration.
 
@@ -636,7 +636,7 @@ Plugin helper types for nodes
 
 > **Schemas**\<`Config`, `Augments`\> = [`StatelySchemas`](../schema/schema.md#statelyschemas)\<`Config`, readonly \[`CorePlugin`\<`Config`, `Augments`\>, `...Augments`\]\>
 
-Defined in: [packages/stately/src/core/schema/index.ts:60](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/index.ts#L60)
+Defined in: [packages/stately/src/core/schema/index.ts:60](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/index.ts#L60)
 
 Stately plugin types integration for schemas - Main API
 
@@ -660,7 +660,7 @@ like `keyof Config['nodes']` from being introduced anywhere in the type system.
 
 > **Stately**\<`S`\> = [`Stately`](../schema/stately.md#stately)\<`S`\>
 
-Defined in: [packages/stately/src/core/schema/index.ts:50](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/index.ts#L50)
+Defined in: [packages/stately/src/core/schema/index.ts:50](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/index.ts#L50)
 
 #### Type Parameters
 
@@ -674,7 +674,7 @@ Defined in: [packages/stately/src/core/schema/index.ts:50](https://github.com/Ge
 
 > **StatelyBuilder**\<`S`\> = [`StatelyBuilder`](../schema/stately.md#statelybuilder)\<`S`\>
 
-Defined in: [packages/stately/src/core/schema/index.ts:51](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/index.ts#L51)
+Defined in: [packages/stately/src/core/schema/index.ts:51](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/index.ts#L51)
 
 #### Type Parameters
 
@@ -688,7 +688,7 @@ Defined in: [packages/stately/src/core/schema/index.ts:51](https://github.com/Ge
 
 > `const` **CORE\_PLUGIN\_NAME**: `"core"`
 
-Defined in: [packages/stately/src/core/schema/plugin.ts:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/plugin.ts#L17)
+Defined in: [packages/stately/src/core/schema/plugin.ts:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/plugin.ts#L17)
 
 ***
 
@@ -752,7 +752,7 @@ const bindings = createOperationBindingsFactory<paths, operations>()({
 
 > **stately**\<`S`\>(`openapi`, `nodes`): [`StatelyBuilder`](../schema/stately.md#statelybuilder)\<`S`\>
 
-Defined in: [packages/stately/src/core/schema/index.ts:75](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/schema/index.ts#L75)
+Defined in: [packages/stately/src/core/schema/index.ts:75](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/schema/index.ts#L75)
 
 Stately plugin functionality integration - Main API
 

@@ -6,7 +6,7 @@
 
 > **Drawer**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L6)
+Defined in: [packages/ui/src/components/base/drawer.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L6)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/drawer.tsx:6](https://github.com/Ge
 
 > **DrawerClose**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L18)
+Defined in: [packages/ui/src/components/base/drawer.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L18)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/drawer.tsx:18](https://github.com/G
 
 > **DrawerContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L38)
+Defined in: [packages/ui/src/components/base/drawer.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L38)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/drawer.tsx:38](https://github.com/G
 
 > **DrawerDescription**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:94](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L94)
+Defined in: [packages/ui/src/components/base/drawer.tsx:94](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L94)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/drawer.tsx:94](https://github.com/G
 
 > **DrawerFooter**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:74](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L74)
+Defined in: [packages/ui/src/components/base/drawer.tsx:74](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L74)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/drawer.tsx:74](https://github.com/G
 
 > **DrawerHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:61](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L61)
+Defined in: [packages/ui/src/components/base/drawer.tsx:61](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L61)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/ui/src/components/base/drawer.tsx:61](https://github.com/G
 
 > **DrawerOverlay**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L22)
+Defined in: [packages/ui/src/components/base/drawer.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L22)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: [packages/ui/src/components/base/drawer.tsx:22](https://github.com/G
 
 > **DrawerPortal**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L14)
+Defined in: [packages/ui/src/components/base/drawer.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L14)
 
 #### Parameters
 
@@ -150,7 +150,7 @@ Defined in: [packages/ui/src/components/base/drawer.tsx:14](https://github.com/G
 
 > **DrawerTitle**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:84](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L84)
+Defined in: [packages/ui/src/components/base/drawer.tsx:84](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L84)
 
 #### Parameters
 
@@ -168,7 +168,7 @@ Defined in: [packages/ui/src/components/base/drawer.tsx:84](https://github.com/G
 
 > **DrawerTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/drawer.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/drawer.tsx#L10)
+Defined in: [packages/ui/src/components/base/drawer.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/drawer.tsx#L10)
 
 #### Parameters
 

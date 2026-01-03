@@ -6,7 +6,7 @@
 
 > **DerivedPluginNodes**\<`Augments`\> = `AugmentPluginNodes`\<`Augments`\>
 
-Defined in: [schema.ts:60](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L60)
+Defined in: [schema.ts:60](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L60)
 
 #### Type Parameters
 
@@ -20,7 +20,7 @@ Defined in: [schema.ts:60](https://github.com/GeorgeLeePatterson/stately/blob/0d
 
 > **PluginAnyNode**\<`Augments`\> = [`DerivedPluginNodes`](#derivedpluginnodes)\<`Augments`\>
 
-Defined in: [schema.ts:61](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L61)
+Defined in: [schema.ts:61](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L61)
 
 #### Type Parameters
 
@@ -34,7 +34,7 @@ Defined in: [schema.ts:61](https://github.com/GeorgeLeePatterson/stately/blob/0d
 
 > **StatelySchemaConfig**\<`S`\> = `S` *extends* [`StatelySchemas`](#statelyschemas)\<infer Config, `any`\> ? `Config` : `never`
 
-Defined in: [schema.ts:34](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L34)
+Defined in: [schema.ts:34](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L34)
 
 #### Type Parameters
 
@@ -48,7 +48,7 @@ Defined in: [schema.ts:34](https://github.com/GeorgeLeePatterson/stately/blob/0d
 
 > **StatelySchemas**\<`Config`, `Augments`\> = `object`
 
-Defined in: [schema.ts:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L23)
+Defined in: [schema.ts:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L23)
 
 Base schema builder – derives shared surface area without core additions.
 
@@ -74,13 +74,13 @@ invariant-causing patterns like `keyof Config['nodes']` from being introduced.
 
 > **augments**: `Augments`
 
-Defined in: [schema.ts:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L26)
+Defined in: [schema.ts:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L26)
 
 ##### config
 
 > **config**: `Config`
 
-Defined in: [schema.ts:25](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L25)
+Defined in: [schema.ts:25](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L25)
 
 Store raw configuration and plugin augmentations
 
@@ -88,31 +88,31 @@ Store raw configuration and plugin augmentations
 
 > **data**: `AugmentPluginData`\<`Augments`\>
 
-Defined in: [schema.ts:30](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L30)
+Defined in: [schema.ts:30](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L30)
 
 ##### generated
 
 > **generated**: [`NodeInformation`](nodes.md#nodeinformation)\<[`GeneratedNodeMap`](../stately/schema.md#generatednodemap)\<`Config`\>\>
 
-Defined in: [schema.ts:27](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L27)
+Defined in: [schema.ts:27](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L27)
 
 ##### plugin
 
 > **plugin**: [`NodeInformation`](nodes.md#nodeinformation)\<`AugmentPluginNodes`\<`Augments`\>\>
 
-Defined in: [schema.ts:28](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L28)
+Defined in: [schema.ts:28](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L28)
 
 ##### types
 
 > **types**: `AugmentPluginTypes`\<`Augments`\>
 
-Defined in: [schema.ts:29](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L29)
+Defined in: [schema.ts:29](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L29)
 
 ##### utils
 
 > **utils**: `AugmentPluginUtils`\<`Augments`\>
 
-Defined in: [schema.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L31)
+Defined in: [schema.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L31)
 
 ## Functions
 
@@ -120,7 +120,7 @@ Defined in: [schema.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/0d
 
 > **isNodeOfType**\<`N`\>(`schema`, `nodeType`): `schema is N`
 
-Defined in: [schema.ts:53](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/schema.ts#L53)
+Defined in: [schema.ts:53](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/schema.ts#L53)
 
 Type guard for narrowing plugin node unions by nodeType.
 

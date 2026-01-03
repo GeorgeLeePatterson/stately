@@ -26,7 +26,7 @@ import { BaseForm } from '@statelyjs/stately/form';
 
 ### FormActionsProps
 
-Defined in: [packages/stately/src/form/form-actions.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/form-actions.tsx#L6)
+Defined in: [packages/stately/src/form/form-actions.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/form-actions.tsx#L6)
 
 #### Properties
 
@@ -34,31 +34,31 @@ Defined in: [packages/stately/src/form/form-actions.tsx:6](https://github.com/Ge
 
 > `optional` **isDirty**: `boolean`
 
-Defined in: [packages/stately/src/form/form-actions.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/form-actions.tsx#L7)
+Defined in: [packages/stately/src/form/form-actions.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/form-actions.tsx#L7)
 
 ##### isDisabled?
 
 > `optional` **isDisabled**: `boolean`
 
-Defined in: [packages/stately/src/form/form-actions.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/form-actions.tsx#L10)
+Defined in: [packages/stately/src/form/form-actions.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/form-actions.tsx#L10)
 
 ##### isLoading?
 
 > `optional` **isLoading**: `boolean`
 
-Defined in: [packages/stately/src/form/form-actions.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/form-actions.tsx#L9)
+Defined in: [packages/stately/src/form/form-actions.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/form-actions.tsx#L9)
 
 ##### isPending?
 
 > `optional` **isPending**: `boolean`
 
-Defined in: [packages/stately/src/form/form-actions.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/form-actions.tsx#L8)
+Defined in: [packages/stately/src/form/form-actions.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/form-actions.tsx#L8)
 
 ##### onCancel()
 
 > **onCancel**: () => `void`
 
-Defined in: [packages/stately/src/form/form-actions.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/form-actions.tsx#L12)
+Defined in: [packages/stately/src/form/form-actions.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/form-actions.tsx#L12)
 
 ###### Returns
 
@@ -68,7 +68,7 @@ Defined in: [packages/stately/src/form/form-actions.tsx:12](https://github.com/G
 
 > **onSave**: () => `void`
 
-Defined in: [packages/stately/src/form/form-actions.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/form-actions.tsx#L11)
+Defined in: [packages/stately/src/form/form-actions.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/form-actions.tsx#L11)
 
 ###### Returns
 
@@ -78,7 +78,7 @@ Defined in: [packages/stately/src/form/form-actions.tsx:11](https://github.com/G
 
 ### JsonEditProps
 
-Defined in: [packages/stately/src/form/json-edit.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/json-edit.tsx#L11)
+Defined in: [packages/stately/src/form/json-edit.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/json-edit.tsx#L11)
 
 #### Properties
 
@@ -86,13 +86,13 @@ Defined in: [packages/stately/src/form/json-edit.tsx:11](https://github.com/Geor
 
 > `optional` **label**: `string`
 
-Defined in: [packages/stately/src/form/json-edit.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/json-edit.tsx#L13)
+Defined in: [packages/stately/src/form/json-edit.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/json-edit.tsx#L13)
 
 ##### onSave()
 
 > **onSave**: (`value`) => `void`
 
-Defined in: [packages/stately/src/form/json-edit.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/json-edit.tsx#L14)
+Defined in: [packages/stately/src/form/json-edit.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/json-edit.tsx#L14)
 
 ###### Parameters
 
@@ -108,13 +108,13 @@ Defined in: [packages/stately/src/form/json-edit.tsx:14](https://github.com/Geor
 
 > **value**: `any`
 
-Defined in: [packages/stately/src/form/json-edit.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/json-edit.tsx#L12)
+Defined in: [packages/stately/src/form/json-edit.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/json-edit.tsx#L12)
 
 ***
 
 ### JsonViewProps
 
-Defined in: [packages/stately/src/form/json-view.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/json-view.tsx#L10)
+Defined in: [packages/stately/src/form/json-view.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/json-view.tsx#L10)
 
 #### Properties
 
@@ -122,19 +122,19 @@ Defined in: [packages/stately/src/form/json-view.tsx:10](https://github.com/Geor
 
 > **data**: `any`
 
-Defined in: [packages/stately/src/form/json-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/json-view.tsx#L11)
+Defined in: [packages/stately/src/form/json-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/json-view.tsx#L11)
 
 ##### isOpen?
 
 > `optional` **isOpen**: `boolean`
 
-Defined in: [packages/stately/src/form/json-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/json-view.tsx#L12)
+Defined in: [packages/stately/src/form/json-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/json-view.tsx#L12)
 
 ##### setIsOpen()
 
 > **setIsOpen**: (`open`) => `void`
 
-Defined in: [packages/stately/src/form/json-view.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/json-view.tsx#L13)
+Defined in: [packages/stately/src/form/json-view.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/json-view.tsx#L13)
 
 ###### Parameters
 
@@ -152,7 +152,7 @@ Defined in: [packages/stately/src/form/json-view.tsx:13](https://github.com/Geor
 
 > `const` **BaseForm**: `object`
 
-Defined in: [packages/stately/src/form/index.ts:36](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/form/index.ts#L36)
+Defined in: [packages/stately/src/form/index.ts:36](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/form/index.ts#L36)
 
 #### Type Declaration
 

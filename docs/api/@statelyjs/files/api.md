@@ -34,7 +34,7 @@ await plugins.files.api.upload({ body: formData });
 
 > **FilesApi** = [`TypedOperations`](../ui/api.md#typedoperations)\<[`FilesPaths`](#filespaths), *typeof* [`FILES_OPERATIONS`](#files_operations)\>
 
-Defined in: [files/src/api.ts:72](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/api.ts#L72)
+Defined in: [files/src/api.ts:72](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/api.ts#L72)
 
 Typed API client for files operations.
 
@@ -46,7 +46,7 @@ Access via `runtime.plugins.files.api`.
 
 > **FilesOperations** = [`DefineOperations`](../schema/api.md#defineoperations)\<`operations`\>
 
-Defined in: [files/src/api.ts:44](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/api.ts#L44)
+Defined in: [files/src/api.ts:44](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/api.ts#L44)
 
 OpenAPI operations type for the files plugin
 
@@ -56,7 +56,7 @@ OpenAPI operations type for the files plugin
 
 > **FilesPaths** = [`DefinePaths`](../stately/schema.md#definepaths)\<`paths`\>
 
-Defined in: [files/src/api.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/api.ts#L41)
+Defined in: [files/src/api.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/api.ts#L41)
 
 OpenAPI paths type for the files plugin
 
@@ -66,7 +66,7 @@ OpenAPI paths type for the files plugin
 
 > `const` **FILES\_OPERATIONS**: `object`
 
-Defined in: [files/src/api.ts:52](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/api.ts#L52)
+Defined in: [files/src/api.ts:52](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/api.ts#L52)
 
 Files plugin operation bindings.
 

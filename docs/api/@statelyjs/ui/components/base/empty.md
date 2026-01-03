@@ -6,7 +6,7 @@
 
 > **Empty**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/empty.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/empty.tsx#L5)
+Defined in: [packages/ui/src/components/base/empty.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/empty.tsx#L5)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/empty.tsx:5](https://github.com/Geo
 
 > **EmptyContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/empty.tsx:84](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/empty.tsx#L84)
+Defined in: [packages/ui/src/components/base/empty.tsx:84](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/empty.tsx#L84)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/empty.tsx:84](https://github.com/Ge
 
 > **EmptyDescription**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/empty.tsx:71](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/empty.tsx#L71)
+Defined in: [packages/ui/src/components/base/empty.tsx:71](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/empty.tsx#L71)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/empty.tsx:71](https://github.com/Ge
 
 > **EmptyHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/empty.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/empty.tsx#L18)
+Defined in: [packages/ui/src/components/base/empty.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/empty.tsx#L18)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/empty.tsx:18](https://github.com/Ge
 
 > **EmptyMedia**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/empty.tsx:46](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/empty.tsx#L46)
+Defined in: [packages/ui/src/components/base/empty.tsx:46](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/empty.tsx#L46)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/empty.tsx:46](https://github.com/Ge
 
 > **EmptyTitle**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/empty.tsx:61](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/empty.tsx#L61)
+Defined in: [packages/ui/src/components/base/empty.tsx:61](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/empty.tsx#L61)
 
 #### Parameters
 

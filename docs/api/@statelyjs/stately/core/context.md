@@ -38,7 +38,7 @@ function MyComponent() {
 
 ### LinkExplorerContextValue
 
-Defined in: [packages/stately/src/core/context/link-explore-context.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/context/link-explore-context.tsx#L23)
+Defined in: [packages/stately/src/core/context/link-explore-context.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/context/link-explore-context.tsx#L23)
 
 #### Type Parameters
 
@@ -52,13 +52,13 @@ Defined in: [packages/stately/src/core/context/link-explore-context.tsx:23](http
 
 > **breadcrumbs**: [`LinkEntityProps`](dialogs.md#linkentityprops)\<`Schema`\>[]
 
-Defined in: [packages/stately/src/core/context/link-explore-context.tsx:27](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/context/link-explore-context.tsx#L27)
+Defined in: [packages/stately/src/core/context/link-explore-context.tsx:27](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/context/link-explore-context.tsx#L27)
 
 ##### closeLinkExplorer()
 
 > **closeLinkExplorer**: () => `void`
 
-Defined in: [packages/stately/src/core/context/link-explore-context.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/context/link-explore-context.tsx#L25)
+Defined in: [packages/stately/src/core/context/link-explore-context.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/context/link-explore-context.tsx#L25)
 
 ###### Returns
 
@@ -68,7 +68,7 @@ Defined in: [packages/stately/src/core/context/link-explore-context.tsx:25](http
 
 > **navigateToIndex**: (`index`) => `void`
 
-Defined in: [packages/stately/src/core/context/link-explore-context.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/context/link-explore-context.tsx#L26)
+Defined in: [packages/stately/src/core/context/link-explore-context.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/context/link-explore-context.tsx#L26)
 
 ###### Parameters
 
@@ -84,7 +84,7 @@ Defined in: [packages/stately/src/core/context/link-explore-context.tsx:26](http
 
 > **openLinkExplorer**: (`info`) => `void`
 
-Defined in: [packages/stately/src/core/context/link-explore-context.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/context/link-explore-context.tsx#L24)
+Defined in: [packages/stately/src/core/context/link-explore-context.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/context/link-explore-context.tsx#L24)
 
 ###### Parameters
 
@@ -102,7 +102,7 @@ Defined in: [packages/stately/src/core/context/link-explore-context.tsx:24](http
 
 > **LinkExplorerProvider**(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/context/link-explore-context.tsx:32](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/context/link-explore-context.tsx#L32)
+Defined in: [packages/stately/src/core/context/link-explore-context.tsx:32](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/context/link-explore-context.tsx#L32)
 
 #### Parameters
 
@@ -122,7 +122,7 @@ Defined in: [packages/stately/src/core/context/link-explore-context.tsx:32](http
 
 > **useLinkExplorer**\<`Schema`\>(): [`LinkExplorerContextValue`](#linkexplorercontextvalue)\<`Schema`\>
 
-Defined in: [packages/stately/src/core/context/link-explore-context.tsx:86](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/context/link-explore-context.tsx#L86)
+Defined in: [packages/stately/src/core/context/link-explore-context.tsx:86](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/context/link-explore-context.tsx#L86)
 
 #### Type Parameters
 
@@ -140,7 +140,7 @@ Defined in: [packages/stately/src/core/context/link-explore-context.tsx:86](http
 
 > **ViewLinkControl**\<`Schema`\>(`props`): `Element`
 
-Defined in: [packages/stately/src/core/context/link-explore-context.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/context/link-explore-context.tsx#L7)
+Defined in: [packages/stately/src/core/context/link-explore-context.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/context/link-explore-context.tsx#L7)
 
 #### Type Parameters
 

@@ -6,7 +6,7 @@
 
 > **Alert**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert.tsx#L18)
+Defined in: [packages/ui/src/components/base/alert.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert.tsx#L18)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/alert.tsx:18](https://github.com/Ge
 
 > **AlertAction**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert.tsx:62](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert.tsx#L62)
+Defined in: [packages/ui/src/components/base/alert.tsx:62](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert.tsx#L62)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/alert.tsx:62](https://github.com/Ge
 
 > **AlertDescription**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert.tsx:46](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert.tsx#L46)
+Defined in: [packages/ui/src/components/base/alert.tsx:46](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert.tsx#L46)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/alert.tsx:46](https://github.com/Ge
 
 > **AlertTitle**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert.tsx:33](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert.tsx#L33)
+Defined in: [packages/ui/src/components/base/alert.tsx:33](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert.tsx#L33)
 
 #### Parameters
 

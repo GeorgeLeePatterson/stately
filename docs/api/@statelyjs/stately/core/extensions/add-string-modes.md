@@ -35,7 +35,7 @@ stringModes.extend(state => ({
 
 ### StringEditState
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:97](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L97)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:97](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L97)
 
 State that flows through the stringModes extension.
 
@@ -51,7 +51,7 @@ Transformers receive this state and return a partial to be merged.
 
 > `optional` **component**: `ComponentType`\<[`StringModeComponentProps`](#stringmodecomponentprops)\>
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:102](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L102)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:102](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L102)
 
 Custom component to render (set when your mode is active)
 
@@ -59,7 +59,7 @@ Custom component to render (set when your mode is active)
 
 > **formId**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:78](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L78)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:78](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L78)
 
 ###### Inherited from
 
@@ -69,7 +69,7 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:78](https:
 
 > **modeState**: [`StringModeState`](#stringmodestate)
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:99](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L99)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:99](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L99)
 
 String mode state
 
@@ -77,7 +77,7 @@ String mode state
 
 > **onChange**: (`value`) => `void`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L80)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L80)
 
 ###### Parameters
 
@@ -97,7 +97,7 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:80](https:
 
 > `optional` **placeholder**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L81)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L81)
 
 ###### Inherited from
 
@@ -107,7 +107,7 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:81](https:
 
 > **value**: `string` \| `number` \| `null` \| `undefined`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L79)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L79)
 
 ###### Inherited from
 
@@ -117,7 +117,7 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:79](https:
 
 ### StringMode
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:43](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L43)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:43](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L43)
 
 Configuration for a single input mode option.
 
@@ -127,7 +127,7 @@ Configuration for a single input mode option.
 
 > **description**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:51](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L51)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:51](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L51)
 
 Brief description shown in the dropdown
 
@@ -135,7 +135,7 @@ Brief description shown in the dropdown
 
 > **icon**: `ComponentType`\<`any`\>
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:49](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L49)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:49](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L49)
 
 Icon component shown in the dropdown and trigger
 
@@ -143,7 +143,7 @@ Icon component shown in the dropdown and trigger
 
 > **label**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:47](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L47)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:47](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L47)
 
 Display label in the dropdown
 
@@ -151,7 +151,7 @@ Display label in the dropdown
 
 > **value**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:45](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L45)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:45](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L45)
 
 Unique value for this mode
 
@@ -159,7 +159,7 @@ Unique value for this mode
 
 ### StringModeComponentProps
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:77](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L77)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:77](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L77)
 
 Props passed to custom mode components.
 
@@ -173,13 +173,13 @@ Props passed to custom mode components.
 
 > **formId**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:78](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L78)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:78](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L78)
 
 ##### onChange()
 
 > **onChange**: (`value`) => `void`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L80)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L80)
 
 ###### Parameters
 
@@ -195,19 +195,19 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:80](https:
 
 > `optional` **placeholder**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L81)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L81)
 
 ##### value
 
 > **value**: `string` \| `number` \| `null` \| `undefined`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L79)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L79)
 
 ***
 
 ### StringModeGroup
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:57](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L57)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:57](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L57)
 
 A group of related modes shown together in the dropdown.
 
@@ -217,7 +217,7 @@ A group of related modes shown together in the dropdown.
 
 > **modes**: [`StringMode`](#stringmode)[]
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:61](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L61)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:61](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L61)
 
 Modes in this group
 
@@ -225,7 +225,7 @@ Modes in this group
 
 > **name**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:59](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L59)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:59](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L59)
 
 Group label shown as a section header
 
@@ -233,7 +233,7 @@ Group label shown as a section header
 
 ### StringModeOptions
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:87](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L87)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:87](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L87)
 
 Options passed to the useStringModes hook.
 
@@ -247,7 +247,7 @@ Options passed to the useStringModes hook.
 
 > **formId**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:78](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L78)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:78](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L78)
 
 ###### Inherited from
 
@@ -257,7 +257,7 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:78](https:
 
 > **mode**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:89](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L89)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:89](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L89)
 
 Currently selected mode
 
@@ -265,7 +265,7 @@ Currently selected mode
 
 > **onChange**: (`value`) => `void`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L80)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L80)
 
 ###### Parameters
 
@@ -285,7 +285,7 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:80](https:
 
 > `optional` **placeholder**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L81)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L81)
 
 ###### Inherited from
 
@@ -295,7 +295,7 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:81](https:
 
 > **value**: `string` \| `number` \| `null` \| `undefined`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L79)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L79)
 
 ###### Inherited from
 
@@ -305,7 +305,7 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:79](https:
 
 ### StringModeState
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:67](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L67)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:67](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L67)
 
 State of components currently active mode and current mode groups
 
@@ -315,7 +315,7 @@ State of components currently active mode and current mode groups
 
 > **mode**: `string`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:69](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L69)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:69](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L69)
 
 Currently selected mode
 
@@ -323,7 +323,7 @@ Currently selected mode
 
 > **modeGroups**: [`StringModeGroup`](#stringmodegroup)[]
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:71](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L71)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:71](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L71)
 
 All available mode groups (additive - add yours to this array)
 
@@ -333,7 +333,7 @@ All available mode groups (additive - add yours to this array)
 
 > `const` **CORE\_STRING\_MODE\_GROUP**: `"Text Entry"` = `'Text Entry'`
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:108](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L108)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:108](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L108)
 
 Core string mode group
 
@@ -343,7 +343,7 @@ Core string mode group
 
 > `const` **CORE\_STRING\_MODES**: [`StringModeGroup`](#stringmodegroup)
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:115](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L115)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:115](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L115)
 
 Core string input modes available by default.
 
@@ -355,7 +355,7 @@ These are always included. Plugins add additional modes via `stringModes.extend(
 
 > **stringModes**: [`Extensible`](../../../ui/extension.md#extensible)\<[`StringEditState`](#stringeditstate)\>
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:162](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L162)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:162](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L162)
 
 ***
 
@@ -363,4 +363,4 @@ Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:162](https
 
 > **useStringModes**: [`ExtensibleHook`](../../../ui/extension.md#extensiblehook)\<[`StringModeOptions`](#stringmodeoptions), [`StringEditState`](#stringeditstate)\>
 
-Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:162](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/extensions/add-string-modes.ts#L162)
+Defined in: [packages/stately/src/core/extensions/add-string-modes.ts:162](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/extensions/add-string-modes.ts#L162)

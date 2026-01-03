@@ -6,7 +6,7 @@
 
 > **Theme** = `"dark"` \| `"light"` \| `"system"`
 
-Defined in: [packages/ui/src/theme.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L12)
+Defined in: [packages/ui/src/theme.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L12)
 
 ***
 
@@ -14,7 +14,7 @@ Defined in: [packages/ui/src/theme.tsx:12](https://github.com/GeorgeLeePatterson
 
 > **ThemeProviderProps** = `object`
 
-Defined in: [packages/ui/src/theme.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L14)
+Defined in: [packages/ui/src/theme.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L14)
 
 #### Properties
 
@@ -22,19 +22,19 @@ Defined in: [packages/ui/src/theme.tsx:14](https://github.com/GeorgeLeePatterson
 
 > **children**: `React.ReactNode`
 
-Defined in: [packages/ui/src/theme.tsx:15](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L15)
+Defined in: [packages/ui/src/theme.tsx:15](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L15)
 
 ##### defaultTheme?
 
 > `optional` **defaultTheme**: [`Theme`](#theme)
 
-Defined in: [packages/ui/src/theme.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L16)
+Defined in: [packages/ui/src/theme.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L16)
 
 ##### storageKey?
 
 > `optional` **storageKey**: `string`
 
-Defined in: [packages/ui/src/theme.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L17)
+Defined in: [packages/ui/src/theme.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L17)
 
 ## Variables
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/theme.tsx:17](https://github.com/GeorgeLeePatterson
 
 > `const` **defaultStorageKey**: `"stately-ui-theme"` = `'stately-ui-theme'`
 
-Defined in: [packages/ui/src/theme.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L21)
+Defined in: [packages/ui/src/theme.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L21)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: [packages/ui/src/theme.tsx:21](https://github.com/GeorgeLeePatterson
 
 > `const` **defaultThemeOption**: [`Theme`](#theme) = `'system'`
 
-Defined in: [packages/ui/src/theme.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L20)
+Defined in: [packages/ui/src/theme.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L20)
 
 ## Functions
 
@@ -58,7 +58,7 @@ Defined in: [packages/ui/src/theme.tsx:20](https://github.com/GeorgeLeePatterson
 
 > **ThemeProvider**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/theme.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L23)
+Defined in: [packages/ui/src/theme.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L23)
 
 #### Parameters
 
@@ -76,7 +76,7 @@ Defined in: [packages/ui/src/theme.tsx:23](https://github.com/GeorgeLeePatterson
 
 > **ThemeToggle**(`props`): `Element`
 
-Defined in: [packages/ui/src/theme.tsx:73](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L73)
+Defined in: [packages/ui/src/theme.tsx:73](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L73)
 
 #### Parameters
 
@@ -94,7 +94,7 @@ Defined in: [packages/ui/src/theme.tsx:73](https://github.com/GeorgeLeePatterson
 
 > **useTheme**(): `ThemeProviderState`
 
-Defined in: [packages/ui/src/theme.tsx:65](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/theme.tsx#L65)
+Defined in: [packages/ui/src/theme.tsx:65](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/theme.tsx#L65)
 
 #### Returns
 

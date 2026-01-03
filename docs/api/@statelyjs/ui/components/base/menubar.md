@@ -6,7 +6,7 @@
 
 > **Menubar**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L25)
+Defined in: [packages/ui/src/components/base/menubar.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L25)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:25](https://github.com/
 
 > **MenubarCheckboxItem**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:103](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L103)
+Defined in: [packages/ui/src/components/base/menubar.tsx:103](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L103)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:103](https://github.com
 
 > **MenubarContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:67](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L67)
+Defined in: [packages/ui/src/components/base/menubar.tsx:67](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L67)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:67](https://github.com/
 
 > **MenubarGroup**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:39](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L39)
+Defined in: [packages/ui/src/components/base/menubar.tsx:39](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L39)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:39](https://github.com/
 
 > **MenubarItem**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:86](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L86)
+Defined in: [packages/ui/src/components/base/menubar.tsx:86](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L86)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:86](https://github.com/
 
 > **MenubarLabel**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:161](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L161)
+Defined in: [packages/ui/src/components/base/menubar.tsx:161](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L161)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:161](https://github.com
 
 > **MenubarMenu**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:35](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L35)
+Defined in: [packages/ui/src/components/base/menubar.tsx:35](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L35)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:35](https://github.com/
 
 > **MenubarPortal**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:45](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L45)
+Defined in: [packages/ui/src/components/base/menubar.tsx:45](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L45)
 
 #### Parameters
 
@@ -150,7 +150,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:45](https://github.com/
 
 > **MenubarRadioGroup**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:130](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L130)
+Defined in: [packages/ui/src/components/base/menubar.tsx:130](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L130)
 
 #### Parameters
 
@@ -168,7 +168,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:130](https://github.com
 
 > **MenubarRadioItem**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:136](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L136)
+Defined in: [packages/ui/src/components/base/menubar.tsx:136](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L136)
 
 #### Parameters
 
@@ -186,7 +186,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:136](https://github.com
 
 > **MenubarSeparator**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:176](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L176)
+Defined in: [packages/ui/src/components/base/menubar.tsx:176](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L176)
 
 #### Parameters
 
@@ -204,7 +204,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:176](https://github.com
 
 > **MenubarShortcut**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:189](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L189)
+Defined in: [packages/ui/src/components/base/menubar.tsx:189](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L189)
 
 #### Parameters
 
@@ -222,7 +222,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:189](https://github.com
 
 > **MenubarSub**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:202](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L202)
+Defined in: [packages/ui/src/components/base/menubar.tsx:202](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L202)
 
 #### Parameters
 
@@ -240,7 +240,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:202](https://github.com
 
 > **MenubarSubContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:225](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L225)
+Defined in: [packages/ui/src/components/base/menubar.tsx:225](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L225)
 
 #### Parameters
 
@@ -258,7 +258,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:225](https://github.com
 
 > **MenubarSubTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:208](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L208)
+Defined in: [packages/ui/src/components/base/menubar.tsx:208](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L208)
 
 #### Parameters
 
@@ -276,7 +276,7 @@ Defined in: [packages/ui/src/components/base/menubar.tsx:208](https://github.com
 
 > **MenubarTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/menubar.tsx:51](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/menubar.tsx#L51)
+Defined in: [packages/ui/src/components/base/menubar.tsx:51](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/menubar.tsx#L51)
 
 #### Parameters
 

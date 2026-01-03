@@ -40,7 +40,7 @@ const baseRuntime = createStatelyUi<MySchemas, [MyPlugin]>({
 
 ### RouteOption
 
-Defined in: [packages/ui/src/runtime.ts:103](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L103)
+Defined in: [packages/ui/src/runtime.ts:103](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L103)
 
 Route and navigation option for an individual route.
 
@@ -52,31 +52,31 @@ Primarily represented in the application's navigation but may be used elsewhere.
 
 > `optional` **badge**: `ComponentType`\<`Omit`\<[`RouteOption`](#routeoption), `"badge"`\>\> \| `null`
 
-Defined in: [packages/ui/src/runtime.ts:107](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L107)
+Defined in: [packages/ui/src/runtime.ts:107](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L107)
 
 ##### icon?
 
 > `optional` **icon**: `ComponentType`\<`any`\>
 
-Defined in: [packages/ui/src/runtime.ts:104](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L104)
+Defined in: [packages/ui/src/runtime.ts:104](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L104)
 
 ##### label
 
 > **label**: `string`
 
-Defined in: [packages/ui/src/runtime.ts:105](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L105)
+Defined in: [packages/ui/src/runtime.ts:105](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L105)
 
 ##### to
 
 > **to**: `string`
 
-Defined in: [packages/ui/src/runtime.ts:106](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L106)
+Defined in: [packages/ui/src/runtime.ts:106](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L106)
 
 ***
 
 ### StatelyUiBuilder
 
-Defined in: [packages/ui/src/runtime.ts:216](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L216)
+Defined in: [packages/ui/src/runtime.ts:216](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L216)
 
 Builder interface for constructing a StatelyUi runtime.
 
@@ -107,7 +107,7 @@ Tuple of plugin types that will be installed
 
 > `readonly` **client**: `Client`\<`Schema`\[`"config"`\]\[`"paths"`\]\>
 
-Defined in: [packages/ui/src/runtime.ts:155](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L155)
+Defined in: [packages/ui/src/runtime.ts:155](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L155)
 
 An openapi-fetch client for making API calls
 
@@ -119,7 +119,7 @@ An openapi-fetch client for making API calls
 
 > `readonly` **options**: [`UiOptions`](#uioptions)
 
-Defined in: [packages/ui/src/runtime.ts:157](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L157)
+Defined in: [packages/ui/src/runtime.ts:157](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L157)
 
 UI configuration options
 
@@ -131,7 +131,7 @@ UI configuration options
 
 > **plugins**: [`MergeUiAugments`](plugin.md#mergeuiaugments)\<`Schema`, `Augments`\>
 
-Defined in: [packages/ui/src/runtime.ts:178](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L178)
+Defined in: [packages/ui/src/runtime.ts:178](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L178)
 
 Installed plugins accessible by name
 
@@ -143,7 +143,7 @@ Installed plugins accessible by name
 
 > **registry**: [`UiRegistry`](registry.md#uiregistry)
 
-Defined in: [packages/ui/src/runtime.ts:174](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L174)
+Defined in: [packages/ui/src/runtime.ts:174](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L174)
 
 Component and transformer registry for dynamic rendering
 
@@ -155,7 +155,7 @@ Component and transformer registry for dynamic rendering
 
 > `readonly` **schema**: [`Stately`](../schema/stately.md#stately)\<`Schema`\>
 
-Defined in: [packages/ui/src/runtime.ts:153](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L153)
+Defined in: [packages/ui/src/runtime.ts:153](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L153)
 
 The Stately schema instance containing type definitions
 
@@ -167,7 +167,7 @@ The Stately schema instance containing type definitions
 
 > **utils**: [`UiUtils`](utils.md#uiutils)
 
-Defined in: [packages/ui/src/runtime.ts:176](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L176)
+Defined in: [packages/ui/src/runtime.ts:176](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L176)
 
 Utility functions available throughout the application
 
@@ -181,7 +181,7 @@ Utility functions available throughout the application
 
 > **withPlugin**(`plugin`): [`StatelyUiBuilder`](#statelyuibuilder)\<`Schema`, `Augments`\>
 
-Defined in: [packages/ui/src/runtime.ts:226](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L226)
+Defined in: [packages/ui/src/runtime.ts:226](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L226)
 
 Install a plugin into the runtime.
 
@@ -203,7 +203,7 @@ Builder with the plugin installed
 
 ### StatelyUiConfiguration
 
-Defined in: [packages/ui/src/runtime.ts:151](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L151)
+Defined in: [packages/ui/src/runtime.ts:151](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L151)
 
 Core configuration required to create a StatelyUi runtime.
 
@@ -221,7 +221,7 @@ The application's StatelySchemas type
 
 > **client**: `Client`\<`Schema`\[`"config"`\]\[`"paths"`\]\>
 
-Defined in: [packages/ui/src/runtime.ts:155](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L155)
+Defined in: [packages/ui/src/runtime.ts:155](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L155)
 
 An openapi-fetch client for making API calls
 
@@ -229,7 +229,7 @@ An openapi-fetch client for making API calls
 
 > **options**: [`UiOptions`](#uioptions)
 
-Defined in: [packages/ui/src/runtime.ts:157](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L157)
+Defined in: [packages/ui/src/runtime.ts:157](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L157)
 
 UI configuration options
 
@@ -237,7 +237,7 @@ UI configuration options
 
 > **schema**: [`Stately`](../schema/stately.md#stately)\<`Schema`\>
 
-Defined in: [packages/ui/src/runtime.ts:153](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L153)
+Defined in: [packages/ui/src/runtime.ts:153](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L153)
 
 The Stately schema instance containing type definitions
 
@@ -245,7 +245,7 @@ The Stately schema instance containing type definitions
 
 ### StatelyUiRuntime
 
-Defined in: [packages/ui/src/runtime.ts:201](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L201)
+Defined in: [packages/ui/src/runtime.ts:201](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L201)
 
 The complete StatelyUi runtime.
 
@@ -292,7 +292,7 @@ Tuple of plugin types that are installed
 
 > `readonly` **client**: `Client`\<`Schema`\[`"config"`\]\[`"paths"`\]\>
 
-Defined in: [packages/ui/src/runtime.ts:155](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L155)
+Defined in: [packages/ui/src/runtime.ts:155](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L155)
 
 An openapi-fetch client for making API calls
 
@@ -304,7 +304,7 @@ An openapi-fetch client for making API calls
 
 > `readonly` **options**: [`UiOptions`](#uioptions)
 
-Defined in: [packages/ui/src/runtime.ts:157](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L157)
+Defined in: [packages/ui/src/runtime.ts:157](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L157)
 
 UI configuration options
 
@@ -316,7 +316,7 @@ UI configuration options
 
 > **plugins**: [`MergeUiAugments`](plugin.md#mergeuiaugments)\<`Schema`, `Augments`\>
 
-Defined in: [packages/ui/src/runtime.ts:178](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L178)
+Defined in: [packages/ui/src/runtime.ts:178](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L178)
 
 Installed plugins accessible by name
 
@@ -328,7 +328,7 @@ Installed plugins accessible by name
 
 > **registry**: [`UiRegistry`](registry.md#uiregistry)
 
-Defined in: [packages/ui/src/runtime.ts:174](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L174)
+Defined in: [packages/ui/src/runtime.ts:174](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L174)
 
 Component and transformer registry for dynamic rendering
 
@@ -340,7 +340,7 @@ Component and transformer registry for dynamic rendering
 
 > `readonly` **schema**: [`Stately`](../schema/stately.md#stately)\<`Schema`\>
 
-Defined in: [packages/ui/src/runtime.ts:153](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L153)
+Defined in: [packages/ui/src/runtime.ts:153](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L153)
 
 The Stately schema instance containing type definitions
 
@@ -352,7 +352,7 @@ The Stately schema instance containing type definitions
 
 > **utils**: [`UiUtils`](utils.md#uiutils)
 
-Defined in: [packages/ui/src/runtime.ts:176](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L176)
+Defined in: [packages/ui/src/runtime.ts:176](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L176)
 
 Utility functions available throughout the application
 
@@ -364,7 +364,7 @@ Utility functions available throughout the application
 
 ### UiNavigationOptions
 
-Defined in: [packages/ui/src/runtime.ts:116](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L116)
+Defined in: [packages/ui/src/runtime.ts:116](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L116)
 
 Navigation configuration for the application.
 
@@ -377,7 +377,7 @@ and allows overriding plugin-provided routes.
 
 > `optional` **basePath**: `string`
 
-Defined in: [packages/ui/src/runtime.ts:118](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L118)
+Defined in: [packages/ui/src/runtime.ts:118](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L118)
 
 Base path prepended to all navigation links
 
@@ -385,7 +385,7 @@ Base path prepended to all navigation links
 
 > `optional` **routeOverrides**: `Record`\<`string`, [`RouteOption`](#routeoption)\>
 
-Defined in: [packages/ui/src/runtime.ts:138](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L138)
+Defined in: [packages/ui/src/runtime.ts:138](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L138)
 
 Override specific route configurations by path.
 
@@ -408,7 +408,7 @@ routeOverrides: {
 
 > `optional` **routes**: `object` & [`RouteOption`](#routeoption)
 
-Defined in: [packages/ui/src/runtime.ts:120](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L120)
+Defined in: [packages/ui/src/runtime.ts:120](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L120)
 
 Primary navigation routes displayed in the sidebar
 
@@ -422,7 +422,7 @@ Primary navigation routes displayed in the sidebar
 
 ### UiOptions
 
-Defined in: [packages/ui/src/runtime.ts:83](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L83)
+Defined in: [packages/ui/src/runtime.ts:83](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L83)
 
 App-wide configuration options for StatelyUi.
 
@@ -463,7 +463,7 @@ const options: UiOptions = {
 
 > `optional` **api**: `object`
 
-Defined in: [packages/ui/src/runtime.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L85)
+Defined in: [packages/ui/src/runtime.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L85)
 
 API configuration options
 
@@ -477,7 +477,7 @@ Path prefix prepended to all API calls
 
 > `optional` **navigation**: [`UiNavigationOptions`](#uinavigationoptions)
 
-Defined in: [packages/ui/src/runtime.ts:90](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L90)
+Defined in: [packages/ui/src/runtime.ts:90](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L90)
 
 Navigation configuration for sidebar and routing
 
@@ -485,7 +485,7 @@ Navigation configuration for sidebar and routing
 
 > `optional` **theme**: `object` & `Partial`\<`Omit`\<[`ThemeProviderProps`](theme.md#themeproviderprops), `"children"`\>\>
 
-Defined in: [packages/ui/src/runtime.ts:92](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L92)
+Defined in: [packages/ui/src/runtime.ts:92](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L92)
 
 Theme configuration for light/dark mode
 
@@ -501,7 +501,7 @@ Set to true to disable the theme provider
 
 ### UiPluginRuntime
 
-Defined in: [packages/ui/src/runtime.ts:169](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L169)
+Defined in: [packages/ui/src/runtime.ts:169](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L169)
 
 Plugin-provided runtime additions.
 
@@ -532,7 +532,7 @@ Tuple of plugin types that are installed
 
 > **plugins**: [`MergeUiAugments`](plugin.md#mergeuiaugments)\<`Schema`, `Augments`\>
 
-Defined in: [packages/ui/src/runtime.ts:178](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L178)
+Defined in: [packages/ui/src/runtime.ts:178](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L178)
 
 Installed plugins accessible by name
 
@@ -540,7 +540,7 @@ Installed plugins accessible by name
 
 > **registry**: [`UiRegistry`](registry.md#uiregistry)
 
-Defined in: [packages/ui/src/runtime.ts:174](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L174)
+Defined in: [packages/ui/src/runtime.ts:174](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L174)
 
 Component and transformer registry for dynamic rendering
 
@@ -548,7 +548,7 @@ Component and transformer registry for dynamic rendering
 
 > **utils**: [`UiUtils`](utils.md#uiutils)
 
-Defined in: [packages/ui/src/runtime.ts:176](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L176)
+Defined in: [packages/ui/src/runtime.ts:176](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L176)
 
 Utility functions available throughout the application
 
@@ -558,7 +558,7 @@ Utility functions available throughout the application
 
 > `const` **defaultUiOptions**: [`UiOptions`](#uioptions)
 
-Defined in: [packages/ui/src/runtime.ts:144](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L144)
+Defined in: [packages/ui/src/runtime.ts:144](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L144)
 
 Default UI options applied when not specified.
 
@@ -568,7 +568,7 @@ Default UI options applied when not specified.
 
 > **createStatelyUi**\<`Schema`, `Augments`\>(`config`): [`StatelyUiBuilder`](#statelyuibuilder)\<`Schema`, `Augments`\>
 
-Defined in: [packages/ui/src/runtime.ts:267](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/runtime.ts#L267)
+Defined in: [packages/ui/src/runtime.ts:267](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/runtime.ts#L267)
 
 Create a new base StatelyUi runtime builder (without core plugin).
 

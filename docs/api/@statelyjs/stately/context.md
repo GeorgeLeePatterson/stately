@@ -44,7 +44,7 @@ const useMyStatelyUi = createUseStatelyUi<MySchemas, [MyPlugin]>();
 
 > **StatelyProviderProps**\<`Schema`, `Augments`\> = `PropsWithChildren`\<\{ `runtime`: `StatelyUiRuntime`\<`Schema`, `Augments`\>; \}\>
 
-Defined in: [packages/stately/src/context.tsx:65](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/context.tsx#L65)
+Defined in: [packages/stately/src/context.tsx:65](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/context.tsx#L65)
 
 Props for the Stately provider component.
 
@@ -68,7 +68,7 @@ Tuple of installed plugin types
 
 > `const` **StatelyUiProvider**: (`__namedParameters`) => `Element`
 
-Defined in: [packages/stately/src/context.tsx:143](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/context.tsx#L143)
+Defined in: [packages/stately/src/context.tsx:143](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/context.tsx#L143)
 
 Default untyped provider for quick prototyping.
 
@@ -91,7 +91,7 @@ use `StatelyProvider` from `@statelyjs/stately`.
 
 > **createStatelyUiProvider**\<`Schema`, `Augments`\>(`Providers?`, `themeOptions?`): (`__namedParameters`) => `Element`
 
-Defined in: [packages/stately/src/context.tsx:111](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/context.tsx#L111)
+Defined in: [packages/stately/src/context.tsx:111](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/context.tsx#L111)
 
 Create a typed Stately provider component (low-level API).
 
@@ -173,7 +173,7 @@ const MyProvider = createStatelyUiProvider<MySchemas, [MyPlugin]>(
 
 > **createUseStatelyUi**\<`Schema`, `Augments`\>(): () => `StatelyUiRuntime`\<`Schema`, `Augments`\>
 
-Defined in: [packages/stately/src/context.tsx:166](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/context.tsx#L166)
+Defined in: [packages/stately/src/context.tsx:166](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/context.tsx#L166)
 
 Create a typed hook for accessing Stately runtime (low-level API).
 
@@ -222,7 +222,7 @@ function MyPluginComponent() {
 
 > **useBaseStatelyUi**\<`Schema`, `Augments`\>(): `StatelyUiRuntime`\<`Schema`, `Augments`\>
 
-Defined in: [packages/stately/src/context.tsx:191](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/context.tsx#L191)
+Defined in: [packages/stately/src/context.tsx:191](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/context.tsx#L191)
 
 Access the Stately runtime without plugin type assumptions.
 

@@ -4,7 +4,7 @@
 
 ### BaseNode
 
-Defined in: [nodes.ts:30](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L30)
+Defined in: [nodes.ts:30](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L30)
 
 Base interface for all schema nodes.
 
@@ -32,7 +32,7 @@ node type interfaces.
 
 > `optional` **description**: `string`
 
-Defined in: [nodes.ts:34](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L34)
+Defined in: [nodes.ts:34](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L34)
 
 Optional description from the OpenAPI schema.
 
@@ -40,7 +40,7 @@ Optional description from the OpenAPI schema.
 
 > **nodeType**: `string`
 
-Defined in: [nodes.ts:32](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L32)
+Defined in: [nodes.ts:32](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L32)
 
 Discriminator identifying the node type (e.g., 'object', 'string', 'array').
 
@@ -48,7 +48,7 @@ Discriminator identifying the node type (e.g., 'object', 'string', 'array').
 
 ### UnknownNode
 
-Defined in: [nodes.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L41)
+Defined in: [nodes.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L41)
 
 Fallback node for schemas that couldn't be parsed.
 Used when codegen encounters an unsupported or malformed schema.
@@ -63,7 +63,7 @@ Used when codegen encounters an unsupported or malformed schema.
 
 > `optional` **description**: `string`
 
-Defined in: [nodes.ts:43](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L43)
+Defined in: [nodes.ts:43](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L43)
 
 Optional description from the OpenAPI schema.
 
@@ -75,7 +75,7 @@ Optional description from the OpenAPI schema.
 
 > **nodeType**: `"unknown"`
 
-Defined in: [nodes.ts:42](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L42)
+Defined in: [nodes.ts:42](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L42)
 
 Discriminator identifying the node type (e.g., 'object', 'string', 'array').
 
@@ -89,7 +89,7 @@ Discriminator identifying the node type (e.g., 'object', 'string', 'array').
 
 > **NodeInformation**\<`Nodes`\> = `object`
 
-Defined in: [nodes.ts:69](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L69)
+Defined in: [nodes.ts:69](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L69)
 
 Derived type information from a node map.
 Provides convenient access to node types, unions, and discriminators.
@@ -108,7 +108,7 @@ The node map to derive information from
 
 > **AnyNode**: [`NodeValuesWithUnknown`](#nodevalueswithunknown)\<`Nodes`\>
 
-Defined in: [nodes.ts:73](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L73)
+Defined in: [nodes.ts:73](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L73)
 
 Union of all node types (for discriminated union patterns).
 
@@ -116,7 +116,7 @@ Union of all node types (for discriminated union patterns).
 
 > **NodeNames**: [`LiteralKeys`](helpers.md#literalkeys)\<`Nodes` & `object`\>
 
-Defined in: [nodes.ts:75](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L75)
+Defined in: [nodes.ts:75](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L75)
 
 Union of all node name strings.
 
@@ -124,7 +124,7 @@ Union of all node name strings.
 
 > **Nodes**: `Nodes` & `object`
 
-Defined in: [nodes.ts:71](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L71)
+Defined in: [nodes.ts:71](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L71)
 
 The node map with UnknownNode included.
 
@@ -138,7 +138,7 @@ The node map with UnknownNode included.
 
 > **NodeTypes**: [`NodeValuesWithUnknown`](#nodevalueswithunknown)\<`Nodes`\> *extends* `object` ? `Extract`\<`T`, `string`\> : `string`
 
-Defined in: [nodes.ts:77](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L77)
+Defined in: [nodes.ts:77](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L77)
 
 Union of all nodeType discriminator values.
 
@@ -148,7 +148,7 @@ Union of all nodeType discriminator values.
 
 > **NodeMap** = `Record`\<`string`, [`BaseNode`](#basenode)\>
 
-Defined in: [nodes.ts:47](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L47)
+Defined in: [nodes.ts:47](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L47)
 
 A map of node names to their node definitions.
 
@@ -158,7 +158,7 @@ A map of node names to their node definitions.
 
 > **NodeTypeUnion**\<`N`\> = [`NodeValues`](#nodevalues)\<`N`\> *extends* `object` ? `Extract`\<`T`, `string`\> : `string`
 
-Defined in: [nodes.ts:59](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L59)
+Defined in: [nodes.ts:59](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L59)
 
 Extracts the union of nodeType strings from a node map.
 
@@ -174,7 +174,7 @@ Extracts the union of nodeType strings from a node map.
 
 > **NodeValues**\<`N`\> = \[[`LiteralKeys`](helpers.md#literalkeys)\<`N`\>\] *extends* \[`never`\] ? [`UnknownNode`](#unknownnode) : `N`\[[`LiteralKeys`](helpers.md#literalkeys)\<`N`\>\]
 
-Defined in: [nodes.ts:53](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L53)
+Defined in: [nodes.ts:53](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L53)
 
 Extracts the union of node values from a node map.
 Returns `UnknownNode` if the map has no literal keys.
@@ -191,7 +191,7 @@ Returns `UnknownNode` if the map has no literal keys.
 
 > **NodeValuesWithUnknown**\<`N`\> = [`NodeValues`](#nodevalues)\<`N` & `object`\>
 
-Defined in: [nodes.ts:56](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L56)
+Defined in: [nodes.ts:56](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L56)
 
 Node values union that always includes UnknownNode.
 
@@ -207,7 +207,7 @@ Node values union that always includes UnknownNode.
 
 > **TUnknownNodeType** = *typeof* [`UnknownNodeType`](#unknownnodetype)
 
-Defined in: [nodes.ts:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L14)
+Defined in: [nodes.ts:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L14)
 
 Type alias for the unknown node type string literal.
 
@@ -217,6 +217,6 @@ Type alias for the unknown node type string literal.
 
 > `const` **UnknownNodeType**: `"unknown"` = `'unknown'`
 
-Defined in: [nodes.ts:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/nodes.ts#L11)
+Defined in: [nodes.ts:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/nodes.ts#L11)
 
 Constant for the unknown node type discriminator.

@@ -53,7 +53,7 @@ schema.plugins.core.sortEntityProperties(...);
 
 ### CreateStatelyOptions
 
-Defined in: [stately.ts:145](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L145)
+Defined in: [stately.ts:145](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L145)
 
 Options for creating a Stately schema runtime.
 
@@ -69,7 +69,7 @@ Options for creating a Stately schema runtime.
 
 > `optional` **runtimeSchemas**: [`RuntimeSchemaLoader`](#runtimeschemaloader)\<`S`\>
 
-Defined in: [stately.ts:159](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L159)
+Defined in: [stately.ts:159](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L159)
 
 Optional loader for code-split runtime schemas.
 
@@ -88,7 +88,7 @@ const schema = createStately<MySchemas>(openapiDoc, PARSED_SCHEMAS, {
 
 ### Stately
 
-Defined in: [stately.ts:103](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L103)
+Defined in: [stately.ts:103](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L103)
 
 The Stately schema runtime.
 
@@ -113,7 +113,7 @@ The application's schema type
 
 > **data**: `S`\[`"data"`\]
 
-Defined in: [stately.ts:112](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L112)
+Defined in: [stately.ts:112](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L112)
 
 Plugin-contributed data (entity caches, computed values, etc.)
 
@@ -121,7 +121,7 @@ Plugin-contributed data (entity caches, computed values, etc.)
 
 > `optional` **loadRuntimeSchemas**: [`RuntimeSchemaLoader`](#runtimeschemaloader)\<`S`\>
 
-Defined in: [stately.ts:121](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L121)
+Defined in: [stately.ts:121](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L121)
 
 Optional loader for code-split runtime schemas.
 When provided, RecursiveRef nodes can resolve schemas that were split out during codegen.
@@ -130,7 +130,7 @@ When provided, RecursiveRef nodes can resolve schemas that were split out during
 
 > **plugins**: `S`\[`"utils"`\]
 
-Defined in: [stately.ts:114](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L114)
+Defined in: [stately.ts:114](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L114)
 
 Plugin-contributed utilities and validation hooks
 
@@ -138,7 +138,7 @@ Plugin-contributed utilities and validation hooks
 
 > **schema**: `object`
 
-Defined in: [stately.ts:105](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L105)
+Defined in: [stately.ts:105](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L105)
 
 The schema document and parsed nodes
 
@@ -158,7 +158,7 @@ Pre-parsed schema nodes from codegen
 
 > **validate**: (`args`) => [`ValidationResult`](validation.md#validationresult)
 
-Defined in: [stately.ts:116](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L116)
+Defined in: [stately.ts:116](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L116)
 
 Validate data against a schema node
 
@@ -176,7 +176,7 @@ Validate data against a schema node
 
 ### StatelyBuilder
 
-Defined in: [stately.ts:129](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L129)
+Defined in: [stately.ts:129](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L129)
 
 Builder interface for chaining plugin additions.
 
@@ -198,7 +198,7 @@ Extends `Stately` with `withPlugin()` for fluent plugin composition.
 
 > **data**: `S`\[`"data"`\]
 
-Defined in: [stately.ts:112](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L112)
+Defined in: [stately.ts:112](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L112)
 
 Plugin-contributed data (entity caches, computed values, etc.)
 
@@ -210,7 +210,7 @@ Plugin-contributed data (entity caches, computed values, etc.)
 
 > `optional` **loadRuntimeSchemas**: [`RuntimeSchemaLoader`](#runtimeschemaloader)\<`S`\>
 
-Defined in: [stately.ts:121](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L121)
+Defined in: [stately.ts:121](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L121)
 
 Optional loader for code-split runtime schemas.
 When provided, RecursiveRef nodes can resolve schemas that were split out during codegen.
@@ -223,7 +223,7 @@ When provided, RecursiveRef nodes can resolve schemas that were split out during
 
 > **plugins**: `S`\[`"utils"`\]
 
-Defined in: [stately.ts:114](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L114)
+Defined in: [stately.ts:114](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L114)
 
 Plugin-contributed utilities and validation hooks
 
@@ -235,7 +235,7 @@ Plugin-contributed utilities and validation hooks
 
 > **schema**: `object`
 
-Defined in: [stately.ts:105](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L105)
+Defined in: [stately.ts:105](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L105)
 
 The schema document and parsed nodes
 
@@ -259,7 +259,7 @@ Pre-parsed schema nodes from codegen
 
 > **validate**: (`args`) => [`ValidationResult`](validation.md#validationresult)
 
-Defined in: [stately.ts:116](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L116)
+Defined in: [stately.ts:116](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L116)
 
 Validate data against a schema node
 
@@ -283,7 +283,7 @@ Validate data against a schema node
 
 > **withPlugin**(`plugin`): [`StatelyBuilder`](#statelybuilder)\<`S`\>
 
-Defined in: [stately.ts:139](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L139)
+Defined in: [stately.ts:139](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L139)
 
 Add a plugin to the schema runtime.
 
@@ -310,7 +310,7 @@ A new builder with the plugin applied
 
 > **PluginFactory**\<`S`\> = (`runtime`) => [`Stately`](#stately)\<`S`\>
 
-Defined in: [stately.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L81)
+Defined in: [stately.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L81)
 
 Factory function for creating schema plugins.
 
@@ -352,7 +352,7 @@ const myPlugin: PluginFactory<MySchemas> = (runtime) => ({
 
 > **RuntimeSchemaLoader**\<`S`\> = () => `Promise`\<`Partial`\<`S`\[`"config"`\]\[`"nodes"`\]\>\>
 
-Defined in: [stately.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L91)
+Defined in: [stately.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L91)
 
 Loader function for code-split runtime schemas.
 
@@ -377,7 +377,7 @@ A promise resolving to the additional schema nodes
 
 > **createStately**\<`S`\>(`openapi`, `generatedNodes`, `options?`): [`StatelyBuilder`](#statelybuilder)\<`S`\>
 
-Defined in: [stately.ts:203](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/stately.ts#L203)
+Defined in: [stately.ts:203](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/stately.ts#L203)
 
 Create a Stately schema runtime.
 

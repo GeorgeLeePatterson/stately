@@ -10,7 +10,7 @@ registered when you add the arrow plugin to your schema.
 
 ### ArrowConnectionNode
 
-Defined in: [arrow/src/schema.ts:56](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/schema.ts#L56)
+Defined in: [arrow/src/schema.ts:56](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/schema.ts#L56)
 
 Schema node for Arrow data connections.
 
@@ -53,7 +53,7 @@ Optional description from the OpenAPI schema.
 
 > **nodeType**: `"arrowConnection"`
 
-Defined in: [arrow/src/schema.ts:57](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/schema.ts#L57)
+Defined in: [arrow/src/schema.ts:57](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/schema.ts#L57)
 
 Discriminator identifying the node type (e.g., 'object', 'string', 'array').
 
@@ -67,7 +67,7 @@ Discriminator identifying the node type (e.g., 'object', 'string', 'array').
 
 > **ArrowData** = [`DefineData`](../schema/plugin.md#definedata)
 
-Defined in: [arrow/src/schema.ts:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/schema.ts#L26)
+Defined in: [arrow/src/schema.ts:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/schema.ts#L26)
 
 Runtime data for the arrow plugin.
 
@@ -79,7 +79,7 @@ Currently empty - no runtime caches or registries are needed.
 
 > **ArrowNodeMap** = `object`
 
-Defined in: [arrow/src/schema.ts:65](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/schema.ts#L65)
+Defined in: [arrow/src/schema.ts:65](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/schema.ts#L65)
 
 Node map for arrow plugin augmentation.
 
@@ -91,7 +91,7 @@ Maps node type identifiers to their node definitions for the plugin system.
 
 > **arrowConnection**: [`ArrowConnectionNode`](#arrowconnectionnode)
 
-Defined in: [arrow/src/schema.ts:65](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/schema.ts#L65)
+Defined in: [arrow/src/schema.ts:65](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/schema.ts#L65)
 
 ***
 
@@ -99,7 +99,7 @@ Defined in: [arrow/src/schema.ts:65](https://github.com/GeorgeLeePatterson/state
 
 > **ArrowTypes** = [`DefineTypes`](../schema/plugin.md#definetypes)\<`components`\[`"schemas"`\]\>
 
-Defined in: [arrow/src/schema.ts:19](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/schema.ts#L19)
+Defined in: [arrow/src/schema.ts:19](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/schema.ts#L19)
 
 Type definitions provided by the arrow plugin.
 
@@ -111,7 +111,7 @@ Includes all component schemas from the Arrow API specification.
 
 > **TArrowNodeType** = *typeof* [`ArrowNodeType`](#arrownodetype)\[keyof *typeof* [`ArrowNodeType`](#arrownodetype)\]
 
-Defined in: [arrow/src/schema.ts:37](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/schema.ts#L37)
+Defined in: [arrow/src/schema.ts:37](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/schema.ts#L37)
 
 Union type of all arrow plugin node types
 
@@ -121,7 +121,7 @@ Union type of all arrow plugin node types
 
 > `const` **ArrowNodeType**: `object`
 
-Defined in: [arrow/src/schema.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/schema.ts#L31)
+Defined in: [arrow/src/schema.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/schema.ts#L31)
 
 Node type identifiers for the arrow plugin.
 

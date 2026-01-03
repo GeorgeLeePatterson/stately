@@ -54,7 +54,7 @@ function MyEditor() {
 
 ### CodeMirrorExtras
 
-Defined in: [packages/stately/src/features/codemirror/plugin.tsx:110](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/features/codemirror/plugin.tsx#L110)
+Defined in: [packages/stately/src/features/codemirror/plugin.tsx:110](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/features/codemirror/plugin.tsx#L110)
 
 Extras provided by the CodeMirror plugin.
 
@@ -64,13 +64,13 @@ Extras provided by the CodeMirror plugin.
 
 > **ToggledEditor**: `ComponentType`\<`CodemirrorEditorToggleProps`\>
 
-Defined in: [packages/stately/src/features/codemirror/plugin.tsx:111](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/features/codemirror/plugin.tsx#L111)
+Defined in: [packages/stately/src/features/codemirror/plugin.tsx:111](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/features/codemirror/plugin.tsx#L111)
 
 ***
 
 ### CodemirrorPluginOptions
 
-Defined in: [packages/stately/src/features/codemirror/plugin.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/features/codemirror/plugin.tsx#L80)
+Defined in: [packages/stately/src/features/codemirror/plugin.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/features/codemirror/plugin.tsx#L80)
 
 Configuration options for the CodeMirror plugin.
 
@@ -80,7 +80,7 @@ Configuration options for the CodeMirror plugin.
 
 > `optional` **codemirrorProps**: `Partial`\<`CodemirrorEditorBaseProps`\>
 
-Defined in: [packages/stately/src/features/codemirror/plugin.tsx:84](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/features/codemirror/plugin.tsx#L84)
+Defined in: [packages/stately/src/features/codemirror/plugin.tsx:84](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/features/codemirror/plugin.tsx#L84)
 
 Override props for the CodeMirror editor component.
 
@@ -88,7 +88,7 @@ Override props for the CodeMirror editor component.
 
 > `optional` **editorWrapperProps**: [`EditorWrapperProps`](../../../ui/components.md#editorwrapperprops)
 
-Defined in: [packages/stately/src/features/codemirror/plugin.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/features/codemirror/plugin.tsx#L89)
+Defined in: [packages/stately/src/features/codemirror/plugin.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/features/codemirror/plugin.tsx#L89)
 
 Provide props for the editor wrapping component.
 
@@ -96,7 +96,7 @@ Provide props for the editor wrapping component.
 
 > `optional` **mode**: `Partial`\<[`StringMode`](../../core/extensions/add-string-modes.md#stringmode)\>
 
-Defined in: [packages/stately/src/features/codemirror/plugin.tsx:96](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/features/codemirror/plugin.tsx#L96)
+Defined in: [packages/stately/src/features/codemirror/plugin.tsx:96](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/features/codemirror/plugin.tsx#L96)
 
 Customize or override how the mode appears in the string field dropdown.
 
@@ -108,7 +108,7 @@ Customize or override how the mode appears in the string field dropdown.
 
 > `optional` **modeGroup**: `string`
 
-Defined in: [packages/stately/src/features/codemirror/plugin.tsx:104](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/features/codemirror/plugin.tsx#L104)
+Defined in: [packages/stately/src/features/codemirror/plugin.tsx:104](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/features/codemirror/plugin.tsx#L104)
 
 Set a custom mode group for the editor. If any existing mode groups are provided,
 the editor will appear in that mode group's list.
@@ -125,7 +125,7 @@ the editor will appear in that mode group's list.
 
 > `const` **codemirror**: [`FeaturePlugin`](../../../ui/feature-plugin.md#featureplugin)\<[`CodemirrorPluginOptions`](#codemirrorpluginoptions), `ReactCodeMirrorProps`, [`CodeMirrorExtras`](#codemirrorextras)\>
 
-Defined in: [packages/stately/src/features/codemirror/plugin.tsx:143](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/features/codemirror/plugin.tsx#L143)
+Defined in: [packages/stately/src/features/codemirror/plugin.tsx:143](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/features/codemirror/plugin.tsx#L143)
 
 CodeMirror feature plugin.
 
@@ -160,6 +160,6 @@ function QueryEditor() {
 
 > `const` **defaultCodemirrorStringMode**: [`StringMode`](../../core/extensions/add-string-modes.md#stringmode)
 
-Defined in: [packages/stately/src/features/codemirror/plugin.tsx:70](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/features/codemirror/plugin.tsx#L70)
+Defined in: [packages/stately/src/features/codemirror/plugin.tsx:70](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/features/codemirror/plugin.tsx#L70)
 
 Default string mode configuration

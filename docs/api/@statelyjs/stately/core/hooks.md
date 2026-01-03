@@ -22,7 +22,7 @@ import {
 
 ### MergedField
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L10)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L10)
 
 State for a merged field from `allOf` composition.
 
@@ -38,7 +38,7 @@ State for a merged field from `allOf` composition.
 
 > **schema**: `S`\[`"plugin"`\]\[`"AnyNode"`\]
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L12)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L12)
 
 The schema node for this merged section
 
@@ -46,7 +46,7 @@ The schema node for this merged section
 
 > **value**: [`AnyRecord`](../schema.md#anyrecord)
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L14)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L14)
 
 Current values for fields in this merged section
 
@@ -54,7 +54,7 @@ Current values for fields in this merged section
 
 ### ObjectFieldState
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L20)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L20)
 
 Complete state and handlers for an object field editor.
 
@@ -70,7 +70,7 @@ Complete state and handlers for an object field editor.
 
 > **extraFieldsValue**: [`AnyRecord`](../schema.md#anyrecord)
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L38)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L38)
 
 Values for additional properties not in schema
 
@@ -78,7 +78,7 @@ Values for additional properties not in schema
 
 > **fields**: \[`string`, `S`\[`"plugin"`\]\[`"AnyNode"`\]\][]
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L34)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L34)
 
 Sorted array of [fieldName, fieldSchema] tuples
 
@@ -86,7 +86,7 @@ Sorted array of [fieldName, fieldSchema] tuples
 
 > **formData**: `Record`\<`string`, `any`\>
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L22)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L22)
 
 Current form data (may differ from original value if dirty)
 
@@ -94,7 +94,7 @@ Current form data (may differ from original value if dirty)
 
 > **handleAdditionalFieldChange**: (`newAdditionalData`) => `void`
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L28)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L28)
 
 Handle changes to additional properties (dynamic keys)
 
@@ -112,7 +112,7 @@ Handle changes to additional properties (dynamic keys)
 
 > **handleCancel**: () => `void`
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:32](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L32)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:32](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L32)
 
 Reset form data to original value
 
@@ -124,7 +124,7 @@ Reset form data to original value
 
 > **handleFieldChange**: (`fieldName`, `isNullable`, `newValue`) => `void`
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L24)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L24)
 
 Handle a single field value change
 
@@ -150,7 +150,7 @@ Handle a single field value change
 
 > **handleMergedFieldChange**: (`newMergedData`) => `void`
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L26)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L26)
 
 Handle changes to merged fields (from allOf composition)
 
@@ -168,7 +168,7 @@ Handle changes to merged fields (from allOf composition)
 
 > **handleSave**: () => `void`
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:30](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L30)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:30](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L30)
 
 Save the current form data
 
@@ -180,7 +180,7 @@ Save the current form data
 
 > **isDirty**: `boolean`
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:40](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L40)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:40](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L40)
 
 Whether form data differs from original value
 
@@ -188,7 +188,7 @@ Whether form data differs from original value
 
 > **isValid**: `boolean`
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:42](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L42)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:42](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L42)
 
 Whether current form data passes validation
 
@@ -196,7 +196,7 @@ Whether current form data passes validation
 
 > **mergedFields**: [`MergedField`](#mergedfield)\<`S`\>[]
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:36](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L36)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:36](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L36)
 
 Merged schemas with their current values (from allOf)
 
@@ -204,7 +204,7 @@ Merged schemas with their current values (from allOf)
 
 > **resetKey**: `number`
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:44](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L44)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:44](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L44)
 
 Counter that increments on cancel - use as key to force child remount
 
@@ -214,7 +214,7 @@ Counter that increments on cancel - use as key to force child remount
 
 > **useCreateEntity**\<`Schema`\>(`options`): `UseMutationResult`\<\{ \}, `Error`, `CoreEntityWrapped`\<`Schema`\>, `unknown`\>
 
-Defined in: [packages/stately/src/core/hooks/use-create-entity.ts:47](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-create-entity.ts#L47)
+Defined in: [packages/stately/src/core/hooks/use-create-entity.ts:47](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-create-entity.ts#L47)
 
 Create a new entity.
 
@@ -285,7 +285,7 @@ function CreatePipelineForm() {
 
 > **useEntityData**\<`Schema`\>(`options`): `UseQueryResult`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`, `Error`\>
 
-Defined in: [packages/stately/src/core/hooks/use-entity-data.ts:39](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-entity-data.ts#L39)
+Defined in: [packages/stately/src/core/hooks/use-entity-data.ts:39](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-entity-data.ts#L39)
 
 Fetch a single entity by its ID.
 
@@ -352,7 +352,7 @@ function PipelineDetail({ id }: { id: string }) {
 
 > **useEntityDataInline**\<`Schema`\>(`options`): \{ `data`: \{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`; `dataUpdatedAt`: `number`; `error`: `Error`; `errorUpdateCount`: `number`; `errorUpdatedAt`: `number`; `failureCount`: `number`; `failureReason`: `Error` \| `null`; `fetchStatus`: `FetchStatus`; `inlineEntity`: `string` \| `undefined`; `inlineNote`: `Element` \| `null`; `isEnabled`: `boolean`; `isError`: `true`; `isFetched`: `boolean`; `isFetchedAfterMount`: `boolean`; `isFetching`: `boolean`; `isInitialLoading`: `boolean`; `isLoading`: `false`; `isLoadingError`: `false`; `isPaused`: `boolean`; `isPending`: `false`; `isPlaceholderData`: `false`; `isRefetchError`: `true`; `isRefetching`: `boolean`; `isStale`: `boolean`; `isSuccess`: `false`; `promise`: `Promise`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`\>; `refetch`: (`options?`) => `Promise`\<`QueryObserverResult`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`, `Error`\>\>; `setInlineEntity`: `Dispatch`\<`SetStateAction`\<`string` \| `undefined`\>\>; `status`: `"error"`; \} \| \{ `data`: \{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`; `dataUpdatedAt`: `number`; `error`: `null`; `errorUpdateCount`: `number`; `errorUpdatedAt`: `number`; `failureCount`: `number`; `failureReason`: `Error` \| `null`; `fetchStatus`: `FetchStatus`; `inlineEntity`: `string` \| `undefined`; `inlineNote`: `Element` \| `null`; `isEnabled`: `boolean`; `isError`: `false`; `isFetched`: `boolean`; `isFetchedAfterMount`: `boolean`; `isFetching`: `boolean`; `isInitialLoading`: `boolean`; `isLoading`: `false`; `isLoadingError`: `false`; `isPaused`: `boolean`; `isPending`: `false`; `isPlaceholderData`: `false`; `isRefetchError`: `false`; `isRefetching`: `boolean`; `isStale`: `boolean`; `isSuccess`: `true`; `promise`: `Promise`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`\>; `refetch`: (`options?`) => `Promise`\<`QueryObserverResult`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`, `Error`\>\>; `setInlineEntity`: `Dispatch`\<`SetStateAction`\<`string` \| `undefined`\>\>; `status`: `"success"`; \} \| \{ `data`: `undefined`; `dataUpdatedAt`: `number`; `error`: `Error`; `errorUpdateCount`: `number`; `errorUpdatedAt`: `number`; `failureCount`: `number`; `failureReason`: `Error` \| `null`; `fetchStatus`: `FetchStatus`; `inlineEntity`: `string` \| `undefined`; `inlineNote`: `Element` \| `null`; `isEnabled`: `boolean`; `isError`: `true`; `isFetched`: `boolean`; `isFetchedAfterMount`: `boolean`; `isFetching`: `boolean`; `isInitialLoading`: `boolean`; `isLoading`: `false`; `isLoadingError`: `true`; `isPaused`: `boolean`; `isPending`: `false`; `isPlaceholderData`: `false`; `isRefetchError`: `false`; `isRefetching`: `boolean`; `isStale`: `boolean`; `isSuccess`: `false`; `promise`: `Promise`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`\>; `refetch`: (`options?`) => `Promise`\<`QueryObserverResult`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`, `Error`\>\>; `setInlineEntity`: `Dispatch`\<`SetStateAction`\<`string` \| `undefined`\>\>; `status`: `"error"`; \} \| \{ `data`: `undefined`; `dataUpdatedAt`: `number`; `error`: `null`; `errorUpdateCount`: `number`; `errorUpdatedAt`: `number`; `failureCount`: `number`; `failureReason`: `Error` \| `null`; `fetchStatus`: `FetchStatus`; `inlineEntity`: `string` \| `undefined`; `inlineNote`: `Element` \| `null`; `isEnabled`: `boolean`; `isError`: `false`; `isFetched`: `boolean`; `isFetchedAfterMount`: `boolean`; `isFetching`: `boolean`; `isInitialLoading`: `boolean`; `isLoading`: `true`; `isLoadingError`: `false`; `isPaused`: `boolean`; `isPending`: `true`; `isPlaceholderData`: `false`; `isRefetchError`: `false`; `isRefetching`: `boolean`; `isStale`: `boolean`; `isSuccess`: `false`; `promise`: `Promise`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`\>; `refetch`: (`options?`) => `Promise`\<`QueryObserverResult`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`, `Error`\>\>; `setInlineEntity`: `Dispatch`\<`SetStateAction`\<`string` \| `undefined`\>\>; `status`: `"pending"`; \} \| \{ `data`: `undefined`; `dataUpdatedAt`: `number`; `error`: `null`; `errorUpdateCount`: `number`; `errorUpdatedAt`: `number`; `failureCount`: `number`; `failureReason`: `Error` \| `null`; `fetchStatus`: `FetchStatus`; `inlineEntity`: `string` \| `undefined`; `inlineNote`: `Element` \| `null`; `isEnabled`: `boolean`; `isError`: `false`; `isFetched`: `boolean`; `isFetchedAfterMount`: `boolean`; `isFetching`: `boolean`; `isInitialLoading`: `boolean`; `isLoading`: `boolean`; `isLoadingError`: `false`; `isPaused`: `boolean`; `isPending`: `true`; `isPlaceholderData`: `false`; `isRefetchError`: `false`; `isRefetching`: `boolean`; `isStale`: `boolean`; `isSuccess`: `false`; `promise`: `Promise`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`\>; `refetch`: (`options?`) => `Promise`\<`QueryObserverResult`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`, `Error`\>\>; `setInlineEntity`: `Dispatch`\<`SetStateAction`\<`string` \| `undefined`\>\>; `status`: `"pending"`; \} \| \{ `data`: \{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`; `dataUpdatedAt`: `number`; `error`: `null`; `errorUpdateCount`: `number`; `errorUpdatedAt`: `number`; `failureCount`: `number`; `failureReason`: `Error` \| `null`; `fetchStatus`: `FetchStatus`; `inlineEntity`: `string` \| `undefined`; `inlineNote`: `Element` \| `null`; `isEnabled`: `boolean`; `isError`: `false`; `isFetched`: `boolean`; `isFetchedAfterMount`: `boolean`; `isFetching`: `boolean`; `isInitialLoading`: `boolean`; `isLoading`: `false`; `isLoadingError`: `false`; `isPaused`: `boolean`; `isPending`: `false`; `isPlaceholderData`: `true`; `isRefetchError`: `false`; `isRefetching`: `boolean`; `isStale`: `boolean`; `isSuccess`: `true`; `promise`: `Promise`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`\>; `refetch`: (`options?`) => `Promise`\<`QueryObserverResult`\<\{ `entity`: `CoreEntityWrapped`\<`Schema`\>; `id`: `string`; \} \| `undefined`, `Error`\>\>; `setInlineEntity`: `Dispatch`\<`SetStateAction`\<`string` \| `undefined`\>\>; `status`: `"success"`; \}
 
-Defined in: [packages/stately/src/core/hooks/use-entity-data-inline.tsx:42](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-entity-data-inline.tsx#L42)
+Defined in: [packages/stately/src/core/hooks/use-entity-data-inline.tsx:42](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-entity-data-inline.tsx#L42)
 
 Fetch entity data with inline display support.
 
@@ -1905,7 +1905,7 @@ function LinkedEntityPreview({ entity }: { entity: string }) {
 
 > **useEntitySchema**\<`Schema`\>(`entityType`, `entitySchema?`): \{ `error?`: `undefined`; `node`: `Schema`\[`"plugin"`\]\[`"Nodes"`\]\[`"object"`\]; \} \| \{ `error`: `string`; `node?`: `undefined`; \}
 
-Defined in: [packages/stately/src/core/hooks/use-entity-schema.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-entity-schema.ts#L41)
+Defined in: [packages/stately/src/core/hooks/use-entity-schema.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-entity-schema.ts#L41)
 
 Get the schema node for an entity type.
 
@@ -1968,7 +1968,7 @@ function EntityForm({ entityType }: { entityType: string }) {
 
 > **useEntityUrl**\<`Schema`\>(): (`parts`, `params?`, `omitBasePath?`) => `string`
 
-Defined in: [packages/stately/src/core/hooks/use-entity-url.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-entity-url.ts#L31)
+Defined in: [packages/stately/src/core/hooks/use-entity-url.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-entity-url.ts#L31)
 
 Build URLs for entity navigation.
 
@@ -2029,7 +2029,7 @@ function PipelineLink({ id, name }: { id: string; name: string }) {
 
 > **useListEntities**\<`Schema`\>(`options`): `UseQueryResult`\<\{ \}, `Error`\>
 
-Defined in: [packages/stately/src/core/hooks/use-list-entities.ts:40](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-list-entities.ts#L40)
+Defined in: [packages/stately/src/core/hooks/use-list-entities.ts:40](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-list-entities.ts#L40)
 
 Fetch all entities of a given type.
 
@@ -2089,7 +2089,7 @@ function PipelineList() {
 
 > **useObjectCompare**(`value`, `formData`, `isDirty`): (`changes?`) => `boolean`
 
-Defined in: [packages/stately/src/core/hooks/use-object-compare.ts:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-compare.ts#L17)
+Defined in: [packages/stately/src/core/hooks/use-object-compare.ts:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-compare.ts#L17)
 
 A simple hook providing a method to validate whether incomning value, when compared to runtime
 form data, has changed.
@@ -2141,7 +2141,7 @@ A function that returns a boolean indicating whether the value has changed
 
 > **useObjectField**\<`S`\>(`options`): [`ObjectFieldState`](#objectfieldstate)
 
-Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:97](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-object-field.tsx#L97)
+Defined in: [packages/stately/src/core/hooks/use-object-field.tsx:97](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-object-field.tsx#L97)
 
 Manage state for editing an object-type schema field.
 
@@ -2233,7 +2233,7 @@ function ObjectEditor({ schema, value, onSave }) {
 
 > **useRemoveEntity**\<`Schema`\>(`options`): `object`
 
-Defined in: [packages/stately/src/core/hooks/use-remove-entity.tsx:51](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-remove-entity.tsx#L51)
+Defined in: [packages/stately/src/core/hooks/use-remove-entity.tsx:51](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-remove-entity.tsx#L51)
 
 Remove an entity with confirmation dialog support.
 
@@ -2320,7 +2320,7 @@ function PipelineList() {
 
 > **useUpdateEntity**\<`Schema`\>(`options`): `UseMutationResult`\<\{ \}, `Error`, `CoreEntityWrapped`\<`Schema`\>, `unknown`\>
 
-Defined in: [packages/stately/src/core/hooks/use-update-entity.ts:46](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/hooks/use-update-entity.ts#L46)
+Defined in: [packages/stately/src/core/hooks/use-update-entity.ts:46](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/hooks/use-update-entity.ts#L46)
 
 Update an existing entity.
 

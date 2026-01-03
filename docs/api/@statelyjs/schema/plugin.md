@@ -6,7 +6,7 @@
 
 > **AnySchemaAugments** = readonly [`AnySchemaPlugin`](#anyschemaplugin)[]
 
-Defined in: [plugin.ts:94](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L94)
+Defined in: [plugin.ts:94](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L94)
 
 ***
 
@@ -14,7 +14,7 @@ Defined in: [plugin.ts:94](https://github.com/GeorgeLeePatterson/stately/blob/0d
 
 > **AnySchemaPlugin** = [`PluginAugment`](#pluginaugment)\<`string`, [`NodeMap`](nodes.md#nodemap), `any`, `any`, `any`\>
 
-Defined in: [plugin.ts:93](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L93)
+Defined in: [plugin.ts:93](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L93)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: [plugin.ts:93](https://github.com/GeorgeLeePatterson/stately/blob/0d
 
 > **DefineData**\<`T`\> = `T`
 
-Defined in: [plugin.ts:62](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L62)
+Defined in: [plugin.ts:62](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L62)
 
 Define runtime data to expose from your plugin.
 
@@ -47,7 +47,7 @@ type MyData = DefineData<{
 
 > **DefineNodeMap**\<`T`\> = `{ [K in keyof T]: T[K] }` & `object`
 
-Defined in: [plugin.ts:34](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L34)
+Defined in: [plugin.ts:34](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L34)
 
 Define the node map for your plugin augment.
 The type system will automatically add the required index signature.
@@ -79,7 +79,7 @@ type MyNodeMap = DefineNodeMap<{
 
 > **DefineTypes**\<`T`\> = `T`
 
-Defined in: [plugin.ts:49](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L49)
+Defined in: [plugin.ts:49](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L49)
 
 Define additional types to expose from your plugin.
 
@@ -104,7 +104,7 @@ type MyTypes = DefineTypes<{
 
 > **DefineUtils**\<`T`\> = `T` & `object`
 
-Defined in: [plugin.ts:75](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L75)
+Defined in: [plugin.ts:75](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L75)
 
 Define utility functions to expose from your plugin.
 
@@ -135,7 +135,7 @@ type MyUtils = DefineUtils<{
 
 > **PluginAugment**\<`Name`, `Nodes`, `Types`, `Data`, `Utils`\> = `object`
 
-Defined in: [plugin.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L85)
+Defined in: [plugin.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L85)
 
 Describes the structural shape of any plugin augment.
 
@@ -172,31 +172,31 @@ without enforcing literal-string 'Name' requirements.
 
 > `optional` **data**: `Data`
 
-Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L91)
+Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L91)
 
 ##### name
 
 > **name**: `Name`
 
-Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L91)
+Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L91)
 
 ##### nodes
 
 > **nodes**: `Nodes`
 
-Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L91)
+Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L91)
 
 ##### types?
 
 > `optional` **types**: `Types`
 
-Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L91)
+Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L91)
 
 ##### utils?
 
 > `optional` **utils**: `Utils`
 
-Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L91)
+Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L91)
 
 ***
 
@@ -204,7 +204,7 @@ Defined in: [plugin.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/0d
 
 > **PluginNodeUnion**\<`S`\> = `S`\[`"plugin"`\]\[`"AnyNode"`\]
 
-Defined in: [plugin.ts:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/plugin.ts#L20)
+Defined in: [plugin.ts:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/plugin.ts#L20)
 
 Plugin helper types for nodes
 

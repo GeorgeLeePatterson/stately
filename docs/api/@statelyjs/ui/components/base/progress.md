@@ -6,7 +6,7 @@
 
 > **Progress**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/progress.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/progress.tsx#L7)
+Defined in: [packages/ui/src/components/base/progress.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/progress.tsx#L7)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/progress.tsx:7](https://github.com/
 
 > **ProgressIndicator**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/progress.tsx:41](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/progress.tsx#L41)
+Defined in: [packages/ui/src/components/base/progress.tsx:41](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/progress.tsx#L41)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/progress.tsx:41](https://github.com
 
 > **ProgressLabel**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/progress.tsx:54](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/progress.tsx#L54)
+Defined in: [packages/ui/src/components/base/progress.tsx:54](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/progress.tsx#L54)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/progress.tsx:54](https://github.com
 
 > **ProgressTrack**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/progress.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/progress.tsx#L28)
+Defined in: [packages/ui/src/components/base/progress.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/progress.tsx#L28)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/progress.tsx:28](https://github.com
 
 > **ProgressValue**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/progress.tsx:64](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/progress.tsx#L64)
+Defined in: [packages/ui/src/components/base/progress.tsx:64](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/progress.tsx#L64)
 
 #### Parameters
 

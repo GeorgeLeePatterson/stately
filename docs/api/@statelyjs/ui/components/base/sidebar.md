@@ -6,7 +6,7 @@
 
 > **Sidebar**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:137](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L137)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:137](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L137)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:137](https://github.com
 
 > **SidebarContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:339](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L339)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:339](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L339)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:339](https://github.com
 
 > **SidebarFooter**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:317](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L317)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:317](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L317)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:317](https://github.com
 
 > **SidebarGroup**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:353](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L353)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:353](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L353)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:353](https://github.com
 
 > **SidebarGroupAction**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:385](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L385)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:385](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L385)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:385](https://github.com
 
 > **SidebarGroupContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:406](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L406)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:406](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L406)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:406](https://github.com
 
 > **SidebarGroupLabel**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:364](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L364)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:364](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L364)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:364](https://github.com
 
 > **SidebarHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:306](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L306)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:306](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L306)
 
 #### Parameters
 
@@ -150,7 +150,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:306](https://github.com
 
 > **SidebarInput**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:295](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L295)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:295](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L295)
 
 #### Parameters
 
@@ -168,7 +168,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:295](https://github.com
 
 > **SidebarInset**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:282](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L282)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:282](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L282)
 
 #### Parameters
 
@@ -186,7 +186,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:282](https://github.com
 
 > **SidebarMenu**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:417](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L417)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:417](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L417)
 
 #### Parameters
 
@@ -204,7 +204,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:417](https://github.com
 
 > **SidebarMenuAction**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:503](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L503)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:503](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L503)
 
 #### Parameters
 
@@ -222,7 +222,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:503](https://github.com
 
 > **SidebarMenuBadge**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:528](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L528)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:528](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L528)
 
 #### Parameters
 
@@ -240,7 +240,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:528](https://github.com
 
 > **SidebarMenuButton**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:458](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L458)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:458](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L458)
 
 #### Parameters
 
@@ -258,7 +258,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:458](https://github.com
 
 > **SidebarMenuItem**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:428](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L428)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:428](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L428)
 
 #### Parameters
 
@@ -276,7 +276,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:428](https://github.com
 
 > **SidebarMenuSkeleton**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:542](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L542)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:542](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L542)
 
 #### Parameters
 
@@ -294,7 +294,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:542](https://github.com
 
 > **SidebarMenuSub**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:569](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L569)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:569](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L569)
 
 #### Parameters
 
@@ -312,7 +312,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:569](https://github.com
 
 > **SidebarMenuSubButton**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:594](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L594)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:594](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L594)
 
 #### Parameters
 
@@ -330,7 +330,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:594](https://github.com
 
 > **SidebarMenuSubItem**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:583](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L583)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:583](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L583)
 
 #### Parameters
 
@@ -348,7 +348,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:583](https://github.com
 
 > **SidebarProvider**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:51](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L51)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:51](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L51)
 
 #### Parameters
 
@@ -366,7 +366,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:51](https://github.com/
 
 > **SidebarRail**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:257](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L257)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:257](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L257)
 
 #### Parameters
 
@@ -384,7 +384,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:257](https://github.com
 
 > **SidebarSeparator**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:328](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L328)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:328](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L328)
 
 #### Parameters
 
@@ -402,7 +402,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:328](https://github.com
 
 > **SidebarTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:235](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L235)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:235](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L235)
 
 #### Parameters
 
@@ -420,7 +420,7 @@ Defined in: [packages/ui/src/components/base/sidebar.tsx:235](https://github.com
 
 > **useSidebar**(): `SidebarContextProps`
 
-Defined in: [packages/ui/src/components/base/sidebar.tsx:42](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sidebar.tsx#L42)
+Defined in: [packages/ui/src/components/base/sidebar.tsx:42](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sidebar.tsx#L42)
 
 #### Returns
 

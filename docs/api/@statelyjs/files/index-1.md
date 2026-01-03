@@ -64,7 +64,7 @@ function FileManager() {
 
 > **FilesOptions** = `DefineOptions`\<\{ `api?`: \{ `pathPrefix?`: `string`; \}; `navigation?`: \{ `routes?`: `UiNavigationOptions`\[`"routes"`\]; \}; \}\>
 
-Defined in: [files/src/plugin.tsx:93](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/plugin.tsx#L93)
+Defined in: [files/src/plugin.tsx:93](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/plugin.tsx#L93)
 
 Configuration options for the Files plugin.
 
@@ -83,7 +83,7 @@ const options: FilesOptions = {
 
 > **FilesPlugin** = [`DefinePlugin`](../stately/schema.md#defineplugin)\<*typeof* [`FILES_PLUGIN_NAME`](#files_plugin_name), [`FilesNodeMap`](schema.md#filesnodemap), [`FilesTypes`](schema.md#filestypes), [`FilesData`](schema.md#filesdata), [`FilesUtils`](#filesutils)\>
 
-Defined in: [files/src/plugin.tsx:108](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/plugin.tsx#L108)
+Defined in: [files/src/plugin.tsx:108](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/plugin.tsx#L108)
 
 Files schema plugin type definition.
 
@@ -100,7 +100,7 @@ node types, data structures, and utilities.
 
 > **FilesUiPlugin** = `DefineUiPlugin`\<*typeof* [`FILES_PLUGIN_NAME`](#files_plugin_name), [`FilesPaths`](api.md#filespaths), *typeof* [`FILES_OPERATIONS`](api.md#files_operations), [`FilesUiUtils`](#filesuiutils), [`FilesOptions`](#filesoptions), *typeof* `filesRoutes`\>
 
-Defined in: [files/src/plugin.tsx:156](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/plugin.tsx#L156)
+Defined in: [files/src/plugin.tsx:156](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/plugin.tsx#L156)
 
 Files UI plugin type definition.
 
@@ -117,7 +117,7 @@ API operations, configuration options, and utilities.
 
 > **FilesUiUtils** = `DefineUiUtils`\<\{ `formatFileSize`: (`bytes`) => `string`; `formatTimestamp`: (`timestamp?`, `withTime?`) => `string` \| `null`; `getFileEntryIcon`: (`entryType`, `isSelected?`) => `ComponentType`\<`any`\>; \}\>
 
-Defined in: [files/src/utils.ts:21](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/utils.ts#L21)
+Defined in: [files/src/utils.ts:21](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/utils.ts#L21)
 
 Files UI plugin utilities
 
@@ -127,7 +127,7 @@ Files UI plugin utilities
 
 > **FilesUtils** = `Record`\<`string`, `never`\>
 
-Defined in: [files/src/utils.ts:16](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/utils.ts#L16)
+Defined in: [files/src/utils.ts:16](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/utils.ts#L16)
 
 Files plugin utilities
 
@@ -137,7 +137,7 @@ Files plugin utilities
 
 > `const` **FILES\_PLUGIN\_NAME**: `"files"`
 
-Defined in: [files/src/plugin.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/plugin.tsx#L80)
+Defined in: [files/src/plugin.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/plugin.tsx#L80)
 
 Plugin identifier for the Files plugin.
 
@@ -147,7 +147,7 @@ Plugin identifier for the Files plugin.
 
 > `const` **filesUiPlugin**: `UiPluginFactoryFn`\<[`FilesUiPlugin`](#filesuiplugin)\>
 
-Defined in: [files/src/plugin.tsx:192](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/plugin.tsx#L192)
+Defined in: [files/src/plugin.tsx:192](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/plugin.tsx#L192)
 
 Creates the Files UI plugin factory.
 
@@ -182,7 +182,7 @@ const result = await plugins.files.api.list_files();
 
 > `const` **filesUiUtils**: [`FilesUiUtils`](#filesuiutils)
 
-Defined in: [files/src/utils.ts:39](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/utils.ts#L39)
+Defined in: [files/src/utils.ts:39](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/utils.ts#L39)
 
 Files plugin utilities implementation
 
@@ -192,7 +192,7 @@ Files plugin utilities implementation
 
 > `const` **useFilesStatelyUi**: () => `StatelyUiRuntime`\<`Schemas`\<`any`, `any`\>, readonly \[`CoreUiPlugin`, [`FilesUiPlugin`](#filesuiplugin)\]\>
 
-Defined in: [files/src/context.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/context.tsx#L19)
+Defined in: [files/src/context.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/context.tsx#L19)
 
 Default hook instance for files plugin
 Use this in files plugin components and hooks
@@ -234,7 +234,7 @@ function MyComponent() {
 
 > **createUseFilesStatelyUi**\<`Schema`\>(): () => `StatelyUiRuntime`\<`Schema`, readonly \[`CoreUiPlugin`, [`FilesUiPlugin`](#filesuiplugin)\]\>
 
-Defined in: [files/src/context.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/context.tsx#L11)
+Defined in: [files/src/context.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/context.tsx#L11)
 
 Hook for accessing Stately UI runtime with Files plugin
 
@@ -288,7 +288,7 @@ function MyComponent() {
 
 > **filesPlugin**\<`S`\>(): [`PluginFactory`](../schema/stately.md#pluginfactory)\<`S`\>
 
-Defined in: [files/src/plugin.tsx:138](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/plugin.tsx#L138)
+Defined in: [files/src/plugin.tsx:138](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/plugin.tsx#L138)
 
 Creates the Files schema plugin factory.
 

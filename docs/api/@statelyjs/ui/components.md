@@ -4,7 +4,7 @@
 
 ### BaseEditorProps
 
-Defined in: [packages/ui/src/components/editor.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L17)
+Defined in: [packages/ui/src/components/editor.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L17)
 
 #### Properties
 
@@ -12,25 +12,25 @@ Defined in: [packages/ui/src/components/editor.tsx:17](https://github.com/George
 
 > `optional` **content**: `string`
 
-Defined in: [packages/ui/src/components/editor.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L19)
+Defined in: [packages/ui/src/components/editor.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L19)
 
 ##### formId?
 
 > `optional` **formId**: `string`
 
-Defined in: [packages/ui/src/components/editor.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L18)
+Defined in: [packages/ui/src/components/editor.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L18)
 
 ##### isLoading?
 
 > `optional` **isLoading**: `boolean`
 
-Defined in: [packages/ui/src/components/editor.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L22)
+Defined in: [packages/ui/src/components/editor.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L22)
 
 ##### onContent()
 
 > **onContent**: (`value`) => `void`
 
-Defined in: [packages/ui/src/components/editor.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L20)
+Defined in: [packages/ui/src/components/editor.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L20)
 
 ###### Parameters
 
@@ -46,7 +46,7 @@ Defined in: [packages/ui/src/components/editor.tsx:20](https://github.com/George
 
 > `optional` **placeholder**: `string`
 
-Defined in: [packages/ui/src/components/editor.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L21)
+Defined in: [packages/ui/src/components/editor.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L21)
 
 ## Type Aliases
 
@@ -54,7 +54,7 @@ Defined in: [packages/ui/src/components/editor.tsx:21](https://github.com/George
 
 > **EditorWrapperProps** = `React.PropsWithChildren`\<\{ `inputGroupProps?`: `React.ComponentProps`\<*typeof* [`InputGroup`](components/base/input-group.md#inputgroup)\>; `isLoading?`: `boolean`; `saveButton?`: `React.ReactNode`; `toggleButton?`: `React.ReactNode`; \}\>
 
-Defined in: [packages/ui/src/components/editor.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L25)
+Defined in: [packages/ui/src/components/editor.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L25)
 
 ## Variables
 
@@ -62,7 +62,7 @@ Defined in: [packages/ui/src/components/editor.tsx:25](https://github.com/George
 
 > `const` **modeColors**: `object`
 
-Defined in: [packages/ui/src/components/note.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/note.tsx#L4)
+Defined in: [packages/ui/src/components/note.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/note.tsx#L4)
 
 #### Type Declaration
 
@@ -92,7 +92,7 @@ Defined in: [packages/ui/src/components/note.tsx:4](https://github.com/GeorgeLee
 
 > `const` **modeIcons**: `object`
 
-Defined in: [packages/ui/src/components/note.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/note.tsx#L12)
+Defined in: [packages/ui/src/components/note.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/note.tsx#L12)
 
 #### Type Declaration
 
@@ -122,7 +122,7 @@ Defined in: [packages/ui/src/components/note.tsx:12](https://github.com/GeorgeLe
 
 > **ArrayIndex**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/array-index.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/array-index.tsx#L3)
+Defined in: [packages/ui/src/components/array-index.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/array-index.tsx#L3)
 
 #### Parameters
 
@@ -142,7 +142,7 @@ Defined in: [packages/ui/src/components/array-index.tsx:3](https://github.com/Ge
 
 > **BaseEditor**(`props`): `Element`
 
-Defined in: [packages/ui/src/components/editor.tsx:139](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L139)
+Defined in: [packages/ui/src/components/editor.tsx:139](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L139)
 
 Implementation of `TextEditor` with `EditorWrapper`
 
@@ -166,7 +166,7 @@ JSX.Element
 
 > **CopyButton**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/copy-button.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/copy-button.tsx#L5)
+Defined in: [packages/ui/src/components/copy-button.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/copy-button.tsx#L5)
 
 #### Parameters
 
@@ -186,7 +186,7 @@ Defined in: [packages/ui/src/components/copy-button.tsx:5](https://github.com/Ge
 
 > **DescriptionLabel**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/description-label.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/description-label.tsx#L4)
+Defined in: [packages/ui/src/components/description-label.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/description-label.tsx#L4)
 
 #### Parameters
 
@@ -204,7 +204,7 @@ Defined in: [packages/ui/src/components/description-label.tsx:4](https://github.
 
 > **EditorWrapper**(`props`): `Element`
 
-Defined in: [packages/ui/src/components/editor.tsx:65](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L65)
+Defined in: [packages/ui/src/components/editor.tsx:65](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L65)
 
 Wraps an editor with controls allowing for opening into a dialog.
 
@@ -228,7 +228,7 @@ JSX.Element
 
 > **Explain**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/explain.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/explain.tsx#L3)
+Defined in: [packages/ui/src/components/explain.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/explain.tsx#L3)
 
 #### Parameters
 
@@ -252,7 +252,7 @@ Defined in: [packages/ui/src/components/explain.tsx:3](https://github.com/George
 
 > **FieldItem**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/field.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/field.tsx#L4)
+Defined in: [packages/ui/src/components/field.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/field.tsx#L4)
 
 #### Parameters
 
@@ -270,7 +270,7 @@ Defined in: [packages/ui/src/components/field.tsx:4](https://github.com/GeorgeLe
 
 > **GlowingSave**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/glowing-save.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/glowing-save.tsx#L25)
+Defined in: [packages/ui/src/components/glowing-save.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/glowing-save.tsx#L25)
 
 #### Parameters
 
@@ -318,7 +318,7 @@ Defined in: [packages/ui/src/components/glowing-save.tsx:25](https://github.com/
 
 > **Note**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/note.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/note.tsx#L20)
+Defined in: [packages/ui/src/components/note.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/note.tsx#L20)
 
 #### Parameters
 
@@ -336,7 +336,7 @@ Defined in: [packages/ui/src/components/note.tsx:20](https://github.com/GeorgeLe
 
 > **NotSet**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/not-set.tsx:1](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/not-set.tsx#L1)
+Defined in: [packages/ui/src/components/not-set.tsx:1](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/not-set.tsx#L1)
 
 #### Parameters
 
@@ -356,7 +356,7 @@ Defined in: [packages/ui/src/components/not-set.tsx:1](https://github.com/George
 
 > **SimpleLabel**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/simple-label.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/simple-label.tsx#L3)
+Defined in: [packages/ui/src/components/simple-label.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/simple-label.tsx#L3)
 
 #### Parameters
 
@@ -374,7 +374,7 @@ Defined in: [packages/ui/src/components/simple-label.tsx:3](https://github.com/G
 
 > **TextEditor**(`props`): `Element`
 
-Defined in: [packages/ui/src/components/editor.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/editor.tsx#L38)
+Defined in: [packages/ui/src/components/editor.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/editor.tsx#L38)
 
 A simple, styled textarea component for editing multiline text
 

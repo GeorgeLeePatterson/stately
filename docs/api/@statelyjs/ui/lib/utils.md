@@ -6,7 +6,7 @@
 
 > **cn**(...`inputs`): `string`
 
-Defined in: [packages/ui/src/lib/utils.ts:30](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/lib/utils.ts#L30)
+Defined in: [packages/ui/src/lib/utils.ts:30](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/lib/utils.ts#L30)
 
 Merge class names
 
@@ -26,7 +26,7 @@ Merge class names
 
 > **messageFromError**(`err`): `string` \| `undefined`
 
-Defined in: [packages/ui/src/lib/utils.ts:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/lib/utils.ts#L8)
+Defined in: [packages/ui/src/lib/utils.ts:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/lib/utils.ts#L8)
 
 Helper type to deal with 'maybe' `ApiError` types and extract error message. Especially helpful
 with react-query errors.
@@ -47,7 +47,7 @@ with react-query errors.
 
 > **pluralize**(`word`): `string`
 
-Defined in: [packages/ui/src/lib/utils.ts:34](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/lib/utils.ts#L34)
+Defined in: [packages/ui/src/lib/utils.ts:34](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/lib/utils.ts#L34)
 
 #### Parameters
 

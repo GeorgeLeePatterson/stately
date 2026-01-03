@@ -56,7 +56,7 @@ export const myPlugin = createFeaturePlugin({
 
 ### FeatureComponentProps
 
-Defined in: [packages/ui/src/feature-plugin.tsx:343](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L343)
+Defined in: [packages/ui/src/feature-plugin.tsx:343](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L343)
 
 **`Expand`**
 
@@ -74,7 +74,7 @@ Props for the FeatureComponent wrapper.
 
 > `optional` **fallback**: `ReactNode`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:358](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L358)
+Defined in: [packages/ui/src/feature-plugin.tsx:358](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L358)
 
 Fallback to show while the component is loading.
 
@@ -88,7 +88,7 @@ null
 
 > `optional` **notEnabled**: `ReactNode`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:364](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L364)
+Defined in: [packages/ui/src/feature-plugin.tsx:364](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L364)
 
 Content to show if the plugin is not enabled.
 
@@ -102,7 +102,7 @@ null
 
 > **plugin**: [`FeaturePlugin`](#featureplugin)\<`any`, `TProps`\>
 
-Defined in: [packages/ui/src/feature-plugin.tsx:347](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L347)
+Defined in: [packages/ui/src/feature-plugin.tsx:347](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L347)
 
 The feature plugin to render the component from.
 
@@ -110,7 +110,7 @@ The feature plugin to render the component from.
 
 > **props**: `TProps`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:352](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L352)
+Defined in: [packages/ui/src/feature-plugin.tsx:352](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L352)
 
 Props to pass to the lazy-loaded component.
 
@@ -118,7 +118,7 @@ Props to pass to the lazy-loaded component.
 
 ### FeaturePlugin
 
-Defined in: [packages/ui/src/feature-plugin.tsx:147](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L147)
+Defined in: [packages/ui/src/feature-plugin.tsx:147](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L147)
 
 A feature plugin instance with `.enable()`, `.lazyComponent`, and other APIs.
 
@@ -148,7 +148,7 @@ Extras object, initialized via `FeaturePluginConfig.defaultExtras` or `.setup()`
 
 > **extras**: `TExtras`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:211](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L211)
+Defined in: [packages/ui/src/feature-plugin.tsx:211](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L211)
 
 Get the extras from `FeaturePluginConfig.defaultExtras` or `.setup()`.
 Returns undefined if not enabled.
@@ -157,7 +157,7 @@ Returns undefined if not enabled.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:151](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L151)
+Defined in: [packages/ui/src/feature-plugin.tsx:151](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L151)
 
 Unique identifier for this plugin.
 
@@ -165,7 +165,7 @@ Unique identifier for this plugin.
 
 > **lazyComponent**: `LazyExoticComponent`\<`ComponentType`\<`TComponentProps`\>\> \| `null`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:199](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L199)
+Defined in: [packages/ui/src/feature-plugin.tsx:199](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L199)
 
 Getter to access the lazy-loaded component.
 
@@ -200,7 +200,7 @@ function MyEditor(props) {
 
 > **enable**(`options?`): `void`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:167](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L167)
+Defined in: [packages/ui/src/feature-plugin.tsx:167](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L167)
 
 Enable the plugin with optional configuration.
 
@@ -230,7 +230,7 @@ codemirror.enable({ themes: ['github'] });
 
 > **getOptions**(): `TOptions` \| `undefined`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:205](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L205)
+Defined in: [packages/ui/src/feature-plugin.tsx:205](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L205)
 
 Get the options that were passed to `.enable()`.
 Returns undefined if not enabled.
@@ -243,7 +243,7 @@ Returns undefined if not enabled.
 
 > **isEnabled**(): `boolean`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:172](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L172)
+Defined in: [packages/ui/src/feature-plugin.tsx:172](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L172)
 
 Check if the plugin has been enabled.
 
@@ -255,7 +255,7 @@ Check if the plugin has been enabled.
 
 ### FeaturePluginConfig
 
-Defined in: [packages/ui/src/feature-plugin.tsx:84](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L84)
+Defined in: [packages/ui/src/feature-plugin.tsx:84](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L84)
 
 Configuration for creating a feature plugin.
 
@@ -285,7 +285,7 @@ Additional properties to expose on the plugin object
 
 > `optional` **component**: () => `Promise`\<\{ `default`: `ComponentType`\<`TComponentProps`\>; \}\>
 
-Defined in: [packages/ui/src/feature-plugin.tsx:102](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L102)
+Defined in: [packages/ui/src/feature-plugin.tsx:102](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L102)
 
 Dynamic import for the heavy component.
 Only loaded when the plugin is enabled and the component is rendered.
@@ -304,7 +304,7 @@ component: () => import('@uiw/react-codemirror'),
 
 > **defaultExtras**: `TExtras`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:137](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L137)
+Defined in: [packages/ui/src/feature-plugin.tsx:137](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L137)
 
 Default extras if `.enable()` is never called.
 
@@ -312,7 +312,7 @@ Default extras if `.enable()` is never called.
 
 > `optional` **defaults**: `Partial`\<`TOptions`\>
 
-Defined in: [packages/ui/src/feature-plugin.tsx:132](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L132)
+Defined in: [packages/ui/src/feature-plugin.tsx:132](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L132)
 
 Default options applied when `.enable()` is called without arguments.
 
@@ -320,7 +320,7 @@ Default options applied when `.enable()` is called without arguments.
 
 > **id**: `string`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:91](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L91)
+Defined in: [packages/ui/src/feature-plugin.tsx:91](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L91)
 
 Unique identifier for this plugin.
 
@@ -338,7 +338,7 @@ Unique identifier for this plugin.
 
 > **setup**: (`ctx`, `options`) => `TExtras` \| `undefined`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:127](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L127)
+Defined in: [packages/ui/src/feature-plugin.tsx:127](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L127)
 
 Setup function called once when `.enable()` is invoked.
 Use this to register extensions, configure behavior, etc.
@@ -383,7 +383,7 @@ setup: (ctx, options) => {
 
 ### FeaturePluginContext
 
-Defined in: [packages/ui/src/feature-plugin.tsx:64](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L64)
+Defined in: [packages/ui/src/feature-plugin.tsx:64](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L64)
 
 Context passed to the setup function during plugin initialization.
 
@@ -401,7 +401,7 @@ The component type that will be lazy loaded
 
 > **Component**: `LazyExoticComponent`\<`ComponentType`\<`TComponentProps`\>\> \| `null`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:69](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L69)
+Defined in: [packages/ui/src/feature-plugin.tsx:69](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L69)
 
 The lazy-wrapped component, ready for use in React.
 This is `null` until `.enable()` is called.
@@ -410,7 +410,7 @@ This is `null` until `.enable()` is called.
 
 > **isEnabled**: `boolean`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:74](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L74)
+Defined in: [packages/ui/src/feature-plugin.tsx:74](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L74)
 
 Whether the plugin has been enabled.
 
@@ -420,7 +420,7 @@ Whether the plugin has been enabled.
 
 > **createFeaturePlugin**\<`TOptions`, `TComponentProps`, `TExtras`\>(`config`): [`FeaturePlugin`](#featureplugin)\<`TOptions`, `TComponentProps`, `TExtras`\>
 
-Defined in: [packages/ui/src/feature-plugin.tsx:277](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L277)
+Defined in: [packages/ui/src/feature-plugin.tsx:277](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L277)
 
 #### Type Parameters
 
@@ -452,7 +452,7 @@ Defined in: [packages/ui/src/feature-plugin.tsx:277](https://github.com/GeorgeLe
 
 > **FeatureComponent**\<`TProps`\>(`__namedParameters`): `ReactNode`
 
-Defined in: [packages/ui/src/feature-plugin.tsx:380](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/feature-plugin.tsx#L380)
+Defined in: [packages/ui/src/feature-plugin.tsx:380](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/feature-plugin.tsx#L380)
 
 Wrapper component that handles Suspense and enabled checks for feature plugins.
 

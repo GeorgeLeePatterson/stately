@@ -6,7 +6,7 @@
 
 > **Avatar**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/avatar.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/avatar.tsx#L8)
+Defined in: [packages/ui/src/components/base/avatar.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/avatar.tsx#L8)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/avatar.tsx:8](https://github.com/Ge
 
 > **AvatarBadge**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/avatar.tsx:57](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/avatar.tsx#L57)
+Defined in: [packages/ui/src/components/base/avatar.tsx:57](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/avatar.tsx#L57)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/avatar.tsx:57](https://github.com/G
 
 > **AvatarFallback**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/avatar.tsx:41](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/avatar.tsx#L41)
+Defined in: [packages/ui/src/components/base/avatar.tsx:41](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/avatar.tsx#L41)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/avatar.tsx:41](https://github.com/G
 
 > **AvatarGroup**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/avatar.tsx:73](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/avatar.tsx#L73)
+Defined in: [packages/ui/src/components/base/avatar.tsx:73](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/avatar.tsx#L73)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/avatar.tsx:73](https://github.com/G
 
 > **AvatarGroupCount**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/avatar.tsx:86](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/avatar.tsx#L86)
+Defined in: [packages/ui/src/components/base/avatar.tsx:86](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/avatar.tsx#L86)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/avatar.tsx:86](https://github.com/G
 
 > **AvatarImage**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/avatar.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/avatar.tsx#L28)
+Defined in: [packages/ui/src/components/base/avatar.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/avatar.tsx#L28)
 
 #### Parameters
 

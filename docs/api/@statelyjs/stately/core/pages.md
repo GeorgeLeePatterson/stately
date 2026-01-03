@@ -28,7 +28,7 @@ import {
 
 > **EntitiesIndexPage**\<`Schema`\>(`props`): `Element`
 
-Defined in: [packages/stately/src/core/pages/entities.index.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/pages/entities.index.tsx#L13)
+Defined in: [packages/stately/src/core/pages/entities.index.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/pages/entities.index.tsx#L13)
 
 #### Type Parameters
 
@@ -52,7 +52,7 @@ Defined in: [packages/stately/src/core/pages/entities.index.tsx:13](https://gith
 
 > **EntityDetailsPage**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/pages/entities.type.id.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/pages/entities.type.id.tsx#L16)
+Defined in: [packages/stately/src/core/pages/entities.type.id.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/pages/entities.type.id.tsx#L16)
 
 #### Type Parameters
 
@@ -76,7 +76,7 @@ Defined in: [packages/stately/src/core/pages/entities.type.id.tsx:16](https://gi
 
 > **EntityEditPage**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/pages/entities.type.id.edit.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/pages/entities.type.id.edit.tsx#L17)
+Defined in: [packages/stately/src/core/pages/entities.type.id.edit.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/pages/entities.type.id.edit.tsx#L17)
 
 #### Type Parameters
 
@@ -100,7 +100,7 @@ Defined in: [packages/stately/src/core/pages/entities.type.id.edit.tsx:17](https
 
 > **EntityNewPage**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/pages/entities.type.new.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/pages/entities.type.new.tsx#L14)
+Defined in: [packages/stately/src/core/pages/entities.type.new.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/pages/entities.type.new.tsx#L14)
 
 #### Type Parameters
 
@@ -124,7 +124,7 @@ Defined in: [packages/stately/src/core/pages/entities.type.new.tsx:14](https://g
 
 > **EntityTypeListPage**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/pages/entities.type.index.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/pages/entities.type.index.tsx#L23)
+Defined in: [packages/stately/src/core/pages/entities.type.index.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/pages/entities.type.index.tsx#L23)
 
 #### Type Parameters
 

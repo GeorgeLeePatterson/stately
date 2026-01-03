@@ -85,7 +85,7 @@ The `createUiPlugin` helper provides:
 
 ### PluginRuntime
 
-Defined in: [packages/ui/src/plugin.ts:385](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L385)
+Defined in: [packages/ui/src/plugin.ts:385](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L385)
 
 **`Internal`**
 
@@ -132,7 +132,7 @@ Navigation routes type
 
 > `optional` **api**: [`TypedOperations`](api.md#typedoperations)\<`Paths`, `Ops`, `` `${string}/${string}` ``\>
 
-Defined in: [packages/ui/src/plugin.ts:393](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L393)
+Defined in: [packages/ui/src/plugin.ts:393](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L393)
 
 Typed API operations for this plugin
 
@@ -140,7 +140,7 @@ Typed API operations for this plugin
 
 > `optional` **options**: `Options`
 
-Defined in: [packages/ui/src/plugin.ts:397](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L397)
+Defined in: [packages/ui/src/plugin.ts:397](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L397)
 
 Configuration options passed to the plugin
 
@@ -148,7 +148,7 @@ Configuration options passed to the plugin
 
 > `optional` **routes**: `Routes`
 
-Defined in: [packages/ui/src/plugin.ts:399](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L399)
+Defined in: [packages/ui/src/plugin.ts:399](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L399)
 
 Navigation routes registered by this plugin
 
@@ -156,7 +156,7 @@ Navigation routes registered by this plugin
 
 > `optional` **utils**: `Utils`
 
-Defined in: [packages/ui/src/plugin.ts:395](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L395)
+Defined in: [packages/ui/src/plugin.ts:395](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L395)
 
 Utility functions provided by this plugin
 
@@ -164,7 +164,7 @@ Utility functions provided by this plugin
 
 ### UiPluginConfig
 
-Defined in: [packages/ui/src/plugin.ts:105](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L105)
+Defined in: [packages/ui/src/plugin.ts:105](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L105)
 
 Configuration for creating a UI plugin.
 
@@ -182,7 +182,7 @@ The plugin type (extends AnyUiPlugin)
 
 > **name**: `Plugin`\[`"name"`\]
 
-Defined in: [packages/ui/src/plugin.ts:111](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L111)
+Defined in: [packages/ui/src/plugin.ts:111](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L111)
 
 Unique plugin name. Must match the name in your DefineUiPlugin type.
 
@@ -196,7 +196,7 @@ FILES_PLUGIN_NAME, ARROW_PLUGIN_NAME
 
 > `optional` **operations**: `Plugin`\[`"ops"`\]
 
-Defined in: [packages/ui/src/plugin.ts:117](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L117)
+Defined in: [packages/ui/src/plugin.ts:117](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L117)
 
 Operation bindings for creating typed API operations.
 If provided, the plugin will automatically create typed operations.
@@ -205,7 +205,7 @@ If provided, the plugin will automatically create typed operations.
 
 > `optional` **routes**: `Plugin`\[`"routes"`\]
 
-Defined in: [packages/ui/src/plugin.ts:123](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L123)
+Defined in: [packages/ui/src/plugin.ts:123](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L123)
 
 Default navigation routes for this plugin.
 Can be overridden by user options.
@@ -214,7 +214,7 @@ Can be overridden by user options.
 
 > **setup**: (`ctx`, `options`) => [`UiPluginResult`](#uipluginresult)\<`Plugin`\>
 
-Defined in: [packages/ui/src/plugin.ts:138](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L138)
+Defined in: [packages/ui/src/plugin.ts:138](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L138)
 
 Setup function called when the plugin is installed.
 
@@ -245,7 +245,7 @@ The plugin's contributions (api, utils, routes)
 
 > `optional` **utils**: `Plugin`\[`"utils"`\]
 
-Defined in: [packages/ui/src/plugin.ts:126](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L126)
+Defined in: [packages/ui/src/plugin.ts:126](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L126)
 
 Static utility functions provided by this plugin
 
@@ -253,7 +253,7 @@ Static utility functions provided by this plugin
 
 ### UiPluginContext
 
-Defined in: [packages/ui/src/plugin.ts:169](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L169)
+Defined in: [packages/ui/src/plugin.ts:169](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L169)
 
 Context provided to plugin setup functions.
 
@@ -278,7 +278,7 @@ The application's schema type
 
 > `readonly` **client**: `Client`\<`Schema`\[`"config"`\]\[`"paths"`\], `` `${string}/${string}` ``\>
 
-Defined in: [packages/ui/src/plugin.ts:185](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L185)
+Defined in: [packages/ui/src/plugin.ts:185](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L185)
 
 The openapi-fetch client for API calls
 
@@ -286,7 +286,7 @@ The openapi-fetch client for API calls
 
 > `readonly` **pathPrefix**: `string`
 
-Defined in: [packages/ui/src/plugin.ts:188](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L188)
+Defined in: [packages/ui/src/plugin.ts:188](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L188)
 
 Resolved path prefix (merged from runtime and plugin options)
 
@@ -294,7 +294,7 @@ Resolved path prefix (merged from runtime and plugin options)
 
 > `readonly` **registry**: [`ComponentRegistry`](registry.md#componentregistry)
 
-Defined in: [packages/ui/src/plugin.ts:214](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L214)
+Defined in: [packages/ui/src/plugin.ts:214](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L214)
 
 Direct access to the component registry for advanced use cases.
 
@@ -304,7 +304,7 @@ Direct access to the component registry for advanced use cases.
 
 > **getRuntime**\<`S`, `A`\>(): [`StatelyUiRuntime`](runtime.md#statelyuiruntime)\<`S`, `A`\>
 
-Defined in: [packages/ui/src/plugin.ts:179](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L179)
+Defined in: [packages/ui/src/plugin.ts:179](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L179)
 
 Get a typed view of the runtime.
 
@@ -329,7 +329,7 @@ The type parameter should match your plugin's schema requirements.
 
 > **registerComponent**(`nodeType`, `mode`, `component`): `void`
 
-Defined in: [packages/ui/src/plugin.ts:205](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L205)
+Defined in: [packages/ui/src/plugin.ts:205](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L205)
 
 Register a component for a node type.
 
@@ -370,7 +370,7 @@ ctx.registerComponent('RelativePath', 'view', RelativePathView);
 
 ### UiPluginResult
 
-Defined in: [packages/ui/src/plugin.ts:152](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L152)
+Defined in: [packages/ui/src/plugin.ts:152](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L152)
 
 The result returned from a plugin setup function.
 
@@ -391,7 +391,7 @@ The plugin type (extends AnyUiPlugin)
 
 > `optional` **api**: [`TypedOperations`](api.md#typedoperations)\<`Plugin`\[`"paths"`\], `Plugin`\[`"ops"`\], `` `${string}/${string}` ``\>
 
-Defined in: [packages/ui/src/plugin.ts:154](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L154)
+Defined in: [packages/ui/src/plugin.ts:154](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L154)
 
 Typed API operations (optional - created automatically if operations provided)
 
@@ -399,7 +399,7 @@ Typed API operations (optional - created automatically if operations provided)
 
 > `optional` **routes**: `Plugin`\[`"routes"`\]
 
-Defined in: [packages/ui/src/plugin.ts:156](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L156)
+Defined in: [packages/ui/src/plugin.ts:156](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L156)
 
 Navigation routes for this plugin that might need access to runtime.
 
@@ -407,7 +407,7 @@ Navigation routes for this plugin that might need access to runtime.
 
 > `optional` **utils**: `Plugin`\[`"utils"`\]
 
-Defined in: [packages/ui/src/plugin.ts:158](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L158)
+Defined in: [packages/ui/src/plugin.ts:158](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L158)
 
 Additional utility functions provided by this plugin that might need access to runtime
 
@@ -417,7 +417,7 @@ Additional utility functions provided by this plugin that might need access to r
 
 > **AllUiPlugins**\<`Schema`, `Augments`\> = [`MergeUiAugments`](#mergeuiaugments)\<`Schema`, `Augments`\>
 
-Defined in: [packages/ui/src/plugin.ts:461](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L461)
+Defined in: [packages/ui/src/plugin.ts:461](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L461)
 
 **`Internal`**
 
@@ -441,7 +441,7 @@ Extract the complete plugins record type from an augments array.
 
 > **AnyUiAugments** = readonly `UiPlugin`\<`string`, `any`, `any`, `any`, `any`, `any`\>[]
 
-Defined in: [packages/ui/src/plugin.ts:424](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L424)
+Defined in: [packages/ui/src/plugin.ts:424](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L424)
 
 Array of UI plugins (used for augments type parameter).
 
@@ -451,7 +451,7 @@ Array of UI plugins (used for augments type parameter).
 
 > **AnyUiPlugin** = `UiPlugin`\<`string`, `any`, `any`, `any`, `any`, `any`\>
 
-Defined in: [packages/ui/src/plugin.ts:421](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L421)
+Defined in: [packages/ui/src/plugin.ts:421](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L421)
 
 Any UI plugin type (used for generic constraints).
 
@@ -461,7 +461,7 @@ Any UI plugin type (used for generic constraints).
 
 > **DefineOptions**\<`T`\> = `T`
 
-Defined in: [packages/ui/src/plugin.ts:269](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L269)
+Defined in: [packages/ui/src/plugin.ts:269](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L269)
 
 Define configuration options for a plugin.
 
@@ -490,7 +490,7 @@ type MyOptions = DefineOptions<{
 
 > **DefineRoutes**\<`T`\> = `T`
 
-Defined in: [packages/ui/src/plugin.ts:288](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L288)
+Defined in: [packages/ui/src/plugin.ts:288](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L288)
 
 Define navigation routes for a plugin.
 
@@ -521,7 +521,7 @@ type MyRoutes = DefineRoutes<{
 
 > **DefineUiPlugin**\<`Name`, `Paths`, `Ops`, `Utils`, `Options`, `Routes`\> = `UiPlugin`\<[`RequireLiteral`](../schema/helpers.md#requireliteral)\<`Name`, `"Plugin names must be string literals"`\>, `Paths`, `Ops`, `Utils`, `Options`, `Routes`\>
 
-Defined in: [packages/ui/src/plugin.ts:323](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L323)
+Defined in: [packages/ui/src/plugin.ts:323](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L323)
 
 Define a UI plugin's type signature.
 
@@ -592,7 +592,7 @@ export function filesUiPlugin(options?: FilesOptions): UiPluginFactory<S, readon
 
 > **DefineUiUtils**\<`T`\> = `T` & `Partial`\<[`UiUtils`](utils.md#uiutils)\>
 
-Defined in: [packages/ui/src/plugin.ts:365](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L365)
+Defined in: [packages/ui/src/plugin.ts:365](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L365)
 
 Define utility functions for a plugin.
 
@@ -622,7 +622,7 @@ type MyUtils = DefineUiUtils<{
 
 > **MergeUiAugments**\<`Schema`, `Augments`\> = `Augments` *extends* readonly \[`...(infer Rest extends readonly AnyUiPlugin[])`, infer Last\] ? [`MergeUiAugments`](#mergeuiaugments)\<`Schema`, `Rest`\> & `Last` *extends* `UiPlugin`\<infer Name, infer Paths, infer Ops, infer Utils, infer Options, infer Routes\> ? `{ [K in Name]: PluginRuntime<Paths, Ops, Utils, Options, Routes> }` : [`AnyRecord`](../schema/helpers.md#anyrecord) : `Record`\<`string`, [`PluginRuntime`](#pluginruntime)\<`any`, `any`\>\>
 
-Defined in: [packages/ui/src/plugin.ts:434](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L434)
+Defined in: [packages/ui/src/plugin.ts:434](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L434)
 
 **`Internal`**
 
@@ -649,7 +649,7 @@ where `plugins[name]` returns the correctly typed `PluginRuntime`.
 
 > **PluginFunction** = (...`args`) => `unknown`
 
-Defined in: [packages/ui/src/plugin.ts:342](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L342)
+Defined in: [packages/ui/src/plugin.ts:342](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L342)
 
 Any function that can be a plugin utility.
 
@@ -669,7 +669,7 @@ Any function that can be a plugin utility.
 
 > **PluginFunctionMap** = `Record`\<`string`, [`PluginFunction`](#pluginfunction)\>
 
-Defined in: [packages/ui/src/plugin.ts:347](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L347)
+Defined in: [packages/ui/src/plugin.ts:347](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L347)
 
 Map of plugin utility functions.
 
@@ -679,7 +679,7 @@ Map of plugin utility functions.
 
 > **UiPluginFactory**\<`Schema`, `Augments`\> = (`runtime`) => [`StatelyUiRuntime`](runtime.md#statelyuiruntime)\<`Schema`, `Augments`\>
 
-Defined in: [packages/ui/src/plugin.ts:229](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L229)
+Defined in: [packages/ui/src/plugin.ts:229](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L229)
 
 Factory function type for creating UI plugins.
 
@@ -721,7 +721,7 @@ Tuple of plugin types that will be available
 
 > **UiPluginFactoryFn**\<`Plugin`\> = \<`Schema`, `Augments`\>(`options?`) => [`UiPluginFactory`](#uipluginfactory)\<`Schema`, `Augments`\>
 
-Defined in: [packages/ui/src/plugin.ts:243](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L243)
+Defined in: [packages/ui/src/plugin.ts:243](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L243)
 
 Configurable UI Plugin Factory Function.
 
@@ -763,7 +763,7 @@ factories simply operate on that declared type.
 
 > **createUiPlugin**\<`Plugin`\>(`config`): [`UiPluginFactoryFn`](#uipluginfactoryfn)\<`Plugin`\>
 
-Defined in: [packages/ui/src/plugin.ts:521](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/plugin.ts#L521)
+Defined in: [packages/ui/src/plugin.ts:521](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/plugin.ts#L521)
 
 Create a UI plugin with ergonomic API.
 

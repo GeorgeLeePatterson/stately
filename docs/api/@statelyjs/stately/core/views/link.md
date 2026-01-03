@@ -25,7 +25,7 @@ import { LinkRefView, LinkRefEdit } from '@statelyjs/stately/core/views/link';
 
 ### LinkInlineEditProps
 
-Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-edit.tsx#L10)
+Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-edit.tsx#L10)
 
 #### Type Parameters
 
@@ -39,7 +39,7 @@ Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:10](https
 
 > `optional` **after**: `ReactNode`
 
-Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-edit.tsx#L20)
+Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-edit.tsx#L20)
 
 Render the mode toggle
 
@@ -47,7 +47,7 @@ Render the mode toggle
 
 > `optional` **isWizard**: `boolean`
 
-Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-edit.tsx#L22)
+Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-edit.tsx#L22)
 
 Whether the form is being used in a wizard
 
@@ -55,7 +55,7 @@ Whether the form is being used in a wizard
 
 > **node**: `ObjectNode`
 
-Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-edit.tsx#L14)
+Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-edit.tsx#L14)
 
 Schema for the inline entity
 
@@ -63,7 +63,7 @@ Schema for the inline entity
 
 > **onChange**: (`value`) => `void`
 
-Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-edit.tsx#L18)
+Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-edit.tsx#L18)
 
 Called when save is clicked with new inline value
 
@@ -81,7 +81,7 @@ Called when save is clicked with new inline value
 
 > **targetType**: `StateEntry`\<`Schema`\[`"config"`\]\>
 
-Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-edit.tsx#L12)
+Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-edit.tsx#L12)
 
 The entity type being configured inline
 
@@ -89,7 +89,7 @@ The entity type being configured inline
 
 > `optional` **value**: [`LinkFor`](#linkfor)\<`Schema`\> \| `null`
 
-Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-edit.tsx#L16)
+Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-edit.tsx#L16)
 
 Current value from parent (either ref or inline)
 
@@ -97,7 +97,7 @@ Current value from parent (either ref or inline)
 
 ### LinkInlineViewProps
 
-Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-view.tsx#L6)
+Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-view.tsx#L6)
 
 #### Type Parameters
 
@@ -111,19 +111,19 @@ Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:6](https:
 
 > **node**: `ObjectNode`
 
-Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-view.tsx#L7)
+Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-view.tsx#L7)
 
 ##### value
 
 > **value**: `CoreEntityData`\<`Schema`\>
 
-Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-view.tsx#L8)
+Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-view.tsx#L8)
 
 ***
 
 ### LinkRefEditProps
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L8)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L8)
 
 #### Type Parameters
 
@@ -137,7 +137,7 @@ Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:8](https://g
 
 > `optional` **after**: `ReactNode`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L26)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L26)
 
 Render the mode toggle
 
@@ -145,7 +145,7 @@ Render the mode toggle
 
 > **availableEntities**: `Schema`\[`"config"`\]\[`"components"`\]\[`"schemas"`\]\[`"Summary"`\][]
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L16)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L16)
 
 List of entity refs
 
@@ -153,7 +153,7 @@ List of entity refs
 
 > `optional` **isLoading**: `boolean`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L12)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L12)
 
 Show loading indicator
 
@@ -161,7 +161,7 @@ Show loading indicator
 
 > `optional` **isReadOnly**: `boolean`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L10)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L10)
 
 Whether the form is readonly
 
@@ -169,7 +169,7 @@ Whether the form is readonly
 
 > **node**: `ObjectNode`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L18)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L18)
 
 Schema for the inline entity
 
@@ -177,7 +177,7 @@ Schema for the inline entity
 
 > **onChange**: (`value`) => `void`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L22)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L22)
 
 Called when save is clicked with new ref value
 
@@ -195,7 +195,7 @@ Called when save is clicked with new ref value
 
 > `optional` **onEditAsInline**: (`ref`) => `void`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L28)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L28)
 
 Callback to edit as inline
 
@@ -213,7 +213,7 @@ Callback to edit as inline
 
 > **onRefresh**: () => `void`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L24)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L24)
 
 Called when refresh is clicked
 
@@ -225,7 +225,7 @@ Called when refresh is clicked
 
 > **targetType**: `StateEntry`\<`Schema`\[`"config"`\]\>
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L14)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L14)
 
 The entity type being referenced (e.g., "source_driver", "input")
 
@@ -233,7 +233,7 @@ The entity type being referenced (e.g., "source_driver", "input")
 
 > `optional` **value**: [`LinkFor`](#linkfor)\<`Schema`\> \| `null`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L20)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L20)
 
 Current value from parent (either ref or inline)
 
@@ -241,7 +241,7 @@ Current value from parent (either ref or inline)
 
 ### LinkRefViewProps
 
-Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-view.tsx#L17)
+Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-view.tsx#L17)
 
 #### Type Parameters
 
@@ -255,37 +255,37 @@ Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:17](https://
 
 > **entityUrlPath**: `string`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-view.tsx#L20)
+Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-view.tsx#L20)
 
 ##### isRequired?
 
 > `optional` **isRequired**: `boolean`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-view.tsx#L23)
+Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-view.tsx#L23)
 
 ##### label?
 
 > `optional` **label**: `ReactNode`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-view.tsx#L18)
+Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-view.tsx#L18)
 
 ##### name?
 
 > `optional` **name**: `string`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-view.tsx#L19)
+Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-view.tsx#L19)
 
 ##### schema?
 
 > `optional` **schema**: `ObjectNode`\<`never`\>
 
-Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-view.tsx#L22)
+Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-view.tsx#L22)
 
 ##### value
 
 > **value**: `object`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-view.tsx#L21)
+Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-view.tsx#L21)
 
 ###### entity\_type
 
@@ -301,7 +301,7 @@ Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:21](https://
 
 > **LinkDetailViewProps**\<`Schema`\> = [`FieldViewProps`](../../../ui/registry.md#fieldviewprops)\<`Schema`, `LinkNode`, [`LinkFor`](#linkfor)\<`Schema`\>\>
 
-Defined in: [packages/stately/src/core/views/link/link-detail-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-detail-view.tsx#L12)
+Defined in: [packages/stately/src/core/views/link/link-detail-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-detail-view.tsx#L12)
 
 #### Type Parameters
 
@@ -315,7 +315,7 @@ Defined in: [packages/stately/src/core/views/link/link-detail-view.tsx:12](https
 
 > **LinkEditViewProps**\<`Schema`\> = [`FieldEditProps`](../../../ui/registry.md#fieldeditprops)\<`Schema`, `LinkNode`, [`LinkFor`](#linkfor)\<`Schema`\> \| `null` \| `undefined`\>
 
-Defined in: [packages/stately/src/core/views/link/link-edit-view.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-edit-view.tsx#L20)
+Defined in: [packages/stately/src/core/views/link/link-edit-view.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-edit-view.tsx#L20)
 
 #### Type Parameters
 
@@ -329,7 +329,7 @@ Defined in: [packages/stately/src/core/views/link/link-edit-view.tsx:20](https:/
 
 > **LinkFor**\<`Schema`\> = \{ `entity_type`: `CoreStateEntry`\<`Schema`\>; `ref`: `string`; \} \| \{ `entity_type`: `CoreStateEntry`\<`Schema`\>; `inline`: `CoreEntityData`\<`Schema`\>; \}
 
-Defined in: [packages/stately/src/core/views/link/link-edit-view.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-edit-view.tsx#L16)
+Defined in: [packages/stately/src/core/views/link/link-edit-view.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-edit-view.tsx#L16)
 
 #### Type Parameters
 
@@ -343,7 +343,7 @@ Defined in: [packages/stately/src/core/views/link/link-edit-view.tsx:16](https:/
 
 > **LinkDetailView**\<`Schema`\>(`__namedParameters`): `Element` \| `null`
 
-Defined in: [packages/stately/src/core/views/link/link-detail-view.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-detail-view.tsx#L18)
+Defined in: [packages/stately/src/core/views/link/link-detail-view.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-detail-view.tsx#L18)
 
 #### Type Parameters
 
@@ -367,7 +367,7 @@ Defined in: [packages/stately/src/core/views/link/link-detail-view.tsx:18](https
 
 > **LinkEditView**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/link/link-edit-view.tsx:30](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-edit-view.tsx#L30)
+Defined in: [packages/stately/src/core/views/link/link-edit-view.tsx:30](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-edit-view.tsx#L30)
 
 Component for editing Link<T> fields
 Orchestrates mode toggling and delegates save/cancel to child components
@@ -394,7 +394,7 @@ Orchestrates mode toggling and delegates save/cancel to child components
 
 > **LinkInlineEdit**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-edit.tsx#L34)
+Defined in: [packages/stately/src/core/views/link/link-inline-edit.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-edit.tsx#L34)
 
 Component for editing Link<T> in inline mode
 
@@ -426,7 +426,7 @@ Responsibilities:
 
 > **LinkInlineView**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-inline-view.tsx#L11)
+Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-inline-view.tsx#L11)
 
 #### Type Parameters
 
@@ -450,7 +450,7 @@ Defined in: [packages/stately/src/core/views/link/link-inline-view.tsx:11](https
 
 > **LinkRefEdit**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:40](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-edit.tsx#L40)
+Defined in: [packages/stately/src/core/views/link/link-ref-edit.tsx:40](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-edit.tsx#L40)
 
 Component for editing Link<T> in reference mode
 
@@ -482,7 +482,7 @@ Responsibilities:
 
 > **LinkRefView**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/link/link-ref-view.tsx#L26)
+Defined in: [packages/stately/src/core/views/link/link-ref-view.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/link/link-ref-view.tsx#L26)
 
 #### Type Parameters
 

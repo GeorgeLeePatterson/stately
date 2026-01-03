@@ -10,7 +10,7 @@ add the files plugin to your schema.
 
 ### RelativePathNode
 
-Defined in: [files/src/schema.ts:70](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/schema.ts#L70)
+Defined in: [files/src/schema.ts:70](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/schema.ts#L70)
 
 Schema node for relative file paths.
 
@@ -55,7 +55,7 @@ Optional description from the OpenAPI schema.
 
 > **nodeType**: `"relativePath"`
 
-Defined in: [files/src/schema.ts:71](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/schema.ts#L71)
+Defined in: [files/src/schema.ts:71](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/schema.ts#L71)
 
 Discriminator identifying the node type (e.g., 'object', 'string', 'array').
 
@@ -69,7 +69,7 @@ Discriminator identifying the node type (e.g., 'object', 'string', 'array').
 
 > **FilesData** = [`DefineData`](../schema/plugin.md#definedata)
 
-Defined in: [files/src/schema.ts:35](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/schema.ts#L35)
+Defined in: [files/src/schema.ts:35](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/schema.ts#L35)
 
 Runtime data for the files plugin.
 
@@ -81,7 +81,7 @@ Currently empty - no runtime caches or registries are needed.
 
 > **FilesNodeMap** = `object`
 
-Defined in: [files/src/schema.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/schema.ts#L79)
+Defined in: [files/src/schema.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/schema.ts#L79)
 
 Node map for files plugin augmentation.
 
@@ -93,7 +93,7 @@ Maps node type identifiers to their node definitions for the plugin system.
 
 > **relativePath**: [`RelativePathNode`](#relativepathnode)
 
-Defined in: [files/src/schema.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/schema.ts#L79)
+Defined in: [files/src/schema.ts:79](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/schema.ts#L79)
 
 ***
 
@@ -101,7 +101,7 @@ Defined in: [files/src/schema.ts:79](https://github.com/GeorgeLeePatterson/state
 
 > **FilesTypes** = [`DefineTypes`](../schema/plugin.md#definetypes)\<\{ `FileEntryType`: `FileEntryType`; `FileInfo`: `FileInfo`; `FileSaveRequest`: `FileSaveRequest`; `FileVersion`: `FileVersion`; \}\>
 
-Defined in: [files/src/schema.ts:19](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/schema.ts#L19)
+Defined in: [files/src/schema.ts:19](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/schema.ts#L19)
 
 Type definitions provided by the files plugin.
 
@@ -113,7 +113,7 @@ These types are available in your schema when the files plugin is installed.
 
 > **TFilesNodeType** = *typeof* [`FilesNodeType`](#filesnodetype)\[keyof *typeof* [`FilesNodeType`](#filesnodetype)\]
 
-Defined in: [files/src/schema.ts:46](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/schema.ts#L46)
+Defined in: [files/src/schema.ts:46](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/schema.ts#L46)
 
 Union type of all files plugin node types
 
@@ -123,7 +123,7 @@ Union type of all files plugin node types
 
 > `const` **FilesNodeType**: `object`
 
-Defined in: [files/src/schema.ts:40](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/files/src/schema.ts#L40)
+Defined in: [files/src/schema.ts:40](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/files/src/schema.ts#L40)
 
 Node type identifiers for the files plugin.
 

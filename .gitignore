@@ -35,6 +35,9 @@ target
 # Any local packages
 packages/**/statelyjs-*.tgz
 
+# Auto-generated API docs
+docs/api/*
+
 # Sampling
 coverage/*
 flamegraph.svg

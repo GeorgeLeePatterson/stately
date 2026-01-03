@@ -6,7 +6,7 @@
 
 > `const` **Select**: \<`Value`, `Multiple`\>(`props`) => `Element` = `SelectPrimitive.Root`
 
-Defined in: [packages/ui/src/components/base/select.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L8)
+Defined in: [packages/ui/src/components/base/select.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L8)
 
 Groups all parts of the select.
 Doesn’t render its own HTML element.
@@ -39,7 +39,7 @@ Documentation: [Base UI Select](https://base-ui.com/react/components/select)
 
 > **SelectContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/select.tsx:54](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L54)
+Defined in: [packages/ui/src/components/base/select.tsx:54](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L54)
 
 #### Parameters
 
@@ -57,7 +57,7 @@ Defined in: [packages/ui/src/components/base/select.tsx:54](https://github.com/G
 
 > **SelectGroup**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/select.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L10)
+Defined in: [packages/ui/src/components/base/select.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L10)
 
 #### Parameters
 
@@ -75,7 +75,7 @@ Defined in: [packages/ui/src/components/base/select.tsx:10](https://github.com/G
 
 > **SelectItem**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/select.tsx:105](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L105)
+Defined in: [packages/ui/src/components/base/select.tsx:105](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L105)
 
 #### Parameters
 
@@ -93,7 +93,7 @@ Defined in: [packages/ui/src/components/base/select.tsx:105](https://github.com/
 
 > **SelectLabel**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/select.tsx:95](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L95)
+Defined in: [packages/ui/src/components/base/select.tsx:95](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L95)
 
 #### Parameters
 
@@ -111,7 +111,7 @@ Defined in: [packages/ui/src/components/base/select.tsx:95](https://github.com/G
 
 > **SelectScrollDownButton**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/select.tsx:157](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L157)
+Defined in: [packages/ui/src/components/base/select.tsx:157](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L157)
 
 #### Parameters
 
@@ -129,7 +129,7 @@ Defined in: [packages/ui/src/components/base/select.tsx:157](https://github.com/
 
 > **SelectScrollUpButton**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/select.tsx:139](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L139)
+Defined in: [packages/ui/src/components/base/select.tsx:139](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L139)
 
 #### Parameters
 
@@ -147,7 +147,7 @@ Defined in: [packages/ui/src/components/base/select.tsx:139](https://github.com/
 
 > **SelectSeparator**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/select.tsx:129](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L129)
+Defined in: [packages/ui/src/components/base/select.tsx:129](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L129)
 
 #### Parameters
 
@@ -165,7 +165,7 @@ Defined in: [packages/ui/src/components/base/select.tsx:129](https://github.com/
 
 > **SelectTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/select.tsx:30](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L30)
+Defined in: [packages/ui/src/components/base/select.tsx:30](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L30)
 
 #### Parameters
 
@@ -183,7 +183,7 @@ Defined in: [packages/ui/src/components/base/select.tsx:30](https://github.com/G
 
 > **SelectValue**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/select.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/select.tsx#L20)
+Defined in: [packages/ui/src/components/base/select.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/select.tsx#L20)
 
 #### Parameters
 

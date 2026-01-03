@@ -35,7 +35,7 @@ const result = await plugins.arrow.api.execute_query({
 
 > **ArrowApi** = [`TypedOperations`](../ui/api.md#typedoperations)\<[`ArrowPaths`](#arrowpaths), *typeof* [`ARROW_OPERATIONS`](#arrow_operations)\>
 
-Defined in: [arrow/src/api.ts:72](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/api.ts#L72)
+Defined in: [arrow/src/api.ts:72](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/api.ts#L72)
 
 Typed API client for Arrow operations.
 
@@ -47,7 +47,7 @@ Access via `runtime.plugins.arrow.api`.
 
 > **ArrowOperations** = [`DefineOperations`](../schema/api.md#defineoperations)\<`operations`\>
 
-Defined in: [arrow/src/api.ts:42](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/api.ts#L42)
+Defined in: [arrow/src/api.ts:42](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/api.ts#L42)
 
 OpenAPI operations type for the arrow plugin
 
@@ -57,7 +57,7 @@ OpenAPI operations type for the arrow plugin
 
 > **ArrowPaths** = [`DefinePaths`](../stately/schema.md#definepaths)\<`paths`\>
 
-Defined in: [arrow/src/api.ts:39](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/api.ts#L39)
+Defined in: [arrow/src/api.ts:39](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/api.ts#L39)
 
 OpenAPI paths type for the arrow plugin
 
@@ -67,7 +67,7 @@ OpenAPI paths type for the arrow plugin
 
 > `const` **ARROW\_OPERATIONS**: `object`
 
-Defined in: [arrow/src/api.ts:50](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/api.ts#L50)
+Defined in: [arrow/src/api.ts:50](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/api.ts#L50)
 
 Arrow plugin operation bindings.
 

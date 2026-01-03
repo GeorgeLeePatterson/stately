@@ -6,7 +6,7 @@
 
 > **Item**(`__namedParameters`): `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\>
 
-Defined in: [packages/ui/src/components/base/item.tsx:59](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L59)
+Defined in: [packages/ui/src/components/base/item.tsx:59](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L59)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/item.tsx:59](https://github.com/Geo
 
 > **ItemActions**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/item.tsx:153](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L153)
+Defined in: [packages/ui/src/components/base/item.tsx:153](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L153)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/item.tsx:153](https://github.com/Ge
 
 > **ItemContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/item.tsx:114](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L114)
+Defined in: [packages/ui/src/components/base/item.tsx:114](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L114)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/item.tsx:114](https://github.com/Ge
 
 > **ItemDescription**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/item.tsx:140](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L140)
+Defined in: [packages/ui/src/components/base/item.tsx:140](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L140)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/item.tsx:140](https://github.com/Ge
 
 > **ItemFooter**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/item.tsx:176](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L176)
+Defined in: [packages/ui/src/components/base/item.tsx:176](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L176)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/item.tsx:176](https://github.com/Ge
 
 > **ItemGroup**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/item.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L9)
+Defined in: [packages/ui/src/components/base/item.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L9)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/ui/src/components/base/item.tsx:9](https://github.com/Geor
 
 > **ItemHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/item.tsx:163](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L163)
+Defined in: [packages/ui/src/components/base/item.tsx:163](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L163)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: [packages/ui/src/components/base/item.tsx:163](https://github.com/Ge
 
 > **ItemMedia**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/item.tsx:99](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L99)
+Defined in: [packages/ui/src/components/base/item.tsx:99](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L99)
 
 #### Parameters
 
@@ -150,7 +150,7 @@ Defined in: [packages/ui/src/components/base/item.tsx:99](https://github.com/Geo
 
 > **ItemSeparator**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/item.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L23)
+Defined in: [packages/ui/src/components/base/item.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L23)
 
 #### Parameters
 
@@ -168,7 +168,7 @@ Defined in: [packages/ui/src/components/base/item.tsx:23](https://github.com/Geo
 
 > **ItemTitle**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/item.tsx:127](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/item.tsx#L127)
+Defined in: [packages/ui/src/components/base/item.tsx:127](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/item.tsx#L127)
 
 #### Parameters
 

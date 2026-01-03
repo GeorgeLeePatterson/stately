@@ -67,7 +67,7 @@ point.transform({ value: 0 }); // { value: 2 }
 
 ### Extensible
 
-Defined in: [packages/ui/src/extension.tsx:310](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L310)
+Defined in: [packages/ui/src/extension.tsx:310](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L310)
 
 An extension object for registering transformers.
 
@@ -92,7 +92,7 @@ The state shape that flows through transformers
 
 > `readonly` **extension**: [`ExtensionPoint`](#extensionpoint)\<`TState`\>
 
-Defined in: [packages/ui/src/extension.tsx:315](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L315)
+Defined in: [packages/ui/src/extension.tsx:315](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L315)
 
 The underlying extension point.
 Use this for advanced scenarios requiring direct pipeline access.
@@ -101,7 +101,7 @@ Use this for advanced scenarios requiring direct pipeline access.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/ui/src/extension.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L80)
+Defined in: [packages/ui/src/extension.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L80)
 
 Unique identifier for the extension point.
 
@@ -125,7 +125,7 @@ Use the convention `{plugin}.{feature}` to avoid collisions.
 
 > `readonly` **summary**: `string`
 
-Defined in: [packages/ui/src/extension.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L89)
+Defined in: [packages/ui/src/extension.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L89)
 
 Human-readable summary describing what this extension point does.
 
@@ -147,7 +147,7 @@ This is used for documentation generation and IDE hints.
 
 > **extend**(`input`): `void`
 
-Defined in: [packages/ui/src/extension.tsx:339](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L339)
+Defined in: [packages/ui/src/extension.tsx:339](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L339)
 
 Extend the state with a partial update or transformer function.
 
@@ -184,7 +184,7 @@ Partial state object or transformer function
 
 ### ExtensibleConfig
 
-Defined in: [packages/ui/src/extension.tsx:270](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L270)
+Defined in: [packages/ui/src/extension.tsx:270](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L270)
 
 Configuration for creating an extensible hook.
 
@@ -212,7 +212,7 @@ The state shape that flows through transformers
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/ui/src/extension.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L80)
+Defined in: [packages/ui/src/extension.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L80)
 
 Unique identifier for the extension point.
 
@@ -236,7 +236,7 @@ Use the convention `{plugin}.{feature}` to avoid collisions.
 
 > **initial**: (`options`) => `TState`
 
-Defined in: [packages/ui/src/extension.tsx:278](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L278)
+Defined in: [packages/ui/src/extension.tsx:278](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L278)
 
 Factory function that creates initial state from hook options.
 Called each time the hook is used.
@@ -259,7 +259,7 @@ Initial state before any transformers are applied
 
 > `readonly` **summary**: `string`
 
-Defined in: [packages/ui/src/extension.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L89)
+Defined in: [packages/ui/src/extension.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L89)
 
 Human-readable summary describing what this extension point does.
 
@@ -279,7 +279,7 @@ This is used for documentation generation and IDE hints.
 
 ### ExtensionPoint
 
-Defined in: [packages/ui/src/extension.tsx:101](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L101)
+Defined in: [packages/ui/src/extension.tsx:101](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L101)
 
 An extension point that plugins can extend with transformers.
 
@@ -305,7 +305,7 @@ The state type that flows through the extension
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/ui/src/extension.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L80)
+Defined in: [packages/ui/src/extension.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L80)
 
 Unique identifier for the extension point.
 
@@ -329,7 +329,7 @@ Use the convention `{plugin}.{feature}` to avoid collisions.
 
 > `readonly` **summary**: `string`
 
-Defined in: [packages/ui/src/extension.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L89)
+Defined in: [packages/ui/src/extension.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L89)
 
 Human-readable summary describing what this extension point does.
 
@@ -351,7 +351,7 @@ This is used for documentation generation and IDE hints.
 
 > **extend**(`transformer`): `void`
 
-Defined in: [packages/ui/src/extension.tsx:139](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L139)
+Defined in: [packages/ui/src/extension.tsx:139](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L139)
 
 Register a transformer to this extension point.
 
@@ -385,7 +385,7 @@ addStringModes.extend(state => ({
 
 > **transform**(`state`): `T`
 
-Defined in: [packages/ui/src/extension.tsx:119](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L119)
+Defined in: [packages/ui/src/extension.tsx:119](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L119)
 
 Apply all registered transformers to the input state.
 
@@ -419,7 +419,7 @@ const resolved = addStringModes.transform({
 
 ### ExtensionPointConfig
 
-Defined in: [packages/ui/src/extension.tsx:71](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L71)
+Defined in: [packages/ui/src/extension.tsx:71](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L71)
 
 Configuration for defining an extension point.
 
@@ -435,7 +435,7 @@ Configuration for defining an extension point.
 
 > `readonly` **id**: `string`
 
-Defined in: [packages/ui/src/extension.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L80)
+Defined in: [packages/ui/src/extension.tsx:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L80)
 
 Unique identifier for the extension point.
 
@@ -455,7 +455,7 @@ Use the convention `{plugin}.{feature}` to avoid collisions.
 
 > `readonly` **summary**: `string`
 
-Defined in: [packages/ui/src/extension.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L89)
+Defined in: [packages/ui/src/extension.tsx:89](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L89)
 
 Human-readable summary describing what this extension point does.
 
@@ -473,7 +473,7 @@ This is used for documentation generation and IDE hints.
 
 > **ExtendInput**\<`T`\> = `Partial`\<`T`\> \| (`state`) => `Partial`\<`T`\>
 
-Defined in: [packages/ui/src/extension.tsx:289](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L289)
+Defined in: [packages/ui/src/extension.tsx:289](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L289)
 
 Input type for extend() - either a partial state object or a transformer function.
 
@@ -494,7 +494,7 @@ In both cases, the framework handles merging. You never need to spread state.
 
 > **ExtensibleHook**\<`TOptions`, `TState`\> = (`options`) => `TState`
 
-Defined in: [packages/ui/src/extension.tsx:300](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L300)
+Defined in: [packages/ui/src/extension.tsx:300](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L300)
 
 A React hook that returns transformed state from an extensible.
 
@@ -531,7 +531,7 @@ The state shape that flows through transformers
 
 > **ExtensionState**\<`E`\> = `E` *extends* [`ExtensionPoint`](#extensionpoint)\<infer T\> ? `T` : `never`
 
-Defined in: [packages/ui/src/extension.tsx:205](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L205)
+Defined in: [packages/ui/src/extension.tsx:205](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L205)
 
 Type helper to extract the state type from an extension point.
 
@@ -554,7 +554,7 @@ type State = ExtensionState<typeof addStringModes>;
 
 > **createExtensible**\<`TOptions`, `TState`\>(`config`): \[[`ExtensibleHook`](#extensiblehook)\<`TOptions`, `TState`\>, [`Extensible`](#extensible)\<`TState`\>\]
 
-Defined in: [packages/ui/src/extension.tsx:399](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L399)
+Defined in: [packages/ui/src/extension.tsx:399](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L399)
 
 Create an extensible hook with ergonomic extension API.
 
@@ -641,7 +641,7 @@ Tuple of [hook, extension] - hook for components, extension for registration
 
 > **defineExtension**\<`T`\>(`config`): [`ExtensionPoint`](#extensionpoint)\<`T`\>
 
-Defined in: [packages/ui/src/extension.tsx:180](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/extension.tsx#L180)
+Defined in: [packages/ui/src/extension.tsx:180](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/extension.tsx#L180)
 
 Define a new extension point.
 

@@ -11,7 +11,7 @@ error reporting.
 
 ### ValidateArgs
 
-Defined in: [validation.ts:116](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L116)
+Defined in: [validation.ts:116](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L116)
 
 Context passed to validation hooks in plugins.
 
@@ -52,7 +52,7 @@ The schema node type at this location
 
 > **data**: `any`
 
-Defined in: [validation.ts:123](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L123)
+Defined in: [validation.ts:123](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L123)
 
 The actual data value to validate
 
@@ -60,7 +60,7 @@ The actual data value to validate
 
 > `optional` **options**: [`ValidationOptions`](#validationoptions)
 
-Defined in: [validation.ts:127](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L127)
+Defined in: [validation.ts:127](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L127)
 
 Validation options controlling behavior
 
@@ -68,7 +68,7 @@ Validation options controlling behavior
 
 > **path**: `string`
 
-Defined in: [validation.ts:121](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L121)
+Defined in: [validation.ts:121](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L121)
 
 JSON path to the current location being validated
 
@@ -76,7 +76,7 @@ JSON path to the current location being validated
 
 > **schema**: `Node`
 
-Defined in: [validation.ts:125](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L125)
+Defined in: [validation.ts:125](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L125)
 
 The schema node defining the expected structure
 
@@ -84,7 +84,7 @@ The schema node defining the expected structure
 
 ### ValidationError
 
-Defined in: [validation.ts:27](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L27)
+Defined in: [validation.ts:27](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L27)
 
 Represents a single validation error with location and context.
 
@@ -104,7 +104,7 @@ const error: ValidationError = {
 
 > **message**: `string`
 
-Defined in: [validation.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L31)
+Defined in: [validation.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L31)
 
 Human-readable description of the validation failure
 
@@ -112,7 +112,7 @@ Human-readable description of the validation failure
 
 > **path**: `string`
 
-Defined in: [validation.ts:29](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L29)
+Defined in: [validation.ts:29](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L29)
 
 JSON path to the invalid value (e.g., 'user.address.city')
 
@@ -120,7 +120,7 @@ JSON path to the invalid value (e.g., 'user.address.city')
 
 > `optional` **value**: `any`
 
-Defined in: [validation.ts:33](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L33)
+Defined in: [validation.ts:33](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L33)
 
 The actual value that failed validation (optional for security)
 
@@ -128,7 +128,7 @@ The actual value that failed validation (optional for security)
 
 ### ValidationOptions
 
-Defined in: [validation.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L81)
+Defined in: [validation.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L81)
 
 Configuration options for validation behavior.
 
@@ -154,7 +154,7 @@ const options: ValidationOptions = {
 
 > `optional` **debug**: `boolean`
 
-Defined in: [validation.ts:89](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L89)
+Defined in: [validation.ts:89](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L89)
 
 Enable verbose debug output during validation
 
@@ -162,7 +162,7 @@ Enable verbose debug output during validation
 
 > `optional` **depth**: `number`
 
-Defined in: [validation.ts:83](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L83)
+Defined in: [validation.ts:83](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L83)
 
 Current recursion depth (used internally)
 
@@ -170,7 +170,7 @@ Current recursion depth (used internally)
 
 > `optional` **maxDepth**: `number`
 
-Defined in: [validation.ts:87](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L87)
+Defined in: [validation.ts:87](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L87)
 
 Maximum allowed recursion depth before stopping validation
 
@@ -178,7 +178,7 @@ Maximum allowed recursion depth before stopping validation
 
 > `optional` **onDepthWarning**: (`path`, `depth`) => `void`
 
-Defined in: [validation.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L91)
+Defined in: [validation.ts:91](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L91)
 
 Callback invoked when validation exceeds warnDepth
 
@@ -200,7 +200,7 @@ Callback invoked when validation exceeds warnDepth
 
 > `optional` **warnDepth**: `number`
 
-Defined in: [validation.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L85)
+Defined in: [validation.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L85)
 
 Depth at which to trigger warning callback
 
@@ -208,7 +208,7 @@ Depth at which to trigger warning callback
 
 ### ValidationResult
 
-Defined in: [validation.ts:56](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L56)
+Defined in: [validation.ts:56](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L56)
 
 Result of a validation operation.
 
@@ -236,7 +236,7 @@ if (!result.valid) {
 
 > **errors**: [`ValidationError`](#validationerror)[]
 
-Defined in: [validation.ts:60](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L60)
+Defined in: [validation.ts:60](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L60)
 
 Array of validation errors (empty if valid is true)
 
@@ -244,7 +244,7 @@ Array of validation errors (empty if valid is true)
 
 > **valid**: `boolean`
 
-Defined in: [validation.ts:58](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L58)
+Defined in: [validation.ts:58](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L58)
 
 Whether the validated data passed all validation rules
 
@@ -254,7 +254,7 @@ Whether the validated data passed all validation rules
 
 > **ValidateHook**\<`S`\> = (`args`) => [`ValidationResult`](#validationresult) \| `undefined`
 
-Defined in: [validation.ts:157](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/validation.ts#L157)
+Defined in: [validation.ts:157](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/validation.ts#L157)
 
 Validation hook function signature for plugins.
 

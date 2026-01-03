@@ -4,7 +4,7 @@
 
 ### ConfirmDialogProps
 
-Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/dialogs/confirm-dialog.tsx#L18)
+Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/dialogs/confirm-dialog.tsx#L18)
 
 #### Properties
 
@@ -12,25 +12,25 @@ Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:18](https://github.com/G
 
 > **actionLabel**: `string`
 
-Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/dialogs/confirm-dialog.tsx#L19)
+Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/dialogs/confirm-dialog.tsx#L19)
 
 ##### description?
 
 > `optional` **description**: `string`
 
-Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/dialogs/confirm-dialog.tsx#L20)
+Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/dialogs/confirm-dialog.tsx#L20)
 
 ##### mode?
 
 > `optional` **mode**: `"destructive"` \| `"warning"` \| `"success"`
 
-Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/dialogs/confirm-dialog.tsx#L21)
+Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/dialogs/confirm-dialog.tsx#L21)
 
 ##### onConfirm()
 
 > **onConfirm**: () => `void`
 
-Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/dialogs/confirm-dialog.tsx#L22)
+Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/dialogs/confirm-dialog.tsx#L22)
 
 ###### Returns
 
@@ -40,13 +40,13 @@ Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:22](https://github.com/G
 
 > `optional` **open**: `boolean`
 
-Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/dialogs/confirm-dialog.tsx#L23)
+Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/dialogs/confirm-dialog.tsx#L23)
 
 ##### setOpen()
 
 > **setOpen**: (`open`) => `void`
 
-Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/dialogs/confirm-dialog.tsx#L24)
+Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/dialogs/confirm-dialog.tsx#L24)
 
 ###### Parameters
 
@@ -64,7 +64,7 @@ Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:24](https://github.com/G
 
 > `const` **modeClasses**: `object`
 
-Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/dialogs/confirm-dialog.tsx#L12)
+Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/dialogs/confirm-dialog.tsx#L12)
 
 #### Type Declaration
 
@@ -86,7 +86,7 @@ Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:12](https://github.com/G
 
 > **ConfirmDialog**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:27](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/dialogs/confirm-dialog.tsx#L27)
+Defined in: [packages/ui/src/dialogs/confirm-dialog.tsx:27](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/dialogs/confirm-dialog.tsx#L27)
 
 #### Parameters
 

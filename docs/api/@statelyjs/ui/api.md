@@ -40,7 +40,7 @@ const { data } = await api.getUser({ params: { path: { id: '123' } } });
 
 > **TypedOperations**\<`Paths`, `Bindings`, `Media`\> = \{ \[K in keyof Bindings\]: Bindings\[K\] extends \{ method: infer M extends HttpMethod; path: infer P extends keyof Paths \} ? Paths\[P\] extends Record\<M, infer Op extends Record\<string \| number, any\>\> ? (init: MaybeOptionalInitParam\<Init\>) =\> Promise\<FetchResponse\<Op, Init, Media\>\> : never : never \}
 
-Defined in: [packages/ui/src/api.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/api.ts#L81)
+Defined in: [packages/ui/src/api.ts:81](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/api.ts#L81)
 
 **`Internal`**
 
@@ -89,7 +89,7 @@ const ops: MyOperations = {
 
 > **createOperations**\<`Paths`, `Bindings`, `Media`\>(`client`, `bindings`, `prefix`): [`TypedOperations`](#typedoperations)\<`Paths`, `Bindings`, `Media`\>
 
-Defined in: [packages/ui/src/api.ts:139](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/api.ts#L139)
+Defined in: [packages/ui/src/api.ts:139](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/api.ts#L139)
 
 #### Type Parameters
 

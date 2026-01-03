@@ -27,7 +27,7 @@ function App() {
 
 ### HeaderProps
 
-Defined in: [packages/stately/src/layout/header.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/header.tsx#L4)
+Defined in: [packages/stately/src/layout/header.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/header.tsx#L4)
 
 #### Properties
 
@@ -35,25 +35,25 @@ Defined in: [packages/stately/src/layout/header.tsx:4](https://github.com/George
 
 > `optional` **before**: `ReactNode`
 
-Defined in: [packages/stately/src/layout/header.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/header.tsx#L5)
+Defined in: [packages/stately/src/layout/header.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/header.tsx#L5)
 
 ##### disableThemeToggle?
 
 > `optional` **disableThemeToggle**: `boolean`
 
-Defined in: [packages/stately/src/layout/header.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/header.tsx#L7)
+Defined in: [packages/stately/src/layout/header.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/header.tsx#L7)
 
 ##### pageTitle?
 
 > `optional` **pageTitle**: `string`
 
-Defined in: [packages/stately/src/layout/header.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/header.tsx#L6)
+Defined in: [packages/stately/src/layout/header.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/header.tsx#L6)
 
 ***
 
 ### PageHeaderProps
 
-Defined in: [packages/stately/src/layout/page-header.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/page-header.tsx#L9)
+Defined in: [packages/stately/src/layout/page-header.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/page-header.tsx#L9)
 
 #### Properties
 
@@ -61,13 +61,13 @@ Defined in: [packages/stately/src/layout/page-header.tsx:9](https://github.com/G
 
 > `optional` **actions**: `ReactNode`
 
-Defined in: [packages/stately/src/layout/page-header.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/page-header.tsx#L13)
+Defined in: [packages/stately/src/layout/page-header.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/page-header.tsx#L13)
 
 ##### backLink?
 
 > `optional` **backLink**: `object`
 
-Defined in: [packages/stately/src/layout/page-header.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/page-header.tsx#L14)
+Defined in: [packages/stately/src/layout/page-header.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/page-header.tsx#L14)
 
 ###### href
 
@@ -81,7 +81,7 @@ Defined in: [packages/stately/src/layout/page-header.tsx:14](https://github.com/
 
 > `optional` **breadcrumbs**: `object`[]
 
-Defined in: [packages/stately/src/layout/page-header.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/page-header.tsx#L12)
+Defined in: [packages/stately/src/layout/page-header.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/page-header.tsx#L12)
 
 ###### href?
 
@@ -95,19 +95,19 @@ Defined in: [packages/stately/src/layout/page-header.tsx:12](https://github.com/
 
 > `optional` **description**: `string`
 
-Defined in: [packages/stately/src/layout/page-header.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/page-header.tsx#L11)
+Defined in: [packages/stately/src/layout/page-header.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/page-header.tsx#L11)
 
 ##### disableThemeToggle?
 
 > `optional` **disableThemeToggle**: `boolean`
 
-Defined in: [packages/stately/src/layout/page-header.tsx:15](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/page-header.tsx#L15)
+Defined in: [packages/stately/src/layout/page-header.tsx:15](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/page-header.tsx#L15)
 
 ##### title?
 
 > `optional` **title**: `ReactNode`
 
-Defined in: [packages/stately/src/layout/page-header.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/page-header.tsx#L10)
+Defined in: [packages/stately/src/layout/page-header.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/page-header.tsx#L10)
 
 ## Type Aliases
 
@@ -115,7 +115,7 @@ Defined in: [packages/stately/src/layout/page-header.tsx:10](https://github.com/
 
 > **NavigationProps**\<`S`, `A`\> = `NavigationBaseProps`\<`S`, `A`\> & `React.ComponentProps`\<*typeof* [`Sidebar`](../ui/components/base/sidebar.md#sidebar)\>
 
-Defined in: [packages/stately/src/layout/navigation.tsx:39](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/navigation.tsx#L39)
+Defined in: [packages/stately/src/layout/navigation.tsx:39](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/navigation.tsx#L39)
 
 #### Type Parameters
 
@@ -133,7 +133,7 @@ Defined in: [packages/stately/src/layout/navigation.tsx:39](https://github.com/G
 
 > **PageProps** = `React.PropsWithChildren`\<[`PageHeaderProps`](#pageheaderprops)\>
 
-Defined in: [packages/stately/src/layout/page.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/page.tsx#L4)
+Defined in: [packages/stately/src/layout/page.tsx:4](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/page.tsx#L4)
 
 ***
 
@@ -141,7 +141,7 @@ Defined in: [packages/stately/src/layout/page.tsx:4](https://github.com/GeorgeLe
 
 > **RootProps** = `object`
 
-Defined in: [packages/stately/src/layout/root.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/root.tsx#L9)
+Defined in: [packages/stately/src/layout/root.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/root.tsx#L9)
 
 #### Properties
 
@@ -149,13 +149,13 @@ Defined in: [packages/stately/src/layout/root.tsx:9](https://github.com/GeorgeLe
 
 > `optional` **contentProps**: `React.ComponentProps`\<`"div"`\>
 
-Defined in: [packages/stately/src/layout/root.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/root.tsx#L13)
+Defined in: [packages/stately/src/layout/root.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/root.tsx#L13)
 
 ##### headerProps?
 
 > `optional` **headerProps**: `React.ComponentProps`\<*typeof* `Header`\> & `object`
 
-Defined in: [packages/stately/src/layout/root.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/root.tsx#L10)
+Defined in: [packages/stately/src/layout/root.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/root.tsx#L10)
 
 ###### Type Declaration
 
@@ -167,13 +167,13 @@ Defined in: [packages/stately/src/layout/root.tsx:10](https://github.com/GeorgeL
 
 > `optional` **mainProps**: `React.ComponentProps`\<`"main"`\>
 
-Defined in: [packages/stately/src/layout/root.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/root.tsx#L12)
+Defined in: [packages/stately/src/layout/root.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/root.tsx#L12)
 
 ##### sidebarProps?
 
 > `optional` **sidebarProps**: `React.ComponentProps`\<*typeof* `Navigation`\>
 
-Defined in: [packages/stately/src/layout/root.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/root.tsx#L11)
+Defined in: [packages/stately/src/layout/root.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/root.tsx#L11)
 
 ## Variables
 
@@ -181,7 +181,7 @@ Defined in: [packages/stately/src/layout/root.tsx:11](https://github.com/GeorgeL
 
 > `const` **Layout**: `object`
 
-Defined in: [packages/stately/src/layout/index.ts:39](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/layout/index.ts#L39)
+Defined in: [packages/stately/src/layout/index.ts:39](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/layout/index.ts#L39)
 
 #### Type Declaration
 

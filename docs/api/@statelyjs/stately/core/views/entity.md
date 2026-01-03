@@ -26,7 +26,7 @@ import { EntityDetailView, EntityEditView, EditMode } from '@statelyjs/stately/c
 
 ### EditMode
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L11)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L11)
 
 #### Enumeration Members
 
@@ -34,25 +34,25 @@ Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:11](htt
 
 > **FORM**: `"Form"`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L12)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L12)
 
 ##### JSON
 
 > **JSON**: `"JSON"`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L13)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L13)
 
 ##### WIZARD
 
 > **WIZARD**: `"Wizard"`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L14)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L14)
 
 ## Interfaces
 
 ### EntityDetailViewProps
 
-Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-detail-view.tsx#L9)
+Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-detail-view.tsx#L9)
 
 #### Type Parameters
 
@@ -66,31 +66,31 @@ Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:9](ht
 
 > `optional` **disableJsonView**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-detail-view.tsx#L13)
+Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-detail-view.tsx#L13)
 
 ##### entity
 
 > **entity**: `CoreEntityData`\<`Schema`\>
 
-Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-detail-view.tsx#L11)
+Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-detail-view.tsx#L11)
 
 ##### entityId?
 
 > `optional` **entityId**: `string`
 
-Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-detail-view.tsx#L12)
+Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-detail-view.tsx#L12)
 
 ##### node
 
 > **node**: `Schema`\[`"plugin"`\]\[`"Nodes"`\]\[`"object"`\]
 
-Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-detail-view.tsx#L10)
+Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-detail-view.tsx#L10)
 
 ***
 
 ### EntityEditViewProps
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L17)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L17)
 
 #### Type Parameters
 
@@ -104,37 +104,37 @@ Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:17](htt
 
 > `optional` **defaultMode**: [`EditMode`](#editmode)
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L20)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L20)
 
 ##### isLoading?
 
 > `optional` **isLoading**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L25)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L25)
 
 ##### isRootEntity?
 
 > `optional` **isRootEntity**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L23)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L23)
 
 ##### isSingleton?
 
 > `optional` **isSingleton**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L24)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L24)
 
 ##### node
 
 > **node**: `Schema`\[`"plugin"`\]\[`"Nodes"`\]\[`"object"`\]
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L18)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L18)
 
 ##### onChange()
 
 > **onChange**: (`data`) => `void`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L21)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L21)
 
 ###### Parameters
 
@@ -150,7 +150,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:21](htt
 
 > `optional` **onSave**: () => `void`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L22)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L22)
 
 ###### Returns
 
@@ -160,13 +160,13 @@ Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:22](htt
 
 > **value**: `any`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L19)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L19)
 
 ***
 
 ### EntityFormEditProps
 
-Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-form-edit.tsx#L12)
+Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-form-edit.tsx#L12)
 
 #### Type Parameters
 
@@ -180,19 +180,19 @@ Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:12](htt
 
 > `optional` **isLoading**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:15](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-form-edit.tsx#L15)
+Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:15](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-form-edit.tsx#L15)
 
 ##### isRootEntity?
 
 > `optional` **isRootEntity**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-form-edit.tsx#L14)
+Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-form-edit.tsx#L14)
 
 ##### onChange()
 
 > **onChange**: (`value`) => `void`
 
-Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-form-edit.tsx#L13)
+Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-form-edit.tsx#L13)
 
 ###### Parameters
 
@@ -208,7 +208,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:13](htt
 
 ### EntityFormProps
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L11)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L11)
 
 #### Type Parameters
 
@@ -222,19 +222,19 @@ Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:11](ht
 
 > `optional` **entity**: `CoreEntityData`\<`Schema`\>
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L13)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L13)
 
 ##### node
 
 > **node**: `Schema`\[`"plugin"`\]\[`"Nodes"`\]\[`"object"`\]
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L12)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L12)
 
 ***
 
 ### EntityPropertyProps
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L16)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L16)
 
 #### Type Parameters
 
@@ -248,25 +248,25 @@ Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:16](ht
 
 > **fieldName**: `ReactNode`
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L17)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L17)
 
 ##### isRequired?
 
 > `optional` **isRequired**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L19)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L19)
 
 ##### node
 
 > **node**: `Schema`\[`"plugin"`\]\[`"AnyNode"`\]
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L18)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L18)
 
 ***
 
 ### EntitySelectEditProps
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L20)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:20](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L20)
 
 #### Type Parameters
 
@@ -280,7 +280,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:20](h
 
 > `optional` **after**: `ReactNode`
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:36](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L36)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:36](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L36)
 
 Render the mode toggle
 
@@ -288,7 +288,7 @@ Render the mode toggle
 
 > **available**: `Schema`\[`"config"`\]\[`"components"`\]\[`"schemas"`\]\[`"Summary"`\][]
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L28)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:28](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L28)
 
 List of entity refs
 
@@ -296,7 +296,7 @@ List of entity refs
 
 > `optional` **isLoading**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L24)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:24](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L24)
 
 Show loading indicator
 
@@ -304,7 +304,7 @@ Show loading indicator
 
 > `optional` **isReadOnly**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L22)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L22)
 
 Whether the form is readonly
 
@@ -312,7 +312,7 @@ Whether the form is readonly
 
 > **node**: `Schema`\[`"plugin"`\]\[`"Nodes"`\]\[`"object"`\]
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:30](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L30)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:30](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L30)
 
 Schema for the inline entity
 
@@ -320,7 +320,7 @@ Schema for the inline entity
 
 > **onChange**: (`value`) => `void`
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L34)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L34)
 
 Called when save is clicked with new ref value
 
@@ -338,7 +338,7 @@ Called when save is clicked with new ref value
 
 > `optional` **onEdit**: (`value`) => `void`
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L38)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L38)
 
 Callback to edit as inline
 
@@ -356,7 +356,7 @@ Callback to edit as inline
 
 > **onRefresh**: () => `void`
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:40](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L40)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:40](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L40)
 
 Refresh the entity list
 
@@ -368,7 +368,7 @@ Refresh the entity list
 
 > **targetType**: `StateEntry`\<`Schema`\[`"config"`\]\>
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L26)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L26)
 
 The entity type being referenced
 
@@ -376,7 +376,7 @@ The entity type being referenced
 
 > **value**: `string` \| `null`
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:32](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L32)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:32](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L32)
 
 Current value from parent (either ref or inline)
 
@@ -384,7 +384,7 @@ Current value from parent (either ref or inline)
 
 ### EntityWizardEditProps
 
-Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L6)
+Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L6)
 
 #### Type Parameters
 
@@ -398,25 +398,25 @@ Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:6](ht
 
 > `optional` **isLoading**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L11)
+Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L11)
 
 ##### isRootEntity?
 
 > `optional` **isRootEntity**: `boolean`
 
-Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L12)
+Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L12)
 
 ##### node
 
 > **node**: `Schema`\[`"plugin"`\]\[`"Nodes"`\]\[`"object"`\]
 
-Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L7)
+Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L7)
 
 ##### onChange()
 
 > **onChange**: (`value`) => `void`
 
-Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L9)
+Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L9)
 
 ###### Parameters
 
@@ -432,7 +432,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:9](ht
 
 > `optional` **onComplete**: () => `void`
 
-Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L10)
+Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L10)
 
 ###### Returns
 
@@ -442,7 +442,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:10](h
 
 > `optional` **value**: `CoreEntityData`\<`Schema`\>
 
-Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L8)
+Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L8)
 
 ## Functions
 
@@ -450,7 +450,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:8](ht
 
 > **EntityDetailView**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-detail-view.tsx#L16)
+Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-detail-view.tsx#L16)
 
 #### Type Parameters
 
@@ -474,7 +474,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-detail-view.tsx:16](h
 
 > **EntityEditView**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:32](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-edit-view.tsx#L32)
+Defined in: [packages/stately/src/core/views/entity/entity-edit-view.tsx:32](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-edit-view.tsx#L32)
 
 EntityEditView - coordinator component that maps entity schema to field components
 Does not maintain its own state - just passes through to child field components
@@ -501,7 +501,7 @@ Does not maintain its own state - just passes through to child field components
 
 > **EntityFormEdit**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-form-edit.tsx#L18)
+Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-form-edit.tsx#L18)
 
 #### Type Parameters
 
@@ -525,7 +525,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-form-edit.tsx:18](htt
 
 > **EntityJsonView**(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:79](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L79)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:79](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L79)
 
 #### Parameters
 
@@ -543,7 +543,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:79](ht
 
 > **EntityProperty**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:46](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L46)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:46](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L46)
 
 #### Type Parameters
 
@@ -567,7 +567,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:46](ht
 
 > **EntityPropertyLabel**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L22)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:22](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L22)
 
 #### Type Parameters
 
@@ -591,7 +591,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:22](ht
 
 > **EntityRemove**(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/entity/entity-remove.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-remove.tsx#L3)
+Defined in: [packages/stately/src/core/views/entity/entity-remove.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-remove.tsx#L3)
 
 #### Parameters
 
@@ -627,7 +627,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-remove.tsx:3](https:/
 
 > **EntitySelectEdit**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:43](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-select-edit.tsx#L43)
+Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:43](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-select-edit.tsx#L43)
 
 #### Type Parameters
 
@@ -651,7 +651,7 @@ Defined in: [packages/stately/src/core/views/entity/entity-select-edit.tsx:43](h
 
 > **EntityWizardEdit**\<`Schema`\>(`__namedParameters`): `Element`
 
-Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L19)
+Defined in: [packages/stately/src/core/views/entity/entity-wizard-view.tsx:19](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-wizard-view.tsx#L19)
 
 EntityWizardView - Step-by-step wizard for creating/editing entities
 Walks through each top-level field one at a time
@@ -678,7 +678,7 @@ Walks through each top-level field one at a time
 
 > **useEntityProperties**\<`Schema`\>(`__namedParameters`): `object`
 
-Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:93](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/core/views/entity/entity-properties.tsx#L93)
+Defined in: [packages/stately/src/core/views/entity/entity-properties.tsx:93](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/core/views/entity/entity-properties.tsx#L93)
 
 #### Type Parameters
 

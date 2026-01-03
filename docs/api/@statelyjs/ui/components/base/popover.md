@@ -6,7 +6,7 @@
 
 > **Popover**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/popover.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/popover.tsx#L6)
+Defined in: [packages/ui/src/components/base/popover.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/popover.tsx#L6)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/popover.tsx:6](https://github.com/G
 
 > **PopoverContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/popover.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/popover.tsx#L14)
+Defined in: [packages/ui/src/components/base/popover.tsx:14](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/popover.tsx#L14)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/popover.tsx:14](https://github.com/
 
 > **PopoverDescription**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/popover.tsx:68](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/popover.tsx#L68)
+Defined in: [packages/ui/src/components/base/popover.tsx:68](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/popover.tsx#L68)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/popover.tsx:68](https://github.com/
 
 > **PopoverHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/popover.tsx:48](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/popover.tsx#L48)
+Defined in: [packages/ui/src/components/base/popover.tsx:48](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/popover.tsx#L48)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/popover.tsx:48](https://github.com/
 
 > **PopoverTitle**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/popover.tsx:58](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/popover.tsx#L58)
+Defined in: [packages/ui/src/components/base/popover.tsx:58](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/popover.tsx#L58)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/popover.tsx:58](https://github.com/
 
 > **PopoverTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/popover.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/popover.tsx#L10)
+Defined in: [packages/ui/src/components/base/popover.tsx:10](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/popover.tsx#L10)
 
 #### Parameters
 

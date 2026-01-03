@@ -24,7 +24,7 @@ const myPlugin: CodegenPlugin = {
 
 ### CodegenPlugin
 
-Defined in: [packages/stately/src/codegen/config.ts:65](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L65)
+Defined in: [packages/stately/src/codegen/config.ts:65](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L65)
 
 A codegen plugin that transforms OpenAPI schemas to SerializedNodes.
 
@@ -34,7 +34,7 @@ A codegen plugin that transforms OpenAPI schemas to SerializedNodes.
 
 > `optional` **description**: `string`
 
-Defined in: [packages/stately/src/codegen/config.ts:69](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L69)
+Defined in: [packages/stately/src/codegen/config.ts:69](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L69)
 
 Human-readable description
 
@@ -42,7 +42,7 @@ Human-readable description
 
 > `optional` **entryPoints**: (`spec`) => `string`[] \| `undefined`
 
-Defined in: [packages/stately/src/codegen/config.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L80)
+Defined in: [packages/stately/src/codegen/config.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L80)
 
 Optional function to declare entry point schemas for code splitting.
 Entry points are parsed into the main bundle; schemas reached only
@@ -68,7 +68,7 @@ Array of schema names to use as entry points
 
 > `optional` **match**: (`schema`, `ctx`) => `boolean`
 
-Defined in: [packages/stately/src/codegen/config.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L85)
+Defined in: [packages/stately/src/codegen/config.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L85)
 
 Optional predicate to determine if this plugin should handle a schema.
 If not provided, the plugin is considered a match for all schemas.
@@ -91,7 +91,7 @@ If not provided, the plugin is considered a match for all schemas.
 
 > **name**: `string`
 
-Defined in: [packages/stately/src/codegen/config.ts:67](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L67)
+Defined in: [packages/stately/src/codegen/config.ts:67](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L67)
 
 Unique identifier for the plugin
 
@@ -99,7 +99,7 @@ Unique identifier for the plugin
 
 > **transform**: (`schema`, `ctx`) => `SerializedNode` \| `null` \| `undefined`
 
-Defined in: [packages/stately/src/codegen/config.ts:90](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L90)
+Defined in: [packages/stately/src/codegen/config.ts:90](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L90)
 
 Transform a schema into a SerializedNode.
 Return null/undefined to pass to the next plugin.
@@ -122,7 +122,7 @@ Return null/undefined to pass to the next plugin.
 
 ### CodegenPluginContext
 
-Defined in: [packages/stately/src/codegen/config.ts:53](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L53)
+Defined in: [packages/stately/src/codegen/config.ts:53](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L53)
 
 Context provided to plugins during schema transformation.
 
@@ -132,7 +132,7 @@ Context provided to plugins during schema transformation.
 
 > **parseSchema**: (`schema`, `schemaName?`) => `SerializedNode` \| `null`
 
-Defined in: [packages/stately/src/codegen/config.ts:59](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L59)
+Defined in: [packages/stately/src/codegen/config.ts:59](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L59)
 
 Recursively parse a schema (for nested structures)
 
@@ -154,7 +154,7 @@ Recursively parse a schema (for nested structures)
 
 > **resolveRef**: (`ref`) => `any`
 
-Defined in: [packages/stately/src/codegen/config.ts:57](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L57)
+Defined in: [packages/stately/src/codegen/config.ts:57](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L57)
 
 Resolve a $ref string to its schema definition
 
@@ -172,7 +172,7 @@ Resolve a $ref string to its schema definition
 
 > `optional` **schemaName**: `string`
 
-Defined in: [packages/stately/src/codegen/config.ts:55](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L55)
+Defined in: [packages/stately/src/codegen/config.ts:55](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L55)
 
 The name of the schema being parsed (if known)
 
@@ -180,7 +180,7 @@ The name of the schema being parsed (if known)
 
 ### OpenAPISpec
 
-Defined in: [packages/stately/src/codegen/config.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L41)
+Defined in: [packages/stately/src/codegen/config.ts:41](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L41)
 
 OpenAPI specification structure (minimal typing for plugin use).
 
@@ -194,7 +194,7 @@ OpenAPI specification structure (minimal typing for plugin use).
 
 > `optional` **components**: `object`
 
-Defined in: [packages/stately/src/codegen/config.ts:42](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/stately/src/codegen/config.ts#L42)
+Defined in: [packages/stately/src/codegen/config.ts:42](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/stately/src/codegen/config.ts#L42)
 
 ###### schemas?
 

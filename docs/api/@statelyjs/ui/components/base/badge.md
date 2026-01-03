@@ -6,7 +6,7 @@
 
 > `const` **badgeVariants**: (`props?`) => `string`
 
-Defined in: [packages/ui/src/components/base/badge.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/badge.tsx#L7)
+Defined in: [packages/ui/src/components/base/badge.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/badge.tsx#L7)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ ConfigVariants\<\{ variant: \{ default: string; secondary: string; destructive: 
 
 > **Badge**(`__namedParameters`): `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\>
 
-Defined in: [packages/ui/src/components/base/badge.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/badge.tsx#L26)
+Defined in: [packages/ui/src/components/base/badge.tsx:26](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/badge.tsx#L26)
 
 #### Parameters
 

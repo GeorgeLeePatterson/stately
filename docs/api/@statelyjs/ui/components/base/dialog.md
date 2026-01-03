@@ -6,7 +6,7 @@
 
 > **Dialog**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L9)
+Defined in: [packages/ui/src/components/base/dialog.tsx:9](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L9)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/dialog.tsx:9](https://github.com/Ge
 
 > **DialogClose**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L21)
+Defined in: [packages/ui/src/components/base/dialog.tsx:21](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L21)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/dialog.tsx:21](https://github.com/G
 
 > **DialogContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L38)
+Defined in: [packages/ui/src/components/base/dialog.tsx:38](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L38)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/dialog.tsx:38](https://github.com/G
 
 > **DialogDescription**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:106](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L106)
+Defined in: [packages/ui/src/components/base/dialog.tsx:106](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L106)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/dialog.tsx:106](https://github.com/
 
 > **DialogFooter**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:76](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L76)
+Defined in: [packages/ui/src/components/base/dialog.tsx:76](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L76)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/dialog.tsx:76](https://github.com/G
 
 > **DialogHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:70](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L70)
+Defined in: [packages/ui/src/components/base/dialog.tsx:70](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L70)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/ui/src/components/base/dialog.tsx:70](https://github.com/G
 
 > **DialogOverlay**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L25)
+Defined in: [packages/ui/src/components/base/dialog.tsx:25](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L25)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: [packages/ui/src/components/base/dialog.tsx:25](https://github.com/G
 
 > **DialogPortal**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L17)
+Defined in: [packages/ui/src/components/base/dialog.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L17)
 
 #### Parameters
 
@@ -150,7 +150,7 @@ Defined in: [packages/ui/src/components/base/dialog.tsx:17](https://github.com/G
 
 > **DialogTitle**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:96](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L96)
+Defined in: [packages/ui/src/components/base/dialog.tsx:96](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L96)
 
 #### Parameters
 
@@ -168,7 +168,7 @@ Defined in: [packages/ui/src/components/base/dialog.tsx:96](https://github.com/G
 
 > **DialogTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/dialog.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/dialog.tsx#L13)
+Defined in: [packages/ui/src/components/base/dialog.tsx:13](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/dialog.tsx#L13)
 
 #### Parameters
 

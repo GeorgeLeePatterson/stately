@@ -6,7 +6,7 @@
 
 > **Sheet**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sheet.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sheet.tsx#L8)
+Defined in: [packages/ui/src/components/base/sheet.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sheet.tsx#L8)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/sheet.tsx:8](https://github.com/Geo
 
 > **SheetClose**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sheet.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sheet.tsx#L16)
+Defined in: [packages/ui/src/components/base/sheet.tsx:16](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sheet.tsx#L16)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/sheet.tsx:16](https://github.com/Ge
 
 > **SheetContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sheet.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sheet.tsx#L34)
+Defined in: [packages/ui/src/components/base/sheet.tsx:34](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sheet.tsx#L34)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/sheet.tsx:34](https://github.com/Ge
 
 > **SheetDescription**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sheet.tsx:105](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sheet.tsx#L105)
+Defined in: [packages/ui/src/components/base/sheet.tsx:105](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sheet.tsx#L105)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/sheet.tsx:105](https://github.com/G
 
 > **SheetFooter**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sheet.tsx:85](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sheet.tsx#L85)
+Defined in: [packages/ui/src/components/base/sheet.tsx:85](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sheet.tsx#L85)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/sheet.tsx:85](https://github.com/Ge
 
 > **SheetHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sheet.tsx:75](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sheet.tsx#L75)
+Defined in: [packages/ui/src/components/base/sheet.tsx:75](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sheet.tsx#L75)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/ui/src/components/base/sheet.tsx:75](https://github.com/Ge
 
 > **SheetTitle**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sheet.tsx:95](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sheet.tsx#L95)
+Defined in: [packages/ui/src/components/base/sheet.tsx:95](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sheet.tsx#L95)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: [packages/ui/src/components/base/sheet.tsx:95](https://github.com/Ge
 
 > **SheetTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/sheet.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/sheet.tsx#L12)
+Defined in: [packages/ui/src/components/base/sheet.tsx:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/sheet.tsx#L12)
 
 #### Parameters
 

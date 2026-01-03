@@ -6,7 +6,7 @@
 
 > **Table**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/table.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/table.tsx#L5)
+Defined in: [packages/ui/src/components/base/table.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/table.tsx#L5)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/table.tsx:5](https://github.com/Geo
 
 > **TableBody**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/table.tsx:27](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/table.tsx#L27)
+Defined in: [packages/ui/src/components/base/table.tsx:27](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/table.tsx#L27)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/table.tsx:27](https://github.com/Ge
 
 > **TableCaption**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/table.tsx:77](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/table.tsx#L77)
+Defined in: [packages/ui/src/components/base/table.tsx:77](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/table.tsx#L77)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/table.tsx:77](https://github.com/Ge
 
 > **TableCell**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/table.tsx:67](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/table.tsx#L67)
+Defined in: [packages/ui/src/components/base/table.tsx:67](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/table.tsx#L67)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/table.tsx:67](https://github.com/Ge
 
 > **TableFooter**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/table.tsx:37](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/table.tsx#L37)
+Defined in: [packages/ui/src/components/base/table.tsx:37](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/table.tsx#L37)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/table.tsx:37](https://github.com/Ge
 
 > **TableHead**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/table.tsx:57](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/table.tsx#L57)
+Defined in: [packages/ui/src/components/base/table.tsx:57](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/table.tsx#L57)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/ui/src/components/base/table.tsx:57](https://github.com/Ge
 
 > **TableHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/table.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/table.tsx#L17)
+Defined in: [packages/ui/src/components/base/table.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/table.tsx#L17)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: [packages/ui/src/components/base/table.tsx:17](https://github.com/Ge
 
 > **TableRow**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/table.tsx:47](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/table.tsx#L47)
+Defined in: [packages/ui/src/components/base/table.tsx:47](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/table.tsx#L47)
 
 #### Parameters
 

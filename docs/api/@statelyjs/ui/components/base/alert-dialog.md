@@ -6,7 +6,7 @@
 
 > **AlertDialog**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L7)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L7)
 
 #### Parameters
 
@@ -24,7 +24,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:7](https://github.
 
 > **AlertDialogAction**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:130](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L130)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:130](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L130)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:130](https://githu
 
 > **AlertDialogCancel**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:143](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L143)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:143](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L143)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:143](https://githu
 
 > **AlertDialogContent**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:39](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L39)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:39](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L39)
 
 #### Parameters
 
@@ -78,7 +78,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:39](https://github
 
 > **AlertDialogDescription**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:117](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L117)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:117](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L117)
 
 #### Parameters
 
@@ -96,7 +96,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:117](https://githu
 
 > **AlertDialogFooter**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:75](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L75)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:75](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L75)
 
 #### Parameters
 
@@ -114,7 +114,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:75](https://github
 
 > **AlertDialogHeader**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:62](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L62)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:62](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L62)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:62](https://github
 
 > **AlertDialogMedia**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:91](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L91)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:91](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L91)
 
 #### Parameters
 
@@ -150,7 +150,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:91](https://github
 
 > **AlertDialogOverlay**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L23)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:23](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L23)
 
 #### Parameters
 
@@ -168,7 +168,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:23](https://github
 
 > **AlertDialogPortal**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L17)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:17](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L17)
 
 #### Parameters
 
@@ -186,7 +186,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:17](https://github
 
 > **AlertDialogTitle**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:104](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L104)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:104](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L104)
 
 #### Parameters
 
@@ -204,7 +204,7 @@ Defined in: [packages/ui/src/components/base/alert-dialog.tsx:104](https://githu
 
 > **AlertDialogTrigger**(`__namedParameters`): `Element`
 
-Defined in: [packages/ui/src/components/base/alert-dialog.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/components/base/alert-dialog.tsx#L11)
+Defined in: [packages/ui/src/components/base/alert-dialog.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/components/base/alert-dialog.tsx#L11)
 
 #### Parameters
 

@@ -4,7 +4,7 @@
 
 ### ClickTrack
 
-Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-click-tracking.tsx#L5)
+Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:5](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-click-tracking.tsx#L5)
 
 #### Properties
 
@@ -12,19 +12,19 @@ Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:5](https://github.com/
 
 > **count**: `number`
 
-Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-click-tracking.tsx#L8)
+Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:8](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-click-tracking.tsx#L8)
 
 ##### label
 
 > **label**: `string`
 
-Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-click-tracking.tsx#L7)
+Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:7](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-click-tracking.tsx#L7)
 
 ##### path
 
 > **path**: `string`
 
-Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-click-tracking.tsx#L6)
+Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:6](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-click-tracking.tsx#L6)
 
 ## Type Aliases
 
@@ -32,7 +32,7 @@ Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:6](https://github.com/
 
 > **Status** = `"checking"` \| `"available"` \| `"unavailable"`
 
-Defined in: [packages/ui/src/hooks/use-optional-peer.ts:4](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-optional-peer.ts#L4)
+Defined in: [packages/ui/src/hooks/use-optional-peer.ts:4](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-optional-peer.ts#L4)
 
 ## Variables
 
@@ -40,7 +40,7 @@ Defined in: [packages/ui/src/hooks/use-optional-peer.ts:4](https://github.com/Ge
 
 > `const` **STORAGE\_KEY**: `"stately-click-tracking"` = `'stately-click-tracking'`
 
-Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-click-tracking.tsx#L3)
+Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-click-tracking.tsx#L3)
 
 ## Functions
 
@@ -48,7 +48,7 @@ Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:3](https://github.com/
 
 > **useClickTracking**(): `object`
 
-Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-click-tracking.tsx#L11)
+Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:11](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-click-tracking.tsx#L11)
 
 #### Returns
 
@@ -82,7 +82,7 @@ Defined in: [packages/ui/src/hooks/use-click-tracking.tsx:11](https://github.com
 
 > **useMediaQuery**(`query`): `boolean`
 
-Defined in: [packages/ui/src/hooks/use-media-query.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-media-query.tsx#L3)
+Defined in: [packages/ui/src/hooks/use-media-query.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-media-query.tsx#L3)
 
 #### Parameters
 
@@ -100,7 +100,7 @@ Defined in: [packages/ui/src/hooks/use-media-query.tsx:3](https://github.com/Geo
 
 > **useOptionalPeer**(`moduleId`): [`Status`](#status)
 
-Defined in: [packages/ui/src/hooks/use-optional-peer.ts:6](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-optional-peer.ts#L6)
+Defined in: [packages/ui/src/hooks/use-optional-peer.ts:6](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-optional-peer.ts#L6)
 
 #### Parameters
 
@@ -118,7 +118,7 @@ Defined in: [packages/ui/src/hooks/use-optional-peer.ts:6](https://github.com/Ge
 
 > **useViewMore**(`data`, `limit`): readonly \[\[`string`, `unknown`\][], \[`string`, `unknown`\][], `boolean`, `Dispatch`\<`SetStateAction`\<`boolean`\>\>\]
 
-Defined in: [packages/ui/src/hooks/use-view-more.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/ui/src/hooks/use-view-more.tsx#L3)
+Defined in: [packages/ui/src/hooks/use-view-more.tsx:3](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/ui/src/hooks/use-view-more.tsx#L3)
 
 #### Parameters
 

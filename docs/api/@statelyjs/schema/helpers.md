@@ -6,7 +6,7 @@
 
 > **AnyRecord** = `Record`\<`string`, `unknown`\>
 
-Defined in: [helpers.ts:9](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L9)
+Defined in: [helpers.ts:9](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L9)
 
 A record with string keys and unknown values.
 
@@ -16,7 +16,7 @@ A record with string keys and unknown values.
 
 > **AssertTrue**\<`T`\> = `T`
 
-Defined in: [helpers.ts:24](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L24)
+Defined in: [helpers.ts:24](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L24)
 
 **`Internal`**
 
@@ -34,7 +34,7 @@ Compile-time assertion that a type is true.
 
 > **Assume**\<`T`, `U`\> = `T` *extends* `U` ? `T` : `never`
 
-Defined in: [helpers.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L80)
+Defined in: [helpers.ts:80](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L80)
 
 Enforces that a subtype T is assignable to supertype U.
 
@@ -54,7 +54,7 @@ Enforces that a subtype T is assignable to supertype U.
 
 > **Defined**\<`T`\> = `T` *extends* `undefined` ? `never` : `T`
 
-Defined in: [helpers.ts:77](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L77)
+Defined in: [helpers.ts:77](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L77)
 
 Enforces that a type is defined (not undefined).
 
@@ -70,7 +70,7 @@ Enforces that a type is defined (not undefined).
 
 > **EmptyRecord** = `Record`\<`string`, `never`\>
 
-Defined in: [helpers.ts:15](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L15)
+Defined in: [helpers.ts:15](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L15)
 
 A record that exists but has no properties.
 
@@ -80,7 +80,7 @@ A record that exists but has no properties.
 
 > **ErrorMessageNarrowType** = `"TYPE ERROR: Expected narrower type"`
 
-Defined in: [helpers.ts:21](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L21)
+Defined in: [helpers.ts:21](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L21)
 
 **`Internal`**
 
@@ -92,7 +92,7 @@ Error message for types that need to be narrower.
 
 > **ErrorMessageStringLiteral** = `"TYPE ERROR: Value must be a string literal"`
 
-Defined in: [helpers.ts:18](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L18)
+Defined in: [helpers.ts:18](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L18)
 
 **`Internal`**
 
@@ -104,7 +104,7 @@ Error message for non-literal string types.
 
 > **LiteralKeys**\<`T`\> = [`StringKeys`](#stringkeys)\<`T`\> *extends* infer Keys ? `string` *extends* `Keys` ? `never` : `Keys` : `never`
 
-Defined in: [helpers.ts:57](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L57)
+Defined in: [helpers.ts:57](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L57)
 
 Extracts literal string keys from a type, excluding index signatures.
 Returns `never` if the type only has an index signature.
@@ -121,7 +121,7 @@ Returns `never` if the type only has an index signature.
 
 > **NeverRecord** = `Record`\<`never`, `never`\>
 
-Defined in: [helpers.ts:12](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L12)
+Defined in: [helpers.ts:12](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L12)
 
 An empty record with no valid keys. Used for "no data" scenarios.
 
@@ -131,7 +131,7 @@ An empty record with no valid keys. Used for "no data" scenarios.
 
 > **RequireLiteral**\<`T`, `Msg`\> = [`RequireNarrower`](#requirenarrower)\<`T`, `string`, `Msg`\>
 
-Defined in: [helpers.ts:44](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L44)
+Defined in: [helpers.ts:44](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L44)
 
 Enforces that a string type is a literal, not just `string`.
 Returns a compile-time error message if given a wide string type.
@@ -156,7 +156,7 @@ Custom error message if check fails
 
 > **RequireNarrower**\<`T`, `Base`, `Msg`\> = `Base` *extends* `T` ? `Msg` *extends* `string` ? `` `TYPE ERROR: ${Msg}` `` : [`ErrorMessageNarrowType`](#errormessagenarrowtype) : `T`
 
-Defined in: [helpers.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L31)
+Defined in: [helpers.ts:31](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L31)
 
 **`Internal`**
 
@@ -183,7 +183,7 @@ Used to enforce literal types at compile time.
 
 > **StringKeys**\<`T`\> = `Extract`\<keyof `T`, `string`\>
 
-Defined in: [helpers.ts:51](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L51)
+Defined in: [helpers.ts:51](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L51)
 
 Extracts only string keys from a type.
 
@@ -199,7 +199,7 @@ Extracts only string keys from a type.
 
 > **UnionToIntersection**\<`U`\> = `U` *extends* `any` ? (`arg`) => `void` : `never` *extends* (`arg`) => `void` ? `I` : `never`
 
-Defined in: [helpers.ts:67](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L67)
+Defined in: [helpers.ts:67](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L67)
 
 Converts a union type to an intersection type.
 
@@ -221,7 +221,7 @@ Converts a union type to an intersection type.
 
 > **Tuple**\<`T`\>(`v`): `T`
 
-Defined in: [helpers.ts:74](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/schema/src/helpers.ts#L74)
+Defined in: [helpers.ts:74](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/schema/src/helpers.ts#L74)
 
 Converts an array of values to a non-readonly tuple.
 

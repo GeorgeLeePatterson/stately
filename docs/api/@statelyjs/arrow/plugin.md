@@ -53,7 +53,7 @@ const ui = statelyUi({
 
 > **ArrowOptions** = `DefineOptions`\<\{ `api?`: \{ `pathPrefix?`: `string`; \}; `navigation?`: \{ `routes?`: `UiNavigationOptions`\[`"routes"`\]; \}; \}\>
 
-Defined in: [arrow/src/plugin.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/plugin.ts#L85)
+Defined in: [arrow/src/plugin.ts:85](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/plugin.ts#L85)
 
 Configuration options for the Arrow plugin.
 
@@ -72,7 +72,7 @@ const options: ArrowOptions = {
 
 > **ArrowPlugin** = [`DefinePlugin`](../stately/schema.md#defineplugin)\<*typeof* [`ARROW_PLUGIN_NAME`](#arrow_plugin_name), [`ArrowNodeMap`](schema.md#arrownodemap), [`ArrowTypes`](schema.md#arrowtypes), [`ArrowData`](schema.md#arrowdata), [`ArrowUtils`](#arrowutils)\>
 
-Defined in: [arrow/src/plugin.ts:108](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/plugin.ts#L108)
+Defined in: [arrow/src/plugin.ts:108](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/plugin.ts#L108)
 
 Arrow schema plugin type definition.
 
@@ -89,7 +89,7 @@ node types, data structures, and utilities.
 
 > **ArrowUiPlugin** = `DefineUiPlugin`\<*typeof* [`ARROW_PLUGIN_NAME`](#arrow_plugin_name), [`ArrowPaths`](api.md#arrowpaths), *typeof* [`ARROW_OPERATIONS`](api.md#arrow_operations), [`ArrowUiUtils`](#arrowuiutils), [`ArrowOptions`](#arrowoptions)\>
 
-Defined in: [arrow/src/plugin.ts:163](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/plugin.ts#L163)
+Defined in: [arrow/src/plugin.ts:163](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/plugin.ts#L163)
 
 Arrow UI plugin type definition.
 
@@ -106,7 +106,7 @@ API operations, configuration options, and utilities.
 
 > **ArrowUiUtils** = `DefineUiUtils`
 
-Defined in: [arrow/src/plugin.ts:153](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/plugin.ts#L153)
+Defined in: [arrow/src/plugin.ts:153](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/plugin.ts#L153)
 
 Arrow UI plugin utilities type.
 
@@ -116,7 +116,7 @@ Arrow UI plugin utilities type.
 
 > **ArrowUtils** = `Record`\<`string`, `never`\>
 
-Defined in: [arrow/src/plugin.ts:98](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/plugin.ts#L98)
+Defined in: [arrow/src/plugin.ts:98](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/plugin.ts#L98)
 
 Arrow plugin utilities.
 
@@ -129,7 +129,7 @@ added to the Arrow plugin runtime.
 
 > `const` **ARROW\_PLUGIN\_NAME**: `"arrow"`
 
-Defined in: [arrow/src/plugin.ts:72](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/plugin.ts#L72)
+Defined in: [arrow/src/plugin.ts:72](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/plugin.ts#L72)
 
 ***
 
@@ -137,7 +137,7 @@ Defined in: [arrow/src/plugin.ts:72](https://github.com/GeorgeLeePatterson/state
 
 > `const` **arrowRoutes**: `RouteOption`
 
-Defined in: [arrow/src/plugin.ts:117](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/plugin.ts#L117)
+Defined in: [arrow/src/plugin.ts:117](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/plugin.ts#L117)
 
 Default navigation route configuration for the Arrow plugin.
 
@@ -147,7 +147,7 @@ Default navigation route configuration for the Arrow plugin.
 
 > `const` **arrowUiPlugin**: `UiPluginFactoryFn`\<[`ArrowUiPlugin`](#arrowuiplugin)\>
 
-Defined in: [arrow/src/plugin.ts:196](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/plugin.ts#L196)
+Defined in: [arrow/src/plugin.ts:196](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/plugin.ts#L196)
 
 Creates the Arrow UI plugin factory.
 
@@ -180,7 +180,7 @@ const result = await plugins.arrow.api.list_catalogs();
 
 > **arrowPlugin**\<`S`\>(): [`PluginFactory`](../schema/stately.md#pluginfactory)\<`S`\>
 
-Defined in: [arrow/src/plugin.ts:138](https://github.com/GeorgeLeePatterson/stately/blob/0d63ab56ae8896e8b725857e18af512821f3373f/packages/arrow/src/plugin.ts#L138)
+Defined in: [arrow/src/plugin.ts:138](https://github.com/GeorgeLeePatterson/stately/blob/b8910accb3b200676731aeb7f39e1bb8d666404d/packages/arrow/src/plugin.ts#L138)
 
 Creates the Arrow schema plugin factory.
 
