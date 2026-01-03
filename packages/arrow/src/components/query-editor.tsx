@@ -120,8 +120,8 @@ export function QueryEditor({
         {/* Click to see results */}
         {isActive && resultsHrefId && (
           <Button
+            nativeButton={false}
             render={<a href={`#${resultsHrefId}`}>Go to Query Results</a>}
-            type="button"
             variant="link"
           />
         )}

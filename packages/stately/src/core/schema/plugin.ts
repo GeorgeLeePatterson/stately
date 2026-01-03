@@ -1,14 +1,13 @@
-import type {
-  AnySchemaAugments,
-  DefinePlugin,
-  DefineTypes,
-  NodeValues,
-  PluginAnyNode,
-  PluginFactory,
+import {
+  type AnySchemaAugments,
+  createSchemaPlugin,
+  type DefinePlugin,
+  type DefineTypes,
+  type NodeValues,
+  type PluginAnyNode,
 } from '@statelyjs/schema';
 import { type CoreData, generateCoreData } from './data.js';
 import type { CoreStatelyConfig } from './generated.js';
-import type { Schemas } from './index.js';
 import type { CoreNodeMap } from './nodes.js';
 import type { CoreUtils } from './utils.js';
 import { coreUtils } from './utils.js';
@@ -34,16 +33,19 @@ export type CorePlugin<
 
 /**
  * Core schema plugin that wires entity metadata, helpers, and validators.
+ *
+ * Provides:
+ * - Entity metadata (types, display names, URLs)
+ * - Core utility functions for entity operations
+ * - Validation hook for schema nodes
  */
-export function corePlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
-  return runtime => {
-    const document = runtime.schema.document;
-    const coreData = generateCoreData(document, runtime.schema.nodes);
+export const corePlugin = createSchemaPlugin<CorePlugin<CoreStatelyConfig, []>>({
+  name: CORE_PLUGIN_NAME,
 
-    return {
-      ...runtime,
-      data: { ...runtime.data, ...coreData },
-      plugins: { ...runtime.plugins, [CORE_PLUGIN_NAME]: { ...coreUtils, validate: validateNode } },
-    };
-  };
-}
+  setup: ctx => {
+    const { document, nodes } = ctx.schema;
+    const data = generateCoreData(document, nodes);
+    return { data };
+  },
+  utils: { ...coreUtils, validate: validateNode },
+});

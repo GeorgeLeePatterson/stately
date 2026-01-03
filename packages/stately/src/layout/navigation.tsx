@@ -1,7 +1,5 @@
 import type { StatelySchemas } from '@statelyjs/schema';
 import type { Defined } from '@statelyjs/schema/helpers';
-import { ChevronsLeft, ChevronsRight } from 'lucide-react';
-import { useCallback, useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@statelyjs/ui/components/base/avatar';
 import { Button } from '@statelyjs/ui/components/base/button';
 import {
@@ -18,11 +16,13 @@ import {
   useSidebar,
 } from '@statelyjs/ui/components/base/sidebar';
 import { useClickTracking } from '@statelyjs/ui/hooks';
-import { PluginNavigation } from './plugin-navigation';
-import { StatelyUiRuntime, UiNavigationOptions } from '@statelyjs/ui/runtime';
-import { AnyUiPlugin } from '@statelyjs/ui/plugin';
-import { stripTrailing } from '@statelyjs/ui/utils';
 import { cn } from '@statelyjs/ui/lib/utils';
+import type { AnyUiPlugin } from '@statelyjs/ui/plugin';
+import type { StatelyUiRuntime, UiNavigationOptions } from '@statelyjs/ui/runtime';
+import { stripTrailing } from '@statelyjs/ui/utils';
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { useCallback, useMemo } from 'react';
+import { PluginNavigation } from './plugin-navigation';
 
 export type NavigationRoutes = UiNavigationOptions['routes'];
 

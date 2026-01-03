@@ -6,6 +6,7 @@ settings:
 
 overrides:
   '@statelyjs/ui': file:../../../packages/ui/statelyjs-ui-0.4.1.tgz
+  '@statelyjs/schema': file:../../../packages/schema/statelyjs-schema-0.4.1.tgz
   '@statelyjs/stately': file:../../../packages/stately/statelyjs-stately-0.4.1.tgz
 
 importers:
@@ -843,11 +844,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@statelyjs/schema@0.4.1':
-    resolution: {integrity: sha512-zgM6og1rP0cplChTH9PUNpNUcuaYEBOvrzFjV0O+ClHDozouufQc/hJxSHU4Tze1Oq5bi6AnKLGaD+V9a1PqPw==}
+  '@statelyjs/schema@file:../../../packages/schema/statelyjs-schema-0.4.1.tgz':
+    resolution: {integrity: sha512-tzEg1qYUtYo5QBfyLpqJ7/lY5RPXGfMzx9wXPr9lmr6ApyBC0VyAv8oUfbhPaf9f3xPIM2a7GVBOLdB9d2W6dw==, tarball: file:../../../packages/schema/statelyjs-schema-0.4.1.tgz}
+    version: 0.4.1
 
   '@statelyjs/stately@file:../../../packages/stately/statelyjs-stately-0.4.1.tgz':
-    resolution: {integrity: sha512-vizYtnwoJjBvJx5eJn+EV3o57PbhZvYMCOK1JOKST1Aqr/Xy43UXlcwzzN1RsCjTVfYJDv/I+BPA06gP1U4DTw==, tarball: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz}
+    resolution: {integrity: sha512-KzxWnCs60PxJsAf69oL+X1e8MNbfKEDtvE1To7bor2+gN6++7v4mutt+BRDC9aNL948qrrVgi5G6jrkGeugPWA==, tarball: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz}
     version: 0.4.1
     hasBin: true
     peerDependencies:
@@ -867,7 +869,7 @@ packages:
         optional: true
 
   '@statelyjs/ui@file:../../../packages/ui/statelyjs-ui-0.4.1.tgz':
-    resolution: {integrity: sha512-X0JPlX3uLr8BcPsH4euITBk8cXfn1aEAMzUNAZgqnmyHnHE45NoeR1g/TArKQmpJD6gAiXurBMx6lFWAatLe3Q==, tarball: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz}
+    resolution: {integrity: sha512-twWkB8ccjFdu9mVj/F1ZkzOgNYXjiFSxadrS7DDUyo5Su19F0dNqcrbrtOUFYfSZVAwBEUbTQXA++/BdF/X0WA==, tarball: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz}
     version: 0.4.1
     peerDependencies:
       '@types/react': ^18.0.0 || ^19.0.0
@@ -2449,14 +2451,14 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.54.0':
     optional: true
 
-  '@statelyjs/schema@0.4.1':
+  '@statelyjs/schema@file:../../../packages/schema/statelyjs-schema-0.4.1.tgz':
     dependencies:
       openapi-types: 12.1.3
       openapi-typescript-helpers: 0.0.15
 
   '@statelyjs/stately@file:../../../packages/stately/statelyjs-stately-0.4.1.tgz(23f7c0e648baffb6aa66da16f53acee2)':
     dependencies:
-      '@statelyjs/schema': 0.4.1
+      '@statelyjs/schema': file:../../../packages/schema/statelyjs-schema-0.4.1.tgz
       '@statelyjs/ui': file:../../../packages/ui/statelyjs-ui-0.4.1.tgz(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@tanstack/react-query': 5.90.14(react@19.2.3)
       '@uiw/codemirror-extensions-basic-setup': 4.25.4(@codemirror/autocomplete@6.20.0)(@codemirror/commands@6.10.1)(@codemirror/language@6.12.1)(@codemirror/lint@6.9.2)(@codemirror/search@6.5.11)(@codemirror/state@6.5.3)(@codemirror/view@6.39.7)
@@ -2481,7 +2483,7 @@ snapshots:
   '@statelyjs/ui@file:../../../packages/ui/statelyjs-ui-0.4.1.tgz(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(lucide-react@0.562.0(react@19.2.3))(openapi-fetch@0.15.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(sonner@2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
     dependencies:
       '@base-ui/react': 1.0.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@statelyjs/schema': 0.4.1
+      '@statelyjs/schema': file:../../../packages/schema/statelyjs-schema-0.4.1.tgz
       '@types/react': 19.2.7
       '@types/react-dom': 19.2.3(@types/react@19.2.7)
       class-variance-authority: 0.7.1

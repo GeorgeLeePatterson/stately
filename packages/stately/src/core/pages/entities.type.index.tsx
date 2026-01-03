@@ -106,6 +106,7 @@ export function EntityTypeListPage<Schema extends Schemas = Schemas>({
         </EmptyHeader>
         <EmptyContent>
           <Button
+            nativeButton={false}
             render={
               <a href={resolveEntityUrl({ mode: 'new', type: entityPath })}>
                 <Plus className="w-4 h-4 mr-2" />

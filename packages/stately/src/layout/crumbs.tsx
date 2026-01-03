@@ -140,6 +140,7 @@ export function CollapsibleCrumbs({
                 <Button
                   className="cursor-pointer justify-between"
                   key={`${item.label}-${index}`}
+                  nativeButton={false}
                   render={
                     <a
                       className={cn('py-1 text-sm w-full min-w-0', 'flex flex-nowrap items-center')}
@@ -151,7 +152,6 @@ export function CollapsibleCrumbs({
                       <ChevronRight />
                     </a>
                   }
-                  type="button"
                   variant="ghost"
                 />
               ))}

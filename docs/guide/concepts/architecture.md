@@ -193,23 +193,14 @@ function mySchemaPlugin<S extends Schemas>(): PluginFactory<S> {
 }
 
 // UI plugin - registers components and API
-function myUiPlugin(options?: Options): UiPluginFactory {
-  return runtime => {
-    const { registry, client } = runtime;
-    
+export const myUiPlugin = createUiPlugin<MyUiPlugin>({
+  name: 'myPlugin',
+  operations: MY_OPERATIONS,
+  setup: (ctx, options) => {  
     // Register custom components
-    registry.components.set('myNodeType::edit', MyEditComponent);
+    ctx.registerComponent('myNodeType', 'edit', MyEditComponent);
     
-    // Create typed API client
-    const api = createOperations(client, MY_OPERATIONS, options?.pathPrefix);
-    
-    return {
-      ...runtime,
-      plugins: {
-        ...runtime.plugins,
-        myPlugin: { api, options },
-      },
-    };
+    return {};
   };
 }
 ```

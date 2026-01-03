@@ -24,7 +24,7 @@ export function TableViewOptions<TData>({ table }: { table: Table<TData> }) {
           </Button>
         }
       />
-      <DropdownMenuContent align="end" className="max-h-[60vh] w-fit min-w-[150px] max-w-[300px]">
+      <DropdownMenuContent align="end" className="max-h-[60vh] w-fit min-w-37.5 max-w-75">
         <DropdownMenuGroup>
           <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
           <DropdownMenuSeparator />

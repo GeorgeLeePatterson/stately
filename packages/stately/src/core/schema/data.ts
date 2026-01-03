@@ -93,8 +93,10 @@ function buildEntityDisplayNames<Config extends CoreStatelyConfig = CoreStatelyC
 function generateCoreData<Config extends CoreStatelyConfig = CoreStatelyConfig>(
   document: unknown,
   generatedNodes: Config['nodes'] | undefined,
-) {
-  if (!document) return {};
+): CoreData<Config> {
+  if (!document) {
+    throw new Error('OpenAPI document is required to generate core data');
+  }
 
   const entityMappings = parseEntityMappings<Config>(document);
   console.debug('[stately/schema] generated entity mappings: ', { entityMappings });

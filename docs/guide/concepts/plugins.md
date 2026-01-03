@@ -238,33 +238,69 @@ A plugin package typically includes:
 1. **Two-Tier Plugin**: Schema + UI
 
 ```typescript
-// Schema plugin - extends type system
-export function mySchemaPlugin<S extends Schemas>(): PluginFactory<S> {
-  return runtime => ({
-    ...runtime,
-    plugins: { ...runtime.plugins, myPlugin: {} },
-  });
-}
+import { createSchemaPlugin, type DefinePlugin } from '@statelyjs/stately/schema';
+import { createUiPlugin, type DefineUiPlugin, type DefineOptions } from '@statelyjs/ui';
 
-// UI plugin - registers components, API, utilities
-export function myUiPlugin(options?: Options): UiPluginFactory {
-  return runtime => {
-    const api = createOperations(runtime.client, OPERATIONS, options?.pathPrefix);
-    
-    // Register custom field components
-    runtime.registry.components.set('myNodeType::edit', MyFieldEdit);
-    runtime.registry.components.set('myNodeType::view', MyFieldView);
-    
-    return {
-      ...runtime,
-      plugins: {
-        ...runtime.plugins,
-        myPlugin: { api, options, utils: myUtils },
-      },
-    };
-  };
-}
+// Define the schema plugin type
+export type MyPlugin = DefinePlugin<
+  'myPlugin',
+  MyNodeMap,
+  MyTypes,
+  MyData,
+  MyUtils
+>;
+
+// Schema plugin - uses createSchemaPlugin for ergonomic API
+export const mySchemaPlugin = createSchemaPlugin<MyPlugin>({
+  name: 'myPlugin',
+  utils: myUtils,
+  setup: (ctx) => {
+    // Compute runtime data from schema
+    const data = computeMyData(ctx.schema);
+    return { data };
+  },
+});
+
+// Define plugin options
+export type MyPluginOptions = DefineOptions<{
+  api?: { pathPrefix?: string };
+}>;
+
+// Define the UI plugin type
+export type MyUiPlugin = DefineUiPlugin<
+  'myPlugin',              // Plugin name (string literal)
+  MyPaths,                 // OpenAPI paths type
+  typeof MY_OPERATIONS,    // Operation bindings
+  MyUtils,                 // Utility functions
+  MyPluginOptions          // Configuration options
+>;
+
+// UI plugin - uses createUiPlugin for ergonomic API
+export const myUiPlugin = createUiPlugin<MyUiPlugin>({
+  name: 'myPlugin',
+  operations: MY_OPERATIONS,
+  utils: myUtils,
+
+  setup: (ctx, options) => {
+    // Register components - no manual key generation needed
+    ctx.registerComponent('MyNodeType', 'edit', MyFieldEdit);
+    ctx.registerComponent('MyNodeType', 'view', MyFieldView);
+
+    // Return only what you're adding - no spreading required
+    return {};
+  },
+});
 ```
+
+Both `createSchemaPlugin` and `createUiPlugin` helpers provide:
+- **No manual spreading** - Return only what's being added
+- **Automatic merging** - Data, utils, and plugins are merged automatically
+- **Single type parameter** - Derive everything from your `DefinePlugin`/`DefineUiPlugin` type
+
+The UI plugin additionally provides:
+- **Automatic API creation** - Provide operations, get typed API
+- **Simplified component registration** - `ctx.registerComponent()` handles keys
+- **Path prefix merging** - Handled automatically
 
 2. **Context Hook**: Typed access to plugin
 
@@ -300,18 +336,18 @@ export const myCodegenPlugin: CodegenPlugin = {
 
 ## The Component Registry
 
-Plugins register components for their node types:
+Plugins register components for their node types using `ctx.registerComponent()`:
 
 ```typescript
-// Registration
-registry.components.set('relativePath::edit', RelativePathEdit);
-registry.components.set('relativePath::view', RelativePathView);
+// Registration (inside plugin setup function)
+ctx.registerComponent('RelativePath', 'edit', RelativePathEdit);
+ctx.registerComponent('RelativePath', 'view', RelativePathView);
 
 // Lookup (done automatically by FieldEdit/FieldView)
-const EditComponent = registry.components.get('relativePath::edit');
+const EditComponent = registry.components.get('RelativePath::edit::component');
 ```
 
-This enables schema-driven rendering: when a form encounters a `relativePath` node, it automatically renders the plugin's component.
+This enables schema-driven rendering: when a form encounters a `RelativePath` node, it automatically renders the plugin's component.
 
 ## Plugin Communication
 

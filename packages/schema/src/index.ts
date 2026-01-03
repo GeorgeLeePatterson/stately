@@ -42,7 +42,7 @@ import type { AnyRecord, EmptyRecord, NeverRecord, RequireLiteral } from './help
 import type { NodeMap } from './nodes.js';
 import type * as PluginTypes from './plugin.js';
 import { isNodeOfType } from './schema.js';
-import { createStately } from './stately.js';
+import { createSchemaPlugin, createStately } from './stately.js';
 
 // Re-exports
 export type { OpenAPIV3_1 } from 'openapi-types';
@@ -91,9 +91,13 @@ export type {
   CreateStatelyOptions,
   PluginFactory,
   RuntimeSchemaLoader,
+  SchemaPluginConfig,
+  SchemaPluginContext,
+  SchemaPluginResult,
   Stately,
   StatelyBuilder,
 } from './stately.js';
+export { createSchemaPlugin, createStately };
 export type {
   ValidateArgs,
   ValidateHook,
@@ -101,8 +105,7 @@ export type {
   ValidationOptions,
   ValidationResult,
 } from './validation.js';
-
-export { createStately, createOperationBindingsFactory, isNodeOfType };
+export { createOperationBindingsFactory, isNodeOfType };
 
 /**
  * Public helper for declaring a plugin augment.

@@ -13,7 +13,8 @@
     "build": "tsc --build",
     "check": "tsc --noEmit",
     "clean": "rm -rf dist .turbo",
-    "dev": "tsc --build --watch"
+    "dev": "tsc --build --watch",
+    "tarball": "rm statelyjs-schema-*.tgz || true && pnpm --filter @statelyjs/schema pack"
   },
   "keywords": [
     "stately",

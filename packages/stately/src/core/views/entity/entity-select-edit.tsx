@@ -157,6 +157,7 @@ export function EntitySelectEdit<Schema extends Schemas = Schemas>({
             {/* Link to details */}
             {selected && (
               <Button
+                nativeButton={false}
                 onClick={(e: any) => e.stopPropagation()}
                 render={
                   <a
@@ -169,7 +170,6 @@ export function EntitySelectEdit<Schema extends Schemas = Schemas>({
                     <ExternalLink className="w-4 h-4" />
                   </a>
                 }
-                type="button"
                 variant="secondary"
               />
             )}

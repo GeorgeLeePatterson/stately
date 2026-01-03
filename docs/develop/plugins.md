@@ -125,20 +125,20 @@ cargo run --bin my-plugin-openapi > ../packages/my-plugin-ui/openapi.json
 
 ```typescript
 // src/plugin.ts
-import type { DefinePlugin, Schemas, PluginFactory } from '@statelyjs/stately/schema';
 import {
-  type AnyUiPlugin,
-  registry as baseRegistry,
-  createOperations,
+  createSchemaPlugin,
+  type DefinePlugin,
+} from '@statelyjs/stately/schema';
+import {
+  createUiPlugin,
   type DefineOptions,
   type DefineUiPlugin,
   type RouteOption,
   type UiNavigationOptions,
-  type UiPluginFactory,
 } from '@statelyjs/ui';
 import { StarIcon } from 'lucide-react';
 
-import { MY_OPERATIONS, MyPluginPaths } from './api';
+import { MY_OPERATIONS, type MyPluginPaths } from './api';
 import type { MyPluginData, MyPluginNodeMap, MyPluginTypes } from './schema';
 import { MyPluginNodeType } from './schema';
 import { type MyPluginUiUtils, type MyPluginUtils, myPluginUiUtils } from './utils';
@@ -163,21 +163,18 @@ export type MyPlugin = DefinePlugin<
   MyPluginUtils,
 >;
 
-// Schema plugin - extends type system
-export function myPlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
-  return runtime => ({
-    ...runtime,
-    plugins: { 
-      ...runtime.plugins, 
-      [MY_PLUGIN_NAME]: {
-        // Optionally provide any schema level utilities
-        // ...utils,
-        // Optionally provide a validation hook that will be run on every node during edit
-        // validate: (args: ValidateArgs<S>) => ({ valid: true, errors: [] }) 
-      } 
-    },
-  });
-}
+// Schema plugin - uses createSchemaPlugin for ergonomic API
+export const myPlugin = createSchemaPlugin<MyPlugin>({
+  name: MY_PLUGIN_NAME,
+  // Optionally provide utilities (including validation hook)
+  // utils: { ...myUtils, validate: myValidateHook },
+
+  // Optionally provide a setup function for runtime data
+  // setup: (ctx) => {
+  //   const data = computeMyData(ctx.schema);
+  //   return { data };
+  // },
+});
 
 /**
  * UI Plugin
@@ -204,46 +201,25 @@ export type MyUiPlugin = DefineUiPlugin<
   typeof myPluginRoutes
 >;
 
-// UI plugin - registers components and API
-export function myUiPlugin<
-  Schema extends Schemas<any, any> = Schemas,
-  Augments extends readonly AnyUiPlugin[] = [],
->(options?: MyPluginUiOptions): UiPluginFactory {
-  return runtime => {
-    const { registry, client } = runtime;
-  
-    // Register any components that should be used for any node types introduced
-    registry.components.set(
-      baseRegistry.makeRegistryKey(MyPluginNodeType.MyNewNodeType, 'edit'),
-      MyPluginNodeEdit,
-    );
-    registry.components.set(
-      baseRegistry.makeRegistryKey(MyPluginNodeType.MyNewNodeType, 'view'),
-      MyPluginNodeView,
-    );
-    
-    // Register any additional custom components or transformers (if any)
-    // registry.components.set('myOtherNodeType::edit', MyOtherNodeEdit);
+// UI plugin - uses createUiPlugin for ergonomic API
+export const myUiPlugin = createUiPlugin<MyUiPlugin>({
+  name: MY_PLUGIN_NAME,
+  operations: MY_OPERATIONS,
+  routes: myPluginRoutes,
+  utils: myPluginUiUtils,
 
-    // Create typed operations with user provided prefix
-    const basePathPrefix = runtime.options?.api?.pathPrefix;
-    const corePathPrefix = options?.api?.pathPrefix;
-    const pathPrefix = runtime.utils.mergePathPrefixOptions(basePathPrefix, corePathPrefix);
-    const api = createOperations<MyPluginPaths, typeof MY_OPERATIONS>(
-      client,
-      MY_OPERATIONS,
-      pathPrefix,
-    );
-    
-    // This is how a user can override any routes defined
-    const routes = { ...myPluginRoutes, ...(options?.navigation?.routes || {}) };
-  
-    // Finally, declare your plugin
-    const plugin = { [MY_PLUGIN_NAME]: { api, options, routes, utils: myPluginUiUtils } };
-  
-    return { ...runtime, plugins: { ...runtime.plugins, ...plugin } };
-  };
-}
+  setup: (ctx, options) => {
+    // Register components for any node types this plugin introduces
+    ctx.registerComponent(MyPluginNodeType.MyNewNodeType, 'edit', MyPluginNodeEdit);
+    ctx.registerComponent(MyPluginNodeType.MyNewNodeType, 'view', MyPluginNodeView);
+
+    // Extend extension points if needed
+    // someExtension.extend(myExtension);
+
+    // Return only what you're adding - no spreading required
+    return {};
+  },
+});
 ```
 
 ### 4. Integration
@@ -297,15 +273,21 @@ impl FromRef<TheirAppState> for MyPluginState {
 
 ### Component Registration
 
-Register components for custom node types:
+Register components for custom node types inside your plugin's `setup` function:
 
 ```typescript
-// Edit component for your node type
-ctx.registerComponent('myNodeType', 'edit', MyNodeEdit);
+setup: (ctx, options) => {
+  // Edit component for your node type
+  ctx.registerComponent('MyNodeType', 'edit', MyNodeEdit);
 
-// View component
-ctx.registerComponent('myNodeType', 'view', MyNodeView);
+  // View component
+  ctx.registerComponent('MyNodeType', 'view', MyNodeView);
+
+  return {};
+},
 ```
+
+The `ctx.registerComponent()` helper handles key generation automatically. Components are looked up by the form system when rendering fields of matching node types.
 
 ### Codegen Plugin
 

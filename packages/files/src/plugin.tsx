@@ -54,7 +54,7 @@
  */
 
 import { stringModes } from '@statelyjs/stately/core/extensions/add-string-modes';
-import type { DefinePlugin, PluginFactory, Schemas } from '@statelyjs/stately/schema';
+import { createSchemaPlugin, type DefinePlugin } from '@statelyjs/stately/schema';
 import {
   createUiPlugin,
   type DefineOptions,
@@ -120,26 +120,20 @@ export const filesRoutes: RouteOption = { icon: Files, label: 'Files', to: '/fil
  * Creates the Files schema plugin factory.
  *
  * This plugin registers file-related types and utilities into the Stately
- * schema runtime. It should be used with `createStately().plugin()`.
+ * schema runtime. It should be used with `stately().withPlugin()`.
  *
- * @typeParam S - The schemas type, defaults to base Schemas
  * @returns A plugin factory function that augments the runtime
  *
  * @example
  * ```typescript
- * import { createStately } from '@statelyjs/schema';
+ * import { stately } from '@statelyjs/stately/schema';
  * import { filesPlugin } from '@statelyjs/files';
  *
- * const stately = createStately()
- *   .plugin(filesPlugin())
- *   .build();
+ * const schema = stately<MySchemas>(openapiDoc, PARSED_SCHEMAS)
+ *   .withPlugin(filesPlugin());
  * ```
  */
-export function filesPlugin<S extends Schemas<any, any> = Schemas>(): PluginFactory<S> {
-  return runtime => {
-    return { ...runtime, plugins: { ...runtime.plugins, [FILES_PLUGIN_NAME]: {} } };
-  };
-}
+export const filesPlugin = createSchemaPlugin<FilesPlugin>({ name: FILES_PLUGIN_NAME });
 
 // =============================================================================
 // UI PLUGIN

@@ -61,6 +61,7 @@ export function LinkRefView<Schema extends Schemas = Schemas>({
           {value?.ref && (
             <Button
               className="rounded-full cursor-pointer"
+              nativeButton={false}
               render={
                 <a
                   href={resolveEntityUrl({ id: value.ref, type: entityUrlPath })}

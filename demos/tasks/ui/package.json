@@ -16,6 +16,7 @@
   "pnpm": {
     "overrides": {
       "@statelyjs/ui": "file:../../../packages/ui/statelyjs-ui-0.4.1.tgz",
+      "@statelyjs/schema": "file:../../../packages/schema/statelyjs-schema-0.4.1.tgz",
       "@statelyjs/stately": "file:../../../packages/stately/statelyjs-stately-0.4.1.tgz"
     }
   },

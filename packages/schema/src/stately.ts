@@ -53,6 +53,7 @@
 
 import type { DefineOpenApi } from './generated.js';
 import { UnknownNodeType } from './nodes.js';
+import type { AnySchemaPlugin } from './plugin.js';
 import type { StatelySchemaConfig, StatelySchemas } from './schema.js';
 import type { ValidateArgs, ValidateHook, ValidationResult } from './validation.js';
 
@@ -260,4 +261,155 @@ function runValidationPipeline<P extends { [key: string]: { validate?: ValidateH
   }
 
   return { errors: [], valid: true };
+}
+
+// ============================================================================
+// Schema Plugin Helper
+// ============================================================================
+
+/**
+ * Configuration for creating a schema plugin.
+ *
+ * @typeParam Plugin - The plugin type (extends AnySchemaPlugin)
+ */
+export interface SchemaPluginConfig<Plugin extends AnySchemaPlugin> {
+  /**
+   * Unique plugin name. Must match the name in your DefinePlugin type.
+   */
+  name: Plugin['name'];
+
+  /**
+   * Static utility functions provided by this plugin.
+   * These are merged into `runtime.plugins[name]`.
+   */
+  utils?: Plugin['utils'];
+
+  /**
+   * Setup function called when the plugin is installed.
+   *
+   * Receives a context object with access to the runtime.
+   * Returns only the parts the plugin is adding - no spreading required.
+   *
+   * @param ctx - Plugin context with runtime access
+   * @returns The plugin's contributions (data, utils)
+   */
+  setup?: (ctx: SchemaPluginContext<StatelySchemas<any, any>>) => SchemaPluginResult<Plugin>;
+}
+
+/**
+ * The result returned from a plugin setup function.
+ *
+ * Plugins only return what they're adding - no need to spread runtime or plugins.
+ * The framework handles merging automatically.
+ *
+ * @typeParam Plugin - The plugin type (extends AnySchemaPlugin)
+ */
+export interface SchemaPluginResult<Plugin extends AnySchemaPlugin> {
+  /** Runtime data contributed by this plugin */
+  data?: Plugin['data'];
+  /** Utility functions provided by this plugin (merged with static utils) */
+  utils?: Plugin['utils'];
+}
+
+/**
+ * Context provided to plugin setup functions.
+ *
+ * Gives plugins access to the runtime for reading schema information
+ * and computing derived data.
+ *
+ * @typeParam S - The application's schema type
+ */
+export interface SchemaPluginContext<S extends StatelySchemas<any, any>> {
+  /**
+   * Get a typed view of the runtime.
+   *
+   * Use this when you need access to runtime properties with proper typing.
+   */
+  getRuntime<T extends StatelySchemas<any, any>>(): Stately<T>;
+
+  /** The schema document and parsed nodes */
+  readonly schema: Stately<S>['schema'];
+
+  /** Plugin-contributed data from previously registered plugins */
+  readonly data: S['data'];
+
+  /** Plugin-contributed utilities from previously registered plugins */
+  readonly plugins: S['utils'];
+}
+
+/**
+ * Create a schema plugin with ergonomic API.
+ *
+ * This helper wraps the low-level plugin pattern with:
+ * - **No manual spreading** - Return only what you're adding
+ * - **Automatic merging** - Data and utils are merged automatically
+ * - **Single type parameter** - Derive everything from your `DefinePlugin` type
+ *
+ * ## Example
+ *
+ * @example
+ * ```typescript
+ * import { createSchemaPlugin, type DefinePlugin } from '@statelyjs/schema';
+ *
+ * // Define the plugin type
+ * export type FilesPlugin = DefinePlugin<
+ *   'files',
+ *   FilesNodeMap,
+ *   FilesTypes,
+ *   FilesData,
+ *   FilesUtils
+ * >;
+ *
+ * // Create the plugin factory
+ * export const filesPlugin = createSchemaPlugin<FilesPlugin>({
+ *   name: 'files',
+ *   utils: filesUtils,
+ *
+ *   setup: (ctx) => {
+ *     // Compute any runtime data
+ *     const data = computeFilesData(ctx.schema);
+ *
+ *     // Return only what you're adding - no spreading
+ *     return { data };
+ *   },
+ * });
+ *
+ * // Usage
+ * const schema = createStately<MySchemas>(openapiDoc, PARSED_SCHEMAS)
+ *   .withPlugin(filesPlugin());
+ * ```
+ *
+ * @typeParam Plugin - The plugin type created with DefinePlugin
+ *
+ * @param config - Plugin configuration
+ * @returns A factory function that returns a PluginFactory
+ */
+export function createSchemaPlugin<Plugin extends AnySchemaPlugin>(
+  config: SchemaPluginConfig<Plugin>,
+): <S extends StatelySchemas<any, any>>() => PluginFactory<S> {
+  return <S extends StatelySchemas<any, any>>(): PluginFactory<S> => {
+    return (runtime: Stately<S>): Stately<S> => {
+      // Build context for setup function
+      const ctx: SchemaPluginContext<S> = {
+        data: runtime.data,
+        getRuntime<T extends StatelySchemas<any, any>>() {
+          return runtime as unknown as Stately<T>;
+        },
+        plugins: runtime.plugins,
+        schema: runtime.schema,
+      };
+
+      // Call setup function if provided
+      const result = config.setup?.(ctx) ?? {};
+
+      // Merge utils from config and setup result
+      const utils = { ...(config.utils ?? {}), ...(result.utils ?? {}) } as Plugin['utils'];
+
+      // Merge data from setup result
+      const data = { ...runtime.data, ...(result.data ?? {}) };
+
+      // Return merged runtime
+      return { ...runtime, data, plugins: { ...runtime.plugins, [config.name]: utils } };
+    };
+  };
 }
