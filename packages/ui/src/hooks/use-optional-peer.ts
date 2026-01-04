@@ -3,7 +3,10 @@ import { devLog } from '@/lib/logging';
 
 export type PeerStatus = 'checking' | 'available' | 'unavailable';
 
-export function useOptionalPeer(moduleId: string) {
+export function useOptionalPeer(
+  moduleId: string,
+  module: () => Promise<{ default: any; [key: string]: any }>,
+) {
   const [status, setStatus] = useState<PeerStatus>('checking');
 
   useEffect(() => {
@@ -12,13 +15,10 @@ export function useOptionalPeer(moduleId: string) {
     // reset to checking when moduleId changes
     setStatus('checking');
 
-    const url = import.meta.resolve(moduleId);
-    devLog.debug('Hooks', `Module ${moduleId} using url ${url}`, { cancelled });
-
     (async () => {
       try {
-        const mod = await import(url);
-        devLog.debug('Hooks', `Module ${moduleId} loaded`, { cancelled, url });
+        const mod = await module();
+        devLog.debug('Hooks', `Module ${moduleId} loaded`, { cancelled });
         if (!mod?.default && !Object.keys(mod ?? {}).length) {
           // TODO: (dev) decide whether this should throw
           devLog.warn('Hooks', `Module ${moduleId} doesn't seem usable`);
@@ -34,7 +34,7 @@ export function useOptionalPeer(moduleId: string) {
     return () => {
       cancelled = true;
     };
-  }, [moduleId]);
+  }, [moduleId, module]);
 
   useEffect(
     () => devLog.debug('Hooks', `  ${moduleId} status check changed`, { status }),

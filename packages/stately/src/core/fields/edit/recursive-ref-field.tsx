@@ -1,9 +1,9 @@
 import { generateFieldFormId } from '@statelyjs/ui';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import type { FieldEditProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import { useEffect, useState } from 'react';
 import type { Schemas } from '@/core/schema';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
 
 export type RecursiveRefEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
@@ -78,11 +78,11 @@ export function RecursiveRefEdit<Schema extends Schemas = Schemas>({
     );
   }
 
-  const formId = generateFieldFormId(
-    referencedSchema.nodeType,
-    `recursive-ref-${rest.label || 'field'}`,
-    rest.formId,
-  );
+  const formId = generateFieldFormId({
+    fieldType: referencedSchema.nodeType,
+    formId: rest.formId,
+    propertyName: `recursive-ref-${rest.label || 'field'}`,
+  });
 
   // Recursively render with the looked-up schema
   return <BaseForm.FieldEdit {...rest} formId={formId} node={referencedSchema} />;

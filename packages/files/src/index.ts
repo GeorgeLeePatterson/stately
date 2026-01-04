@@ -61,9 +61,9 @@
  */
 
 // Plugin
-import { FILES_PLUGIN_NAME, filesPlugin, filesUiPlugin } from './plugin.js';
+import { FILES_PLUGIN_NAME, filesPlugin, filesUiPlugin } from './plugin.jsx';
 
-export type { FilesOptions, FilesPlugin, FilesUiPlugin } from './plugin.js';
+export type { FilesOptions, FilesPlugin, FilesUiPlugin } from './plugin.jsx';
 export { filesPlugin, filesUiPlugin, FILES_PLUGIN_NAME };
 
 // API operations

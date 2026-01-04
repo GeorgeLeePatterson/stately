@@ -3,7 +3,7 @@ import { Field, FieldSet } from '@statelyjs/ui/components/base/field';
 import { Skeleton } from '@statelyjs/ui/components/base/skeleton';
 import { useId } from 'react';
 import type { CoreEntityData } from '@/core';
-import type { Schemas } from '@/core/schema';
+import { CoreNodeType, type Schemas } from '@/core/schema';
 import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
 import { log } from '@/utils';
@@ -49,7 +49,11 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
               <Skeleton className="h-20 w-full" />
             ) : (
               <BaseForm.FieldEdit<Schema, Schema['plugin']['Nodes']['primitive'], string>
-                formId={generateFieldFormId(fieldTypePrefix, 'name', formId)}
+                formId={generateFieldFormId({
+                  fieldType: fieldTypePrefix,
+                  formId,
+                  propertyName: 'name',
+                })}
                 label="name"
                 node={name.node}
                 onChange={newValue => onChange({ ...(entity ?? {}), name: newValue })}
@@ -63,13 +67,14 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
       <FieldSet className="group disabled:opacity-40 min-w-0 gap-0" disabled={formDisabled}>
         {sortedProperties.map(([fieldName, propNode]) => {
           const isRequired = required.has(fieldName);
+          const isNullable = propNode.nodeType === CoreNodeType.Nullable;
           const label = utils?.generateFieldLabel(fieldName);
           const fieldValue = entity?.[fieldName];
-          const fieldFormId = generateFieldFormId(
-            `${fieldTypePrefix}-${propNode.nodeType}`,
-            fieldName,
+          const fieldFormId = generateFieldFormId({
+            fieldType: `${fieldTypePrefix}-${propNode.nodeType}`,
             formId,
-          );
+            propertyName: fieldName,
+          });
 
           const field = isLoading ? (
             <Skeleton className="h-20 w-full" />
@@ -77,7 +82,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
             <BaseForm.FieldEdit<Schema, typeof propNode>
               formId={fieldFormId}
               isRequired={isRequired}
-              label={label}
+              label={isNullable ? '' : label}
               node={propNode}
               onChange={newValue => onChange({ ...(entity ?? {}), [fieldName]: newValue })}
               value={fieldValue}

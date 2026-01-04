@@ -1,10 +1,11 @@
-import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { DescriptionLabel, NotSet, SimpleLabel } from '@statelyjs/ui/components';
 import type { FieldViewProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import { useMemo } from 'react';
+import { getAdditionalValues, getMergedValues } from '@/core/hooks/use-object-field';
+import { useObjectSchema } from '@/core/hooks/use-object-schema';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
 
 export type ObjectViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
@@ -18,22 +19,29 @@ export function ObjectView<Schema extends Schemas = Schemas>({
   node,
 }: ObjectViewProps<Schema>) {
   const { schema, utils } = useStatelyUi<Schema>();
-  const required = new Set(node.required || []);
-  const objValue = value as AnyRecord;
 
-  // For additionalProperties: extract extra keys not in fixed properties
-  const knownKeys = useMemo(() => new Set(Object.keys(node.properties)), [node.properties]);
-  const extraFieldsValue = useMemo(() => {
-    if (!node.additionalProperties || !objValue) return {};
-    return Object.fromEntries(Object.entries(objValue).filter(([k]) => !knownKeys.has(k)));
-  }, [node.additionalProperties, objValue, knownKeys]);
-  const hasExtraFields = Object.keys(extraFieldsValue).length > 0;
+  const { fields, merged, additional, propertyKeys, mergedKeys, required } = useObjectSchema(node);
+
+  // const propertyKeys = useMemo(() => new Set(Object.keys(node.properties)), [node.properties]);
+
+  // Zip merged schemas with their values (each schema gets its own subset of formData)
+  const mergedFieldsValues = useMemo(() => {
+    return getMergedValues(merged, value);
+  }, [merged, value]);
+
+  // Derive additional fields value (not in properties, not in merged)
+  const additionalFieldsValue = useMemo(() => {
+    return getAdditionalValues(propertyKeys, mergedKeys, additional, value);
+  }, [additional, value, propertyKeys, mergedKeys]);
+
+  const hasMerged = Object.keys(mergedFieldsValues).length > 0;
+  const hasAdditional = Object.keys(additionalFieldsValue).length > 0;
 
   return (
     <div className="flex-1 border-l-2 border-primary/30 rounded-xs pl-4 py-3 space-y-4">
-      {Object.entries(node.properties).map(([propName, propSchema]) => {
+      {fields.map(([propName, propSchema]) => {
         const typedSchema = propSchema as Schema['plugin']['AnyNode'];
-        const propValue = objValue[propName];
+        const propValue = value[propName];
         const valueDefined = propValue !== undefined && propValue !== null;
         const label = `${utils?.generateFieldLabel(propName)}:`;
         const description = typedSchema.description;
@@ -61,13 +69,26 @@ export function ObjectView<Schema extends Schemas = Schemas>({
         );
       })}
 
+      {/* Render merged for dynamic keys */}
+      {mergedFieldsValues && hasMerged && (
+        <div className="flex flex-col space-y-2">
+          {mergedFieldsValues.map(({ schema: mergedSchema, value: mergedValue }, i) => (
+            <BaseForm.FieldView<Schema>
+              key={`${mergedSchema.nodeType}-${i}`}
+              node={mergedSchema}
+              value={mergedValue}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Render additionalProperties for dynamic keys */}
-      {node.additionalProperties && hasExtraFields && (
+      {additional && additionalFieldsValue && hasAdditional && (
         <div className="flex flex-col space-y-2">
           <SimpleLabel>Additional Properties:</SimpleLabel>
           <BaseForm.FieldView<Schema>
-            node={{ nodeType: CoreNodeType.Map, valueSchema: node.additionalProperties }}
-            value={extraFieldsValue}
+            node={{ nodeType: CoreNodeType.Map, valueSchema: additional }}
+            value={additionalFieldsValue}
           />
         </div>
       )}

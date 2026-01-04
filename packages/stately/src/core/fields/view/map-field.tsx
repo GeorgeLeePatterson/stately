@@ -14,11 +14,12 @@ import {
   ItemGroup,
   ItemTitle,
 } from '@statelyjs/ui/components/base/item';
-import type { FieldViewProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import { useViewMore } from '@statelyjs/ui/hooks';
+import type { FieldViewProps } from '@statelyjs/ui/registry';
 import { ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown, Variable } from 'lucide-react';
+import { useState } from 'react';
 import type { Schemas } from '@/core/schema';
+import { BaseForm } from '@/form';
 
 export const MAX_ITEMS_VIEW_DEFAULT = 3;
 
@@ -74,6 +75,8 @@ export type MapViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
 >;
 
 export function MapView<Schema extends Schemas = Schemas>({ node, value }: MapViewProps<Schema>) {
+  const [opened, setOpened] = useState<{ [key: string]: boolean }>({});
+
   const [entries, allEntries, viewMore, setViewMore] = useViewMore(value, MAX_ITEMS_VIEW_DEFAULT);
 
   if (typeof value !== 'object') {
@@ -89,7 +92,12 @@ export function MapView<Schema extends Schemas = Schemas>({ node, value }: MapVi
   ) : (
     <ItemGroup className="space-y-3">
       {entries.map(([key, val]) => (
-        <KeyValue itemKey={key} key={key}>
+        <KeyValue
+          itemKey={key}
+          key={key}
+          onOpen={o => setOpened(prev => ({ ...prev, [key]: o }))}
+          open={opened[key] ?? false}
+        >
           <div className="py-3 px-2">
             <BaseForm.FieldView<Schema> node={node.valueSchema} value={val} />
           </div>

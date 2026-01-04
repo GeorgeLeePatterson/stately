@@ -14,15 +14,14 @@ import {
 } from '@statelyjs/ui/components/base/input-group';
 import { Item, ItemContent, ItemGroup } from '@statelyjs/ui/components/base/item';
 import { Separator } from '@statelyjs/ui/components/base/separator';
-import type { FieldEditProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import { useViewMore } from '@statelyjs/ui/hooks';
+import type { FieldEditProps } from '@statelyjs/ui/registry';
 import { ChevronsDownUp, ChevronsUpDown, Pencil, Plus, Save, Trash2, X } from 'lucide-react';
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { CoreNodeUnion } from '@/core';
-import { useObjectCompare } from '@/core/hooks';
 import type { Schemas } from '@/core/schema';
-import { CoreNodeType } from '@/core/schema/nodes';
+import { isPrimitiveNodeLike } from '@/core/schema/utils';
+import { BaseForm } from '@/form';
 import { KeyValue, MAX_ITEMS_VIEW_DEFAULT } from '../view/map-field';
 
 const generateSaveLabels = (
@@ -36,8 +35,8 @@ const generateSaveLabels = (
   const hasNewVariables = newVariables.length > 1;
   const pluralize = (hasNewVariable && isEditDirty) || hasNewVariables;
 
-  const saveFormLabel = label ? `New '${label}' Variable` : 'New Variable';
-  const editFormLabel = label ? `Edited '${label}'' Variable` : 'Edited Variable';
+  const saveFormLabel = label ? `New \`${label}\` Variable` : 'New Variable';
+  const editFormLabel = label ? `Edited \`${label}\`' Variable` : 'Edited Variable';
 
   let saveLabelPrefix = '';
   if (!!formData && !!value && (hasNewVariable || isEditDirty)) {
@@ -69,7 +68,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   isWizard,
 }: MapEditProps<Schema>) {
   // Initialize formData with value from parent
-  const [formData, setFormData] = useState<Record<string, any>>(value ?? {});
+  const [formData, setFormData] = useState<Record<string, any> | undefined>(value);
   const [newKey, setNewKey] = useState<string>();
   const [newValue, setNewValue] = useState<any>();
   const [editKey, setEditKey] = useState<string>();
@@ -77,11 +76,29 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   const [isDirty, setIsDirty] = useState(false);
   const [isEditDirty, setIsEditDirty] = useState(false);
 
-  // Ensure updates to value update formData
-  const hasChanged = useObjectCompare(value, formData, isDirty || isEditDirty);
+  // Reset key for adding value
+  const [addResetKey, setAddResetKey] = useState<number>();
+
+  // Track original value to detect actual parent changes
+  const originalValueRef = useRef(value);
+
+  // Sync from parent when value changes (including cancel/reset scenarios)
   useEffect(() => {
-    if (hasChanged()) setFormData(d => ({ ...(value ?? {}), ...d }));
-  }, [value, hasChanged]);
+    // Only run when value actually changes from parent
+    if (value === originalValueRef.current) return;
+    originalValueRef.current = value;
+
+    // If value is undefined/empty and we have local data, a cancel was issued
+    if (!value && !!formData && Object.keys(formData).length > 0) {
+      setFormData(value);
+      setIsDirty(false);
+      setIsEditDirty(false);
+    } else {
+      // Sync from parent
+      setFormData(d => ({ ...(value ?? {}), ...(d ?? {}) }));
+    }
+    setAddResetKey(Date.now());
+  }, [value, formData]);
 
   const formId_ = useId();
   const formId = parentFormId ? `${parentFormId}-${formId_}` : formId_;
@@ -102,42 +119,45 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   }, []);
 
   // Validate map and create save label
-  const isValid = !isRequired || Object.keys(formData).length > 0;
+  const isValid = !isRequired || Object.keys(formData || {}).length > 0;
 
   const saveLabels = generateSaveLabels(label, formData, value, isEditDirty);
 
   const newKeys =
-    formData && Object.keys(formData).filter(k => !Object.keys(value || {}).includes(k));
+    (formData && Object.keys(formData).filter(k => !Object.keys(value ?? {}).includes(k))) ?? [];
 
   // Handle save
   const handleSave = useCallback(() => {
     if (!isValid) return;
-    onChange(formData);
+    onChange(formData ?? {});
     setIsDirty(false);
     setIsEditDirty(false);
   }, [formData, isValid, onChange]);
 
   const onAddEdit = useCallback(
-    (valueToAdd: any) => {
+    (complexVal?: any) => {
       if (!editKey) return;
-      setFormData(prev => ({ ...prev, [editKey]: valueToAdd }));
+      const editVal = complexVal ?? editValue;
+      setFormData(prev => ({ ...prev, [editKey]: editVal }));
       setEditKey('');
       setEditValue('');
       setIsDirty(true);
       setIsEditDirty(true);
     },
-    [editKey],
+    [editKey, editValue],
   );
 
   const onAddNew = useCallback(
-    (valueToAdd: any) => {
+    (complexVal?: any) => {
       if (!newKey) return;
-      setFormData(prev => ({ ...prev, [newKey]: valueToAdd }));
+      const newVal = complexVal ?? newValue;
+      setFormData(prev => ({ ...prev, [newKey]: newVal }));
       setNewKey('');
       setNewValue('');
       setIsDirty(true);
+      setAddResetKey(Date.now());
     },
-    [newKey],
+    [newKey, newValue],
   );
 
   const onRemove = (key: string) => {
@@ -145,13 +165,15 @@ export function MapEdit<Schema extends Schemas = Schemas>({
       setEditKey('');
     }
     setFormData(prev => {
-      const { [key]: _, ...rest } = prev;
+      const { [key]: _, ...rest } = prev ?? {};
       return rest;
     });
     if (!!value && key in value) {
       setIsDirty(true);
     }
   };
+
+  const isValuePrimitive = isPrimitiveNodeLike(node.valueSchema);
 
   return (
     <>
@@ -163,7 +185,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
         )}
       >
         {/*View Existing Items*/}
-        {Object.entries(formData).length === 0 ? (
+        {Object.entries(formData ?? {}).length === 0 ? (
           <Card>
             <CardContent>
               <p className="text-sm text-muted-foreground text-center">
@@ -232,17 +254,34 @@ export function MapEdit<Schema extends Schemas = Schemas>({
                   open={existingOpen.has(key)}
                 >
                   {key === editKey ? (
-                    <ValueEdit
-                      formId={generateFieldFormId(CoreNodeType.Map, key, formId)}
-                      handleAdd={onAddEdit}
-                      hasKey={true}
-                      isEditing
-                      isWizard={isWizard}
-                      label={saveLabels.edit}
-                      newValue={editValue}
-                      node={node.valueSchema}
-                      setNewValue={setEditValue}
-                    />
+                    isValuePrimitive ? (
+                      <SimpleValueEdit
+                        formId={generateFieldFormId({
+                          fieldType: node.valueSchema.nodeType,
+                          formId,
+                          propertyName: key,
+                        })}
+                        handleAdd={onAddEdit}
+                        hasKey={true}
+                        isEditing
+                        setValue={setEditValue}
+                        value={editValue}
+                      />
+                    ) : (
+                      <ComplexValueEdit
+                        formId={generateFieldFormId({
+                          fieldType: node.valueSchema.nodeType,
+                          formId,
+                          propertyName: key,
+                        })}
+                        hasKey={true}
+                        isWizard={isWizard}
+                        label={saveLabels.edit}
+                        node={node.valueSchema}
+                        setValue={onAddEdit}
+                        value={editValue}
+                      />
+                    )
                   ) : (
                     <BaseForm.FieldView<Schema> node={node.valueSchema} value={itemValue} />
                   )}
@@ -276,7 +315,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
 
         <Separator />
 
-        {/*Add New Item*/}
+        {/* Add New Item */}
         <div className="space-y-2">
           <FieldLegend variant="label">Add New Item</FieldLegend>
           <Field>
@@ -291,20 +330,41 @@ export function MapEdit<Schema extends Schemas = Schemas>({
             </InputGroup>
           </Field>
 
-          {/*Value*/}
-          <ValueEdit<Schema>
-            formId={generateFieldFormId(node.valueSchema.nodeType, newKey ?? '', formId)}
-            handleAdd={val => onAddNew(val ?? newValue)}
-            hasKey={!!newKey}
-            isDisabled={!!editKey}
-            isWizard={isWizard}
-            label={saveLabels.save}
-            newValue={newValue}
-            node={node.valueSchema}
-            setNewValue={setNewValue}
-          />
+          {/* Value */}
+          {isValuePrimitive ? (
+            <SimpleValueEdit
+              formId={generateFieldFormId({
+                fieldType: node.valueSchema.nodeType,
+                formId,
+                propertyName: newKey ?? 'unset',
+              })}
+              handleAdd={onAddNew}
+              hasKey={!!newKey}
+              isDisabled={!!editKey}
+              key={addResetKey}
+              setValue={setNewValue}
+              value={newValue}
+            />
+          ) : (
+            <ComplexValueEdit<Schema>
+              formId={generateFieldFormId({
+                fieldType: node.valueSchema.nodeType,
+                formId,
+                propertyName: newKey ?? 'unset',
+              })}
+              hasKey={!!newKey}
+              isDisabled={!!editKey}
+              isWizard={isWizard}
+              key={addResetKey}
+              label={saveLabels.save}
+              node={node.valueSchema}
+              setValue={onAddNew}
+              value={newValue}
+            />
+          )}
         </div>
 
+        {/* TODO: Remove - Showing the button when not valid is wrong */}
         {isDirty && (
           <>
             <FieldSeparator />
@@ -312,7 +372,7 @@ export function MapEdit<Schema extends Schemas = Schemas>({
               isDisabled={!isValid}
               label={saveLabels.saveAll}
               onCancel={() => {
-                setFormData(value ?? {});
+                setFormData(value);
                 setIsDirty(false);
               }}
               onSave={handleSave}
@@ -325,110 +385,123 @@ export function MapEdit<Schema extends Schemas = Schemas>({
   );
 }
 
-function ValueEdit<Schema extends Schemas = Schemas>({
+function SimpleValueEdit({
   formId,
-  node,
-  label,
   hasKey,
-  newValue,
-  setNewValue,
+  value,
+  setValue,
   handleAdd,
   isDisabled,
-  isWizard,
   isEditing,
 }: {
   formId: string;
-  node: CoreNodeUnion<Schema>;
-  label?: string;
   hasKey?: boolean;
-  newValue?: any;
-  setNewValue: (value: string) => void;
-  handleAdd: (value: any) => void;
+  value?: any;
+  setValue: (value: string) => void;
+  handleAdd: () => void;
   isDisabled?: boolean;
-  isWizard?: boolean;
   isEditing?: boolean;
 }) {
   return (
     <FieldSet className="min-w-0" disabled={!hasKey}>
       <Field>
-        {/* Primitive value */}
-        {node.nodeType === CoreNodeType.Primitive ? (
-          <div className="grid w-full gap-4">
-            <InputGroup>
-              {/* Textarea */}
-              <InputGroupTextarea
-                id={`text-area-${formId}`}
-                onChange={e => setNewValue(e.target.value)}
-                onKeyDown={e => {
-                  if (!isDisabled && e.key === 'Enter' && e.shiftKey) {
-                    e.preventDefault();
-                    handleAdd(newValue);
-                  }
-                }}
-                placeholder="Value..."
-                value={newValue}
-              />
+        <div className="grid w-full gap-4">
+          <InputGroup>
+            {/* Textarea */}
+            <InputGroupTextarea
+              id={`text-area-${formId}`}
+              onChange={e => setValue(e.target.value)}
+              onKeyDown={e => {
+                if (!isDisabled && e.key === 'Enter' && e.shiftKey) {
+                  e.preventDefault();
+                  handleAdd();
+                }
+              }}
+              placeholder="Value..."
+              value={value}
+            />
 
-              {/* Add button */}
-              <InputGroupAddon align="block-end">
-                <InputGroupText className="text-xs text-muted-foreground italic">
-                  {hasKey ? 'Create a new key value pair' : 'Set the key first'}
-                </InputGroupText>
-                <InputGroupButton
-                  className="ml-auto cursor-pointer"
-                  disabled={isDisabled}
-                  onClick={() => handleAdd(newValue)}
-                  size="xs"
-                  variant={isDisabled || !hasKey ? 'ghost' : 'default'}
-                >
-                  {isEditing ? (
-                    <>
-                      Update&nbsp;
-                      <Save />
-                    </>
-                  ) : (
-                    <>
-                      Add&nbsp;
-                      <Plus />
-                    </>
-                  )}
-                </InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-        ) : (
-          // Complex value
-          <div className="flex flex-col border-border border rounded-md">
-            <div
-              className={cn(
-                'py-2 px-3 flex justify-between items-center',
-                'text-sm',
-                'rounded-t-md',
-                hasKey ? 'text-accent-foreground bg-muted' : 'text-muted-foreground bg-accent',
-              )}
-            >
-              <span>Value... </span>
-              {!hasKey && <span className="text-xs text-primary italic">(Set the key first)</span>}
-            </div>
-            {node.description && (
-              <div className="bg-muted text-xs italic p-2">{node.description}</div>
+            {/* Add button */}
+            <InputGroupAddon align="block-end">
+              <InputGroupText className="text-xs text-muted-foreground italic">
+                {hasKey ? 'Create a new key value pair' : 'Set the key first'}
+              </InputGroupText>
+              <InputGroupButton
+                className="ml-auto cursor-pointer"
+                disabled={isDisabled}
+                onClick={() => handleAdd()}
+                size="xs"
+                variant={isDisabled || !hasKey ? 'ghost' : 'default'}
+              >
+                {isEditing ? (
+                  <>
+                    Update&nbsp;
+                    <Save />
+                  </>
+                ) : (
+                  <>
+                    Add&nbsp;
+                    <Plus />
+                  </>
+                )}
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+      </Field>
+    </FieldSet>
+  );
+}
+
+function ComplexValueEdit<Schema extends Schemas = Schemas>({
+  formId,
+  node,
+  label,
+  hasKey,
+  value,
+  setValue,
+  isDisabled,
+  isWizard,
+}: {
+  formId: string;
+  node: CoreNodeUnion<Schema>;
+  label?: string;
+  hasKey?: boolean;
+  value?: any;
+  setValue: (value: string) => void;
+  isDisabled?: boolean;
+  isWizard?: boolean;
+}) {
+  return (
+    <FieldSet className="min-w-0" disabled={!hasKey || isDisabled}>
+      <Field>
+        <div className="flex flex-col border-border border rounded-md">
+          <div
+            className={cn(
+              'py-2 px-3 flex justify-between items-center',
+              'text-sm',
+              'rounded-t-md',
+              hasKey ? 'text-accent-foreground bg-muted' : 'text-muted-foreground bg-accent',
             )}
-            <div className="p-2 flex-1 w-full min-w-0">
-              <BaseForm.FieldEdit<Schema, CoreNodeUnion<Schema>, string>
-                formId={formId}
-                isRequired
-                isWizard={isWizard}
-                label={label}
-                node={node}
-                onChange={val => {
-                  setNewValue(val);
-                  handleAdd(val);
-                }}
-                value={newValue}
-              />
-            </div>
+          >
+            <span>Value... </span>
+            {!hasKey && <span className="text-xs text-primary italic">(Set the key first)</span>}
           </div>
-        )}
+          {node.description && (
+            <div className="bg-muted text-xs italic p-2">{node.description}</div>
+          )}
+          <div className="p-2 flex-1 w-full min-w-0">
+            <BaseForm.FieldEdit<Schema, CoreNodeUnion<Schema>, string>
+              formId={formId}
+              isRequired
+              isWizard={isWizard}
+              label={label}
+              node={node}
+              onChange={setValue}
+              value={value}
+            />
+          </div>
+        </div>
       </Field>
     </FieldSet>
   );

@@ -1,8 +1,8 @@
 import { FieldItem, SimpleLabel } from '@statelyjs/ui/components';
 import type { FieldViewProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import type { CoreNodeUnion } from '@/core';
 import type { Schemas } from '@/core/schema';
+import { BaseForm } from '@/form';
 
 export type UntaggedEnumViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
   Schema,
@@ -40,23 +40,32 @@ export function EnumFieldView<Schema extends Schemas = Schemas>({
   tag,
   node,
   value,
+  label,
+  valueLabel,
 }: {
   tag: string;
   node: CoreNodeUnion<Schema> | null;
   value: unknown;
+  label?: string;
+  valueLabel?: string;
 }) {
+  const fieldValue = node ? <BaseForm.FieldView node={node} value={value} /> : null;
+
   return (
     <div className="min-w-0 flex flex-col px-3 gap-3">
       <div className="text-base font-semibold flex gap-2 items-baseline">
-        <SimpleLabel>Selected:</SimpleLabel>
+        <SimpleLabel>{label ?? 'Selected:'}</SimpleLabel>
         <span className="uppercase">{tag}</span>
       </div>
-      {node && (
-        <div className="flex flex-col gap-2">
-          <SimpleLabel>Configuration:</SimpleLabel>
-          <BaseForm.FieldView node={node} value={value} />
-        </div>
-      )}
+      {node &&
+        (valueLabel === '' ? (
+          <>{fieldValue}</>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <SimpleLabel>{valueLabel ?? 'Value:'}</SimpleLabel>
+            {fieldValue}
+          </div>
+        ))}
     </div>
   );
 }

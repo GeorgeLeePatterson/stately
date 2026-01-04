@@ -2,9 +2,9 @@ import { generateFieldFormId } from '@statelyjs/ui';
 import { GlowingSave } from '@statelyjs/ui/components';
 import { FieldSet } from '@statelyjs/ui/components/base/field';
 import type { FieldEditProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import { useCallback, useState } from 'react';
 import type { Schemas } from '@/core/schema';
+import { BaseForm } from '@/form';
 
 export type TupleEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
   Schema,
@@ -82,11 +82,11 @@ export function TupleEdit<Schema extends Schemas = Schemas>({
             {node.items.slice(1).map((itemNode, idx) => {
               const index = idx + 1;
               const itemLabel = twoTuple ? 'Value' : `${label} ${index + 1}`;
-              const fieldFormId = generateFieldFormId(
-                itemNode.nodeType,
-                `${itemLabel}-${idx}`,
+              const fieldFormId = generateFieldFormId({
+                fieldType: itemNode.nodeType,
                 formId,
-              );
+                propertyName: `${itemLabel}-${idx}`,
+              });
               return (
                 <div key={`${itemLabel}-${index}`}>
                   <BaseForm.FieldEdit

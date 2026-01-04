@@ -90,7 +90,11 @@ export function UntaggedEnumEdit<Schema extends Schemas = Schemas>({
         <FieldSet className="p-2 min-w-0">
           {/* Render the variant schema directly */}
           <BaseForm.FieldEdit<Schema>
-            formId={generateFieldFormId(currentVariant.schema.nodeType, currentTag, formId)}
+            formId={generateFieldFormId({
+              fieldType: currentVariant.schema.nodeType,
+              formId,
+              propertyName: currentTag,
+            })}
             isWizard={isWizard}
             label={`${utils?.generateFieldLabel(currentTag)} Configuration`}
             node={currentVariant.schema}

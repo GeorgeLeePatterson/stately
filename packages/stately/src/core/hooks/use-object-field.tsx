@@ -3,6 +3,52 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { useStatelyUi } from '@/index';
 import { useObjectCompare } from './use-object-compare';
+import { useObjectSchema } from './use-object-schema';
+
+// ----
+// Various helper functions for objects
+// ----
+
+/**
+ * Access merged values from object node's merged properties
+ *
+ * @typeParam S - The type of the schema.
+ * @param merged
+ * @param formData
+ * @returns {Array<{schema: S['plugin']['AnyNode'], value: any}>}
+ */
+export const getMergedValues = <S extends Schemas = Schemas>(
+  merged?: readonly S['plugin']['AnyNode'][] | null,
+  formData?: any,
+): Array<{ schema: S['plugin']['AnyNode']; value: any }> => {
+  if (!merged || merged.length === 0) return [];
+  return merged.map(schema => {
+    const schemaKeys = new Set('keys' in schema && Array.isArray(schema.keys) ? schema.keys : []);
+    const value = Object.fromEntries(Object.entries(formData).filter(([k]) => schemaKeys.has(k)));
+    return { schema, value };
+  });
+};
+
+/**
+ * Access additional values from object node's additional properties
+ *
+ * @param propertyKeys
+ * @param mergedKeys
+ * @param additionalProperties
+ * @param formData
+ * @returns {AnyRecord}
+ */
+export const getAdditionalValues = <S extends Schemas = Schemas>(
+  propertyKeys: Set<string>,
+  mergedKeys: Set<string>,
+  additionalProperties?: S['plugin']['AnyNode'] | null,
+  formData?: any,
+): AnyRecord => {
+  if (!additionalProperties || !formData) return {};
+  return Object.fromEntries(
+    Object.entries(formData).filter(([k]) => !propertyKeys.has(k) && !mergedKeys.has(k)),
+  );
+};
 
 /**
  * State for a merged field from `allOf` composition.
@@ -35,7 +81,7 @@ export interface ObjectFieldState<S extends Schemas = Schemas> {
   /** Merged schemas with their current values (from allOf) */
   mergedFields: Array<MergedField<S>>;
   /** Values for additional properties not in schema */
-  extraFieldsValue: AnyRecord;
+  additionalFieldsValue: AnyRecord;
   /** Whether form data differs from original value */
   isDirty: boolean;
   /** Whether current form data passes validation */
@@ -113,50 +159,17 @@ export function useObjectField<S extends Schemas = Schemas>({
   const changes = useRef<Map<string, any>>(new Map());
   const hasChanged = useObjectCompare(value, formData, isDirty);
 
-  const required = new Set<string>(node?.required || []);
-  const valueFields = Object.entries(node.properties).filter(([fieldName]) => fieldName !== 'id');
-  const fields = schema.plugins.core.sortEntityProperties<S['plugin']['AnyNode']>(
-    valueFields,
-    required,
-  );
-
-  // Merged schemas from allOf composition - handled separately from regular properties
-  const merged = node.merged ?? null;
-
-  // Collect keys from merged schemas (object-like schemas have a 'keys' property)
-  const mergedKeys = useMemo(() => {
-    if (!merged || merged.length === 0) return new Set<string>();
-    const keys = new Set<string>();
-    for (const schema of merged) {
-      if ('keys' in schema && Array.isArray(schema.keys)) {
-        for (const key of schema.keys) {
-          keys.add(key);
-        }
-      }
-    }
-    return keys;
-  }, [merged]);
-
-  // Property keys from the object schema itself
-  const propertyKeys = useMemo(() => new Set(node.keys ?? []), [node.keys]);
+  const { fields, merged, additional, propertyKeys, mergedKeys } = useObjectSchema(node);
 
   // Zip merged schemas with their values (each schema gets its own subset of formData)
-  const mergedFields = useMemo(() => {
-    if (!merged || merged.length === 0) return [];
-    return merged.map(schema => {
-      const schemaKeys = new Set('keys' in schema && Array.isArray(schema.keys) ? schema.keys : []);
-      const value = Object.fromEntries(Object.entries(formData).filter(([k]) => schemaKeys.has(k)));
-      return { schema, value };
-    });
+  const mergedFieldsValues = useMemo(() => {
+    return getMergedValues(merged, formData);
   }, [merged, formData]);
 
   // Derive additional fields value (not in properties, not in merged)
-  const extraFieldsValue = useMemo(() => {
-    if (!node.additionalProperties || !formData) return {};
-    return Object.fromEntries(
-      Object.entries(formData).filter(([k]) => !propertyKeys.has(k) && !mergedKeys.has(k)),
-    );
-  }, [node.additionalProperties, formData, propertyKeys, mergedKeys]);
+  const additionalFieldsValue = useMemo(() => {
+    return getAdditionalValues(propertyKeys, mergedKeys, additional, formData);
+  }, [additional, formData, propertyKeys, mergedKeys]);
 
   const objectValidation = schema.validate({
     data: formData,
@@ -177,6 +190,9 @@ export function useObjectField<S extends Schemas = Schemas>({
     if (!isValid) return;
     onSave(formData);
     setIsDirty(false);
+
+    // Reset map tracking changes
+    changes.current = new Map();
   }, [formData, isValid, onSave]);
 
   const handleFieldChange = useCallback((fieldName: string, isNullable: boolean, newValue: any) => {
@@ -243,7 +259,7 @@ export function useObjectField<S extends Schemas = Schemas>({
   const changed = useMemo(() => hasChanged(changes.current), [hasChanged]);
 
   return {
-    extraFieldsValue,
+    additionalFieldsValue,
     fields,
     formData,
     handleAdditionalFieldChange,
@@ -253,7 +269,7 @@ export function useObjectField<S extends Schemas = Schemas>({
     handleSave,
     isDirty: changed,
     isValid,
-    mergedFields,
+    mergedFields: mergedFieldsValues,
     resetKey,
-  } as ObjectFieldState;
+  };
 }

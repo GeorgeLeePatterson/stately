@@ -46,7 +46,12 @@ export function ObjectEdit<Schema extends Schemas = Schemas>({
   onChange,
 }: ObjectEditProps<Schema>) {
   const instanceFormId = useId();
-  const objectFormId = `object-${instanceFormId}-${formId}`;
+  const objectFormId = generateFieldFormId({
+    fieldType: node.nodeType,
+    formId,
+    instanceFormId,
+    propertyName: label ?? 'object',
+  });
 
   return Object.keys(node.properties).filter(k => k !== 'id').length > 1 ? (
     <Tabs defaultValue={ObjectEditMode.FORM}>
@@ -107,7 +112,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
   const { utils } = useStatelyUi<Schema>();
 
   const {
-    extraFieldsValue,
+    additionalFieldsValue,
     fields,
     formData,
     handleFieldChange,
@@ -131,7 +136,11 @@ function ObjectForm<Schema extends Schemas = Schemas>({
               {mergedFields.map(({ schema, value }, index) => (
                 <Fragment key={`merged-${schema.nodeType}-${index}-${resetKey}`}>
                   <BaseForm.FieldEdit<Schema>
-                    formId={generateFieldFormId(schema.nodeType, `merged-${index}`, formId)}
+                    formId={generateFieldFormId({
+                      fieldType: schema.nodeType,
+                      formId,
+                      propertyName: `merged-${index}`,
+                    })}
                     isRequired
                     isWizard={isWizard}
                     node={schema}
@@ -162,11 +171,11 @@ function ObjectForm<Schema extends Schemas = Schemas>({
             }
 
             const isWrappedNullable = propSchema.nodeType === CoreNodeType.Nullable;
-            const fieldFormId = generateFieldFormId(
-              propSchema.nodeType,
-              propLabel || 'object field',
+            const fieldFormId = generateFieldFormId({
+              fieldType: propSchema.nodeType,
               formId,
-            );
+              propertyName: propLabel || 'object-property',
+            });
 
             return (
               <Fragment key={`${propName}-${resetKey}`}>
@@ -210,18 +219,23 @@ function ObjectForm<Schema extends Schemas = Schemas>({
             <FieldSet className="min-w-0">
               <FieldLegend variant="label">Additional Properties</FieldLegend>
               <BaseForm.FieldEdit<Schema>
-                formId={generateFieldFormId(CoreNodeType.Map, 'additional-properties', formId)}
+                formId={generateFieldFormId({
+                  fieldType: CoreNodeType.Map,
+                  formId,
+                  propertyName: 'additional-properties',
+                })}
                 isWizard={isWizard}
                 key={`additional-properties-${resetKey}`}
                 node={{ nodeType: CoreNodeType.Map, valueSchema: node.additionalProperties }}
                 onChange={v => handleAdditionalFieldChange(v as AnyRecord)}
-                value={extraFieldsValue}
+                value={additionalFieldsValue}
               />
             </FieldSet>
           </>
         )}
       </FieldGroup>
 
+      {/* TODO: Remove - Showing the button when not valid is wrong */}
       {/* Save/Cancel buttons appear when dirty */}
       {isDirty && (
         <GlowingSave

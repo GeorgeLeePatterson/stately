@@ -9,9 +9,9 @@ import {
   SelectValue,
 } from '@statelyjs/ui/components/base/select';
 import type { FieldEditProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import { useState } from 'react';
 import { CoreNodeType, PrimitiveType, type Schemas } from '@/core/schema';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
 
 export type UnionEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
@@ -164,11 +164,11 @@ export function UnionEdit<Schema extends Schemas = Schemas>({
       {currentVariant?.schema && selectedIndex !== null && (
         <FieldSet className="p-2 min-w-0">
           <BaseForm.FieldEdit<Schema>
-            formId={generateFieldFormId(
-              currentVariant.schema.nodeType,
-              `${currentVariant?.label || 'union-field'}-${selectedIndex}`,
+            formId={generateFieldFormId({
+              fieldType: currentVariant.schema.nodeType,
               formId,
-            )}
+              propertyName: `${currentVariant?.label || 'union-field'}-${selectedIndex}`,
+            })}
             isWizard={isWizard}
             label={generateVariantLabel(currentVariant, selectedIndex)}
             node={currentVariant.schema}

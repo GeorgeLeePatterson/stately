@@ -105,6 +105,14 @@ export function CodemirrorEditor({
 
   const extensions = useMemo(() => [getLanguageExtension(lang)], [lang]);
 
+  const stringify = (value: any) => {
+    try {
+      return JSON.stringify(value);
+    } catch (_) {
+      return `${value}`;
+    }
+  };
+
   const loader = (
     <div className="h-full w-full flex-1 flex flex-col justify-center items-center">
       <Spinner />
@@ -179,7 +187,7 @@ export function CodemirrorEditor({
             className={cn('w-full h-full flex-1 overflow-auto', codemirrorProps?.className)}
             readOnly={isLoading ?? codemirrorProps?.readOnly}
             theme={(availableThemes.find(t => t.key === theme) || availableThemes[0]).extension}
-            value={content || ''}
+            value={content ? (typeof content === 'string' ? content : stringify(content)) : ''}
             width="100%"
           />
         </div>

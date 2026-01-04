@@ -1,7 +1,9 @@
 import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { FieldItem } from '@statelyjs/ui/components';
 import type { FieldViewProps } from '@statelyjs/ui/registry';
+import { toTitleCase } from '@statelyjs/ui/utils';
 import type { Schemas } from '@/core/schema';
+import { isPrimitiveNodeLike } from '@/core/schema/utils';
 import { EnumFieldView } from './untagged-enum-field';
 
 export type TaggedUnionViewProps<Schema extends Schemas = Schemas> = FieldViewProps<
@@ -31,5 +33,15 @@ export function TaggedUnionView<Schema extends Schemas = Schemas>({
     );
   }
 
-  return <EnumFieldView node={activeVariant.schema} tag={activeVariant.tag} value={unionValue} />;
+  return (
+    <EnumFieldView
+      label={`${toTitleCase(node.discriminator)}:`}
+      node={activeVariant.schema}
+      tag={activeVariant.tag}
+      value={unionValue}
+      valueLabel={
+        !activeVariant.schema || isPrimitiveNodeLike(activeVariant.schema) ? 'Value:' : ''
+      }
+    />
+  );
 }

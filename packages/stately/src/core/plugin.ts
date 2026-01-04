@@ -150,17 +150,17 @@ function registerCoreComponents(ctx: UiPluginContext<any, any>) {
   ctx.registerComponent(NodeType.RecursiveRef, 'edit', EditFields.RecursiveRefEdit);
   ctx.registerComponent(NodeType.RecursiveRef, 'view', ViewFields.RecursiveRefView);
 
-  ctx.registerComponent(NodeType.Tuple, 'edit', EditFields.TupleEdit);
-  ctx.registerComponent(NodeType.Tuple, 'view', ViewFields.TupleView);
-
   ctx.registerComponent(NodeType.TaggedUnion, 'edit', EditFields.TaggedUnionEdit);
   ctx.registerComponent(NodeType.TaggedUnion, 'view', ViewFields.TaggedUnionView);
 
-  ctx.registerComponent(NodeType.UntaggedEnum, 'edit', EditFields.UntaggedEnumEdit);
-  ctx.registerComponent(NodeType.UntaggedEnum, 'view', ViewFields.UntaggedEnumView);
+  ctx.registerComponent(NodeType.Tuple, 'edit', EditFields.TupleEdit);
+  ctx.registerComponent(NodeType.Tuple, 'view', ViewFields.TupleView);
 
   ctx.registerComponent(NodeType.Union, 'edit', EditFields.UnionEdit);
   ctx.registerComponent(NodeType.Union, 'view', ViewFields.UnionView);
+
+  ctx.registerComponent(NodeType.UntaggedEnum, 'edit', EditFields.UntaggedEnumEdit);
+  ctx.registerComponent(NodeType.UntaggedEnum, 'view', ViewFields.UntaggedEnumView);
 
   ctx.registerComponent(NodeType.Link, 'edit', linkFields.LinkEditView);
   ctx.registerComponent(NodeType.Link, 'view', linkFields.LinkDetailView);

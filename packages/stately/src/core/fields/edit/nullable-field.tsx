@@ -3,11 +3,12 @@ import { DescriptionLabel } from '@statelyjs/ui/components';
 import { Checkbox } from '@statelyjs/ui/components/base/checkbox';
 import { Field, FieldContent, FieldLabel } from '@statelyjs/ui/components/base/field';
 import type { FieldEditProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import { useId, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
+import { isPrimitiveNodeLike } from '@/core/schema/utils';
 import { EntityProperty } from '@/core/views/entity/entity-properties';
+import { BaseForm } from '@/form';
 
 function isValueNulled(value?: any) {
   return (
@@ -38,10 +39,13 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
   isWizard,
 }: NullableEditProps<Schema>) {
   // Track whether the field should be visible
-  const [isIncluded, setIsIncluded] = useState(!isValueNulled(value));
+  const [isIncluded_, setIsIncluded] = useState(!isValueNulled(value));
+
+  // If a value is provided, it's included
+  const isIncluded = isIncluded_ || !isValueNulled(value);
 
   const instanceId = useId();
-  const nullableFormId = `nullable-${instanceId}-${formId}`;
+  const nullableFormId = `nullable-${instanceId}`;
 
   const handleToggle = (checked: boolean) => {
     setIsIncluded(checked);
@@ -51,12 +55,22 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
   };
 
   const innerSchema = node.innerSchema;
-  const isPrimitive = innerSchema.nodeType === CoreNodeType.Primitive;
-  const isBoolean = isPrimitive && innerSchema.primitiveType === 'boolean';
+  const isPrimitive = isPrimitiveNodeLike(innerSchema);
+  const isBoolean =
+    innerSchema.nodeType === CoreNodeType.Primitive && innerSchema.primitiveType === 'boolean';
+
+  const hideLabel = label === '';
+  const resolvedDescription =
+    description === '' ? undefined : description || node.description || innerSchema.description;
 
   const field = (
     <BaseForm.FieldEdit<Schema>
-      formId={generateFieldFormId(innerSchema.nodeType, label || '', nullableFormId)}
+      formId={generateFieldFormId({
+        fieldType: innerSchema.nodeType,
+        formId,
+        instanceFormId: nullableFormId,
+        propertyName: label || '',
+      })}
       isWizard={isWizard}
       label={label}
       node={innerSchema}
@@ -66,9 +80,13 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
   );
 
   const formField = isPrimitive ? (
-    <EntityProperty className="py-2" fieldName={label} isRequired={isRequired} node={innerSchema}>
-      <Field>{field}</Field>
-    </EntityProperty>
+    hideLabel ? (
+      field
+    ) : (
+      <EntityProperty className="py-2" fieldName={label} isRequired={isRequired} node={innerSchema}>
+        <Field>{field}</Field>
+      </EntityProperty>
+    )
   ) : (
     field
   );
@@ -79,7 +97,7 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
         formField
       ) : (
         <>
-          <Field className="flex space-x-2" orientation="horizontal">
+          <Field orientation="horizontal">
             <Checkbox checked={isIncluded} id={formId} onCheckedChange={handleToggle} />
             <FieldContent>
               <FieldLabel
@@ -91,8 +109,8 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
                   {isRequired && <span className="text-destructive ml-1">*</span>}
                 </span>
               </FieldLabel>
-              {(node.description || description) && (
-                <DescriptionLabel>{node.description || description}</DescriptionLabel>
+              {!hideLabel && resolvedDescription && (
+                <DescriptionLabel>{resolvedDescription}</DescriptionLabel>
               )}
             </FieldContent>
           </Field>

@@ -9,9 +9,9 @@ import {
   SelectValue,
 } from '@statelyjs/ui/components/base/select';
 import type { FieldEditProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import { useEffect, useState } from 'react';
 import type { Schemas } from '@/core/schema';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
 
 export type TaggedUnionEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
@@ -121,7 +121,11 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
                 ([fieldName, fieldSchema]) => {
                   const isRequired = currentVariant.schema?.required?.includes(fieldName);
                   const fieldValue = formData[fieldName];
-                  const fieldFormId = generateFieldFormId(fieldSchema.nodeType, fieldName, formId);
+                  const fieldFormId = generateFieldFormId({
+                    fieldType: fieldSchema.nodeType,
+                    formId,
+                    propertyName: fieldName,
+                  });
 
                   return (
                     <div key={fieldName}>

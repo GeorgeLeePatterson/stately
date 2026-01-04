@@ -3,12 +3,14 @@ import { ArrayIndex, GlowingSave } from '@statelyjs/ui/components';
 import { Button } from '@statelyjs/ui/components/base/button';
 import { Field, FieldSet } from '@statelyjs/ui/components/base/field';
 import type { FieldEditProps } from '@statelyjs/ui/registry';
-import { BaseForm } from '@/form';
 import { Dot, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useId, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
+import { isPrimitiveNodeLike } from '@/core/schema/utils';
+import { BaseForm } from '@/form';
 import { useStatelyUi } from '@/index';
+import { log } from '@/utils';
 
 /*
 TODOs:
@@ -26,6 +28,7 @@ export type ArrayEditProps<Schema extends Schemas = Schemas> = FieldEditProps<
  * Uses explicit save pattern with dirty tracking
  */
 export function ArrayEdit<Schema extends Schemas = Schemas>({
+  formId,
   label,
   node,
   value,
@@ -38,12 +41,15 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
   // Defensive: ensure value is actually an array
   const safeValue = Array.isArray(value) ? value : [];
 
+  if (!Array.isArray(safeValue)) {
+    log.error('Core', 'ArrayEdit received non-array value');
+  }
+
   // Initialize formData with value from parent
   const [formData, setFormData] = useState<any[]>(safeValue);
   const [isDirty, setIsDirty] = useState(false);
 
   const instanceFormId = useId();
-  const arrayFormId = `array-${instanceFormId}`;
 
   const itemNode = node.items;
 
@@ -81,25 +87,29 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
     setIsDirty(false);
   }, [formData, onChange, isValid]);
 
-  const handleAdd = () => {
-    const defaultValue = plugins.core.utils?.getDefaultValue(node);
+  const handleAdd = useCallback(() => {
+    const defaultValue = plugins.core.utils?.getDefaultValue(itemNode);
     setFormData((prev: any[]) => [...prev, defaultValue]);
     setIsDirty(true);
-  };
+  }, [itemNode, plugins.core.utils?.getDefaultValue]);
 
-  const handleRemove = (index: number) => {
+  const handleRemove = useCallback((index: number) => {
     setFormData((prev: any[]) => prev.filter((_: any, i: number) => i !== index));
     setIsDirty(true);
-  };
+  }, []);
 
-  const handleChange = (index: number, itemValue: any) => {
+  const handleChange = useCallback((index: number, itemValue: any) => {
     setFormData((prev: any[]) => {
       const newValue = [...prev];
       newValue[index] = itemValue;
       return newValue;
     });
     setIsDirty(true);
-  };
+  }, []);
+
+  const isItemPrimitive = isPrimitiveNodeLike(node.items);
+  const itemPrimitiveType =
+    node.items.nodeType === CoreNodeType.Primitive ? node.items.primitiveType : null;
 
   // Render compact version for primitive arrays (strings, numbers, booleans)
   // Full card rendering for complex arrays (objects, nested structures)
@@ -112,19 +122,27 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
       ) : (
         <div className="space-y-4 p-4 border-2 border-dashed border-border bg-muted/10 rounded-lg">
           <FieldSet className="min-w-0 flex-1">
-            {formData.map((item: any, index: number) =>
+            {formData.map((item: any, index: number) => {
+              const itemLabel = getItemLabel(index, item);
+              const fieldFormId = generateFieldFormId({
+                fieldType: itemNode.nodeType,
+                formId,
+                instanceFormId,
+                propertyName: itemLabel,
+              });
+
               // Primitive displays differently
-              itemNode.nodeType === CoreNodeType.Primitive ? (
+              return isItemPrimitive ? (
                 <Field
                   className="min-w-0 flex-row flex gap-2"
-                  key={`${node.nodeType}-${itemNode.primitiveType}-${index}`}
+                  key={`${node.nodeType}-${itemNode.nodeType}-${itemPrimitiveType ?? 'other'}-${index}`}
                 >
                   <ArrayIndex index={index + 1} />
 
                   {/* Field */}
                   <div className="flex-auto">
                     <BaseForm.FieldEdit
-                      formId={generateFieldFormId(itemNode.nodeType, `${arrayFormId}-${index}`)}
+                      formId={fieldFormId}
                       node={itemNode}
                       onChange={newValue => handleChange(index, newValue)}
                       value={item}
@@ -153,7 +171,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
                   <div className="flex items-center justify-between px-3 pt-2">
                     <h6 className="text-sm font-mono flex items-center">
                       <Dot />
-                      {getItemLabel(index, item)}
+                      {itemLabel}
                     </h6>
                     <Button
                       className="text-destructive hover:text-destructive hover:bg-destructive/10"
@@ -168,16 +186,16 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
 
                   {/*Field*/}
                   <BaseForm.FieldEdit
-                    formId={generateFieldFormId(itemNode.nodeType, `${arrayFormId}-${index}`)}
+                    formId={fieldFormId}
                     isWizard={isWizard}
-                    label={''}
+                    label={itemLabel}
                     node={itemNode}
                     onChange={newValue => handleChange(index, newValue)}
                     value={item}
                   />
                 </Field>
-              ),
-            )}
+              );
+            })}
           </FieldSet>
         </div>
       )}
@@ -196,6 +214,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
         </Button>
       </div>
 
+      {/* TODO: Remove - Showing the button when not valid is wrong */}
       {/* Save button */}
       {isDirty && (
         <GlowingSave

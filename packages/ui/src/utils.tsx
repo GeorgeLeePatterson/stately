@@ -137,9 +137,20 @@ export function generateFieldLabel(field: string): string {
  * @param formId - Optional parent form ID for namespacing
  * @returns A unique identifier string
  */
-export function generateFieldFormId(fieldType: string, propertyName: string, formId = ''): string {
+export function generateFieldFormId({
+  fieldType,
+  propertyName,
+  instanceFormId = '',
+  formId = '',
+}: {
+  fieldType: string;
+  propertyName: string;
+  instanceFormId?: string;
+  formId?: string;
+}): string {
+  const instanceSuffix = instanceFormId ? `__${instanceFormId}` : '';
   const suffix = formId ? `__${formId}` : '';
-  return `[${[fieldType, propertyName].join('__')}]${suffix}`;
+  return `[${[fieldType, propertyName].join('__')}${instanceSuffix}]${suffix}`;
 }
 
 /**
@@ -212,11 +223,15 @@ export function toKebabCase(str: string): string {
  * toTitleCase('created_at'); // 'Created At'
  * ```
  */
-export function toTitleCase(str: string): string {
-  return splitWords(str)
+export function toTitleCase(str?: string): string {
+  return splitWords(str ?? '')
     .map(w =>
       // Preserve ALL-CAPS acronyms like XML, ID, HTTP
-      w.length > 1 && w === w.toUpperCase() ? w : w[0].toUpperCase() + w.slice(1),
+      w.length > 1 && w === w.toUpperCase()
+        ? w
+        : w.length > 1
+          ? w[0].toUpperCase() + w.slice(1)
+          : w,
     )
     .join(' ');
 }

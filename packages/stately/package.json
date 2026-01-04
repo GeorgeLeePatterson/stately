@@ -124,6 +124,7 @@
     "./core/hooks/use-list-entities": "./dist/core/hooks/use-list-entities.mjs",
     "./core/hooks/use-object-compare": "./dist/core/hooks/use-object-compare.mjs",
     "./core/hooks/use-object-field": "./dist/core/hooks/use-object-field.mjs",
+    "./core/hooks/use-object-schema": "./dist/core/hooks/use-object-schema.mjs",
     "./core/hooks/use-remove-entity": "./dist/core/hooks/use-remove-entity.mjs",
     "./core/hooks/use-update-entity": "./dist/core/hooks/use-update-entity.mjs",
     "./core/pages": "./dist/core/pages/index.mjs",
