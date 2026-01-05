@@ -93,5 +93,5 @@ Enable features in `Cargo.toml`:
 
 ```toml
 [dependencies]
-stately = { version = "0.3", features = ["axum"] }
+stately = { version = "0.*", features = ["axum"] }
 ```

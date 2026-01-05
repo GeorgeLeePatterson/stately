@@ -69,8 +69,8 @@ import { PackageManagerTabs } from '@theme';
 
 <PackageManagerTabs command="install @statelyjs/stately" />
 
-> [!DETAILS]
-> For out-of-the-box use cases, stately exports the most commonly used components, such as `Layout`, `BaseForm`, etc. If you want access to the base components or other items not re-exported by stately, you can install `@statelyjs/ui` directly and import them yourself.
+> [!INFO]
+> For out-of-the-box use cases, stately exports the most commonly used components, such as `Layout`, `BaseForm`, etc and some additional commonly used components from `@statelyjs/ui`. If you want access to the base components or other items not re-exported by stately, you can install `@statelyjs/ui` directly and import them yourself.
 
 > [!DETAILS]
 > Stately also provides a low level library `@statelyjs/schema`. There are few cases where you will need to install this yourself, much of what it provides is re-exported from `@statelyjs/stately` and enhanced to include all "core" functionality. Of course, if you find yourself needing access to some of those primitives, you can install the library directly.
@@ -81,9 +81,11 @@ The packages require several peer dependencies:
 
 <PackageManagerTabs command="install react react-dom @tanstack/react-query lucide-react sonner openapi-fetch" />
 
-While Stately uses tailwind and [base-ui](https://base-ui.com/), for most use cases, you shouldn't need to install tailwind yourself. But, if you are using tailwind, or want to override stately's tokens, you will need to ensure tailwind is installed:
+Stately requires Tailwind CSS v4 for styling. Install it in your project:
 
 <PackageManagerTabs command="install -D tailwindcss @tailwindcss/cli" />
+
+See the [Quick Start](./quick-start.mdx) guide for CSS configuration details.
 
 If you plan on using the `codemirror` feature of `@statelyjs/stately` (found at `@statelyjs/stately/plugins`), or any plugins that require it (both `@statelyjs/files` and `@statelyjs/arrow` provide enhanced functionality when it is available), be sure to install `@uiw/react-codemirror` and other peer dependencies:
 

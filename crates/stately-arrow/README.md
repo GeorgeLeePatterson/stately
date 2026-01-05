@@ -20,11 +20,10 @@ This crate provides a flexible abstraction layer over DataFusion for building da
 
 ## Install
 
-Add to your `Cargo.toml`:
+Add `stately-arrow` to your `Cargo.toml`:
 
-```toml
-[dependencies]
-stately-arrow = { path = "0.4", features = ["clickhouse", "object-store", "registry"] }
+```bash
+cargo add stately-arrow --features clickhouse,object-store,registry
 ```
 
 ### Feature Flags

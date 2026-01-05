@@ -49,6 +49,7 @@ ts-clean:
 ts-install:
     pnpm install
 
+# @deprecated - ts docs are a part of rspress now
 ts-docs:
     pnpm run docs:api
 
@@ -69,6 +70,9 @@ generate-demo:
 docs:
     scripts/generate-demo.sh
     cargo doc -p stately --all-features --open
+
+ui-docs:
+    pnpm run docs:build
 
 # --- MONOREPO ---
 

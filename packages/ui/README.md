@@ -183,30 +183,27 @@ import { devLog, devLogger } from '@statelyjs/ui/lib/logging';
 
 ## Styling
 
-Import the CSS in your app's entry point:
-
-```typescript
-import '@statelyjs/ui/styles.css';
-```
-
-This includes Tailwind CSS utilities and component styles. Your app should have Tailwind configured to process these styles. In order for tailwind to pick up all styles, it's recommended to do the following:
+Stately requires Tailwind CSS v4. Configure your app's CSS as follows:
 
 ```css
-/**
- * REQUIRED SETUP for Tailwind CSS v4:
- *
- * In your app's main CSS file, add the following in this exact order:
- *
- * @import "tailwindcss";
- * @import "@statelyjs/ui/styles.css";
- * @source "../node_modules/@statelyjs/ui/dist";
- * @source "../node_modules/@statelyjs/stately/dist";
- *
- * Explicit @source paths are required because node_modules is automatically
- * excluded from Tailwind's class detection. Add additional @source lines
- * for any Stately plugins you use (e.g., @statelyjs/arrow, @statelyjs/files).
+/* Import Tailwind */
+@import "tailwindcss";
+
+/* Import Stately theme tokens and base styles */
+@import "@statelyjs/ui/styles.css";
+
+/* Scan your app source */
+@source ".";
+
+/* 
+ * Scan all Stately packages for utility classes.
+ * node_modules is excluded by default, so explicit @source is required.
+ * This single directive covers stately, ui, and any @statelyjs plugins.
  */
+@source "./node_modules/@statelyjs";
 ```
+
+The `@source` directive tells Tailwind to scan Stately packages for utility class usage, ensuring all component styles are included in your build.
 
 ## Writing a Plugin
 

@@ -849,7 +849,7 @@ packages:
     version: 0.4.1
 
   '@statelyjs/stately@file:../../../packages/stately/statelyjs-stately-0.4.1.tgz':
-    resolution: {integrity: sha512-KzxWnCs60PxJsAf69oL+X1e8MNbfKEDtvE1To7bor2+gN6++7v4mutt+BRDC9aNL948qrrVgi5G6jrkGeugPWA==, tarball: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz}
+    resolution: {integrity: sha512-RjdSzyz/q2PvfOfzgcV6EHlv349AglBpb852KpmVPDFUDliqDnaQPpeDpP1fc++cRlznXO0OzjO/+ahLPbKTvA==, tarball: file:../../../packages/stately/statelyjs-stately-0.4.1.tgz}
     version: 0.4.1
     hasBin: true
     peerDependencies:
@@ -869,7 +869,7 @@ packages:
         optional: true
 
   '@statelyjs/ui@file:../../../packages/ui/statelyjs-ui-0.4.1.tgz':
-    resolution: {integrity: sha512-twWkB8ccjFdu9mVj/F1ZkzOgNYXjiFSxadrS7DDUyo5Su19F0dNqcrbrtOUFYfSZVAwBEUbTQXA++/BdF/X0WA==, tarball: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz}
+    resolution: {integrity: sha512-miCU72BDbFyEZcaIC9y5/61CHXwU6XRXcMnzi46hVJI7o4HgWuyAE7nne9X4YkHFqWuWGu31mTFnYWItjO1IWg==, tarball: file:../../../packages/ui/statelyjs-ui-0.4.1.tgz}
     version: 0.4.1
     peerDependencies:
       '@types/react': ^18.0.0 || ^19.0.0

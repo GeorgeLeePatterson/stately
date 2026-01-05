@@ -13,7 +13,7 @@ type AppSchemas = Schemas<DefineConfig<components, paths, operations, ParsedSche
 
 // Create stately runtime
 export const runtime = statelyUi<AppSchemas>({
-  client: createClient<paths>({ baseUrl: 'http://localhost:5555/api/entity' }),
+  client: createClient<paths>({ baseUrl: 'http://localhost:4000/api/entity' }),
   // Pass in derived stately schema
   schema: stately<AppSchemas>(openapiSpec, PARSED_SCHEMAS),
 });

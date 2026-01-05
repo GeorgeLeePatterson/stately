@@ -52,19 +52,17 @@ Data connectivity and SQL query execution via Apache Arrow.
 
 Add the plugin crate to your `Cargo.toml`. Verify versions as docs can become outdated:
 
-```toml
-[dependencies]
-stately-files = "0.4"
-stately-arrow = "0.4"
+```shellscript
+cargo add stately-files stately-arrow
 ```
 
 ### Frontend
 
 Install the npm package:
 
-```bash
-pnpm add @statelyjs/files @statelyjs/arrow
-```
+import { PackageManagerTabs } from '@theme';
+
+<PackageManagerTabs command="install @statelyjs/files @statelyjs/arrow" />
 
 ## Integrating Plugins
 

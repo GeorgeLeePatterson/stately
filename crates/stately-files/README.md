@@ -20,11 +20,10 @@ This crate provides HTTP endpoints and path types for managing files with automa
 
 ## Install
 
-Add to your `Cargo.toml`:
+Add `stately-files` to your `Cargo.toml`:
 
-```toml
-[dependencies]
-stately-files = "0.4"
+```bash
+cargo add stately-files
 ```
 
 ## Quick Start

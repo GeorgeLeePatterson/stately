@@ -185,12 +185,7 @@ impl FromRef<AppState> for MyPluginState {
 
 ```typescript
 // Schema plugin - extends type system
-function mySchemaPlugin<S extends Schemas>(): PluginFactory<S> {
-  return runtime => ({
-    ...runtime,
-    plugins: { ...runtime.plugins, myPlugin: {} },
-  });
-}
+const mySchemaPlugin = createSchemaPlugin<MyPlugin>({ name: 'my-plugin' });
 
 // UI plugin - registers components and API
 export const myUiPlugin = createUiPlugin<MyUiPlugin>({

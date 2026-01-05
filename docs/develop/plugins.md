@@ -306,6 +306,41 @@ export const myCodegenPlugin: CodegenPlugin = {
 };
 ```
 
+## Styling
+
+### For Plugin Authors
+
+Plugins should **not** ship pre-built Tailwind utility CSS. Instead:
+
+1. **Export theme/token CSS only** - If your plugin needs custom CSS variables or theme extensions, export them in a `styles.css` that imports only theme tokens (no utilities)
+2. **Let consumers scan your dist** - Consumers add `@source "./node_modules/your-plugin"` to their CSS, and Tailwind generates utilities from your compiled components
+
+Example plugin `styles.css`:
+```css
+/* Plugin theme extensions only - no @import "tailwindcss" */
+@import "@statelyjs/ui/theme.css";
+
+/* Any plugin-specific CSS variables */
+:root {
+  --my-plugin-accent: var(--stately-primary);
+}
+```
+
+### For Plugin Consumers
+
+When using a plugin, ensure your `@source` directive covers it:
+
+```css
+@import "tailwindcss";
+@import "@statelyjs/stately/styles.css";
+@import "your-plugin/styles.css";  /* If plugin exports theme CSS */
+
+@source "./node_modules/@statelyjs";     /* Covers all @statelyjs packages */
+@source "./node_modules/your-plugin";    /* Third-party plugins need their own @source */
+```
+
+This architecture prevents CSS conflicts between multiple plugins and the consuming app, since there's only one Tailwind build that generates all utilities.
+
 ## Best Practices
 
 1. **Keep backend and frontend in sync**: Generate TypeScript types from Rust OpenAPI
@@ -313,6 +348,7 @@ export const myCodegenPlugin: CodegenPlugin = {
 3. **Provide sensible defaults**: Make configuration optional where possible
 4. **Document integration**: Show users how to wire up both sides
 5. **Export types**: Let users access your types for their own extensions
+6. **No pre-built utilities**: Export only theme CSS, let consumers build utilities via `@source`
 
 ## Examples
 

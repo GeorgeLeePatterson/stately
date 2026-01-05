@@ -86,6 +86,30 @@ function App() {
 }
 ```
 
+## Styling
+
+Stately requires Tailwind CSS v4. Configure your app's CSS as follows:
+
+```css
+/* Import Tailwind */
+@import "tailwindcss";
+
+/* Import Stately theme tokens and base styles */
+@import "@statelyjs/stately/styles.css";
+
+/* Scan your app source */
+@source ".";
+
+/* 
+ * Scan all Stately packages for utility classes.
+ * node_modules is excluded by default, so explicit @source is required.
+ * This single directive covers stately, ui, and any @statelyjs plugins.
+ */
+@source "./node_modules/@statelyjs";
+```
+
+The `@source` directive tells Tailwind to scan Stately packages for utility class usage, ensuring all component styles are included in your build.
+
 ## Core Plugin
 
 The core plugin provides everything needed for entity CRUD operations:

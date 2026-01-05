@@ -62,6 +62,7 @@ my-app/
     ├── tsconfig.json
     └── src/
         ├── App.tsx
+        ├── index.css       # TailwindCSS v4 entrypoint
         ├── lib/
         │   └── stately.ts  # Stately integration and bootstrap
         └── generated/      # Generated via @statelyjs/stately/codegen 
@@ -139,7 +140,7 @@ async fn main() {
         .with_state(api_state);
     
     // Start axum server
-    let addr = SocketAddr::from(([0, 0, 0, 0], 5555));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 4000));
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     eprintln!("Server running at http://{addr}");
     
@@ -252,7 +253,7 @@ Finally, let's setup the app entrypoint, using `react-router-dom` to route our a
 
 ```tsx
 import * as EntityPages from '@statelyjs/stately/core/pages';
-import { Layout } from '@statelyjs/stately/ui';
+import { Layout } from '@statelyjs/stately/layout';
 import { Gem } from 'lucide-react';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 
@@ -332,20 +333,30 @@ function Entity({ entity }: React.ComponentProps<typeof EntityPages.EntityNewPag
 export default App;
 ```
 
-> [!INFO]
-> In the previous file, `@statelyjs/ui` components were imported using `@statelyjs/stately/ui`. For simple use cases, stately re-exports the most commonly used components from 'ui'. If you want access to the base components or other items not exported by stately, you can install `@statelyjs/ui` directly and import them yourself.
-
 ### Styles and Tailwind
 
-Stately uses tailwindcss under the hood. Create `src/index.css` and pull in Stately's styles.
-
-> [!INFO]
-> If your app is *not* using Tailwind, then this is sufficient. Otherwise, refer to [Tailwind's documentation](https://tailwindcss.com/docs) on how to configure your project. All of Stately's styles have been compiled already, so all you need to do is import them, unless the goal is to customize the styles yourself or overwrite some of the tokens used:
+Stately requires Tailwind CSS v4. Create `src/index.css` and configure it as follows:
 
 ```css
-/* Stately framework styles (includes ui tokens/global + all utilities) */
+/* Import Tailwind */
+@import "tailwindcss";
+
+/* Import Stately theme tokens and base styles */
 @import "@statelyjs/stately/styles.css";
+
+/* Scan your app source for Tailwind classes */
+@source ".";
+
+/* 
+ * Scan all Stately packages for utility classes.
+ * Tailwind excludes node_modules by default, so an explicit @source is required.
+ * This single directive covers stately, ui, and any @statelyjs plugins.
+ */
+@source "./node_modules/@statelyjs";
 ```
+
+> [!INFO]
+> **Why `@source` directives?** Tailwind v4 scans your source files to detect which utility classes are used and includes only those in the final CSS bundle. Since `node_modules` is excluded by default, you must explicitly tell Tailwind to scan Stately packages. This ensures all component styles are included while keeping your bundle optimized.
 
 ### Stately's UI Context Provider
 

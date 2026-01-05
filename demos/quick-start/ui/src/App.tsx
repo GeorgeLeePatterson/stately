@@ -1,5 +1,5 @@
 import * as EntityPages from '@statelyjs/stately/core/pages';
-import { Layout } from '@statelyjs/stately/ui';
+import { Layout } from '@statelyjs/stately/layout';
 import { Gem } from 'lucide-react';
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 

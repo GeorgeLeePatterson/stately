@@ -67,6 +67,18 @@ function App() {
 }
 ```
 
+### 4. Configure Styles
+
+Import the arrow styles and ensure your `@source` covers `@statelyjs` packages:
+
+```css
+@import "tailwindcss";
+@import "@statelyjs/stately/styles.css";
+@import "@statelyjs/arrow/styles.css";
+
+@source "./node_modules/@statelyjs";
+```
+
 ### Adding Routes
 
 The plugin provides an `ArrowViewer` page component. Add it to your router:

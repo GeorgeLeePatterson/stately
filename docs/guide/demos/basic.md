@@ -481,19 +481,22 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 ```
 
-### 6. Bring in '@statelyjs/ui' tailwind styles
+### 6. Configure Tailwind CSS
 
-Create `src/index.css`:
+Stately requires Tailwind CSS v4. Create `src/index.css`:
 
 ```css
-/* App Tailwind (for this app’s own classes) */
+/* Import Tailwind */
 @import "tailwindcss";
 
-/* Framework + UI (prebuilt) */
+/* Import Stately theme tokens and base styles */
 @import "@statelyjs/stately/styles.css";
 
-/* Tell Tailwind to scan the app source */
-@source "./**/*.{ts,tsx}";
+/* Scan app source for Tailwind classes */
+@source ".";
+
+/* Scan all Stately packages for utility classes */
+@source "./node_modules/@statelyjs";
 
 /* If looking to override any stately tokens... */
 /*
@@ -502,7 +505,7 @@ Create `src/index.css`:
 ```
 
 > [!NOTE]
-> `@statelyjs/stately/styles.css` already imports the styles from `@statelyjs/ui`. Don't re-include them as that will result in duplicate style definitions.
+> The `@source "./node_modules/@statelyjs"` directive tells Tailwind to scan all Stately packages for utility classes. This single directive covers `@statelyjs/stately`, `@statelyjs/ui`, and any plugins you add.
 
 Update `vite.config.ts`:
 
@@ -525,7 +528,7 @@ Create `src/Dashboard.tsx`:
 import { Note } from '@statelyjs/ui/components';
 import { Card, CardContent, CardHeader, CardTitle } from '@statelyjs/ui/components/base/card';
 import { Spinner } from '@statelyjs/ui/components/base/spinner';
-import { Layout } from '@statelyjs/ui/layout';
+import { Layout } from '@statelyjs/stately/layout';
 import { useQuery } from '@tanstack/react-query';
 import { client } from './lib/stately';
 

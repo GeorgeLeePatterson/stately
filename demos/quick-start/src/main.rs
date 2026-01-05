@@ -57,7 +57,7 @@ async fn main() {
         .with_state(api_state);
 
     // Start axum server
-    let addr = SocketAddr::from(([0, 0, 0, 0], 5555));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 4000));
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     eprintln!("Server running at http://{addr}");
 

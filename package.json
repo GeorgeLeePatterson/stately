@@ -15,7 +15,6 @@
     "lint": "turbo run lint",
     "check": "turbo run check",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
-    "docs:api": "typedoc",
     "docs:dev": "pnpm --filter @statelyjs/docs dev",
     "docs:build": "pnpm --filter @statelyjs/docs build",
     "docs:preview": "pnpm --filter @statelyjs/docs preview"

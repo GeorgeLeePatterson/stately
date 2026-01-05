@@ -153,6 +153,21 @@ export const useAppStatelyUi = useStatelyUi<AppSchemas>;
 export const AppStatelyUiProvider = statelyUiProvider<AppSchemas>();
 ```
 
+### Styling (Tailwind CSS v4)
+
+Stately requires Tailwind CSS v4. Configure your CSS:
+
+```css
+/* src/index.css */
+@import "tailwindcss";
+@import "@statelyjs/stately/styles.css";
+
+@source ".";
+@source "./node_modules/@statelyjs";
+```
+
+The `@source` directive tells Tailwind to scan Stately packages for utility classes. This single directive covers all `@statelyjs` packages including plugins.
+
 > **Working Example**: See the [`demos/tasks`](https://github.com/GeorgeLeePatterson/stately/tree/main/demos/tasks) application for a complete working example that follows this setup.
 
 > See [`packages/stately`](https://github.com/GeorgeLeePatterson/stately/tree/main/packages/stately) for complete frontend documentation.
