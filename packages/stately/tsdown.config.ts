@@ -8,7 +8,6 @@ export default defineConfig({
     customExports(pkg) {
       // Delete wildcard exports
       delete pkg['./*'];
-
       // Add CSS exports that are copied/generated via hooks
       pkg['./styles.css'] = './dist/styles.css';
       return pkg;
@@ -26,10 +25,5 @@ export default defineConfig({
     /^@lezer\//,
     /^@uiw\//,
   ],
-  onSuccess() {
-    // Generate pre-built Tailwind utilities CSS
-    execSync('pnpm exec tailwindcss -i src/styles.css -o dist/styles.css --minify', {
-      stdio: 'inherit',
-    });
-  },
+  copy: [{ from: "src/styles.css", rename: "styles.css" }],
 });

@@ -1,14 +1,13 @@
 import { generateFieldFormId } from '@statelyjs/ui';
-import { DescriptionLabel } from '@statelyjs/ui/components';
 import { Checkbox } from '@statelyjs/ui/components/base/checkbox';
-import { Field, FieldContent, FieldLabel } from '@statelyjs/ui/components/base/field';
+import { Field } from '@statelyjs/ui/components/base/field';
 import type { FieldEditProps } from '@statelyjs/ui/registry';
 import { useId, useState } from 'react';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
 import { isPrimitiveNodeLike } from '@/core/schema/utils';
-import { EntityProperty } from '@/core/views/entity/entity-properties';
 import { BaseForm } from '@/form';
+import { PropertyLabel } from '@/form/field-label';
 
 function isValueNulled(value?: any) {
   return (
@@ -59,9 +58,18 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
   const isBoolean =
     innerSchema.nodeType === CoreNodeType.Primitive && innerSchema.primitiveType === 'boolean';
 
-  const hideLabel = label === '';
+  const truncateLabel = label === null;
+
+  const includeLabel = <span className="italic">Include</span>;
+  const resolvedLabel = truncateLabel ? (
+    includeLabel
+  ) : (
+    <>
+      {includeLabel} {label}
+    </>
+  );
   const resolvedDescription =
-    description === '' ? undefined : description || node.description || innerSchema.description;
+    description === null ? description : description || node.description || innerSchema.description;
 
   const field = (
     <BaseForm.FieldEdit<Schema>
@@ -79,40 +87,44 @@ export function NullableEdit<Schema extends Schemas = Schemas>({
     />
   );
 
-  const formField = isPrimitive ? (
-    hideLabel ? (
-      field
-    ) : (
-      <EntityProperty className="py-2" fieldName={label} isRequired={isRequired} node={innerSchema}>
-        <Field>{field}</Field>
-      </EntityProperty>
-    )
-  ) : (
-    field
-  );
+  const formField = !isPrimitive || truncateLabel ? field : <Field>{field}</Field>;
 
   return (
     <div className="p-4 border rounded-md space-y-3">
       {isBoolean ? (
-        formField
+        truncateLabel ? (
+          formField
+        ) : (
+          <>
+            <PropertyLabel
+              description={resolvedDescription}
+              fieldLabelProps={{
+                className: 'cursor-pointer font-medium flex justify-between flex-1',
+                htmlFor: `nullable-${formId}`,
+              }}
+              isRequired={isRequired}
+              label={`Include ${label}`}
+            />
+            {formField}
+          </>
+        )
       ) : (
         <>
           <Field orientation="horizontal">
-            <Checkbox checked={isIncluded} id={formId} onCheckedChange={handleToggle} />
-            <FieldContent>
-              <FieldLabel
-                className="cursor-pointer font-medium flex justify-between flex-1"
-                htmlFor={`nullable-${label}`}
-              >
-                <span>
-                  Include {label}
-                  {isRequired && <span className="text-destructive ml-1">*</span>}
-                </span>
-              </FieldLabel>
-              {!hideLabel && resolvedDescription && (
-                <DescriptionLabel>{resolvedDescription}</DescriptionLabel>
-              )}
-            </FieldContent>
+            <Checkbox
+              checked={isIncluded}
+              id={`nullable-${formId}`}
+              onCheckedChange={handleToggle}
+            />
+            <PropertyLabel
+              description={resolvedDescription}
+              fieldLabelProps={{
+                className: 'cursor-pointer font-medium flex justify-between flex-1',
+                htmlFor: `nullable-${formId}`,
+              }}
+              isRequired={isRequired}
+              label={resolvedLabel}
+            />
           </Field>
           {isIncluded && formField}
         </>

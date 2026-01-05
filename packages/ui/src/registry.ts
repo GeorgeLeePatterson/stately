@@ -70,8 +70,14 @@ export interface FieldEditProps<
   node: N;
   value?: V;
   onChange: (value: V) => void;
-  label?: string;
-  description?: string;
+  /**
+   * Set to null to disable label
+   */
+  label?: string | null;
+  /**
+   * Set to null to disable description
+   */
+  description?: string | null;
   placeholder?: string;
   isRequired?: boolean;
   isWizard?: boolean;

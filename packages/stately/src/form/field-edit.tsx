@@ -21,7 +21,12 @@ export function FieldEdit<
 
   const Edit = getEditComponent<S, N, V>(registry.components, node.nodeType);
 
-  log.debug('FieldEdit', `rendering id=${props?.formId}`, { node, value: props.value });
+  log.debug('FieldEdit', `rendering id=${props?.formId}`, {
+    description: props.description,
+    label: props.label,
+    node,
+    value: props.value,
+  });
 
   if (!Edit) {
     console.warn('FieldEdit: No view component found for nodeType:', node.nodeType);

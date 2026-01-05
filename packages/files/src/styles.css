@@ -1,7 +1,9 @@
-@import "tailwindcss";
+/*
+ * Stately Files Plugin - Theme CSS
+ *
+ * This file provides theme extensions only
+ */
 
-/* shared theme */
-@import "../../ui/src/styles/theme.css";
-
-/* scan only this plugin’s source */
-@source "./**/*.{ts,tsx}";
+/* shared tokens and themes - extends Tailwind with stately color tokens */
+@import "../../ui/src/styles/tokens.css";
+@import "../../ui/src/styles/themes.css";

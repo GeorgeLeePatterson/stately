@@ -1,11 +1,8 @@
 import type { AnyRecord } from '@statelyjs/schema/helpers';
 import { generateFieldFormId } from '@statelyjs/ui';
-import { DescriptionLabel, GlowingSave } from '@statelyjs/ui/components';
+import { GlowingSave } from '@statelyjs/ui/components';
 import {
-  FieldContent,
-  FieldDescription,
   FieldGroup,
-  FieldLabel,
   FieldLegend,
   FieldSeparator,
   FieldSet,
@@ -18,6 +15,7 @@ import { useObjectField } from '@/core/hooks/use-object-field';
 import type { Schemas } from '@/core/schema';
 import { CoreNodeType } from '@/core/schema/nodes';
 import { BaseForm } from '@/form';
+import { PropertyLabel } from '@/form/field-label';
 import { useStatelyUi } from '@/index';
 import { ObjectWizardEdit } from './object-wizard';
 
@@ -160,17 +158,16 @@ function ObjectForm<Schema extends Schemas = Schemas>({
             const propValue = formData?.[propName];
 
             // If the value is not set, then wrap in nullable
-            let propSchema: Schema['plugin']['AnyNode'] = propNode;
-            const isNullable = propNode.nodeType === CoreNodeType.Nullable;
-            const wrapNullable = !isRequired && !isNullable;
+            let propSchema = propNode;
+            const wrapNullable = !isRequired && propNode.nodeType !== CoreNodeType.Nullable;
+            const isNullable = propNode.nodeType === CoreNodeType.Nullable || wrapNullable;
             if (wrapNullable) {
               propSchema = {
                 innerSchema: propNode,
                 nodeType: CoreNodeType.Nullable,
-              } as Schema['plugin']['AnyNode'];
+              } as Schema['plugin']['Nodes']['nullable'];
             }
 
-            const isWrappedNullable = propSchema.nodeType === CoreNodeType.Nullable;
             const fieldFormId = generateFieldFormId({
               fieldType: propSchema.nodeType,
               formId,
@@ -180,20 +177,13 @@ function ObjectForm<Schema extends Schemas = Schemas>({
             return (
               <Fragment key={`${propName}-${resetKey}`}>
                 {/* Nullable takes care of its own label */}
-                {(propLabel || propDescription) && !isWrappedNullable && (
-                  <FieldContent>
-                    {propLabel && (
-                      <FieldLabel htmlFor={fieldFormId}>
-                        {propLabel}
-                        {isRequired && <span className="text-destructive ml-1">*</span>}
-                      </FieldLabel>
-                    )}
-                    {propDescription && (
-                      <FieldDescription>
-                        <DescriptionLabel>{propDescription}</DescriptionLabel>
-                      </FieldDescription>
-                    )}
-                  </FieldContent>
+                {(propLabel || propDescription) && !isNullable && (
+                  <PropertyLabel
+                    description={propDescription}
+                    fieldLabelProps={{ htmlFor: fieldFormId }}
+                    isRequired={isRequired}
+                    label={propLabel}
+                  />
                 )}
 
                 {/* Property field */}
@@ -203,7 +193,7 @@ function ObjectForm<Schema extends Schemas = Schemas>({
                   isWizard={isWizard}
                   label={propLabel}
                   node={propSchema}
-                  onChange={handleFieldChange.bind(null, propName, isWrappedNullable)}
+                  onChange={val => handleFieldChange(propName, val, isNullable)}
                   value={propValue}
                 />
                 {index !== arr.length - 1 && <FieldSeparator />}

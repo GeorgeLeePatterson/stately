@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from '@statelyjs/ui/components/base/dialog';
 import { FileSearch } from 'lucide-react';
-import { FileManager } from '@/pages';
+import { FileManager } from '@/views/file-manager';
 
 export function FileBrowserDialog({ initialPath }: { initialPath?: string }) {
   return (

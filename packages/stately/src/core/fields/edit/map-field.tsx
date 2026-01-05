@@ -25,7 +25,7 @@ import { BaseForm } from '@/form';
 import { KeyValue, MAX_ITEMS_VIEW_DEFAULT } from '../view/map-field';
 
 const generateSaveLabels = (
-  label?: string,
+  label?: string | null,
   formData?: any,
   value?: any,
   isEditDirty?: boolean,
@@ -317,11 +317,20 @@ export function MapEdit<Schema extends Schemas = Schemas>({
 
         {/* Add New Item */}
         <div className="space-y-2">
-          <FieldLegend variant="label">Add New Item</FieldLegend>
+          <FieldLegend variant="label">
+            <span className={editKey ? 'text-muted-foreground' : ''}>Add New Item</span>
+            {editKey && (
+              <>
+                {' '}
+                <span className="italic text-orange-500">(...save edits first)</span>
+              </>
+            )}
+          </FieldLegend>
           <Field>
             {/* Key */}
             <InputGroup className="flex gap-2">
               <InputGroupInput
+                disabled={!!editKey}
                 id={`input-${formId}`}
                 onChange={e => setNewKey(e.target.value)}
                 placeholder="New key..."

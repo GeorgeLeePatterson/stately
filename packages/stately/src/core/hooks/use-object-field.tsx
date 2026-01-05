@@ -67,7 +67,7 @@ export interface ObjectFieldState<S extends Schemas = Schemas> {
   /** Current form data (may differ from original value if dirty) */
   formData: Record<string, any>;
   /** Handle a single field value change */
-  handleFieldChange: (fieldName: string, isNullable: boolean, newValue: any) => void;
+  handleFieldChange: (fieldName: string, newValue: any, isNullable: boolean) => void;
   /** Handle changes to merged fields (from allOf composition) */
   handleMergedFieldChange: (newMergedData: AnyRecord) => void;
   /** Handle changes to additional properties (dynamic keys) */
@@ -126,7 +126,7 @@ export interface ObjectFieldState<S extends Schemas = Schemas> {
  *           name={name}
  *           schema={fieldSchema}
  *           value={state.formData[name]}
- *           onChange={(v) => state.handleFieldChange(name, false, v)}
+ *           onChange={(v) => state.handleFieldChange(name, v, false)}
  *         />
  *       ))}
  *       <Button onClick={state.handleSave} disabled={!state.isDirty || !state.isValid}>
@@ -146,7 +146,7 @@ export function useObjectField<S extends Schemas = Schemas>({
   value,
   onSave,
 }: {
-  label?: string;
+  label?: string | null;
   node: S['plugin']['Nodes']['object'];
   value: any;
   onSave: (formData: AnyRecord) => void;
@@ -195,7 +195,7 @@ export function useObjectField<S extends Schemas = Schemas>({
     changes.current = new Map();
   }, [formData, isValid, onSave]);
 
-  const handleFieldChange = useCallback((fieldName: string, isNullable: boolean, newValue: any) => {
+  const handleFieldChange = useCallback((fieldName: string, newValue: any, isNullable: boolean) => {
     // Update the map tracking changes
     changes.current.set(fieldName, newValue);
 

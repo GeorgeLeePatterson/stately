@@ -26,15 +26,10 @@ export default defineConfig({
   external: ["react", "react-dom"],
   // Ensure all CSS are shipped in dist/
   copy: [
-    { from: "src/styles/tokens.css", rename: "tokens.css" },
-    { from: "src/styles/global.css", rename: "global.css" },
     { from: "src/styles/animations.css", rename: "animations.css" },
+    { from: "src/styles/global.css", rename: "global.css" },
+    { from: "src/styles/styles.css", rename: "styles.css" },
     { from: "src/styles/theme.css", rename: "theme.css" },
+    { from: "src/styles/tokens.css", rename: "tokens.css" },
   ],
-  onSuccess() {
-    // Generate pre-built Tailwind utilities CSS
-    execSync('pnpm exec tailwindcss -i src/styles/styles.css -o dist/styles.css --minify', {
-      stdio: 'inherit',
-    });
-  },
 });

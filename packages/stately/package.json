@@ -169,6 +169,7 @@
     "./features/codemirror/toggled": "./dist/features/codemirror/toggled.mjs",
     "./form": "./dist/form/index.mjs",
     "./form/field-edit": "./dist/form/field-edit.mjs",
+    "./form/field-label": "./dist/form/field-label.mjs",
     "./form/field-view": "./dist/form/field-view.mjs",
     "./form/form-actions": "./dist/form/form-actions.mjs",
     "./form/json-edit": "./dist/form/json-edit.mjs",

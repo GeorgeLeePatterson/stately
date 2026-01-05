@@ -69,13 +69,13 @@ function App() {
 
 ### Adding Routes
 
-The plugin provides a `FileManager` page component. Add it to your router:
+The plugin provides a `FileManagerPage` page component. Add it to your router:
 
 ```tsx
-import { FileManager } from '@statelyjs/files/pages';
+import { FileManagerPage } from '@statelyjs/files/pages';
 
 // Example with React Router
-<Route path="/files" element={<FileManager />} />
+<Route path="/files" element={<FileManagerPage />} />
 ```
 
 ## Hooks
@@ -215,9 +215,19 @@ import { FileDetails, VersionedFileDetails } from '@statelyjs/files/views';
 />
 ```
 
+### `FileManager`
+
+Full featured file manager, used in `FileManagerPage`:
+
+```tsx
+import { FileManager } from '@statelyjs/files/views';
+
+<FileManager />
+```
+
 ## Pages
 
-### `FileManager`
+### `FileManagerPage`
 
 Full-featured file management page with:
 
@@ -228,9 +238,9 @@ Full-featured file management page with:
 - Download buttons
 
 ```tsx
-import { FileManager } from '@statelyjs/files/pages';
+import { FileManagerPage } from '@statelyjs/files/pages';
 
-<Route path="/files/*" element={<FileManager />} />
+<Route path="/files/*" element={<FileManagerPage />} />
 ```
 
 ## Codegen Integration

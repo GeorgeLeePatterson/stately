@@ -132,6 +132,7 @@ export function getDefaultValue(node: BaseNode): any {
 
     case isNodeOfType<ObjectNode<any>>(node, CoreNodeType.Object): {
       const obj: any = {};
+      // TODO: Remove - should this use default for object props? It will do things like "name = ''"
       const requiredFields = new Set(node.required || []);
       for (const [name, propNode] of Object.entries(node.properties)) {
         if (requiredFields.has(name)) {

@@ -213,7 +213,7 @@ export const ObjectWizardEdit = <
                   isRequired={isRequired}
                   label={fieldLabel}
                   node={propNode}
-                  onChange={handleFieldChange.bind(null, fieldName, isNullable)}
+                  onChange={val => handleFieldChange(fieldName, val, isNullable)}
                   value={fieldValue}
                 />
               </Field>
@@ -225,7 +225,7 @@ export const ObjectWizardEdit = <
                 isWizard
                 label={fieldLabel}
                 node={propNode}
-                onChange={handleFieldChange.bind(null, fieldName, isNullable)}
+                onChange={val => handleFieldChange(fieldName, val, isNullable)}
                 value={fieldValue}
               />
             )}

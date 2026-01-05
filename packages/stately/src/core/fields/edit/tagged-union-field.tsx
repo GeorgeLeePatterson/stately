@@ -95,7 +95,7 @@ export function TaggedUnionEdit<Schema extends Schemas = Schemas>({
     <div className="space-y-3 min-w-0">
       <div className="flex flex-col gap-2">
         <Select onValueChange={v => v && handleDiscriminatorChange(v)} value={currentTag || ''}>
-          <SelectTrigger id={formId}>
+          <SelectTrigger className="w-full" id={formId}>
             <SelectValue>
               {v => v || `Select ${discriminatorLabel?.toLowerCase() || 'Variant'}...`}
             </SelectValue>

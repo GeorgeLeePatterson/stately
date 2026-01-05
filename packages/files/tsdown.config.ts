@@ -29,10 +29,5 @@ export default defineConfig({
     /^@statelyjs\/stately\//,
     /^@statelyjs\/ui\//,
   ],
-  onSuccess() {
-    // Generate pre-built Tailwind utilities CSS
-    execSync('pnpm exec tailwindcss -i src/styles.css -o dist/styles.css --minify', {
-      stdio: 'inherit',
-    });
-  },
+  copy: [{ from: "src/styles.css", rename: "styles.css" }],
 });

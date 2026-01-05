@@ -46,6 +46,7 @@ export function FileExplorer({
 
   return (
     <div className="file-explorer w-full h-full flex flex-col gap-2">
+      {/* Filter */}
       <InputGroup className="h-8">
         <InputGroupAddon>
           <InputGroupText>
@@ -59,6 +60,8 @@ export function FileExplorer({
           value={filter}
         />
       </InputGroup>
+
+      {/* Content area */}
       <div className="flex-1 flex flex-col sm:flex-row h-full">
         <ScrollArea
           {...rest}

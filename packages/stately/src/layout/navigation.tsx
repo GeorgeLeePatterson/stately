@@ -175,8 +175,9 @@ export const SidebarToggle = ({
   children,
   ...props
 }: React.ComponentProps<typeof Button>) => {
-  const { toggleSidebar, state } = useSidebar();
-  const isOpen = state === 'expanded';
+  const { toggleSidebar, state, isMobile, openMobile } = useSidebar();
+  // On mobile, use openMobile state; on desktop, use expanded/collapsed state
+  const isOpen = isMobile ? openMobile : state === 'expanded';
 
   return (
     <Button

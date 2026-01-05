@@ -67,8 +67,10 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
       <FieldSet className="group disabled:opacity-40 min-w-0 gap-0" disabled={formDisabled}>
         {sortedProperties.map(([fieldName, propNode]) => {
           const isRequired = required.has(fieldName);
+          const isPrimitive = schema.plugins.core.isPrimitiveNodeLike(propNode);
           const isNullable = propNode.nodeType === CoreNodeType.Nullable;
           const label = utils?.generateFieldLabel(fieldName);
+          const description = propNode.description;
           const fieldValue = entity?.[fieldName];
           const fieldFormId = generateFieldFormId({
             fieldType: `${fieldTypePrefix}-${propNode.nodeType}`,
@@ -80,9 +82,10 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
             <Skeleton className="h-20 w-full" />
           ) : (
             <BaseForm.FieldEdit<Schema, typeof propNode>
+              description={isNullable ? null : description}
               formId={fieldFormId}
               isRequired={isRequired}
-              label={isNullable ? '' : label}
+              label={isNullable ? null : label}
               node={propNode}
               onChange={newValue => onChange({ ...(entity ?? {}), [fieldName]: newValue })}
               value={fieldValue}
@@ -96,7 +99,7 @@ export function EntityFormEdit<Schema extends Schemas = Schemas>({
               key={fieldName}
               node={propNode}
             >
-              {schema.plugins.core.isPrimitiveNodeLike(propNode) ? <Field>{field}</Field> : field}
+              {isPrimitive ? <Field>{field}</Field> : field}
             </EntityProperty>
           );
         })}

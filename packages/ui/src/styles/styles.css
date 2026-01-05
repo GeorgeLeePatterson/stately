@@ -1,10 +1,17 @@
-@import "tailwindcss";
+/**
+ * Styles for the UI package.
+ *
+ * Each file below can be imported individually or this stylesheet can be used.
+ */
+
+/* Tailwind inline theme definition */
+@import "./tokens.css";
+
+/* Tailwind inline theme definition */
+@import "./theme.css";
+
+/* Tailwind inline theme definition */
+@import "./global.css";
 
 /* Component animations */
 @import "./animations.css";
-
-/* Include tailwind's inline theme definition */
-@import "./theme.css";
-
-/* Ensure Tailwind scans this package's source for classnames */
-@source "../**/*.{ts,tsx}";

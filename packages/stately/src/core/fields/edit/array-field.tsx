@@ -1,5 +1,5 @@
 import { cn, generateFieldFormId } from '@statelyjs/ui';
-import { ArrayIndex, GlowingSave } from '@statelyjs/ui/components';
+import { ArrayIndex, DescriptionLabel, GlowingSave } from '@statelyjs/ui/components';
 import { Button } from '@statelyjs/ui/components/base/button';
 import { Field, FieldSet } from '@statelyjs/ui/components/base/field';
 import type { FieldEditProps } from '@statelyjs/ui/registry';
@@ -121,6 +121,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
         </p>
       ) : (
         <div className="space-y-4 p-4 border-2 border-dashed border-border bg-muted/10 rounded-lg">
+          {itemNode.description && <DescriptionLabel>{itemNode.description}</DescriptionLabel>}
           <FieldSet className="min-w-0 flex-1">
             {formData.map((item: any, index: number) => {
               const itemLabel = getItemLabel(index, item);
@@ -134,7 +135,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
               // Primitive displays differently
               return isItemPrimitive ? (
                 <Field
-                  className="min-w-0 flex-row flex gap-2"
+                  className="min-w-0 flex flex-row items-center gap-2"
                   key={`${node.nodeType}-${itemNode.nodeType}-${itemPrimitiveType ?? 'other'}-${index}`}
                 >
                   <ArrayIndex index={index + 1} />
@@ -169,7 +170,7 @@ export function ArrayEdit<Schema extends Schemas = Schemas>({
                 // Complex fields
                 <Field key={`${itemNode.nodeType}-${index}`}>
                   <div className="flex items-center justify-between px-3 pt-2">
-                    <h6 className="text-sm font-mono flex items-center">
+                    <h6 className="text-xs font-mono tracking-tight flex items-center">
                       <Dot />
                       {itemLabel}
                     </h6>

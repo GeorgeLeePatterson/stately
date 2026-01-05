@@ -11,7 +11,7 @@
 import type { components } from '../generated/types.js';
 
 // Re-export the full generated types for direct access
-export type { components, paths, operations } from '../generated/types.js';
+export type { components, operations, paths } from '../generated/types.js';
 
 /** Request body for /files/save endpoint */
 export type FileSaveRequest = components['schemas']['FileSaveRequest'];

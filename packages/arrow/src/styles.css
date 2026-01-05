@@ -1,7 +1,10 @@
-@import "tailwindcss";
+/*
+ * Stately Arrow Plugin - Theme CSS
+ *
+ * This file provides theme extensions only, NOT Tailwind utilities.
+ * The consuming app should scan this package's dist files for utilities.
+ */
 
-/* shared theme */
-@import "../../ui/src/styles/theme.css";
-
-/* scan only this plugin’s source */
-@source "./**/*.{ts,tsx}";
+/* shared tokens and themes - extends Tailwind with stately color tokens */
+@import "../../ui/src/styles/tokens.css";
+@import "../../ui/src/styles/themes.css";

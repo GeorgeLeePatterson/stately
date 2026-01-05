@@ -20,6 +20,7 @@
     "build": "tsdown",
     "check": "tsc --noEmit",
     "dev": "tsdown --watch",
+    "tarball": "rm statelyjs-arrow-*.tgz || true && pnpm --filter @statelyjs/arrow pack",
     "codegen": "pnpm run generate:openapi && pnpm run generate:types",
     "generate:openapi": "cargo run -p stately-arrow --all-features --bin stately-arrow-openapi -- .",
     "generate:types": "pnpm exec stately generate ./openapi.json -o ./src/generated"

@@ -24,13 +24,15 @@
  */
 
 import { FieldEdit } from './field-edit';
+import { PropertyLabel } from './field-label';
 import { FieldView } from './field-view';
 import { FormActions } from './form-actions';
 import { JsonEdit } from './json-edit';
 import { JsonView } from './json-view';
 
+export type { PropertyLabelProps } from './field-label';
 export type { FormActionsProps } from './form-actions';
 export type { JsonEditProps } from './json-edit';
 export type { JsonViewProps } from './json-view';
 
-export const BaseForm = { FieldEdit, FieldView, FormActions, JsonEdit, JsonView };
+export const BaseForm = { FieldEdit, FieldView, FormActions, JsonEdit, JsonView, PropertyLabel };
