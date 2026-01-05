@@ -4,11 +4,8 @@
 /* Import Stately theme tokens and base styles */
 @import "@statelyjs/stately/styles.css";
 
-/* TODO: Remove */
-@source "/Users/georgepatterson/projects/georgeleepatterson/stately/demos/tasks/ui/node_modules/.pnpm/@statelyjs+stately@file+..+..+..+packages+stately+statelyjs-stately-0.4.1.tgz_23f7c0e648baffb6aa66da16f53acee2/node_modules/@statelyjs";
-
 /* Scan app source for Tailwind classes */
 @source ".";
 
 /* Scan all Stately packages for utility classes */
-/*@source "./node_modules/@statelyjs";*/
+@source "../node_modules/@statelyjs";
