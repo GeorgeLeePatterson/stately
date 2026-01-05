@@ -19,7 +19,7 @@ mime_guess = "2"
 shellexpand = "3"
 tokio-util = { version = "0.7", features = ["io"] }
 
-stately = { path = "../stately", version = "0.4.1", features = ["axum"] }
+stately = { path = "../stately", version = "0.5.0", features = ["axum"] }
 
 axum = { workspace = true, features = ["http2", "macros", "multipart"]  }
 serde.workspace = true
