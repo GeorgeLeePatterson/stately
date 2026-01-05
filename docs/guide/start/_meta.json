@@ -18,5 +18,10 @@
     "type": "file",
     "name": "why-stately",
     "label": "Why Stately?"
+  },
+  {
+    "type": "file",
+    "name": "ai-friendly",
+    "label": "AI-Friendly Design"
   }
 ]

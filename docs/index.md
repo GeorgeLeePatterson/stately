@@ -2,12 +2,12 @@
 pageType: home
 title: Stately
 titleSuffix: 'Compose Vertically, Extend Horizontally'
-description: A composable state management framework for building full-stack applications with Rust and TypeScript/React
+description: A composable, AI-friendly state management framework for building full-stack applications with Rust and TypeScript/React
 
 hero:
   name: Stately
   text: Full-Stack State Management
-  tagline: Build powerful applications in Rust and TypeScript
+  tagline: Build AI-native applications in Rust and TypeScript
   actions:
     - theme: brand
       text: Introduction 
@@ -28,6 +28,9 @@ features:
   - title: Plugin Architecture
     details: Extend functionality with vertical plugins that span backend and frontend 
     icon: 🔌
+  - title: AI-Native Patterns
+    details: Declarative schemas, OpenAPI contracts, and llms.txt docs empower automated agents to add and understand features safely.
+    icon: 🤖
   - title: Schema-Driven
     details: Define your entities once, generate types, APIs, and UI components automatically.
     icon: 📐
