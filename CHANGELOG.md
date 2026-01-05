@@ -2,11 +2,46 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-01-05
+
+### Build
+
+- Introduces docs workflow
+- Updates build for docs
+- Upgrades node in docs workflow
+
+### ⚙️ Miscellaneous Tasks
+
+- Updates packages, excludes demos from workspaces
+- Reverts demo to use relative paths in css
+- Reverts packages in demos to incoming version
+
+### 🐛 Bug Fixes
+
+- Patches some QOL ui bugs for stately
+- *(ui)* Introduces new semantics around feature plugins and extensions, doc updates
+- *(ui)* Refactors statelyUi entrypoints and ui plugin entrypoints
+- *(ui)* Introduces 'createSchemaPlugin', simpler schema plugin factory
+- *(ui)* Address a number of bugs in core from e2e testing
+- *(ui)* Refactors tailwind, finalizes end user usage
+
+### 📚 Documentation
+
+- Updates documentation for rspress
+- Regenerates tsdocs
+- Refactors docs package
+- Updating demos
+- Updates package documentation, absorbs tsdocs
+- Removes auto-generated docs/api folder
+- Adds docs around features and extensions
+- Updates docs to reflect tailwind patterns
+
 ## [0.4.1] - 2025-12-24
 
 ### ⚙️ Miscellaneous Tasks
 
 - Updates turbo
+- Release v0.4.1 (#19)
 
 ### 🐛 Bug Fixes
 

@@ -1,6 +1,6 @@
 {
   "name": "@statelyjs/ui",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "UI component library for Stately applications",
   "type": "module",
   "license": "Apache-2.0",

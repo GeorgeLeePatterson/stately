@@ -1,6 +1,6 @@
 {
   "name": "@statelyjs/schema",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Type definitions and schema parser for Stately",
   "type": "module",
   "main": "./dist/index.js",
