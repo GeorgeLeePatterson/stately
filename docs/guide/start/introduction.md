@@ -17,6 +17,10 @@ Stately provides a unified approach to state management across your backend and 
 - **Backend (Rust)**: Define entities with derive macros, get automatic CRUD APIs, OpenAPI generation, and type-safe state management
 - **Frontend (TypeScript/React)**: Consume your API with full type safety, render schema-driven forms, and extend with plugins
 
+## Why Stately?
+
+The goal of Stately is to drastically reduce the boilerplate needed to take the denotational semantics of your application into a fully functioning, production-ready state in a fraction of the time. With this foundation in mind, the Stately platform is designed to grow around type-safe, sound architectures. This has an outsized benefit, in my opinion, for the next phase of application development as I see it: dynamic, AI-native applications. To learn more about the direction this is headed, check out the docs on how Stately aims to be [AI-friendly](/guide/start/ai.md).
+
 ## Core Packages
 
 ### Backend (Rust)
@@ -45,6 +49,6 @@ Stately is designed to be extended with plugins that provide both backend and fr
 
 ## Next Steps
 
-Installation is easy, follow the [Installation](./installation.md) guide to get setup. If you are setup and ready to go, follow the [Quick start](./quick-start.md) to learn how to build your first Stately application. 
+Installation is easy, follow the [Installation](/guide/start/installation.md) guide to get setup. If you are setup and ready to go, follow the [Quick start](/guide/start/quick-start.md) to learn how to build your first Stately application. 
 
-For more details on the motivation behind Stately, check out [Why Stately](./why-stately.md).
+For more details on the motivation behind Stately, check out [Why Stately](/guide/start/why-stately.md).

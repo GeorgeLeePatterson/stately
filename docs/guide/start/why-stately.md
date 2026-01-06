@@ -192,6 +192,7 @@ Stately is a good fit when:
 - You need CRUD operations across different entity types
 - You want schema-driven UIs that stay in sync with your backend
 - You plan to extend functionality with plugins
+- You want a consistent framework that AI can understand and work with. [learn more](/guide/start/ai)
 
 Stately may not be the best choice when:
 

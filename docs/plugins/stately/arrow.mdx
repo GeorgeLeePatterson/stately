@@ -19,23 +19,21 @@ The arrow plugin provides data connectivity and SQL query execution capabilities
 
 ### Backend
 
-```toml
-[dependencies]
-stately-arrow = "0.4"
+```shellscript
+cargo add stately-arrow
 ```
 
 Feature flags for backends:
 
-```toml
-[dependencies]
-stately-arrow = { version = "0.4", features = ["object-store", "clickhouse"] }
+```shellscript
+cargo add stately-arrow --features object-store,database,clickhouse
 ```
 
 ### Frontend
 
-```bash
-pnpm add @statelyjs/arrow
-```
+import { PackageManagerTabs } from '@theme';
+
+<PackageManagerTabs command="install @statelyjs/arrow" />
 
 ## Quick Start
 
