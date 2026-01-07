@@ -47,6 +47,9 @@ export default defineConfig({
             router: 'module',
           } as Parameters<typeof Application.bootstrapWithPlugins>[0]);
           return app;
+        } catch (err) {
+          console.error(err);
+          throw err;
         } finally {
           process.chdir(originalCwd);
         }
